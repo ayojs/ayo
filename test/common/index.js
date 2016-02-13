@@ -156,9 +156,13 @@ exports.refreshTmpDir = function() {
   fs.mkdirSync(exports.tmpDir);
 };
 
-if (process.env.TEST_THREAD_ID) {
-  exports.PORT += process.env.TEST_THREAD_ID * 100;
-  exports.tmpDirName += `.${process.env.TEST_THREAD_ID}`;
+if ((process.workerData && process.workerData.testThreadId) ||
+    process.env.TEST_THREAD_ID) {
+  const id = +((process.workerData && process.workerData.testThreadId) ||
+               process.env.TEST_THREAD_ID);
+
+  exports.PORT += id * 100;
+  exports.tmpDirName += `.${id}`;
 }
 exports.tmpDir = path.join(testRoot, exports.tmpDirName);
 

@@ -337,7 +337,7 @@ test-all-valgrind: test-build
 	$(PYTHON) tools/test.py --mode=debug,release --valgrind
 
 CI_NATIVE_SUITES := addons addons-napi
-CI_JS_SUITES := abort async-hooks doctool inspector known_issues message parallel pseudo-tty sequential
+CI_JS_SUITES := abort async-hooks doctool inspector known_issues message parallel pseudo-tty sequential workers
 
 # Build and test addons without building anything else
 test-ci-native: LOGLEVEL := silent
@@ -439,6 +439,9 @@ test-timers-clean:
 
 test-async-hooks:
 	$(PYTHON) tools/test.py --mode=release async-hooks
+
+test-worker:
+	$(PYTHON) tools/test.py --mode=release workers
 
 
 ifneq ("","$(wildcard deps/v8/tools/run-tests.py)")
