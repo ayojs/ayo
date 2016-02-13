@@ -465,6 +465,8 @@ test-with-async-hooks:
 		$(CI_JS_SUITES) \
 		$(CI_NATIVE_SUITES)
 
+test-worker:
+	$(PYTHON) tools/test.py --mode=release workers
 
 ifneq ("","$(wildcard deps/v8/tools/run-tests.py)")
 test-v8: v8
