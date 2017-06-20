@@ -205,6 +205,7 @@ test: all
 	$(MAKE) build-addons-napi
 	$(MAKE) cctest
 	$(PYTHON) tools/test.py --mode=release -J \
+		$(CI_ASYNC_HOOKS) \
 		$(CI_JS_SUITES) \
 		$(CI_NATIVE_SUITES)
 	$(MAKE) lint
@@ -337,7 +338,8 @@ test-all-valgrind: test-build
 	$(PYTHON) tools/test.py --mode=debug,release --valgrind
 
 CI_NATIVE_SUITES := addons addons-napi
-CI_JS_SUITES := abort async-hooks doctool inspector known_issues message parallel pseudo-tty sequential
+CI_ASYNC_HOOKS := async-hooks
+CI_JS_SUITES := abort doctool inspector known_issues message parallel pseudo-tty sequential
 
 # Build and test addons without building anything else
 test-ci-native: LOGLEVEL := silent
@@ -350,7 +352,7 @@ test-ci-native: | test/addons/.buildstamp test/addons-napi/.buildstamp
 test-ci-js: | clear-stalled
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) $(CI_JS_SUITES)
+		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES)
 	# Clean up any leftover processes, error if found.
 	ps awwx | grep Release/node | grep -v grep | cat
 	@PS_OUT=`ps awwx | grep Release/node | grep -v grep | awk '{print $$1}'`; \
@@ -363,7 +365,7 @@ test-ci: | clear-stalled build-addons build-addons-napi
 	out/Release/cctest --gtest_output=tap:cctest.tap
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p oneline \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) $(CI_JS_SUITES) $(CI_NATIVE_SUITES)
+		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES) $(CI_NATIVE_SUITES)
 	# Clean up any leftover processes, error if found.
 	ps awwx | grep Release/node | grep -v grep | cat
 	@PS_OUT=`ps awwx | grep Release/node | grep -v grep | awk '{print $$1}'`; \
@@ -436,6 +438,14 @@ test-timers-clean:
 
 test-async-hooks:
 	$(PYTHON) tools/test.py --mode=release async-hooks
+
+test-with-async-hooks:
+	$(MAKE) build-addons
+	$(MAKE) build-addons-napi
+	$(MAKE) cctest
+	NODE_TEST_WITH_ASYNC_HOOKS=1 $(PYTHON) tools/test.py --mode=release -J \
+		$(CI_JS_SUITES) \
+		$(CI_NATIVE_SUITES)
 
 
 ifneq ("","$(wildcard deps/v8/tools/run-tests.py)")
