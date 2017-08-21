@@ -446,7 +446,7 @@ maintaining the Node.js project.
 
 ### Release Team
 
-Ayo.js releases are signed with one of the following GPG keys:
+Ayo.js releases were signed with one of the following GPG keys:
 
 * **Colin Ihrig** &lt;cjihrig@gmail.com&gt;
 `94AE36675C464D64BAFA68DD7434390BDBE9B9C5`
