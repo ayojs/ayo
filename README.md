@@ -1,27 +1,14 @@
-<p align="center">
-  <a href="https://nodejs.org/">
-    <img alt="Node.js" src="https://nodejs.org/static/images/logo-light.svg" width="400"/>
-  </a>
-</p>
-<p align="center">
-  <a title="CII Best Practices" href="https://bestpractices.coreinfrastructure.org/projects/29"><img src="https://bestpractices.coreinfrastructure.org/projects/29/badge"></a>
-</p>
+# Ayo.js
 
-Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js
+Ayo.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Ayo.js
 uses an event-driven, non-blocking I/O model that makes it lightweight and
-efficient. The Node.js package ecosystem, [npm][], is the largest ecosystem of
+efficient. The Ayo.js package ecosystem, [npm][], is the largest ecosystem of
 open source libraries in the world.
 
-The Node.js project is supported by the
-[Node.js Foundation](https://nodejs.org/en/foundation/). Contributions,
-policies, and releases are managed under an
+Contributions, policies, and releases are managed under an
 [open governance model](./GOVERNANCE.md).
 
 **This project is bound by a [Code of Conduct][].**
-
-If you need help using or installing Node.js, please use the
-[nodejs/help](https://github.com/nodejs/help) issue tracker.
-
 
 # Table of Contents
 
@@ -46,22 +33,17 @@ If you need help using or installing Node.js, please use the
 * [Website][]
 * [Node.js Help][]
 * [Contributing to the project][]
-* IRC (node core development): [#node-dev on chat.freenode.net][]
 
 ### Unofficial Resources
 
-* IRC (general questions): [#node.js on chat.freenode.net][]. Please see
-<http://nodeirc.info/> for more information regarding the `#node.js` IRC
-channel.
-
 _Please note that unofficial resources are neither managed by (nor necessarily
-endorsed by) the Node.js TSC/CTC. Specifically, such resources are not
+endorsed by) the Ayo.js TSC/CTC. Specifically, such resources are not
 currently covered by the [Node.js Moderation Policy][] and the selection and
 actions of resource operators/moderators are not subject to TSC/CTC oversight._
 
 ## Release Types
 
-The Node.js project maintains multiple types of releases:
+The Ayo.js project maintains multiple types of releases:
 
 * **Current**: Released from active development branches of this repository,
   versioned by [SemVer](http://semver.org/) and signed by a member of the
@@ -156,15 +138,15 @@ file has been signed by an authorized member of the Node.js team.
 Once verified, use the SHASUMS256.txt.asc file to get the checksum for
 the binary verification command above.
 
-## Building Node.js
+## Building Ayo.js
 
 See [BUILDING.md](BUILDING.md) for instructions on how to build
-Node.js from source. The document also contains a list of
+Ayo.js from source. The document also contains a list of
 officially supported platforms.
 
 ## Security
 
-All security bugs in Node.js are taken seriously and should be reported by
+All security bugs in Ayo.js are taken seriously and should be reported by
 emailing security@nodejs.org. This will be delivered to a subset of the project
 team who handle security issues. Please don't disclose security bugs
 publicly until they have been handled by the security team.
@@ -175,7 +157,7 @@ handling your report.
 
 ## Current Project Team Members
 
-The Node.js project team comprises a group of core collaborators and a sub-group
+The Ayo.js project team comprises a group of core collaborators and a sub-group
 that forms the _Core Technical Committee_ (CTC) which governs the project. For
 more information about the governance of the Node.js project, see
 [GOVERNANCE.md](./GOVERNANCE.md).
@@ -464,7 +446,7 @@ maintaining the Node.js project.
 
 ### Release Team
 
-Node.js releases are signed with one of the following GPG keys:
+Ayo.js releases are signed with one of the following GPG keys:
 
 * **Colin Ihrig** &lt;cjihrig@gmail.com&gt;
 `94AE36675C464D64BAFA68DD7434390BDBE9B9C5`
@@ -509,7 +491,7 @@ Previous releases may also have been signed with one of the following GPG keys:
 
 ### Working Groups
 
-Information on the current Node.js Working Groups can be found in the
+Information on the current Ayo.js Working Groups can be found in the
 [CTC repository](https://github.com/nodejs/CTC/blob/master/WORKING_GROUPS.md).
 
 [npm]: https://www.npmjs.com
