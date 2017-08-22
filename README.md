@@ -27,7 +27,7 @@ Contributions, policies, and releases are managed under an
 * [Building Ayo.js](#building-ayojs)
   * [Security](#security)
   * [Current Project Team Members](#current-project-team-members)
-    * [CTC (Core Technical Committee)](#ctc-core-technical-committee)
+    * [TSC (Technical Steering Committee)](#tsc-technical-steering-committee)
     * [Collaborators](#collaborators)
     * [Release Team](#release-team)
 
