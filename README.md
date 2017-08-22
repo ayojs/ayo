@@ -1,5 +1,8 @@
 # Ayo.js
 
+_(Note: Ayo.js is forked from [Node.js][]. Currently, a lot of the documentation
+still points towards the Node.js repository.)_
+
 Ayo.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Ayo.js
 uses an event-driven, non-blocking I/O model that makes it lightweight and
 efficient. The Ayo.js package ecosystem, [npm][], is the largest ecosystem of
@@ -87,6 +90,7 @@ _To be written_
 
 _To be written_
 
+[Node.js]: https://github.com/nodejs/node
 [npm]: https://www.npmjs.com
 [Website]: https://nodejs.org/en/
 [Contributing to the project]: CONTRIBUTING.md
