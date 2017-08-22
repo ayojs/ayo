@@ -19,7 +19,7 @@ Contributions, policies, and releases are managed under an
     * [Nightly Releases](#nightly-releases)
     * [API Documentation](#api-documentation)
   * [Verifying Binaries](#verifying-binaries)
-* [Building Node.js](#building-nodejs)
+* [Building Ayo.js](#building-ayojs)
   * [Security](#security)
   * [Current Project Team Members](#current-project-team-members)
     * [CTC (Core Technical Committee)](#ctc-core-technical-committee)
