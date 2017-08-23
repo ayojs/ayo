@@ -1,0 +1,16 @@
+language: cpp
+compiler:
+  - clang
+os:
+  - linux
+sudo: false
+cache: ccache
+before_install:
+  - export CXX="ccache clang++ -Qunused-arguments"
+  - export CC="ccache clang -Qunused-arguments"
+  - export JOBS=2
+install:
+  - ./configure
+  - make -j2 V=
+script:
+  - make -j2 test-ci

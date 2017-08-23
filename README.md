@@ -1,5 +1,7 @@
 # Ayo.js
 
+[![Build Status](https://travis-ci.org/ayojs/ayo.svg?style=flat&branch=master)](https://travis-ci.org/ayojs/ayo?branch=master)
+
 _(Note: Ayo.js is forked from [Node.js][]. Currently, a lot of the documentation
 still points towards the Node.js repository.)_
 
