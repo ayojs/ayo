@@ -1,5 +1,7 @@
 # Ayo.js
 
+[![Build Status](https://travis-ci.org/ayojs/ayo.svg?style=flat&branch=master)](https://travis-ci.org/ayojs/ayo?branch=master)
+
 Ayo.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Ayo.js
 uses an event-driven, non-blocking I/O model that makes it lightweight and
 efficient. The Ayo.js package ecosystem, [npm][], is the largest ecosystem of
