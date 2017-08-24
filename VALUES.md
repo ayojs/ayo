@@ -8,7 +8,7 @@ Ayo.js is about the humans that help make it happen. It's a project aimed at cre
 
 Documentation, long-term support, translations and localizations, package management, libuv, v8 and Chakra, builds/ops, testing and its infrastructure, hardware and IoT, Android, streams, community events, facilitation, moderation and education. These and more are all concerns that can be handled separately and by members who might be much better qualified for their individual tasks than a central decision body.
 
-Ayo.js wants to go further than Node Core did in spreading responsibility across the project, so everyone can focus and specialize better than before. They should be able to organize and manage their own subprojects in a way that is effective and efficient for their individual unique needs.
+Ayo.js wants to go further than Node Core did in spreading responsibility across the project, so everyone can focus and specialize better than before. Contributors should be able to organize and manage their own subprojects in a way that is effective and efficient for their individual unique needs.
 
 ## Humans are more important than red tape.
 
@@ -28,8 +28,3 @@ All sorts of corporations and other organizations around the world use and benef
 
 Ayo.js will explore new structures and framings for corporate relationships in such a way that its individual humans, not the corporations that employ them, are ultimately still the ones determining the direction of the project. Ayo.js should be a space where independent contributors, freelancers, hobbyists, and students all feel like they hold the same footing as corporate employees at all levels of the project.
 
-## Awoo <!-- not keeping this here unless y'all really want it but it's making me happy to see here for now -Hal -->
-
-Awoo!!!!!!
-
-It's our brand now, sorry.
