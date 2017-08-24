@@ -11,7 +11,7 @@ focus on your contributions to this nice shared space that we all benefit from.
 ## Ayo.js is more than the code in its repository.
 
 Documentation, long-term support, translations and localizations,
-package management, libuv, v8 and Chakra, builds/ops, testing and its
+package management, libuv, V8 and Chakra, builds/ops, testing and its
 infrastructure, hardware and IoT, Android, streams, community events,
 facilitation, moderation and education. These and more are all concerns that
 can be handled separately and by members who might be much better qualified
