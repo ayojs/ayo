@@ -730,7 +730,7 @@ pkg-upload: pkg
 $(TARBALL): release-only $(NODE_EXE) doc
 	git checkout-index -a -f --prefix=$(TARNAME)/
 	mkdir -p $(TARNAME)/doc/api
-	cp doc/node.1 $(TARNAME)/doc/node.1
+	cp doc/ayo.1 $(TARNAME)/doc/ayo.1
 	cp -r out/doc/api/* $(TARNAME)/doc/api/
 	$(RM) -r $(TARNAME)/deps/v8/{test,samples,tools/profviz,tools/run-tests.py}
 	$(RM) -r $(TARNAME)/doc/images # too big
