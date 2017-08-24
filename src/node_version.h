@@ -34,7 +34,7 @@
 #endif
 
 #ifndef NODE_RELEASE
-#define NODE_RELEASE "node"
+#define NODE_RELEASE "ayo"
 #endif
 
 #ifndef NODE_TAG

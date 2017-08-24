@@ -10,7 +10,7 @@ const child = spawn(process.execPath, ['debug']);
 child.stderr.setEncoding('utf8');
 
 const expectedLines = [
-  /^\(node:\d+\) \[DEP0068\] DeprecationWarning:/,
+  /^\(ayo:\d+\) \[DEP0068\] DeprecationWarning:/,
   /^Usage: .*node.* debug script\.js$/,
   /^       .*node.* debug <host>:<port>$/
 ];

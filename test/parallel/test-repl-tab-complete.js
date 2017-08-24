@@ -367,7 +367,7 @@ testMe.complete('.b', common.mustCall((error, data) => {
 
 // tab completion for large buffer
 const warningRegEx = new RegExp(
-  '\\(node:\\d+\\) REPLWarning: The current array, Buffer or TypedArray has ' +
+  '\\(ayo:\\d+\\) REPLWarning: The current array, Buffer or TypedArray has ' +
   'too many entries\\. Certain properties may be missing from completion ' +
   'output\\.');
 

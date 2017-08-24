@@ -28,7 +28,7 @@ interfacer.on('line', function(line) {
   switch (++lineCount) {
     case 1:
       expected =
-        new RegExp(`^\\(node:${pid}\\) \\[DEP0068\\] DeprecationWarning: `);
+        new RegExp(`^\\(ayo:${pid}\\) \\[DEP0068\\] DeprecationWarning: `);
       assert.ok(expected.test(line), `expected regexp match for ${line}`);
       break;
     case 2:

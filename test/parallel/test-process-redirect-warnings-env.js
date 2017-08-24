@@ -20,6 +20,6 @@ fork(warnmod, { env: { NODE_REDIRECT_WARNINGS: warnpath } })
   .on('exit', common.mustCall(() => {
     fs.readFile(warnpath, 'utf8', common.mustCall((err, data) => {
       assert.ifError(err);
-      assert(/\(node:\d+\) Warning: a bad practice warning/.test(data));
+      assert(/\(ayo:\d+\) Warning: a bad practice warning/.test(data));
     }));
   }));
