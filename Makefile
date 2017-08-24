@@ -40,9 +40,12 @@ BUILDTYPE_LOWER := $(shell echo $(BUILDTYPE) | tr '[A-Z]' '[a-z]')
 EXEEXT := $(shell $(PYTHON) -c \
 		"import sys; print('.exe' if sys.platform == 'win32' else '')")
 
-NODE_EXE = node$(EXEEXT)
+# Build to /node for easy cross-repo compat.
+BUILD_EXE_NAME = node$(EXEEXT)
+
+NODE_EXE = ayo$(EXEEXT)
 NODE ?= ./$(NODE_EXE)
-NODE_G_EXE = node_g$(EXEEXT)
+NODE_G_EXE = ayo_g$(EXEEXT)
 NPM ?= ./deps/npm/bin/npm-cli.js
 
 # Flags for packaging.
@@ -74,11 +77,11 @@ endif
 # See comments on the build-addons target for some more info
 $(NODE_EXE): config.gypi out/Makefile
 	$(MAKE) -C out BUILDTYPE=Release V=$(V)
-	if [ ! -r $@ -o ! -L $@ ]; then ln -fs out/Release/$(NODE_EXE) $@; fi
+	if [ ! -r $@ -o ! -L $@ ]; then ln -fs out/Release/$(BUILD_EXE_NAME) $@; fi
 
 $(NODE_G_EXE): config.gypi out/Makefile
 	$(MAKE) -C out BUILDTYPE=Debug V=$(V)
-	if [ ! -r $@ -o ! -L $@ ]; then ln -fs out/Debug/$(NODE_EXE) $@; fi
+	if [ ! -r $@ -o ! -L $@ ]; then ln -fs out/Debug/$(BUILD_EXE_NAME) $@; fi
 
 out/Makefile: common.gypi deps/uv/uv.gyp deps/http_parser/http_parser.gyp \
               deps/zlib/zlib.gyp deps/v8/gypfiles/toolchain.gypi \
@@ -96,7 +99,7 @@ uninstall:
 	$(PYTHON) tools/install.py $@ '$(DESTDIR)' '$(PREFIX)'
 
 clean:
-	$(RM) -r out/Makefile $(NODE_EXE) $(NODE_G_EXE) out/$(BUILDTYPE)/$(NODE_EXE) \
+	$(RM) -r out/Makefile $(NODE_EXE) $(NODE_G_EXE) out/$(BUILDTYPE)/$(BUILD_EXE_NAME) \
                 out/$(BUILDTYPE)/node.exp
 	@if [ -d out ]; then find out/ -name '*.o' -o -name '*.a' -o -name '*.d' | xargs $(RM) -r; fi
 	$(RM) -r node_modules
@@ -647,7 +650,7 @@ ifeq ($(DESTCPU),ia32)
 override DESTCPU=x86
 endif
 
-TARNAME=node-$(FULLVERSION)
+TARNAME=ayo-$(FULLVERSION)
 TARBALL=$(TARNAME).tar
 # Custom user-specified variation, use it directly
 ifdef VARIATION
