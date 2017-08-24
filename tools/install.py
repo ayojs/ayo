@@ -135,6 +135,17 @@ def files(action):
 
   action([output_prefix + output_file], 'bin/' + output_file)
 
+  if not is_windows:
+    # Install ayo -> node compatibility symlink.
+    link_target = 'bin/ayo'
+    link_path = abspath(install_path, link_target)
+    if action == uninstall:
+      action([link_path], link_target)
+    elif action == install:
+      try_symlink('node', link_path)
+    else:
+      assert(0)  # Unhandled action type.
+
   if 'true' == variables.get('node_use_dtrace'):
     action(['out/Release/node.d'], 'lib/dtrace/node.d')
 
