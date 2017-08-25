@@ -1,18 +1,18 @@
-# Contributing to Node.js
+# Contributing to Ayo.js
 
 ## Code of Conduct
 
 Please read the
 [Code of Conduct](https://github.com/nodejs/TSC/blob/master/CODE_OF_CONDUCT.md)
-which explains the minimum behavior expectations for Node.js contributors.
+which explains the minimum behavior expectations for Ayo.js contributors.
 
 ## Issue Contributions
 
 When opening issues or commenting on existing issues, please make sure
-discussions are related to concrete technical issues with Node.js.
+discussions are related to concrete technical issues with Ayo.js.
 
-* For general help using Node.js, please file an issue at the
-[Node.js help repository](https://github.com/nodejs/help/issues).
+* For general help using Ayo.js, please file an issue at the
+[ayo.js help repository](https://github.com/ayojs/ayo/issues).
 
 * Discussion of non-technical topics (such as intellectual property and
 trademark) should use the
@@ -24,13 +24,13 @@ This section will guide you through the contribution process.
 
 ### Step 1: Fork
 
-Fork the project [on GitHub](https://github.com/nodejs/node) and clone your fork
+Fork the project [on GitHub](https://github.com/ayojs/ayo) and clone your fork
 locally.
 
 ```text
-$ git clone git@github.com:username/node.git
-$ cd node
-$ git remote add upstream https://github.com/nodejs/node.git
+$ git clone git@github.com:username/ayo.git
+$ cd ayo
+$ git remote add upstream https://github.com/ayojs/ayo.git
 ```
 
 #### Which branch?
@@ -40,15 +40,15 @@ and built upon.
 
 #### Dependencies
 
-Node.js has several bundled dependencies in the *deps/* and the *tools/*
+Ayo.js has several bundled dependencies in the *deps/* and the *tools/*
 directories that are not part of the project proper. Changes to files in those
 directories should be sent to their respective projects. Do not send a patch to
-Node.js. We cannot accept such patches.
+Ayo.js. We cannot accept such patches.
 
 In case of doubt, open an issue in the
-[issue tracker](https://github.com/nodejs/node/issues/) or contact one of the
-[project Collaborators](https://github.com/nodejs/node/#current-project-team-members).
-Node.js has two IRC channels:
+[issue tracker](https://github.com/ayojs/ayo/issues/) or contact one of the
+[project Collaborators](https://github.com/ayojs/ayo/#current-project-team-members).
+Ayo.js has two IRC channels:
 [#Node.js](http://webchat.freenode.net/?channels=node.js) for general help and
 questions, and
 [#Node-dev](http://webchat.freenode.net/?channels=node-dev) for development of
@@ -107,9 +107,9 @@ of the log. Use the `Fixes:` prefix and the full issue URL. For other references
 use `Refs:`.
 
    Examples:
-   - `Fixes: https://github.com/nodejs/node/issues/1337`
+   - `Fixes: https://github.com/ayojs/ayo/issues/1337`
    - `Refs: http://eslint.org/docs/rules/space-in-parens.html`
-   - `Refs: https://github.com/nodejs/node/pull/3615`
+   - `Refs: https://github.com/ayojs/ayo/pull/3615`
 
 Sample complete commit message:
 
@@ -125,7 +125,7 @@ please do proper word-wrap and keep columns shorter than about
 72 characters or so. That way, `git log` will show things
 nicely even when it is indented.
 
-Fixes: https://github.com/nodejs/node/issues/1337
+Fixes: https://github.com/ayojs/ayo/issues/1337
 Refs: http://eslint.org/docs/rules/space-in-parens.html
 ```
 
@@ -142,7 +142,7 @@ $ git rebase upstream/master
 ### Step 5: Test
 
 Bug fixes and features should come with tests. Read the
-[guide for writing tests in Node.js](./doc/guides/writing-tests.md). Looking at
+[guide for writing tests in Ayo.js](./doc/guides/writing-tests.md). Looking at
 other tests to see how they should be structured can also help. Add your
 tests in the `test/parallel/` directory if you are unsure where to put them.
 
@@ -180,10 +180,10 @@ the `--help` option
 $ python tools/test.py --help
 ```
 
-You can usually run tests directly with node:
+You can usually run tests directly with ayo:
 
 ```text
-$ ./node ./test/parallel/test-stream2-transform.js
+$ ./ayo ./test/parallel/test-stream2-transform.js
 ```
 
 Remember to recompile with `make -j4` in between test runs if you change code in
@@ -248,7 +248,7 @@ notes about [commit squashing](#commit-squashing)).
 
 In order to land, a Pull Request needs to be reviewed and
 [approved](#getting-approvals-for-your-pull-request) by
-at least one Node.js Collaborator and pass a
+at least one Ayo.js Collaborator and pass a
 [CI (Continuous Integration) test run](#ci-testing).
 After that, as long as there are no objections
 from a Collaborator, the Pull Request can be merged. If you find your
@@ -273,7 +273,7 @@ and the names of the reviewers). The commit history of your Pull Request,
 however, will stay intact on the Pull Request page.
 
 For the size of "one logical change",
-[0b5191f](https://github.com/nodejs/node/commit/0b5191f15d0f311c804d542b67e2e922d98834f8)
+[0b5191f](https://github.com/ayojs/ayo/commit/0b5191f15d0f311c804d542b67e2e922d98834f8)
 can be a good example. It touches the implementation, the documentation,
 and the tests, but is still one logical change. In general, the tests should
 always pass when each individual commit lands on the master branch.
@@ -294,7 +294,7 @@ because the reviewers have hit the buttons before.
 ### CI Testing
 
 Every Pull Request needs to be tested
-to make sure that it works on the platforms that Node.js
+to make sure that it works on the platforms that Ayo.js
 supports. This is done by running the code through the CI system.
 
 Only a Collaborator can start a CI run. Usually one of them will do it
@@ -308,14 +308,14 @@ weekend) from when it is submitted, even after it gets approved and
 passes the CI. This is to make sure that everyone has a chance to
 weigh in. If the changes are trivial, collaborators may decide it
 doesn't need to wait. A Pull Request may well take longer to be
-merged in. All these precautions are important because Node.js is
+merged in. All these precautions are important because Ayo.js is
 widely used, so don't be discouraged!
 
 ### Check Out the Collaborator's Guide
 
 If you want to know more about the code review and the landing process,
 you can take a look at the
-[collaborator's guide](https://github.com/nodejs/node/blob/master/COLLABORATOR_GUIDE.md).
+[collaborator's guide](COLLABORATOR_GUIDE.md).
 
 <a id="developers-certificate-of-origin"></a>
 ## Developer's Certificate of Origin 1.1
