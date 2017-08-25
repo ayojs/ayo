@@ -17,7 +17,7 @@ facilitation, moderation and education. These and more are all concerns that
 can be handled separately and by members who might be much better qualified
 for these individual tasks than a central decision body.
 
-Ayo.js wants to go further than Node.js did in spreading responsibility across
+Ayo.js will to go further than Node.js did in spreading responsibility across
 the project, so everyone can focus and specialize better than before.
 Contributors should be able to organize and manage their own subprojects
 in a way that is effective and efficient for their unique needs.
@@ -26,8 +26,8 @@ in a way that is effective and efficient for their unique needs.
 
 If governance policy is not serving the values set forth here, that governance
 policy should change with the required agility. Following the governance policy
-to the letter should not take precedence over staying true to our stated values,
-not to mention the well-being of our humans.
+to the letter will not take precedence over staying true to our stated values or
+the well-being of our humans.
 
 ## Humans are more important than APIs and Benchmarks.
 
@@ -37,24 +37,24 @@ situations with no clear consensus, with new concerns being brought up
 on a regular basis, and things that might seem insignificant in other
 contexts suddenly exploding.
 
-The Ayo.js project's perspective is that when this happens, it often takes a
-toll on the well-being of the members participating, or it prevents potential
-members from contributing again, if at all. It also recognizes that the
-difference between individual choices is less important than the ability to
-come to a perfect technical decision.
+The Ayo.js project’s perspective is that when such things happen, it often takes
+a toll on the well-being of the members participating, at times preventing
+repeated contributions or precluding new contributors outright. It also
+recognizes that the difference between individual choices is less important than
+the ability to come to a appropriate technical decision.
 
 Projects change, evolve, and find themselves dealing with new concerns all the
 time. In all technical matters, Ayo.js will take into account that in the end,
-it is the people making those decisions that matter most, not the decisions
-themselves. It’s ok for code to be imperfect.
+it is the people making, implementing, and maintaining that matter most, not the
+decisions themselves. It’s okay for code to be imperfect.
 
 ## Humans are more important than corporations.
 
 All sorts of corporations and other organizations around the world use and
-benefit from the software underlying Ayo.js. Many contributors, in fact, might
-have their efforts in the project directly funded by them. But this can often
-turn into such direct reliance on corporations that they can essentially seize
-control of a project — or struggle for power over it while individual
+benefit from the software underlying Ayo.js, and many contributors, in fact, may
+be directly compensated by them for their efforts on the project. But this can
+often turn into such direct reliance on corporations that they can essentially
+seize control of a project — or struggle for power over it while individual
 contributors are left wondering if they can ever influence the project
 themselves.
 
