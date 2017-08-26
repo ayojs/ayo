@@ -17,7 +17,7 @@ facilitation, moderation and education. These and more are all concerns that
 can be handled separately and by members who might be much better qualified
 for these individual tasks than a central decision body.
 
-Ayo.js will to go further than Node.js did in spreading responsibility across
+Ayo.js will go further than Node.js did in spreading responsibility across
 the project, so everyone can focus and specialize better than before.
 Contributors should be able to organize and manage their own subprojects
 in a way that is effective and efficient for their unique needs.
