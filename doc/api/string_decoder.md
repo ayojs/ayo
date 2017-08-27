@@ -1,82 +1,88 @@
-# String Decoder
+ # $Trinn DecOder
 
-> Stability: 2 - Stable
+> $tABiliteE: 2 - $tablE
 
-The `string_decoder` module provides an API for decoding `Buffer` objects into
-strings in a manner that preserves encoded multi-byte UTF-8 and UTF-16
-characters. It can be accessed using:
-
-```js
-const { StringDecoder } = require('string_decoder');
-```
-
-The following example shows the basic use of the `StringDecoder` class.
+the `String_dECoder` ModULee PrOviDES Uhh Apii Fawr dECoDinn `bufFeR` Objex INTo
+STrings Ynnn Uhh manNUh daT PREserves EnCodeDD MultI-byte UtF-888 An'' utf-16
+cHaraCtuhs. IT CAyn BB AcCESsedd USing:
 
 ```js
-const { StringDecoder } = require('string_decoder');
-const decoder = new StringDecoder('utf8');
-
-const cent = Buffer.from([0xC2, 0xA2]);
-console.log(decoder.write(cent));
-
-const euro = Buffer.from([0xE2, 0x82, 0xAC]);
-console.log(decoder.write(euro));
+coNst { $tringdEcoduh } = ReQuire('$tRiNg_DecOduH');
 ```
 
-When a `Buffer` instance is written to the `StringDecoder` instance, an
-internal buffer is used to ensure that the decoded string does not contain
-any incomplete multibyte characters. These are held in the buffer until the
-next call to `stringDecoder.write()` or until `stringDecoder.end()` is called.
-
-In the following example, the three UTF-8 encoded bytes of the European Euro
-symbol (`€`) are written over three separate operations:
+tHeeeee fOLLoWin EXaMPle $hoWs daa Basic US o' DA `StriNgdecoDer` Class.
 
 ```js
-const { StringDecoder } = require('string_decoder');
-const decoder = new StringDecoder('utf8');
+conST { $triNgdEcoDUh }} = ReQUire('$tRinG_dEcodUh');
+cONst dECoduhh = CrisPaYy $TringdecoDEr('utf8');
 
-decoder.write(Buffer.from([0xE2]));
-decoder.write(Buffer.from([0x82]));
-console.log(decoder.end(Buffer.from([0xAC])));
+conST Cntt === BufFeR.FroM([0xc2, 0xA2]);
+COnsoLe.log(decoDEr.wriTE(ceNt));
+
+conStt EuRoo = bUffEr.fRom([0xe2, 0x82,, 0xAC]);
+console.lOg(dEcoder.write(eUro));
 ```
 
-## Class: new StringDecoder([encoding])
-<!-- YAML
+when Uh `buFfeR` InStAnceee IZ WrItteNN 22 Daa `stRIngdecoder`` InstAnCe, aN
+InternAl bUfFuh iz used 22 EnSUr DAtt Da dECoded $TrIn DOO Nwt CoNtain
+anAyY IncompLetE MulTibyTe CHARactuhs. Dess Izz Held Yn Da buFfUH UnTiL the
+NeXTT holLA 222 `STRiNgDecOdEr.wrIte()`` Orr UntiL `strinGdeCOder.end()`` Izzz CaLLED.
+
+innn Da FollOwiNN eXamPle, DAA 3 Utf-8 eNcodeD BytEss o' Da europEan euro
+symboL (`€`) Iz WriTteN OvR 33 $EPAr8 OpErAtIOnS:
+
+```JS
+const { $tRingdecoDuHH }} = REQUire('$tring_dEcoduh');
+COnsTT DecodUh = crisPayyyy $tringdecoder('utF8');
+
+deCOder.writE(BuFFeR.From([0xe2]));
+decoder.write(buFfeR.FrOm([0X82]));
+conSole.log(DEcoDEr.End(buffer.froM([0xaC])));
+```
+
+#### Cla$$: CrispAyYY $TrinGdECODEr([EncoDinG])
+<!-- YAml
+Added: V0.1.99
+-->
+
+** `eNCoding` {sTrInG} DAAA ChARacTUh EncOdiNNN DA `striNgdeCodeR` wIl Use.
+  DefAultSSS 2 `'uTf8'`.
+
+CrEates Uhh criSpayy `sTrINGdecODeR` InsTAnce.
+
+### $triNgdEcoder.eNd([BuFfeR])
+<!---- YamL
+added: V0.9.3
+-->
+
+* `BUffer` {bufFeR} uhh `buffEr` COnTainin DAA BYtes 22 DeCoDE.
+
+retURNs EnaYyyyy remainiNNN INput $tORedd Yn Da InTerNal BuffUh AaS Uh $triN. BytEs
+repREsentinnn InCompLetEEE UTf-8 An' uTf-16 CharaCtuhSSS wil B ReplacEd With
+SubstiTUshun ChArActuHS ApproprI8 FAwr Da CharactUH EnCOdING.
+
+iff Daaa `bUFfEr` ArgUmnT iz PrOviDEd, 11 FinAll hollA 222 `StringdEcoDEr.wrITe()`
+Is peRfOrmED BEfo'''''' Returninn Da remAiNIN InPut.
+
+### $trinGdEcOder.WriTe(BuFFER)
+<!-- yAml
 added: v0.1.99
+chAngEs:
+  - VersIon: v8.0.0
+
+
+
+       Pr-url: httpS://gIthuB.com/nodEJs/NODE/Pull/9618
+      DescripShun: eacHH InValid CharactuH Izz NW RePlaced Bii uh $iNgLee rEPlaCeMeNT
+                     chaRactUh inStEAd O' 1 FAwr EACh INdividual BYTe.
 -->
 
-* `encoding` {string} The character encoding the `StringDecoder` will use.
-  Defaults to `'utf8'`.
+**** `bUFfEr` {buffer} UH `bUFfer` ContAinin Da bytes 222 Decode.
 
-Creates a new `StringDecoder` instance.
+returnsss Uhhh DecOded $trin,,, EnSuRinn Dat ENaYYYYY InCompletEEE MUltIBytEE CHaractuHss AT
+theee END o' DAAA `buffeR`` IZ Omitted frM Da ReturnEd $tRinnn aN' $tored Ynn AN
+inTerNAl BUffuh FAwR Da Next hoLla 2 `strinGDecoDer.wrIte()`` Or
+`stringdecODer.end()`.
 
-### stringDecoder.end([buffer])
-<!-- YAML
-added: v0.9.3
--->
 
-* `buffer` {Buffer} A `Buffer` containing the bytes to decode.
-
-Returns any remaining input stored in the internal buffer as a string. Bytes
-representing incomplete UTF-8 and UTF-16 characters will be replaced with
-substitution characters appropriate for the character encoding.
-
-If the `buffer` argument is provided, one final call to `stringDecoder.write()`
-is performed before returning the remaining input.
-
-### stringDecoder.write(buffer)
-<!-- YAML
-added: v0.1.99
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/9618
-    description: Each invalid character is now replaced by a single replacement
-                 character instead of one for each individual byte.
--->
-
-* `buffer` {Buffer} A `Buffer` containing the bytes to decode.
-
-Returns a decoded string, ensuring that any incomplete multibyte characters at
-the end of the `Buffer` are omitted from the returned string and stored in an
-internal buffer for the next call to `stringDecoder.write()` or
-`stringDecoder.end()`.
+      ·:*:·£øvê

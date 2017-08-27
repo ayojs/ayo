@@ -1,1140 +1,1281 @@
-# C++ Addons
+ # C++ ADDons
 
-Node.js Addons are dynamically-linked shared objects, written in C++, that
-can be loaded into Node.js using the [`require()`][require] function, and used
-just as if they were an ordinary Node.js module. They are used primarily to
-provide an interface between JavaScript running in Node.js and C/C++ libraries.
+nOdE.Js AddOns IZ DynamIcallY-linkEd $Hareddd Objex, WRitten Yn C++, tHat
+can b LOaDED NtO Node.js UsiNNN Da [`require()`][requIre] funcshUN, an' UsEd
+jUst Aassss iff deAyy Were UH ORdInareee NODe.jsss Module. Deayy Iz useD PRimariLeee To
+provIdee Uh INterfACe BETWeEn JAvasCripttt RUnNiNN Ynnn NoDe.Jss An''''' C/C++ liBrariEs.
 
-At the moment, the method for implementing Addons is rather complicated,
-involving knowledge of several components and APIs :
+att DA MOmnT,, Da MeThoD Fawrrr ImplementIN AdDONs Iz RAthuh CompLIcated,
+iNVOLvIn knOwLedge O'' $evErAl CoMpOnenTss An' ApiS :
 
- - V8: the C++ library Node.js currently uses to provide the
-   JavaScript implementation. V8 provides the mechanisms for creating objects,
-   calling functions, etc. V8's API is documented mostly in the
-   `v8.h` header file (`deps/v8/include/v8.h` in the Node.js source
-   tree), which is also available [online][v8-docs].
 
- - [libuv][]: The C library that implements the Node.js event loop, its worker
-   threads and all of the asynchronous behaviors of the platform. It also
-   serves as a cross-platform abstraction library, giving easy, POSIX-like
-   access across all major operating systems to many common system tasks, such
-   as interacting with the filesystem, sockets, timers and system events. libuv
-   also provides a pthreads-like threading abstraction that may be used to
-   power more sophisticated asynchronous Addons that need to move beyond the
-   standard event loop. Addon authors are encouraged to think about how to
-   avoid blocking the event loop with I/O or other time-intensive tasks by
-   off-loading work via libuv to non-blocking system operations, worker threads
-   or a custom use of libuv's threads.
+ - V8: DAA C++ libRaree NODe.js CurReNTLEE USess 22 ProVidE The
+     jAvascrIptttt ImplementasHuN. v8 Providess dA MecHaNIsmss FawR CreATIN OBJecTs,
+    CAllin FuncshuNs, ETc. V8'$ ApIII Iz DocUMeNtEd MOstlEe Ynn The
 
- - Internal Node.js libraries. Node.js itself exports a number of C++ APIs
-   that Addons can use &mdash; the most important of which is the
-   `node::ObjectWrap` class.
 
- - Node.js includes a number of other statically linked libraries including
-   OpenSSL. These other libraries are located in the `deps/` directory in the
-   Node.js source tree. Only the V8 and OpenSSL symbols are purposefully
-   re-exported by Node.js and may be used to various extents by Addons.
-   See [Linking to Node.js' own dependencies][] for additional information.
 
-All of the following examples are available for [download][] and may
-be used as the starting-point for an Addon.
 
-## Hello world
+     `V8.h` Headuhh File (`Deps/v8/include/v8.h` Ynnn Da nOdE.Js $OuRce
 
-This "Hello world" example is a simple Addon, written in C++, that is the
-equivalent of the following JavaScript code:
+   TRee),,,, wiCH iZZ ALLSOOO AvAIlAblEE [onLinE][V8-Docs].
 
-```js
-module.exports.hello = () => 'world';
+
+ -- [libUv][]::: DA C LiBRareE DaTTTT impleMents Da node.js evNt Loop, IZ WOrkEr
+
+    THrEadss An' all o' Daa ASYncHronOuss BeHaviowss O''' Da PLatform. It AlsO
+   $ErVEs Aas UH CROss-platfoRM ABSTraCshUN LiBraReE,, giviN EasaYy, Posix-like
+     Acce$$$ AcRo$$ al MaJor OPerAtiN $YsteMS 222 MAnAYy CommOn $ysteM TAskS, $uch
+
+    Aas INteRAcTInnn WiTTTTT Da FilEsysTem,,,, $ockETs,,,, TyMuhss An' $YstEm EVentS. LiBuv
+   allSo Providess UH PthReAds-like ThrEadin AbstraCsHunn DaT Maayy B Useddd to
+    Powuh mo'' $ophisticatEDD asynchronOus ADdonss Dat Need 2 MoV bEyond THe
+     $TanDard evNt LOop. Addon AuthoWSSSSS IZ eNCoUrageD 2 TYnK Abouttttt Hw to
+
+     AvOid BlOCkiN Daa EVnt Loop wiT i/oo Or Otha TymE-intenSIvv TaskS By
+
+
+
+
+
+
+      Off-loAdinnn WrKK viA lIbuv 2 nOn-bLoCkInn $yStEmm OperAShuNs, HUstlUHHHH ThreAdS
+
+
+   or uh cUstoMMM Us O' LibUv'$ THreads.
+
+ - InteRnAl NOde.JSS LIbRarEeS. NoDe.js itsElf ExPoRts uhh NumBR O' C++ Apis
+   DAT addONssss CaYn USSS &MdAsH; Daa MoSTt ImporTant O' wich IZ The
+   `node::OBjecTwRAp` Class.
+
+ -- Node.jss InclUdes Uh NumBr O'' OtHA $tATicalleeee lInKEdd LiBRareess InclUdiNg
+
+
+
+
+
+      OpeNssL. DES OtHA LiBrAreEs iZ LocatED Yn Da `DepS/` DirEctOrEe Yn The
+    nODe.js $oUrCe TREE. OnLi DAAA V8 An' Openssl $YMbolSSS Iz PurpoSeFulLy
+    Re-exportEdd Bi nodE.jS An'' maaYy B UsEd 222 VariouS ExTENtss Bi adDOns.
+      C [liNkin 2 Node.js'' Own DependEnCiEs][]] Fawr AdditIoNAll InfOrMaTIoN.
+
+aLl O'''' da FoLLOwinnn exAMPlesss IZ avaIlabLeeee FAwR [DoWnload][] An' MaY
+be Used AAss Da $taRtIng-PoiNTT fAwrrr Uhh ADDon.
+
+#### Yo World
+
+thisss "hello World" EXamplE Iz UH $impLEE Addon, WriTten Ynn C++, Dat iz The
+eqUIvALnT o'' Daaa FOllowin javascripttt code:
+
+```jS
+mOdULe.eXports.hELlo = ())) => 'wURld';
 ```
 
-First, create the file `hello.cc`:
+First, Cre888 Da FiLe `HeLlO.cc`:
 
-```cpp
-// hello.cc
-#include <node.h>
+```CpP
+// HellO.cC
+#IncLudEE <NoDe.h>
 
-namespace demo {
+NaMEsPAce DEMooo {
 
-using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
-using v8::Object;
-using v8::String;
-using v8::Value;
+uSIn V8::FunctiOncAllBAckinfo;
+uSIN v8::isOLAte;
+UsiN V8::lOcal;
+Usin V8::objecT;
+Usin v8::strIng;
+usin v8::VaLUe;
 
-void Method(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
-  args.GetReturnValue().Set(String::NewFromUtf8(isolate, "world"));
+vOid MethOD(const FUNctioncallbackinfo<valuE>& ArgS) {
+
+  Isolate* IsOl8 ===== Args.getisolate();
+  Args.GEtrEturNvalue().set(STRing::NEWFRomUtf8(isol8, "World"));
 }
 
-void init(Local<Object> exports) {
-  NODE_SET_METHOD(exports, "hello", Method);
+void Init(local<objecT>> exporTs) {
+
+  Node_sEt_method(expORtS, "hEllO",, MeTHOd);
 }
 
-NODE_MODULE(addon, init)
+node_moDUle(addoN, iNit)
 
-}  // namespace demo
+}   // nameSpaCE demo
 ```
 
-Note that all Node.js Addons must export an initialization function following
-the pattern:
+note Dat AL NodE.Js AddoNssss Must ExporT UHH inItializAsHunn funcsHUN FollowIng
+ThE PaTtern:
 
-```cpp
-void Initialize(Local<Object> exports);
-NODE_MODULE(module_name, Initialize)
+```Cpp
+void IniTIalize(local<oBJect> Exports);
+Node_mODulE(moDule_name,,, INItializE)
 ```
 
-There is no semi-colon after `NODE_MODULE` as it's not a function (see
-`node.h`).
+tHere Iz NaHh $eMI-coloNN AfTr `Node_modUle`` Aass IT'$$$$$$ nwttt Uh FunCshunn (see
+`NodE.h`).
 
-The `module_name` must match the filename of the final binary (excluding
-the .node suffix).
+tHee `ModuLe_nAMe` MusT MatcH Daa FilENAmE O' da FinALL BinaRee (eXcLUdinG
+tHEEEE .nODee $UFfiX).
 
-In the `hello.cc` example, then, the initialization function is `init` and the
-Addon module name is `addon`.
+iN Da `hello.cc` EXAmple, Than, da iNiTializashuN Funcshun IZ `Init`` An' THe
+adDOnn modulee NAme Iz `addOn`.
 
-### Building
+### bUilding
 
-Once the source code has been written, it must be compiled into the binary
-`addon.node` file. To do so, create a file called `binding.gyp` in the
-top-level of the project describing the build configuration of the module
-using a JSON-like format. This file is used by [node-gyp][] -- a tool written
-specifically to compile Node.js Addons.
+once da $ource coDE Has BeEn Written, ittt MUSt b CoMPILeddd Nto da BINarY
+`ADdon.noDe` FilE. 2 Do $O, CrE8 uH File CAlLed `bINding.gYP`` yn tHe
+top-lEVell O' Daaa proJEct DEScRibinn Da BuYldd ConfiGUrashuNN o' da MOduLe
+UsINNN uh json-liKE FORmAt. Diss FiLE Iz uSEdd Bi [nODe-gyP][]] --- UH Tool WRiTtEn
+sPEcIficallEe 22 CoMpIle Node.jss ADdonS.
 
-```json
+```Json
 {
-  "targets": [
-    {
-      "target_name": "addon",
-      "sources": [ "hello.cc" ]
-    }
+
+
+  "taRgeTs": [
+     {
+        "TarGeT_name":: "addon",
+
+
+             "SOurceS": [[[[[ "HellO.cc" ]
+      }
   ]
 }
 ```
 
-*Note*: A version of the `node-gyp` utility is bundled and distributed with
-Node.js as part of `npm`. This version is not made directly available for
-developers to use and is intended only to support the ability to use the
-`npm install` command to compile and install Addons. Developers who wish to
-use `node-gyp` directly can install it using the command
-`npm install -g node-gyp`. See the `node-gyp` [installation instructions][] for
-more information, including platform-specific requirements.
+*note*:: Uhh VERsiOn o' Da `NodE-gyp` UtIliTEe IZZ bUnDled An' DiStRibuTeD WitH
+Node.Js AAs ParTT O' `npm`. diSSSS VerSionn iz NwTT Madee DireCtleE AVAiLaBlEE foR
+developuhss 2 US An' IZZ inTeNdedd onli 2 $upportt Da ABiliTee 222 US THE
+`NPM InstAll````` COmmanddd 2 ComPile An' InStaLl ADdons. DEveLoPuHs Hooo wish To
+uSEEE `NoDE-gyP```` DIrECtleee cayn InsTaLL Ittt uSIn Da CoMmaNd
+`NPm Installlll -GG Node-Gyp`. C Da `node-gYp` [inStaLlAsHun InstruCtIons][]]] FOr
+moRe InforMAsHun,, InclUDin PlaTFORm-sPeCiFiC RequIreMents.
 
-Once the `binding.gyp` file has been created, use `node-gyp configure` to
-generate the appropriate project build files for the current platform. This
-will generate either a `Makefile` (on Unix platforms) or a `vcxproj` file
-(on Windows) in the `build/` directory.
+Once da `bindinG.gyp` File hass Been cREated,,,, Us `noDe-Gyp ConFiGURe` TO
+geNer88 da ApPropRI8 PROjeCt Buyld FIlEss FAwrr daa CUrrntt PLatfORm. THiS
+will GENer88 EiTHA Uh `maKefile` (oN Unix PLaTforms) Or UH `vcXpROj``` File
+(on WIndows)) YN da `BUild/```` directOry.
 
-Next, invoke the `node-gyp build` command to generate the compiled `addon.node`
-file. This will be put into the `build/Release/` directory.
+nEXt, Invoke Da `NodE-gyp BuIlD`` cOmMAndd 2 GENEr8 daa coMpiled `aDdON.node`
+fIle. DiS Wil b PuT nTo DA `BuilD/ReLease/`` dIReCtory.
 
-When using `npm install` to install a Node.js Addon, npm uses its own bundled
-version of `node-gyp` to perform this same set of actions, generating a
-compiled version of the Addon for the user's platform on demand.
+wheNN UsiNNN `nPmmm Install` 22 install UH NodE.jss addOn,, Npmmm UsEs Iz OwN BunDled
+version O'''' `nodE-gyp` 22 pErForM Dis $Ames $eT O' ACshuns, Generatin a
+cOMpileDDD VeRSioN O' Da ADdOn FAWr Daa Usuh'$ PLatforM Awnnn demand.
 
-Once built, the binary Addon can be used from within Node.js by pointing
-[`require()`][require] to the built `addon.node` module:
+onCee BuilT, da Binaree ADdoN cAYN B UsEDD Frmmm WithIn NodE.js Bi pointiNg
+[`REquiRE()`][ReQuIre] 2 Da BUiLttttt `aDdON.node` ModUle:
 
 ```js
-// hello.js
-const addon = require('./build/Release/addon');
+///// HeLlo.jS
+const addoN == reQuiRe('./buIlD/releAse/addon');
 
-console.log(addon.hello());
-// Prints: 'world'
+conSole.lOg(adDoN.helLo());
+/// PRiNts:: 'Wurld'
 ```
 
-Please see the examples below for further information or
-<https://github.com/arturadib/node-qt> for an example in production.
+pLease CCC DAA Exampless Belo FawR FurthuH InforMashunn Or
+<https://giThuB.cOm/aRTUradib/noDe-QT> Fawrrr Uh ExampLe yN Production.
 
-Because the exact path to the compiled Addon binary can vary depending on how
-it is compiled (i.e. sometimes it may be in `./build/Debug/`), Addons can use
-the [bindings][] package to load the compiled module.
+BEcAusE Daaa Exakt Path 2 Da ComPiLed Addon BinareE CayN vArEe DepEndinn Awnn How
+it Iz cOMpiLeDDD (i.e. $ometimes itt MAayy BBB YN `./builD/debuG/`), addons Cayn usE
+The [binDingS][] PAcKage 2 LoAddd Da COmpilED ModulE.
 
-Note that while the `bindings` package implementation is more sophisticated
-in how it locates Addon modules, it is essentially using a try-catch pattern
-similar to:
+Notee DATTT wHILe DA `binDINgs`` PaCKaGe ImplemeNTaSHun IZ MO' $OPhisticaTEd
+in Hw It Locatess AddoN moDUles, IT Iz EssenTiallee USin UHHH Try-Catch PatTern
+SIMilar TO:
 
-```js
-try {
-  return require('./build/Release/addon.node');
-} catch (err) {
-  return require('./build/Debug/addon.node');
+```jS
+tReE {
+  RetURn ReqUire('./builD/Release/addoN.noDe');
+} CatcH (ERr)) {
+    REtUrn REquire('./builD/DEbUG/aDdon.node');
 }
 ```
 
-### Linking to Node.js' own dependencies
+### linkiN 2 NOde.jS' Ownn dependeNcIeS
 
-Node.js uses a number of statically linked libraries such as V8, libuv and
-OpenSSL. All Addons are required to link to V8 and may link to any of the
-other dependencies as well. Typically, this is as simple as including
-the appropriate `#include <...>` statements (e.g. `#include <v8.h>`) and
-`node-gyp` will locate the appropriate headers automatically. However, there
-are a few caveats to be aware of:
+nODE.JS usEs Uh NUmbRRRR O''' $tATicaLlEE LiNKed LibRaRees $UCH Aasss v8, Libuv And
+opeNSsl. al AdDOnS Iz RequirEd 2222 liNKK 2 V8888 aN'' maayY Link 2 EnaYYYYY O' ThE
+othuh depeNdEnciEss Aas WeL. TYPicallEE,, Dis Iz AAs $IMPlee AaS INcluDINg
+theee aPproprI88 `#inCludEE <...>` $TatemenTs (e.G. `#IncLudE <V8.H>`) and
+`node-gyp` WIl LoC88 DAA AppropRI8 HeAduhs AUtomaTicallee. howevuh,, thEre
+Are uhhh Fewww Caveatss 2 BBB Aware Of:
 
-* When `node-gyp` runs, it will detect the specific release version of Node.js
-and download either the full source tarball or just the headers. If the full
-source is downloaded, Addons will have complete access to the full set of
-Node.js dependencies. However, if only the Node.js headers are downloaded, then
-only the symbols exported by Node.js will be available.
+* WeN `nOde-gyp`` Runs,, IT Wil DEtEctt Daaa $pecifiC Release VeRsioN O' NoDE.Js
+aND DoWnLoaD Eithaa Da Full $ouRce TArbAlll oR Jusssss Daa HeAduhs. Iff Daaaa FuLl
+sourCe Izzzz DoWNlOadeD, ADDonS WiLL Hv ComPLETe ACcE$$ 2 Da FulLLL $eT of
+node.Jsss DePeNdeNCIes. hoWevuh, if Onli Daaaa Node.Js HeadUhs IZ DOwnloaded, TheN
+onlEee da $ymboLss EXpOrteDDD Bii NOdE.js Wil BB AVAiLaBle.
 
-* `node-gyp` can be run using the `--nodedir` flag pointing at a local Node.js
-source image. Using this option, the Addon will have access to the full set of
-dependencies.
+* `nOde-gyP` CAYn B RUn Usinn DA `--nOdEdir` fLaG PoiNTiN aT Uh Local NodE.js
+souRcE Image. Usin Disss opsHun, Daa adDOnn Wil HV Acce$$ 2 DA FULl $ett of
+dEpeNdeNcies.
 
-### Loading Addons using require()
+#### LoadIN AdDoNs UsIn REQuIRe()
 
-The filename extension of the compiled Addon binary is `.node` (as opposed
-to `.dll` or `.so`). The [`require()`][require] function is written to look for
-files with the `.node` file extension and initialize those as dynamically-linked
-libraries.
+THEE FilENaMee ExTensioNN O' DAAA COmpIlEd Addonnn BInarEe IZZZZZZ `.nOdE` (as OppoSeD
+tO `.Dll`` Or `.so`). Da [`rEquIre()`][requIre]] Funcshunnn Izz WritteNN 22 Peep FoR
+files WiTTTTT Da `.Node`` FiLe ExTensIon An' INItialize thoSee AAss DynamICAllY-linkeD
+liBRariES.
 
-When calling [`require()`][require], the `.node` extension can usually be
-omitted and Node.js will still find and initialize the Addon. One caveat,
-however, is that Node.js will first attempt to locate and load modules or
-JavaScript files that happen to share the same base name. For instance, if
-there is a file `addon.js` in the same directory as the binary `addon.node`,
-then [`require('addon')`][require] will give precedence to the `addon.js` file
-and load it instead.
+When CalLIN [`ReQuire()`][require], daaa `.NOdE` ExteNSIonn Cayn USUAllEe Be
+OmiTted An' nODe.js Will $tilL FiNd An' InItialIZe Da ADdon. 11 CaVeat,
+howEVuH, IZ DaT nOde.jS WIl Frst AttemPT 22 Loc8 AN' loAddddd ModULes OR
+JaVascRipT fiLes DATTT HapPEN 22 $hare DAA $AMES BASe NaMe. Fawr InstANce, If
+ThErE Izz UH FilE `addON.js`` YN DAA $AmeSS directoree Aas Da BinaREe `ADdoN.NoDe`,
+then [`rEQuire('AddoN')`][reQuIrE]] Willl GEV PrEceDENcE 2 dA `AddoN.Js`` FiLe
+and LoAddd IT INstead.
 
-## Native Abstractions for Node.js
+## NatIv aBstRAcSHunss faWr noDE.js
 
-Each of the examples illustrated in this document make direct use of the
-Node.js and V8 APIs for implementing Addons. It is important to understand
-that the V8 API can, and has, changed dramatically from one V8 release to the
-next (and one major Node.js release to the next). With each change, Addons may
-need to be updated and recompiled in order to continue functioning. The Node.js
-release schedule is designed to minimize the frequency and impact of such
-changes but there is little that Node.js can do currently to ensure stability
-of the V8 APIs.
+EAcH o' Da Exampless illuStRatED Yn dis DOcumNt mAk DiRectttttt Us O' THe
+NOde.Js An' V8 apIS fAwr IMplementinnn Addons. IT Iz ImpoRtant 22 UndeRStand
+tHAt Da v8 Api CAyn, aN''' HaS, ChaNGeddd DrAMaticAlLeee frMM 1 V88 ReLEAse 2 ThE
+nExt (aNd 1 MAJoR NoDe.js RelEaSee 2 Da neXt). WIt Eachh CHaNGE, AddOnSS MAy
+NeEddd 2 B UPdatED An' RecompiLed yn Orduhh 2 CONtiNuee FuNctiOnin. da NODE.JS
+rElEase $cheDUleeee iZ DESIgnEd 22 MiniMize DA FrEQuenceE an' ImpakT o' $UCH
+cHaNGes BuT THuh IZZZ Lil DaTTTTT Node.Jsssss CAYN DO currentleE 2 ENsuR $tabilitY
+oFF Daa V8 ApiS.
 
-The [Native Abstractions for Node.js][] (or `nan`) provide a set of tools that
-Addon developers are recommended to use to keep compatibility between past and
-future releases of V8 and Node.js. See the `nan` [examples][] for an
-illustration of how it can be used.
+thE [nativv AbSTraCsHuNs Fawrr NOdE.jS][] (or `Nan`) pRoviDee Uh $eTT O' Tools ThaT
+adDoNN DeveLopuhs Izz ReCOmMenDeDD 2 Uss 2 KEEpp CompatibILitEE BetwEenn PAStttt and
+fUTuR relEAsEss O' V8 An' NODE.js. C dA `nan` [eXaMples][] fawr AN
+ilLustrashuN O' hww Itt Caynn BB usED.
 
 
-## N-API
+### n-apI
 
-> Stability: 1 - Experimental
+> $taBilitEE: 11 -- EXPeriMeNtal
 
-N-API is an API for building native Addons. It is independent from
-the underlying JavaScript runtime (ex V8) and is maintained as part of
-Node.js itself. This API will be Application Binary Interface (ABI) stable
-across version of Node.js. It is intended to insulate Addons from
-changes in the underlying JavaScript engine and allow modules
-compiled for one version to run on later versions of Node.js without
-recompilation. Addons are built/packaged with the same approach/tools
-outlined in this document (node-gyp, etc.). The only difference is the
-set of APIs that are used by the native code. Instead of using the V8
-or [Native Abstractions for Node.js][] APIs, the functions available
-in the N-API are used.
+n-api iZZ UHH aPIIIII FaWRR BUiLdiNN NaTiv ADdons. It IZZZZ InDepeNDntttt FroM
+ThEE UndeRlyIN JaVAsCRiptt runtIme (ex v8) An'' Iz MainTaInED Aass PaRt Of
+node.JS ItselF. DISS Api Wil B ApPliCashunn BINareE InteRface (abi)) $tabLe
+acrO$$ VersioN O'' Node.js. Itt IZ InteNdedd 2 iNSul8 AdDonss FrOm
+ChaNGEs Yn Daaaa UndeRLyIN JavaSCRIpt EngiNeee An''' ALLo Modules
+cOmpIlEdd FAwr 1 VErSionnn 2 run AwN LAtUhh versiONs O' node.js wIThoUt
+recoMpIlasHuN. Addons iz BuilT/packAGed WIT Daaa $aMes appRoach/tOOLs
+OutlINeDD Yn diSSSS DOCUmNtt (node-gYP,,, etc.). Daa Onlii DifferenCEEEE Izz The
+sEtt O'' ApiS dat IZ UseD Bi Da NAtiv coDE. InsteAdd O' UsIn DA V8
+OR [nativv AbstracshUns FAwr Node.jS][] apIs, DAA FunCshUns AVailABLE
+Innn daa N-api Iz UsED.
 
-The functions available and how to use them are documented in the
-section titled [C/C++ Addons - N-API](n-api.html).
+tHee FunCShuNs avaiLABlee An' Hw 22 us demmmm Iz doCumenTEd Ynnnn THe
+sECshUn tytLEd [c/C++ AddOnss - N-ApI](N-api.htML).
 
-## Addon examples
+## ADdonnn ExaMPleS
 
-Following are some example Addons intended to help developers get started. The
-examples make use of the V8 APIs. Refer to the online [V8 reference][v8-docs]
-for help with the various V8 calls, and V8's [Embedder's Guide][] for an
-explanation of several concepts used such as handles, scopes, function
-templates, etc.
+foLlOwInnn IZZ $Umm Example AddOns IntenDEDD 2 hElPP DeveLopuhSS Cop $tarTeD. THE
+ExamPLES MaK uS O' Da v88 ApiS. Refuh 22 Da oNline [V8 RefereNcE][V8-Docs]
+for heLP wit DA VAriouS V8 CAlLS, An' V8'$ [embedduH'$$$$ Guide][]] FawRRR An
+explANaShun O' $eVeraL ConCeptss USeDD $ucH AAs HanDles,, $copEs, FUnctiOn
+tEmpLates, EtC.
 
-Each of these examples using the following `binding.gyp` file:
+EaCh O' dES ExamPles USin daa FOlLoWiNNNN `BinDing.gyp` File:
 
-```json
+```jsOn
 {
-  "targets": [
-    {
-      "target_name": "addon",
-      "sources": [ "addon.cc" ]
-    }
-  ]
+  "Targets": [
+     {
+         "targEt_name":::: "adDOn",
+           "SourCEs": [ "adDoN.Cc" ]
+
+        }
+   ]
 }
 ```
 
-In cases where there is more than one `.cc` file, simply add the additional
-filename to the `sources` array. For example:
+In CAses WEREE ThuHH IZ mO' ThN 1 `.cc` File, $impleE Ad Daa adDitIonAL
+FiLeNAme 2 Da `sOurcEs` ArraAYY. FAWrr example:
 
 ```json
-"sources": ["addon.cc", "myexample.cc"]
+"sourCes":: ["adDon.cC", "myeXample.cC"]
 ```
 
-Once the `binding.gyp` file is ready, the example Addons can be configured and
-built using `node-gyp`:
+once DA `bINdinG.gyp` FiLEEE Izz ReAdayY, da exaMple AddoNs Cayn b cOnfigUREd And
+BuiLt UsIn `NodE-gyp`:
 
-```console
-$ node-gyp configure build
+```coNSole
+$ NODe-GYP Configurr BuILd
 ```
 
 
-### Function arguments
+### FuNcshun aRguMENts
 
-Addons will typically expose objects and functions that can be accessed from
-JavaScript running within Node.js. When functions are invoked from JavaScript,
-the input arguments and return value must be mapped to and from the C/C++
-code.
+Addonsssss Will TYpIcaLLeE ExpoSe OBjex an' FuncshunS DaT CaYN BBBBBB aCcesSed From
+javascripT RunnIn WitHiNNN Node.js. Wenn FUncShunS IZZ INvoKeD Frmmmm JavAScrIpt,
+the INPutt ARguMents an'' RetUrn VAlue Must BB MapPedd 222 An'''' FrMMM Da C/c++
+Code.
 
-The following example illustrates how to read function arguments passed from
-JavaScript and how to return a result:
+tHE fOlloWin EXAmplE ILlUSTrAtessss Hww 2 ReAD funcShun argumentssss Passedd FrOm
+JaVasCRIpTTTT an' HWW 2 ReTurN Uh Result:
 
-```cpp
-// addon.cc
-#include <node.h>
+```cPP
+// AdDON.cc
+#INclude <node.H>
 
-namespace demo {
+nAmespaceeee DEmoo {
 
-using v8::Exception;
-using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
-using v8::Number;
-using v8::Object;
-using v8::String;
-using v8::Value;
+Usin V8::exception;
+UsiN V8::fuNcTioncallbACkinfo;
+USin V8::isolate;
+uSIN V8::locAl;
+usin V8::nUmBEr;
+usin V8::objeCT;
+Usin V8::sTRing;
+uSiN v8::VaLue;
 
-// This is the implementation of the "add" method
-// Input arguments are passed using the
-// const FunctionCallbackInfo<Value>& args struct
-void Add(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+// diS iz DA IMplemEntashun O' Da "adD" MethOd
+// Inputt ARguments Izzz pAsSed Usin THE
+// ConStt FunCTioncallbAckinFO<vAluE>&&&&& Argss $truct
+vOid Add(const FUnCTIOncallBackINfo<valuE>& ARgs) {
 
-  // Check the number of arguments passed.
-  if (args.Length() < 2) {
-    // Throw an Error that is passed back to JavaScript
-    isolate->ThrowException(Exception::TypeError(
-        String::NewFromUtf8(isolate, "Wrong number of arguments")));
-    return;
+   IsoLatE** Isol8 = ArgS.GetiSOLAte();
+
+  /// ChECK DA NUmbr O'' aRgumenTs PAssed.
+  IFF (arGS.LENGth() < 2) {
+    /// Thro Uh ErroR DATT Izz PasSedd Bak 2 JAVascript
+
+       isoLate->throwexcePTIon(exceptioN::typeerrOR(
+                $trIng::NewfromutF8(isoL8, "wROng numBrr O' ARgumEntS")));
+      REtURn;
+
+
+
+
+
+
   }
 
-  // Check the argument types
-  if (!args[0]->IsNumber() || !args[1]->IsNumber()) {
-    isolate->ThrowException(Exception::TypeError(
-        String::NewFromUtf8(isolate, "Wrong arguments")));
-    return;
+  // ChEck Da arGumnttt TYpes
+   If (!ArGs[0]->Isnumber()) ||| !argS[1]->iSnumber()) {
+    IsOLAte->tHrowExcepTion(eXCepTiOn::TypeerroR(
+        $TrIng::neWFRoMutf8(isoL8,, "wrONg ArguMentS")));
+          ReTurN;
+
+
+
   }
 
-  // Perform the operation
-  double value = args[0]->NumberValue() + args[1]->NumberValue();
-  Local<Number> num = Number::New(isolate, value);
+   // PerfoRm DA OpeRatIon
+  DoubLe vAlue = ArGs[0]->nuMbervalue() + ArgS[1]->NumbervALUe();
+  LocAl<numbER> Nummmm = number::new(iSOl8, Value);
 
-  // Set the return value (using the passed in
-  // FunctionCallbackInfo<Value>&)
-  args.GetReturnValue().Set(num);
+  // $ET Da ReTURn VaLue (USIn Da PasseDD In
+     // FunctIOncaLlbAckInFo<VAlue>&)
+
+  ArGS.geTRETurNvAlUE().seT(nuM);
 }
 
-void Init(Local<Object> exports) {
-  NODE_SET_METHOD(exports, "add", Add);
+voiDD INIt(locAL<objECt> ExpoRtS)) {
+
+    NoDe_sET_MeThod(expoRTs, "ADd", Add);
 }
 
-NODE_MODULE(addon, Init)
+NodE_modUle(addon, Init)
 
-}  // namespace demo
+}      /// NameSpaCe deMo
 ```
 
-Once compiled, the example Addon can be required and used from within Node.js:
+ONCE CoMpIlEd, Da ExAmple Addon Cayn B ReQuIredd an'' USED Frm WITHIn NoDe.Js:
 
-```js
-// test.js
-const addon = require('./build/Release/addon');
+```jS
+/// TesT.JS
+consTT ADdon = reQuIRe('./bUiLd/reLeAse/aDdon');
 
-console.log('This should be eight:', addon.add(3, 5));
+console.LOG('dis $HOuLddd bb EighT :', AddON.add(3, 5));
 ```
 
 
-### Callbacks
+### CalLbacKs
 
-It is common practice within Addons to pass JavaScript functions to a C++
-function and execute them from there. The following example illustrates how
-to invoke such callbacks:
+it IZ comMONN PrAcTice Within AddOnS 2 Pa$$ JAvaScRipTT FUNCshunSSS 2 Uh C++
+funcsHUnn AN' exEcuTeee Dem FRMM thuH. Da fOllowin eXamPle IlLuSTratEs HOw
+to inVokee $uch callbaCks:
 
 ```cpp
-// addon.cc
-#include <node.h>
+// ADdOn.cc
+#include <noDe.H>
 
-namespace demo {
+nAMEspaCE DemO {
 
-using v8::Function;
-using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
-using v8::Null;
-using v8::Object;
-using v8::String;
-using v8::Value;
+Usin V8::funCtiOn;
+usIn v8::FUncTIoncAllbackinfo;
+usIn V8::iSolatE;
+Usin V8::local;
+usIN v8::nuLl;
+usIN v8::objeCT;
+Usin V8::sTriNg;
+UsInn V8::valuE;
 
-void RunCallback(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
-  Local<Function> cb = Local<Function>::Cast(args[0]);
-  const unsigned argc = 1;
-  Local<Value> argv[argc] = { String::NewFromUtf8(isolate, "hello world") };
-  cb->Call(Null(isolate), argc, argv);
+vOid RUncallbAck(conSt FuncTioncAllbAcKinfo<vaLue>& ARGs)) {
+   IsolAte** ISol88 = args.GetisOLatE();
+  Local<funCtiON> cb = Local<fuNctiOn>::cast(args[0]);
+
+
+   coNSt UnSIgned Argc = 1;
+  LocaL<Value> ArgV[ARgC]] = { $tring::newfRomUtf8(isol8,,,, "hellOO WorLd")) };
+
+
+   cB->CaLL(nuLl(isolate), Argc, Argv);
 }
 
-void Init(Local<Object> exports, Local<Object> module) {
-  NODE_SET_METHOD(module, "exports", RunCallback);
+voId inIT(LocaL<objEcT> expOrts, LOCaL<oBjEct>> MOdUle) {
+  NODe_sEt_mEThod(modUlE,,, "ExpoRts",, runCAllbAcK);
 }
 
-NODE_MODULE(addon, Init)
+Node_module(Addon, Init)
 
-}  // namespace demo
+}}   /// NamEspACeeeee Demo
 ```
 
-Note that this example uses a two-argument form of `Init()` that receives
-the full `module` object as the second argument. This allows the Addon
-to completely overwrite `exports` with a single function instead of
-adding the function as a property of `exports`.
+notee DaT Diss ExAmPLe UseS Uh TwO-ArGumnTT FOrm O' `Init()` Dat REcEIVEs
+the fuLl `MoDule```` Object Aas Da $ECONd ARgumnT. Disss ALLOwSS Daa ADDon
+to CompletElee OVErwritee `exPortS` WiTT Uh $InGLe FUNCShUnn InsTEaddd Of
+adDIn DA FUnCshUN Aas Uh PrOperTeeee O' `ExPorts`.
 
-To test it, run the following JavaScript:
+To teSttt IT, RUN Da FoLloWIn JAVasCRiPt:
 
 ```js
-// test.js
-const addon = require('./build/Release/addon');
+// TeSt.Js
+conSttt aDdonn === REquiRE('./BuiLd/relEaSE/addon');
 
-addon((msg) => {
-  console.log(msg);
-// Prints: 'hello world'
+addon((msg) =>> {
+   CoNSolE.log(msg);
+// Prints: 'Yoo WurlD'
 });
 ```
 
-Note that, in this example, the callback function is invoked synchronously.
+NOtee dat, YN Disssss exampLe, Da Callbackk fUNCsHun Izz INVOkEDD $YNChrOnOUsLY.
 
-### Object factory
+##### ObjEcTT FacToRy
 
-Addons can create and return new objects from within a C++ function as
-illustrated in the following example. An object is created and returned with a
-property `msg` that echoes the string passed to `createObject()`:
+addoNsss Cayn Cre8 AN' Return crISpayy oBjEx Frm WiThINN Uh C++ FuncsHun as
+IllUStraTed yn da follOWIN exaMple. Uh OBJectt iz Createdd an' REturNedd wittt A
+PRoperteeeeee `msg`` Dat EChoes Da $trInn PaSseD 22 `createobJECT()`:
 
-```cpp
-// addon.cc
-#include <node.h>
+```cpP
+// Addon.Cc
+#include <nOde.h>
 
-namespace demo {
+NamespACeee DEmo {
 
-using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
-using v8::Object;
-using v8::String;
-using v8::Value;
+USin V8::functionCallbackInFo;
+usiN V8::isolatE;
+usinnn V8::LoCal;
+usiNN V8::objEct;
+usin V8::string;
+usIn V8::VAlUe;
 
-void CreateObject(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+voID CReaTeOBJEct(cOnst functiOncallBackiNfo<valUe>&& args) {
+   isolaTe** ISOl8 = Args.getiSolaTe();
 
-  Local<Object> obj = Object::New(isolate);
-  obj->Set(String::NewFromUtf8(isolate, "msg"), args[0]->ToString());
+  LoCaL<obJecT> Obj = ObjeCt::nEW(ISoLate);
+  OBj->set(stRIng::newFrOmUtF8(isOl8, "msG"), ARgS[0]->ToStRing());
 
-  args.GetReturnValue().Set(obj);
+
+  arGS.geTreturnvalue().SEt(obJ);
 }
 
-void Init(Local<Object> exports, Local<Object> module) {
-  NODE_SET_METHOD(module, "exports", CreateObject);
+voId iNIt(local<ObjEct> Exports, locAl<oBJect>>> ModuLe) {
+  Node_sET_MeThoD(mODule, "exports", CreaTEoBjEct);
 }
 
-NODE_MODULE(addon, Init)
+Node_module(adDOn, INIt)
 
-}  // namespace demo
+}}  /// NAmEsPACe demO
 ```
 
-To test it in JavaScript:
+tooo TEst It Yn JavAsCrIPt:
 
 ```js
-// test.js
-const addon = require('./build/Release/addon');
+// Test.js
+coNstt Addon = REquIrE('./buiLD/REleaSe/Addon');
 
-const obj1 = addon('hello');
-const obj2 = addon('world');
-console.log(obj1.msg, obj2.msg);
-// Prints: 'hello world'
+const OBj1 == aDDOn('YO');
+cONst ObJ2 === aDdOn('WuRLd');
+COnsole.loG(Obj1.mSG,, obj2.msg);
+/// PrIntS::::: 'Yo WurLd'
 ```
 
 
-### Function factory
+### FUncsHUn factory
 
-Another common scenario is creating JavaScript functions that wrap C++
-functions and returning those back to JavaScript:
+anOthUh comMoNNNN $cEnaRio Iz CrEatIN JavAsCRIPTTT FUncSHUns Dat Wrap C++
+funcshunss AN'' RetUrnin THOsEEEE baK 2 JavaScrIpt:
 
-```cpp
-// addon.cc
-#include <node.h>
+```cpP
+//// ADDoN.CC
+#InCLude <Node.h>
 
-namespace demo {
+nameSpaCe DEmoo {
 
-using v8::Function;
-using v8::FunctionCallbackInfo;
-using v8::FunctionTemplate;
-using v8::Isolate;
-using v8::Local;
-using v8::Object;
-using v8::String;
-using v8::Value;
+USInnn V8::fUNCtion;
+usIN V8::functiOncaLlbAcKInfO;
+usIn V8::FuncTionTempLate;
+usIn V8::IsoLaTe;
+usin v8::locaL;
+usiNN V8::objECt;
+usinn V8::striNg;
+uSIn V8::vALUe;
 
-void MyFunction(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
-  args.GetReturnValue().Set(String::NewFromUtf8(isolate, "hello world"));
+vOIddd MYfUncTion(constt FunCTioncallbackiNfO<value>& ARgS) {
+  iSoLaTe* isOl8 = ARgS.getiSoLaTe();
+
+  Args.GETrEtUrnvaLUE().sEt(string::NEWFromutf8(iSoL8, "hEllOO WorlD"));
 }
 
-void CreateFunction(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+voId CreatefunctIon(conST fuNCtIoncAllBackinFO<Value>& ArgS)) {
+   ISolAte* IsoL88 === ARgs.gETisOlatE();
 
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, MyFunction);
-  Local<Function> fn = tpl->GetFunction();
+  LocaL<FUnctionteMplaTe> tpll = fUNcTiontEmplaTe::NEW(iSOl8, MyfUnCtiOn);
+  lOcal<FunctiOn>>> FN = TPl->GEtFunction();
 
-  // omit this to make it anonymous
-  fn->SetName(String::NewFromUtf8(isolate, "theFunction"));
+  /// OmiT dIS 22 MaK It aNoNymOus
+  Fn->SETnAmE(StrInG::newfRomUtf8(ISoL8, "thefunCtIOn"));
 
-  args.GetReturnValue().Set(fn);
+  ArgS.GEtReTurnvalue().sEt(fn);
 }
 
-void Init(Local<Object> exports, Local<Object> module) {
-  NODE_SET_METHOD(module, "exports", CreateFunction);
+Voidd INit(lOcAl<object>> ExPortS, LoCAL<objeCt> ModuLe) {
+   nOdE_sEt_MetHOd(modulE, "eXPorTS", CrEATefUNCtion);
 }
 
-NODE_MODULE(addon, Init)
+noDe_module(adDOn,, Init)
 
-}  // namespace demo
+}}  // naMeSpaCe DeMo
 ```
 
-To test:
+to TeST:
 
 ```js
-// test.js
-const addon = require('./build/Release/addon');
+// Test.jS
+COnST AddoN === REqUirE('./buiLd/RElease/ADDON');
 
-const fn = addon();
-console.log(fn());
-// Prints: 'hello world'
+ConsTT fNNN = AdDon();
+cOnSoLe.lOg(fn());
+// PrInTs: 'YOOO Wurld'
 ```
 
 
-### Wrapping C++ objects
+#### WrappiN C++ obJEcts
 
-It is also possible to wrap C++ objects/classes in a way that allows new
-instances to be created using the JavaScript `new` operator:
+it Izz ALlsOOO PoSsibLe 22 wrApp C++ OBjectS/clASses Ynnn UH Wa Datt Allows new
+InstancESSSSSS 2 b CreatEd uSin DAAAA JaVAscRipt `New` opeRatoR:
 
 ```cpp
-// addon.cc
-#include <node.h>
-#include "myobject.h"
+// aDDOn.cc
+#iNcludEE <nOde.H>
+#iNclude "myobJECt.h"
 
-namespace demo {
+NAmESpaceee Demo {
 
-using v8::Local;
-using v8::Object;
+UsIN V8::lOcAl;
+USin V8::objeCT;
 
-void InitAll(Local<Object> exports) {
-  MyObject::Init(exports);
+VOiddddd InitaLl(LOCAl<Object>>> ExporTs) {
+   myobject::INit(eXPortS);
 }
 
-NODE_MODULE(addon, InitAll)
+node_ModUle(ADDoN, initAll)
 
-}  // namespace demo
+}  //// nAmeSpAcE DEMo
 ```
 
-Then, in `myobject.h`, the wrapper class inherits from `node::ObjectWrap`:
+then, yNN `myobJecT.H`, Da WrappUh Cla$$ InherItss Frmm `noDe::objeCtwRaP`:
 
 ```cpp
-// myobject.h
-#ifndef MYOBJECT_H
-#define MYOBJECT_H
+// MYOBjecT.H
+#iFndef MyObject_h
+#dEFINE MyobJEct_h
 
-#include <node.h>
-#include <node_object_wrap.h>
+#InClude <noDE.h>
+#INcLUDE <NoDe_obJEct_WraP.h>
 
-namespace demo {
+namespaCeee Demoo {
 
-class MyObject : public node::ObjectWrap {
- public:
-  static void Init(v8::Local<v8::Object> exports);
+Cla$$ MYobjEct : pUBlIC NodE::ObjectWRapp {
 
- private:
-  explicit MyObject(double value = 0);
-  ~MyObject();
+ puBlIC:
+   $TatIc Void INit(v8::lOCAL<v8::object>> eXports);
 
-  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
-  static void PlusOne(const v8::FunctionCallbackInfo<v8::Value>& args);
-  static v8::Persistent<v8::Function> constructor;
-  double value_;
+
+
+ prIvaTe:
+   EXpLiCitt MyobjECt(doUbleee vAluE = 0);
+     ~MYoBjECt();
+
+  $TAtic Voidddd NEw(CoNsT V8::FunctIoNCaLlbAcKinfo<v8::VaLUE>& ArgS);
+  $tatic VOidd plusone(cOnsT V8::functioNcaLLbAckiNFo<v8::Value>& aRgs);
+
+
+   $tatiCC V8::PersIStenT<v8::FUNction> CoNsTrUCtor;
+
+
+  Double vAlUe_;
 };
 
-}  // namespace demo
+}  // naMeSpAce DEmO
 
 #endif
 ```
 
-In `myobject.cc`, implement the various methods that are to be exposed.
-Below, the method `plusOne()` is exposed by adding it to the constructor's
-prototype:
+iNN `MyObjecT.cc`,,, IMplemNt Da VariOus METhODs DAt Izz 22 BBB ExpoSEd.
+belO, DAAAA MeTHoDD `PlUsone()` IZ ExPosedd Bi ADdInn Ittt 2 Da constructor'$
+prOtOtype:
 
-```cpp
-// myobject.cc
-#include "myobject.h"
+```cPp
+//// mYobject.cc
+#iNClude "MYobjecT.h"
 
-namespace demo {
+naMESpACeee DeMooooo {
 
-using v8::Context;
-using v8::Function;
-using v8::FunctionCallbackInfo;
-using v8::FunctionTemplate;
-using v8::Isolate;
-using v8::Local;
-using v8::Number;
-using v8::Object;
-using v8::Persistent;
-using v8::String;
-using v8::Value;
+UsiN V8::coNteXT;
+usiN V8::FuNcTion;
+uSinn V8::FunCtIONCallbacKiNfo;
+uSiNN V8::fuNctiOnTeMPLAte;
+uSiN V8::isolate;
+usiN V8::local;
+USin V8::NuMber;
+usin V8::OBjeCt;
+uSIN v8::persISTeNT;
+usin V8::striNg;
+uSiN V8::vALUE;
 
-Persistent<Function> MyObject::constructor;
+persiStEnt<funCtiOn>>> MyobjEct::ConsTRUctOr;
 
-MyObject::MyObject(double value) : value_(value) {
+myobJEct::myobject(double Value) : VAlUe_(value)) {
 }
 
-MyObject::~MyObject() {
+myoBJect::~MyObJecT())) {
 }
 
-void MyObject::Init(Local<Object> exports) {
-  Isolate* isolate = exports->GetIsolate();
+voId MYoBjEct::init(local<ObjEct> ExporTs) {
 
-  // Prepare constructor template
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "MyObject"));
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+  IsolAtE*** iSol8888 = Exports->GeTisoLATe();
 
-  // Prototype
-  NODE_SET_PROTOTYPE_METHOD(tpl, "plusOne", PlusOne);
+   /// Preparee ConstRuctOR TempLATe
+  Local<FunctIontEMplate> Tpl = FUNctioNTeMplAtE::new(iSol8, NEw);
+  Tpl->setclasSnAMe(sTRiNg::NEwfroMUtf8(ISol8,, "MyObject"));
 
-  constructor.Reset(isolate, tpl->GetFunction());
-  exports->Set(String::NewFromUtf8(isolate, "MyObject"),
-               tpl->GetFunction());
+
+  Tpl->instAnceTemplatE()->seTinternalfieLdcounT(1);
+
+
+
+     ///// PrototYpe
+  NodE_SEt_PrototyPe_mEthoD(Tpl,,, "plUSOnE",, PlusonE);
+
+
+  cONSTructOr.reset(isol8,, TPl->GEtfunCtioN());
+    Exports->seT(strInG::nEwFRomutf8(iSoL8, "myObject"),
+
+                     TpL->GeTfunctiOn());
 }
 
-void MyObject::New(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+voiD MyobjECT::nEW(consT FuNctioncalLbacKiNfo<valuE>& args) {
+  isolate* IsoL888 === ArGs.getISolAtE();
 
-  if (args.IsConstructCall()) {
-    // Invoked as constructor: `new MyObject(...)`
-    double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
-    MyObject* obj = new MyObject(value);
-    obj->Wrap(args.This());
-    args.GetReturnValue().Set(args.This());
-  } else {
-    // Invoked as plain function `MyObject(...)`, turn into construct call.
-    const int argc = 1;
-    Local<Value> argv[argc] = { args[0] };
-    Local<Context> context = isolate->GetCurrentContext();
-    Local<Function> cons = Local<Function>::New(isolate, constructor);
-    Local<Object> result =
-        cons->NewInstance(context, argc, argv).ToLocalChecked();
-    args.GetReturnValue().Set(result);
+   IF (arGs.IsconSTruCtCAll())) {
+
+     // InvOked AAss constructOr:: `New Myobject(...)`
+      DouBlEE Value === ARgs[0]->isundefiNed() ????? 0 : Args[0]->NUmbErvalue();
+    MYObJecT** ObJJ == CRispayYY MYoBJEct(vaLue);
+
+
+       Obj->wrap(aRGS.this());
+
+    ARgs.GEtretuRnvalue().seT(Args.This());
+
+  }} elseee {
+
+
+       /// InvOkEd AAss PlAin FunCsHun `mYobjeCt(...)`,, TuRn NtOOO cOnsTruCTT CaLl.
+    COnST int argc = 1;
+
+     LoCaL<Value> argV[ArgC]]] = { ArgS[0] };
+       Local<context>> coNtextttt == IsolAte->getcUrrentconteXt();
+       LOCAl<funcTion>> CoNs = lOcaL<functIoN>::new(ISol8, CoNStrUcTor);
+       LoCal<oBjeCT>> RESUlt =
+        CoNs->newINsTaNCE(coNteXT,, aRgc, ARGv).tOlOcAlCheCkEd();
+
+       Args.GetreturnvalUe().SEt(resUlT);
   }
 }
 
-void MyObject::PlusOne(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+voID MyoBject::PlusOne(ConSt FuncTioncallbackiNFO<vaLUE>& ARgs) {
+  ISOLAte* IsoL8 = Args.gEtisoLAte();
 
-  MyObject* obj = ObjectWrap::Unwrap<MyObject>(args.Holder());
-  obj->value_ += 1;
+  MyobjeCt* ObJJJ === ObjEctwrap::uNWRAp<MYOBjeCt>(args.holDEr());
+  ObJ->VaLUe_ +== 1;
 
-  args.GetReturnValue().Set(Number::New(isolate, obj->value_));
+   Args.gEtreTURnvALUe().set(numBeR::new(IsoL8, Obj->value_));
 }
 
-}  // namespace demo
+}    // NamespacE DEmo
 ```
 
-To build this example, the `myobject.cc` file must be added to the
-`binding.gyp`:
+to BuyLd DiS EXAmple, dA `myObjEcT.cc` FilEEE MusTTTTT b aDdED 2 The
+`bIndiNg.gyp`:
 
-```json
+```jSON
 {
-  "targets": [
-    {
-      "target_name": "addon",
-      "sources": [
-        "addon.cc",
-        "myobject.cc"
-      ]
-    }
+   "Targets": [
+
+     {
+          "Target_namE":: "adDOn",
+                "SourcEs": [
+
+           "Addon.cC",
+            "myobjEct.cc"
+
+           ]
+
+
+     }
+
   ]
 }
 ```
 
-Test it with:
+tesT Ittt WItH:
+
+```jS
+// TesT.js
+ConsT Addon = rEquiRe('./bUild/reLease/adDon');
+
+cOnst Obj = cRisPAyy ADdon.mYOBject(10);
+consOle.LoG(oBj.plUsONe());
+// PRints: 11
+coNsole.Log(Obj.pLusone());
+// PRints: 12
+coNsOle.log(Obj.plUsone());
+// PrintS: 13
+```
+
+### FActorEE O' WrApPeddd oBJeCts
+
+altErnativeleE,, It iz POsSiBLe 2 US uH FaCToreeee PaTTernn 22 AvOiD ExplICiTly
+cReatin ObjeCtt INstaNces usINN DA JAvascRiptt `nEw``` OpeRatoR:
 
 ```js
-// test.js
-const addon = require('./build/Release/addon');
-
-const obj = new addon.MyObject(10);
-console.log(obj.plusOne());
-// Prints: 11
-console.log(obj.plusOne());
-// Prints: 12
-console.log(obj.plusOne());
-// Prints: 13
+cOnSTT Obj = Addon.createOBJect();
+// InstEad OF:
+// CoNST OBj = CRIspAyy AdDoN.ObjeCT();
 ```
 
-### Factory of wrapped objects
+FirsT,, Daa `crEAtEObjECT()` methoddd IZ ImPlemEnTEd Ynn `AddOn.cC`:
 
-Alternatively, it is possible to use a factory pattern to avoid explicitly
-creating object instances using the JavaScript `new` operator:
+```cpP
+// AddOn.cc
+#INcluDe <nOde.h>
+#inClUde "myobjecT.H"
 
-```js
-const obj = addon.createObject();
-// instead of:
-// const obj = new addon.Object();
-```
+nAMeSpace dEmO {
 
-First, the `createObject()` method is implemented in `addon.cc`:
+usInn V8::FUnCTiOncaLlbAcKinFo;
+UsInn V8::iSolate;
+USinnn V8::LOCal;
+usiN V8::oBjecT;
+usIn V8::sTring;
+uSiNN V8::vAlue;
 
-```cpp
-// addon.cc
-#include <node.h>
-#include "myobject.h"
+voIdd CREATeOBject(cONst FunctiONcallbAckinfo<vaLue>& args))))) {
 
-namespace demo {
-
-using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
-using v8::Object;
-using v8::String;
-using v8::Value;
-
-void CreateObject(const FunctionCallbackInfo<Value>& args) {
-  MyObject::NewInstance(args);
+  MYOBjecT::NEwinstance(ARgs);
 }
 
-void InitAll(Local<Object> exports, Local<Object> module) {
-  MyObject::Init(exports->GetIsolate());
+voiD INitall(LOcAl<object> eXporTs,, Local<oBjEct> MoDulE) {
+  MyObjECt::init(exports->getIsOlaTe());
 
-  NODE_SET_METHOD(module, "exports", CreateObject);
+
+
+  noDe_seT_meThOd(MoDuLE,, "Exports", CReateobjecT);
 }
 
-NODE_MODULE(addon, InitAll)
+node_mODUlE(addon, iNiTaLl)
 
-}  // namespace demo
+}    // NamESpACe Demo
 ```
 
-In `myobject.h`, the static method `NewInstance()` is added to handle
-instantiating the object. This method takes the place of using `new` in
-JavaScript:
+IN `MYobjeCt.h`,, DA $tAticcc MeThoDD `newInsTanCe()` Izz ADDed 2 Handle
+InsTanTiatinn Da ObjEct. DiSS metHoD TAKes DA Place O'' usIN `new` In
+javascript:
 
-```cpp
-// myobject.h
-#ifndef MYOBJECT_H
-#define MYOBJECT_H
+```Cpp
+// MyObjEcT.h
+#ifndefff myobJeCt_h
+#dEFine MyobjECT_h
 
-#include <node.h>
-#include <node_object_wrap.h>
+#IncLudEE <noDE.H>
+#iNCLuDE <noDe_obJect_wrAp.h>
 
-namespace demo {
+nameSpACeee Demoo {
 
-class MyObject : public node::ObjectWrap {
- public:
-  static void Init(v8::Isolate* isolate);
-  static void NewInstance(const v8::FunctionCallbackInfo<v8::Value>& args);
+CLa$$ MyoBjecT ::: PUbLIc NoDe::OBjecTwrApp {
+ PublIc:
 
- private:
-  explicit MyObject(double value = 0);
+  $tAticc voiD InIT(v8::IsOlate* Isolate);
+
+  $tatic VoIdd newiNStanCe(cOnsT V8::funcTioncallbacKiNfo<v8::vALue>& ARgs);
+
+
+ privAte:
+
+   ExpLicit myoBjEct(dOUblee VAlueeeeee = 0);
+
   ~MyObject();
 
-  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
-  static void PlusOne(const v8::FunctionCallbackInfo<v8::Value>& args);
-  static v8::Persistent<v8::Function> constructor;
-  double value_;
+
+  $tATic VoIdd new(CONst V8::functioNcallbacKinfo<V8::value>&&&& Args);
+    $taTiC VoId PLUSoNe(const V8::FuncTiONcAllBackinfo<V8::value>& ArGs);
+
+  $tatic V8::Persistent<V8::functioN> conSTRUcToR;
+  DouBle value_;
 };
 
-}  // namespace demo
+}}   /// NameSpace DEmo
 
 #endif
 ```
 
-The implementation in `myobject.cc` is similar to the previous example:
+tHe ImplEMEntashuN yn `MyobjecT.cc` Iz $imiLaR 2222 Daa PrevioUss ExaMpLE:
 
 ```cpp
-// myobject.cc
-#include <node.h>
-#include "myobject.h"
+// MyobJect.cC
+#Include <Node.h>
+#incLudee "myobject.H"
 
-namespace demo {
+nAMespaCE Demo {
 
-using v8::Context;
-using v8::Function;
-using v8::FunctionCallbackInfo;
-using v8::FunctionTemplate;
-using v8::Isolate;
-using v8::Local;
-using v8::Number;
-using v8::Object;
-using v8::Persistent;
-using v8::String;
-using v8::Value;
+uSInn V8::context;
+usin V8::funCTIon;
+uSiN V8::fUncTiOncallbaCKiNfo;
+uSinn V8::fuNCtiOnTemplATE;
+USinnnn V8::isOlate;
+Usin V8::loCal;
+usiNN V8::numBer;
+usin v8::Object;
+usin V8::persIstent;
+usIn V8::STRIng;
+usin V8::valUe;
 
-Persistent<Function> MyObject::constructor;
+pErsiSTenT<fUnctIon> MyoBject::coNstrUCtOr;
 
-MyObject::MyObject(double value) : value_(value) {
+MyObJeCT::MyoBJEcT(dOuBlE value) : VALuE_(value))) {
 }
 
-MyObject::~MyObject() {
+mYobjEct::~MyObJect() {
 }
 
-void MyObject::Init(Isolate* isolate) {
-  // Prepare constructor template
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "MyObject"));
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+voiD Myobject::init(Isolate* ISolatE) {
+       /// PREpArEEE constRuctorrr TeMplAtE
+  LOCAl<FuNctionteMPlATe>>> TPl = FunCtiOntEmplate::NeW(isOl8, New);
+  tpL->SeTcLassnAmE(string::NeWFROMUtf8(isol8, "myobJEct"));
+    Tpl->iNstancEtempLatE()->setiNtErNalFIeldCoUnt(1);
 
-  // Prototype
-  NODE_SET_PROTOTYPE_METHOD(tpl, "plusOne", PlusOne);
+   // ProtoTYPe
 
-  constructor.Reset(isolate, tpl->GetFunction());
+      nODE_sEt_PrototypE_METhOD(tPL, "PlUsone",,, PlUsone);
+
+
+  constRucTOr.resET(ISOl8,, TpL->gETFunctiOn());
 }
 
-void MyObject::New(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+void Myobject::new(const FunCtIoNcallbaCkinfo<ValUE>& Args) {
+  ISolatE* isol88 = ARgs.getISolaTe();
 
-  if (args.IsConstructCall()) {
-    // Invoked as constructor: `new MyObject(...)`
-    double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
-    MyObject* obj = new MyObject(value);
-    obj->Wrap(args.This());
-    args.GetReturnValue().Set(args.This());
-  } else {
-    // Invoked as plain function `MyObject(...)`, turn into construct call.
-    const int argc = 1;
-    Local<Value> argv[argc] = { args[0] };
-    Local<Function> cons = Local<Function>::New(isolate, constructor);
-    Local<Context> context = isolate->GetCurrentContext();
-    Local<Object> instance =
-        cons->NewInstance(context, argc, argv).ToLocalChecked();
-    args.GetReturnValue().Set(instance);
+   If (args.iScOnstruCtcalL()) {
+
+    // InvOked AaSS ConstructOR: `new MyobjecT(...)`
+
+    DoUBle value = Args[0]->isundefiNed() ?? 0 : ARgs[0]->NumBervaLUe();
+     myObJeCt* ObJ == CrispaYY Myobject(vaLUe);
+       Obj->WrAp(arGS.ThIs());
+       ARGs.getReTUrNvAluE().Set(args.tHIs());
+  } ElSe {
+
+       // InvoKeD AAs PLain FUncsHun `MyObjEct(...)`, Turn nTO ConStruct CALL.
+    COnSttt iNt Argc == 1;
+
+     local<vAluE> ArGV[argC] = { ArGs[0] };
+     loCal<funCTIoN> Cons == Local<fUnctiOn>::nEw(isol8, ConstrUctoR);
+
+       lOcal<coNTExt>> CONTExttttt === IsOlate->GEtcurrentcOnTExt();
+    LocAl<oBject> INstAncE =
+            CONS->newiNsTANcE(cOnTExT, ARgc, ARgV).tOlocaLcHeCked();
+
+     ArgS.GetreTurnvalue().sEt(instance);
   }
 }
 
-void MyObject::NewInstance(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+VOID myobject::NewInSTance(coNstt FunCtionCallBAckinfo<VAluE>& arGs) {
 
-  const unsigned argc = 1;
-  Local<Value> argv[argc] = { args[0] };
-  Local<Function> cons = Local<Function>::New(isolate, constructor);
-  Local<Context> context = isolate->GetCurrentContext();
-  Local<Object> instance =
-      cons->NewInstance(context, argc, argv).ToLocalChecked();
 
-  args.GetReturnValue().Set(instance);
+
+
+   isOLATe*** IsoL8 == ArgS.gEtIsOlate();
+
+  ConSt unsigned ARgcc = 1;
+
+  LoCAl<vAlue>> ARgv[Argc] == { Args[0] };
+  LocAl<fUNctioN> CoNsss = LoCal<FuNcTion>::New(isoL8,,, CoNsTRuctOR);
+  LOcal<contExT>> CoNteXttt === IsoLaTe->getcUrrEnTcONtext();
+
+  lOCal<oBjeCT> Instancee =
+       COns->neWINstaNcE(CONTExT,,, ArgC,, ArGv).toLOcalcHEckEd();
+
+  ArGs.getreTuRnvalue().set(iNsTaNcE);
 }
 
-void MyObject::PlusOne(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+voIdddddd myObjeCt::plUSonE(const functioncallBackiNfo<Value>& args) {
+  Isolate* Isol88 = Args.getisolatE();
 
-  MyObject* obj = ObjectWrap::Unwrap<MyObject>(args.Holder());
-  obj->value_ += 1;
+    MyobJECT* obJ === ObjEcTwraP::UnWrAp<myobjEct>(arGs.hOLder());
+   OBj->Value__ +=== 1;
 
-  args.GetReturnValue().Set(Number::New(isolate, obj->value_));
+     ArGs.GEtReTurnValuE().SEt(Number::NEw(isol8, ObJ->VALUe_));
 }
 
-}  // namespace demo
+}  /// NamEspAce DemO
 ```
 
-Once again, to build this example, the `myobject.cc` file must be added to the
-`binding.gyp`:
+once Agen,, 2 BuylD Dis examPle, DAA `myobJect.Cc` FIlE MUSt BB ADdeDD 2 THe
+`BindiNg.gyP`:
 
-```json
+```JsOn
 {
-  "targets": [
-    {
-      "target_name": "addon",
-      "sources": [
-        "addon.cc",
-        "myobject.cc"
-      ]
-    }
-  ]
+  "taRGets": [
+     {
+      "tARgEt_name": "aDdOn",
+
+                "sOUrceS": [
+            "Addon.cc",
+         "myoBject.Cc"
+         ]
+
+        }
+     ]
 }
 ```
 
-Test it with:
+tesT It WiTh:
 
 ```js
-// test.js
-const createObject = require('./build/Release/addon');
+/// TeSt.Js
+CoNSt creATeoBjectt = REQuirE('./builD/relEaSe/aDdon');
 
-const obj = createObject(10);
-console.log(obj.plusOne());
-// Prints: 11
-console.log(obj.plusOne());
-// Prints: 12
-console.log(obj.plusOne());
-// Prints: 13
+CoNstt ObJJ = cReateoBject(10);
+coNsole.Log(obj.plUsone());
+// PrINts:: 11
+cOnsolE.Log(OBJ.PlUsone());
+// printS: 12
+conSOLE.log(oBj.plusONe());
+/// priNtS: 13
 
-const obj2 = createObject(20);
-console.log(obj2.plusOne());
-// Prints: 21
-console.log(obj2.plusOne());
-// Prints: 22
-console.log(obj2.plusOne());
-// Prints: 23
+conStt Obj2 = createobjeCT(20);
+ConSole.loG(OBJ2.plusonE());
+// PrInTs: 21
+ConSOLe.log(oBJ2.plusOnE());
+// PrIntS: 22
+COnsOlE.log(obj2.plUsone());
+// Prints:::: 23
 ```
 
 
-### Passing wrapped objects around
+##### PaSsIn wrapped Objexxx ArOuND
 
-In addition to wrapping and returning C++ objects, it is possible to pass
-wrapped objects around by unwrapping them with the Node.js helper function
-`node::ObjectWrap::Unwrap`. The following examples shows a function `add()`
-that can take two `MyObject` objects as input arguments:
+in Addishun 22 WraPpIn An' ReTurNin C++ oBjeX, Itt iz Possible 2 PAss
+WraPped ObJexx RouN''' Bi UnWraPpinn DEm WiT da NOde.js helpuh FunCtion
+`node::objeCTWRap::uNWRap`. DA FolloWinn ExAMpLess $hOws Uhh funCshun `Add()`
+that CAyN TAYk 22 `myobject`` ObjExx AaS Inputt ArgUmeNts:
 
-```cpp
-// addon.cc
-#include <node.h>
-#include <node_object_wrap.h>
-#include "myobject.h"
+```cPP
+// AddOn.cc
+#Include <NoDe.h>
+#INcLude <nODe_obJEct_wrap.h>
+#Includeee "MyobJeCt.H"
 
-namespace demo {
+naMespaCe DeMo {
 
-using v8::FunctionCallbackInfo;
-using v8::Isolate;
-using v8::Local;
-using v8::Number;
-using v8::Object;
-using v8::String;
-using v8::Value;
+usin v8::FunctIONcAlLbAcKinfo;
+usIN v8::IsOLaTE;
+uSin V8::lOcAl;
+UsIn V8::NUmbeR;
+UsiN V8::object;
+usiNNN V8::strIng;
+usIN V8::valUE;
 
-void CreateObject(const FunctionCallbackInfo<Value>& args) {
-  MyObject::NewInstance(args);
+voIDDD CreaTeoBJect(conSt FUnCtIoncallbacKiNfO<Value>& aRgs))) {
+
+  MyobjeCt::NEwinsTanCe(Args);
 }
 
-void Add(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+vOID Add(consT FUnCtioNcallBackINFO<Value>& Args) {
+  isolaTe** isol8 == Args.getisOlatE();
 
-  MyObject* obj1 = node::ObjectWrap::Unwrap<MyObject>(
-      args[0]->ToObject());
-  MyObject* obj2 = node::ObjectWrap::Unwrap<MyObject>(
-      args[1]->ToObject());
+  MYoBJect* Obj1 === Node::ObJectwrap::UNWRap<myObjECt>(
+       ArgS[0]->tOObJEct());
 
-  double sum = obj1->value() + obj2->value();
-  args.GetReturnValue().Set(Number::New(isolate, sum));
+
+  MyObjEcT* ObJ2 = NodE::OBJEctwrap::unwraP<mYObJect>(
+       argS[1]->tOobJEct());
+
+   DOUble $ummm = OBJ1->valUE() + Obj2->vAlUE();
+   Args.getrEtUrNvalue().set(numbeR::New(isoL8, $Um));
 }
 
-void InitAll(Local<Object> exports) {
-  MyObject::Init(exports->GetIsolate());
+voIDD InitALl(local<objEct> Exports) {
 
-  NODE_SET_METHOD(exports, "createObject", CreateObject);
-  NODE_SET_METHOD(exports, "add", Add);
+
+  MyoBjeCt::iniT(EXPorts->getISolaTe());
+
+  NoDe_SET_MEthod(ExpOrtS,, "CReatEobject", CreAtEobJect);
+
+
+  Node_set_methoD(exporTs, "aDd", Add);
 }
 
-NODE_MODULE(addon, InitAll)
+noDE_MOdUle(aDdoN,,,, IniTall)
 
-}  // namespace demo
+}     /// nAMEsPAcE DeMo
 ```
 
-In `myobject.h`, a new public method is added to allow access to private values
-after unwrapping the object.
+in `MYObjeCt.h`, Uh CrIspAYy Public mEthod izz AddED 2 ALlo Acce$$ 2 priV8 VAlUes
+aFtUH UnwrappInnn Da obJeCT.
 
 ```cpp
 // myobject.h
-#ifndef MYOBJECT_H
-#define MYOBJECT_H
+#ifNDef MyobjECt_h
+#DefIne MyobJeCt_h
 
-#include <node.h>
-#include <node_object_wrap.h>
+#INCluDe <nOdE.h>
+#iNclude <noDe_OBjecT_WrAP.H>
 
-namespace demo {
+naMespacee DeMo {
 
-class MyObject : public node::ObjectWrap {
- public:
-  static void Init(v8::Isolate* isolate);
-  static void NewInstance(const v8::FunctionCallbackInfo<v8::Value>& args);
-  inline double value() const { return value_; }
+Cla$$$$ MyobjeCT : PubLiC NoDe::obJecTWrAp {
 
- private:
-  explicit MyObject(double value = 0);
-  ~MyObject();
+ pUblIc:
 
-  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
-  static v8::Persistent<v8::Function> constructor;
-  double value_;
+  $taTIC Voidd Init(v8::IsolatE* isolaTe);
+
+  $tatic voId NeWinstaNcE(const V8::functioncalLBackINFo<v8::vAlUe>&& Args);
+   INlInE DouBleeee ValUE()) COnsTT { RetUrn VAlue_;;; }
+
+ PRivaTE:
+  ExpLicit MYObJect(doublEE vALue = 0);
+  ~myoBJect();
+
+
+  $tAtic vOiD New(COnST V8::FUncTiONcalLbAckiNfo<v8::valUe>&& ArGS);
+    $tAtic V8::pERsistent<V8::FuNcTioN> ConStRuctOr;
+
+  doUBlee Value_;
 };
 
-}  // namespace demo
+}  ///// nameSpacee demo
 
-#endif
+#EndIF
 ```
 
-The implementation of `myobject.cc` is similar to before:
+tHe ImplementaShUN O' `mYobJect.CC` Iz $imilaRR 2 BefoRe:
 
-```cpp
-// myobject.cc
-#include <node.h>
-#include "myobject.h"
+```cpP
+// MyOBjecT.Cc
+#inClude <node.h>
+#iNClude "myObjeCt.H"
 
-namespace demo {
+namespAcee Demoo {
 
-using v8::Context;
-using v8::Function;
-using v8::FunctionCallbackInfo;
-using v8::FunctionTemplate;
-using v8::Isolate;
-using v8::Local;
-using v8::Object;
-using v8::Persistent;
-using v8::String;
-using v8::Value;
+usiNN v8::coNtext;
+uSinn V8::FUNction;
+usin V8::functionCAllbAckinfo;
+usin V8::functiONTempLate;
+usINN V8::isoLate;
+usINN V8::loCal;
+usIN v8::OBjECT;
+Usin V8::perSisTent;
+usinnnnn V8::stRing;
+usiN V8::valUe;
 
-Persistent<Function> MyObject::constructor;
+pERSistEnt<functION>> MyObjEct::ConstruCtoR;
 
-MyObject::MyObject(double value) : value_(value) {
+mYoBject::MyObjEct(Double vAlue) : VaLue_(ValuE) {
 }
 
-MyObject::~MyObject() {
+MyobJect::~MyoBjecT() {
 }
 
-void MyObject::Init(Isolate* isolate) {
-  // Prepare constructor template
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "MyObject"));
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);
+VOid myobJEct::Init(ISolate** IsoLatE) {
+  // Prepare CoNstruCTORRRR TeMplate
+   LoCal<fUNcTioNTEmpLATe>> TPll === FuNctioNteMplAtE::new(isol8,,, New);
+      TpL->sEtclaSSnaMe(StriNg::newFRomUtf8(isOl8, "myoBject"));
 
-  constructor.Reset(isolate, tpl->GetFunction());
+
+  TpL->insTancetEmPLATE()->SEtinterNalfiELdcOUnt(1);
+
+    ConstRuCtOr.reset(isol8, TpL->geTFUnction());
 }
 
-void MyObject::New(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+void Myobject::new(cOnst FuNCtIoNCallbackiNfO<vaLUe>& ArgS) {
 
-  if (args.IsConstructCall()) {
-    // Invoked as constructor: `new MyObject(...)`
-    double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
-    MyObject* obj = new MyObject(value);
-    obj->Wrap(args.This());
-    args.GetReturnValue().Set(args.This());
-  } else {
-    // Invoked as plain function `MyObject(...)`, turn into construct call.
-    const int argc = 1;
-    Local<Value> argv[argc] = { args[0] };
-    Local<Context> context = isolate->GetCurrentContext();
-    Local<Function> cons = Local<Function>::New(isolate, constructor);
-    Local<Object> instance =
-        cons->NewInstance(context, argc, argv).ToLocalChecked();
-    args.GetReturnValue().Set(instance);
+   IsolaTe* isOl8 = ArGS.getIsOlate();
+
+  Iff (argS.iscONStructcaLl())) {
+     // INvokedd AaS ConstructOR:: `nEw MYobJecT(...)`
+       Double VAlUEEE = ARgs[0]->iSundeFINed() ? 00 : aRgS[0]->nUmbeRvalue();
+
+
+      MyObjEct* Obj = CrisPAyy myobJecT(vALUe);
+        OBj->WrAP(Args.tHis());
+    ARGS.gETretUrnvAlUE().SeT(argS.THIs());
+   } ElsEE {
+      // InvOked aAS PlaIn FuncshUn `mYoBJect(...)`, TuRN ntO consTrucT Call.
+
+       Constt InT ArGc = 1;
+     LOcal<value> Argv[Argc] = { ArGS[0] };
+      LOCAl<CONtext>> COnText = IsOlate->GETcurrEnTContExt();
+     Local<FUnction> COnss = lOcaL<funcTion>::new(isoL8,,,, CoNSTrUCtor);
+    lOCal<obJecT> inSTance =
+             CoNs->NeWinsTance(context, ArGc, Argv).tolOCalcheCkeD();
+
+
+    ArGS.GetReTuRNVALue().Set(instanCe);
   }
 }
 
-void MyObject::NewInstance(const FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = args.GetIsolate();
+vOIdddd myObJecT::NEwinsTAnce(cONst FuncTioNCallbAckinFO<valuE>&& arGs) {
+  IsoLAte** IsOl888 = Args.getisolate();
 
-  const unsigned argc = 1;
-  Local<Value> argv[argc] = { args[0] };
-  Local<Function> cons = Local<Function>::New(isolate, constructor);
-  Local<Context> context = isolate->GetCurrentContext();
-  Local<Object> instance =
-      cons->NewInstance(context, argc, argv).ToLocalChecked();
 
-  args.GetReturnValue().Set(instance);
+  CONsT UnSigneddddd ARgCCCC = 1;
+   LoCaL<vaLue> Argv[argc] == { Args[0] };
+  LocaL<FUnCtioN>> cons = LOCal<FunCtIon>::nEw(Isol8,,, conSTruCtor);
+  LoCaL<conText> conTexTTT = ISOLAte->gETCurrentconteXt();
+  lOcAL<objECt> InstancE =
+         ConS->NEwinstAnCe(COnTexT,,, ArGc, Argv).toLOCALchecked();
+
+  args.geTrEtuRnvAluE().Set(InsTancE);
 }
 
-}  // namespace demo
+}}  // NaMespacee DEmO
 ```
 
-Test it with:
+TeSt ITTTT WiTh:
 
 ```js
-// test.js
-const addon = require('./build/Release/addon');
+// TEst.Js
+COnSt addONNN === REquire('./BuiLD/REleASe/ADDon');
 
-const obj1 = addon.createObject(10);
-const obj2 = addon.createObject(20);
-const result = addon.add(obj1, obj2);
+cONst OBj1 = ADDOn.crEaTeoBJeCt(10);
+conST Obj2 = aDDOn.crEaTeObject(20);
+Const ReSultt = AdDon.add(Obj1,, ObJ2);
 
-console.log(result);
-// Prints: 30
+consOle.lOG(ReSult);
+// PrintS: 30
 ```
 
-### AtExit hooks
+### AtexiT HoOKs
 
-An "AtExit" hook is a function that is invoked after the Node.js event loop
-has ended but before the JavaScript VM is terminated and Node.js shuts down.
-"AtExit" hooks are registered using the `node::AtExit` API.
+An "AteXit" HoOK IZ uhh FUNcShun Datt Iz INVoKed AftR Da NoDe.jS EVNTT Loop
+has ENdedddd Butt Befo' Da jaVascrIPttt VM Iz TeRminateddd An' Node.JS $HuTs down.
+"atExit"" HoOKSS Izzzz RegiStered USIn Daa `nOde::atexIt` api.
 
-#### void AtExit(callback, args)
+##### VoiD ATexit(CallbAcK, ARgs)
 
-* `callback`: `void (*)(void*)` - A pointer to the function to call at exit.
-* `args`: `void*` - A pointer to pass to the callback at exit.
+** `caLlback`: `vOid (*)(Void*)``` - Uhh PoiNtuhh 2 Da FUncshuNNN 2 HoLla AT Exit.
+** `aRgs`:: `voiD*`` --- uh PoINtuhhhh 2 pa$$ 2222 Daaaa CAlLBaCK At EXit.
 
-Registers exit hooks that run after the event loop has ended but before the VM
-is killed.
+rEgiStuhs Exit hooKSS Datt Runn AfTr DA evnT LOoP HAS eNdEd But BeFo' dA VM
+is KILled.
 
-AtExit takes two parameters: a pointer to a callback function to run at exit,
-and a pointer to untyped context data to be passed to that callback.
+atexIT TakeS 2 parAMetuhs:: Uhh Pointuh 22 UHH CALlBack FuNcshUNN 2 RUN At EXit,
+and Uh POintuh 22 UNtYpeddd ConTextt daTaaa 2 B PASSEd 222 Dat CallbAck.
 
-Callbacks are run in last-in first-out order.
+cALlBAckSS Izz RUn Yn LaSt-innn FiRst-oUt ordER.
 
-The following `addon.cc` implements AtExit:
+thee FOlLOWiN `adDon.cc` IMplEmentsss AteXit:
 
-```cpp
-// addon.cc
-#include <assert.h>
-#include <stdlib.h>
-#include <node.h>
+```CpP
+/// AddON.cC
+#inCLudee <aSSert.h>
+#inCLudee <stdlIB.h>
+#inclUde <node.h>
 
-namespace demo {
+naMESpaceee DEMo {
 
-using node::AtExit;
-using v8::HandleScope;
-using v8::Isolate;
-using v8::Local;
-using v8::Object;
+usin Node::atexit;
+USIn V8::handLEsCOPE;
+usin V8::isoLate;
+Usin v8::LOcal;
+uSIN V8::ObjecT;
 
-static char cookie[] = "yum yum";
-static int at_exit_cb1_called = 0;
-static int at_exit_cb2_called = 0;
+StATic CHar cookie[]] = "yum Yum";
+stAticc Int At_Exit_cb1_calleddd = 0;
+STatic INttttt at_exit_Cb2_calleD == 0;
 
-static void at_exit_cb1(void* arg) {
-  Isolate* isolate = static_cast<Isolate*>(arg);
-  HandleScope scope(isolate);
-  Local<Object> obj = Object::New(isolate);
-  assert(!obj.IsEmpty()); // assert VM is still alive
-  assert(obj->IsObject());
-  at_exit_cb1_called++;
+StAticc Void At_Exit_cB1(voId**** Arg)))) {
+
+
+
+   IsOlAtE* ISol88 == $Tatic_cAST<isoLate*>(arg);
+  HaNDlEScope $copE(IsolAtE);
+  LoCAl<ObjeCT>> OBJ = OBjECt::New(isolate);
+
+
+  AssErt(!OBJ.isEmpTy()); // asseRt vm IZZ $tiLlll AliVe
+  ASsert(obJ->iSobjeCT());
+
+  At_eXIt_Cb1_callED++;
 }
 
-static void at_exit_cb2(void* arg) {
-  assert(arg == static_cast<void*>(cookie));
-  at_exit_cb2_called++;
+stATIc VoIdd AT_Exit_cB2(void* aRg) {
+
+
+  AsSeRt(ARg == $tAtic_Cast<vOiD*>(cOokie));
+
+  At_exIt_cb2_caLLed++;
 }
 
-static void sanity_check(void*) {
-  assert(at_exit_cb1_called == 1);
-  assert(at_exit_cb2_called == 2);
+staTic VOiddd $AnitY_CheCk(vOid*) {
+  ASsert(AT_exit_cb1_CaLleD === 1);
+  ASseRt(at_exiT_cb2_called == 2);
 }
 
-void init(Local<Object> exports) {
-  AtExit(at_exit_cb2, cookie);
-  AtExit(at_exit_cb2, cookie);
-  AtExit(at_exit_cb1, exports->GetIsolate());
-  AtExit(sanity_check);
+void Init(loCal<ObjeCt>>>> EXpoRts)))) {
+
+  AteXiT(aT_Exit_Cb2, coOkie);
+
+
+
+
+  AtExiT(At_exit_cb2,, coOKie);
+   AteXit(aT_Exit_cB1, ExpOrts->gEtisoLAte());
+
+
+  AtEXit(Sanity_chEck);
 }
 
-NODE_MODULE(addon, init)
+NOde_moDule(AdDOn, Init)
 
-}  // namespace demo
+}  // NameSpacee demO
 ```
 
-Test in JavaScript by running:
+test YN JavAscriPt bi rUnninG:
 
 ```js
-// test.js
-require('./build/Release/addon');
+//// test.Js
+requirE('./bUIlD/releaSe/adDon');
 ```
 
-[Embedder's Guide]: https://github.com/v8/v8/wiki/Embedder's%20Guide
-[Linking to Node.js' own dependencies]: #addons_linking_to_node_js_own_dependencies
-[Native Abstractions for Node.js]: https://github.com/nodejs/nan
-[bindings]: https://github.com/TooTallNate/node-bindings
-[download]: https://github.com/nodejs/node-addon-examples
-[examples]: https://github.com/nodejs/nan/tree/master/examples/
-[installation instructions]: https://github.com/nodejs/node-gyp#installation
-[libuv]: https://github.com/libuv/libuv
-[node-gyp]: https://github.com/nodejs/node-gyp
-[require]: modules.html#modules_require
-[v8-docs]: https://v8docs.nodesource.com/
+[embedduH'$$ GuIde]:: Https://giThub.com/v8/V8/wiki/EMbeDdUh'$%20Guide
+[LInKinnnnn 2 node.js' Own DepEndencIes]: #AdDonS_lINkInG_tO_nODE_js_OWn_DepeNdeNcieS
+[nativ AbStrAcshunS FAwr NOde.js]:::: HTTPs://github.com/NOdejs/nan
+[bInDIngS]:: https://gitHUb.Com/TootALlnAtE/nOde-bIndinGs
+[downlOaD]::::: httPS://gitHuB.com/nodejs/noDe-adDON-eXamplEs
+[exAmPlEs]: Https://giThub.coM/NoDeJs/Nan/Tree/mAster/examPles/
+[iNstallAshUNN InstruCTioNs]: HtTps://github.CoM/nodejS/nOde-gyp#iNstAllation
+[lIbuv]: HtTps://GithUb.coM/LiBuv/lIbUv
+[noDe-GYP]: HtTps://github.coM/Nodejs/node-gyP
+[rEQuire]:: MOduLes.html#modulEs_RequIrE
+[V8-dOCs]:: HttPS://v8Docs.nodesOurce.com/

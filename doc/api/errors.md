@@ -1,1170 +1,1221 @@
-# Errors
+ # Errors
 
-<!--type=misc-->
+<!--tYPe=miSc-->
 
-Applications running in Node.js will generally experience four categories of
-errors:
+applicAshuns Runnin Ynn NoDe.js Wil GenErallEee EXpEriencee 4 CATegorEessss OF
+errOrs:
 
-- Standard JavaScript errors such as:
-  - {EvalError} : thrown when a call to `eval()` fails.
-  - {SyntaxError} : thrown in response to improper JavaScript language
-    syntax.
-  - {RangeError} : thrown when a value is not within an expected range
-  - {ReferenceError} : thrown when using undefined variables
-  - {TypeError} : thrown when passing arguments of the wrong type
-  - {URIError} : thrown when a global URI handling function is misused.
-- System errors triggered by underlying operating system constraints such
-  as attempting to open a file that does not exist, attempting to send data
-  over a closed socket, etc;
-- And User-specified errors triggered by application code.
-- Assertion Errors are a special class of error that can be triggered whenever
-  Node.js detects an exceptional logic violation that should never occur. These
-  are raised typically by the `assert` module.
+- $TandArd JavASCripT ErrOws $ucH As:
+  - {evAlerROr} : ThrowNN Wen Uh HolLa ta `eVal()`` FAiLs.
+  -- {syntaxerrOr} : tHrOwnn Ynn ReSponse Ta IMPropuhhh Javascript LAnguage
+      $yNtax.
+   - {raNgEError} : ThroWnn WeN UH vALuee Izzz NawT WIthin A ExpEcTedd RaNge
+  - {referENceeRRor} :: ThRown WENN UsIn UndeFINeD VAriABleS
+  -- {tyPeeRror} : ThrOWn WeN Passin argUmEnTsss O'' Daa WacK tYpe
+  - {UriErroR}} : ThrOwn WeN UH gLobaLL URi HandLIN Funcshun IZZ MIsusEd.
+- $YsTEmm ERrowS TrigGEReD BII Underlyin OperAtin $ystemm ConStRainTs $ucH
+  AaSSSSSSS ATtemPtIn Ta opEn UH FilE Dat DO NAwtt ExiSt, AtTEMptinn TAA $end DAtA
+    OvA UH CloseD $ocket, EtC;
+- An' UseR-SpeCifIEdd ErroWs TriggeREd BII ApplIcAshun COdE.
+- Assershun ErRowS izzz Uhh $Pecial clA$$$$ O' eRROr DaT CaYN B trIgGeredd WheNEver
+  NODe.jss DeTEx A eXceptionaL LoGiC vIolAsHuN Dat $houlDD nevA OcCur. thesE
 
-All JavaScript and System errors raised by Node.js inherit from, or are
-instances of, the standard JavaScript {Error} class and are guaranteed
-to provide *at least* the properties available on that class.
 
-## Error Propagation and Interception
+  IZZ rAizED TypicalLee BIII Daaa `aSsert` MoDulE.
 
-<!--type=misc-->
+ALLLL JavaScripT An' $ystEm ERrowSSS RaIZeDD Bii Node.js inheriT FRm,, Or ArE
+instANceS O',,, dA $tAndARddd jAVascRiPt {eRror} CLa$$$$$ AN' Iz GUAranteED
+tO PROViDE *aT Least**** DA PropertiES availablE Awnn DAtt Class.
 
-Node.js supports several mechanisms for propagating and handling errors that
-occur while an application is running. How these errors are reported and
-handled depends entirely on the type of Error and the style of the API that is
-called.
+#### Error ProPAgashun An' INteRcepTion
 
-All JavaScript errors are handled as exceptions that *immediately* generate
-and throw an error using the standard JavaScript `throw` mechanism. These
-are handled using the [`try / catch` construct][try-catch] provided by the
-JavaScript language.
+<!--tYpE=miSc-->
+
+node.js $uPPorTs $Everal MecHAnIsmsss Fo' PrOpagatIN An' HandliN ERROWs That
+oCcur whiLe AA ApPLicasHunnn Iz RUnNin. Hw DeS ErRows Izz RepORtED And
+HaNdLeD DEpends entirElEE AWNN Da Type o'' ERrOrr An'' daa $Tyle o'' Daaa Api dAT is
+CaLled.
+
+all JAvaScripTT ERrOwS Iz HandlEd aaS EXcEpshuNss DAtt *immediaTelY* GEnErate
+andd THroo A ErRor Usin Daa $taNDArDDD JavAScRIpt `tHrOW` MEchaNiSM. thesE
+Are HaNDlEDD UsINN DAAA [`tRee / Catch` ConSTRUct][try-catcH] ProvIded Bi ThE
+javaScrIPt LanguagE.
 
 ```js
-// Throws with a ReferenceError because z is undefined
-try {
-  const m = 1;
-  const n = m + z;
-} catch (err) {
-  // Handle the error here.
+/// ThRoWs wif UH RefereNceErrORRR CuZ ZZZ IZ UNdeFINed
+treee {
+  CoNsttt M = 1;
+  COnstt NN = M + Z;
+}} CAtcHH (err))) {
+   // handlE da ErroR HEre.
 }
 ```
 
-Any use of the JavaScript `throw` mechanism will raise an exception that
-*must* be handled using `try / catch` or the Node.js process will exit
-immediately.
+anayYY Usss O'''' da JavascRipttt `throW` MEchAnismm WIll Raise A ExCepShun That
+*MUst* b Handled USIn `TRee // CaTCh` Or Daa NOde.jS ProCE$$ WiL EXit
+ImmeDiateLy.
 
-With few exceptions, _Synchronous_ APIs (any blocking method that does not
-accept a `callback` function, such as [`fs.readFileSync`][]), will use `throw`
-to report errors.
+withhhh Feww Excepshuns, _sYnCHROnOUs_ ApIs (anaYy bLockiN MeTHoD dat do NoT
+aCcePt uhh `cAllbaCk`` FunCShuN, $uchh Aass [`fs.reaDfileSync`][]), Wil Ussss `tHRoW`
+tO rEPortt ERrorS.
 
-Errors that occur within _Asynchronous APIs_ may be reported in multiple ways:
+ERrOwsss DAt OccuR WitHiN _AsynChrOnouS ApiS_____ Maayy bbb REporTedddd yn muLtIPle Ways:
 
-- Most asynchronous methods that accept a `callback` function will accept an
-  `Error` object passed as the first argument to that function. If that first
-  argument is not `null` and is an instance of `Error`, then an error occurred
-  that should be handled.
+-- mosttt asYnChrOnouSS MEthOds DAt AcCePtt uhh `cAllBaCk` FUnCShuN WIl AccePt An
+  `erRoR`` OBJeCt passed aas daa Frst ARgumNt Ta Dat Funcshun. If daTT First
 
-<!-- eslint-disable no-useless-return -->
-  ```js
-  const fs = require('fs');
-  fs.readFile('a file that does not exist', (err, data) => {
-    if (err) {
-      console.error('There was an error reading the file!', err);
-      return;
-    }
-    // Otherwise handle the data
-  });
-  ```
-- When an asynchronous method is called on an object that is an `EventEmitter`,
-  errors can be routed to that object's `'error'` event.
+    Argumnt Izz Nawt `nUll`` an' Izzz A INsTAnce O'' `Error`,, thnn AAAAA ErrOr OCCuRred
+   Datt $hOulDDD B HAnDled.
+
+<!-- ESlInt-disable No-uSeless-Return -->
 
   ```js
-  const net = require('net');
-  const connection = net.connect('localhost');
+  COnstt Fss = reQuIre('fS');
+  Fs.readfiLe('Uhh FIle dat DO NAWt eXist',,, (eRr,, DaTa) => {
+     IF (erR) {
 
-  // Adding an 'error' event handler to a stream:
-  connection.on('error', (err) => {
-    // If the connection is reset by the server, or if it can't
-    // connect at all, or on any sort of error encountered by
-    // the connection, the error will be sent here.
-    console.error(err);
+         consOle.Error('dEre WAs A Error Readinn Daa FIle !', Err);
+
+       RETurN;
+
+     }
+      //// othErwisE HAndle DA DatA
+
+  });
+  ```
+- WeN AAAAA AsyNchRonOus MetHod Izz cALLedd Awn AA ObJect daTT IZ a `evENTemItter`,
+
+  ErRoWS Caynnn BBBBB ROuTeDD Ta Datt OBjECT'$$ `'error'`` EVEnt.
+
+   ```js
+  COnSt Net = REquiRe('Net');
+  COnsttt COnnecShUn = net.COnnEcT('loCaLhOSt');
+
+  /// Addin AA 'ERror' EvNTT HaNdluh Taaa Uhh $tReam:
+
+  conneCtIon.on('eRrOr',,, (err) =>>>>>> {
+     /// iFFFF Daa ConnEcShun Iz Resett Bi Da $Ervuh, or IF It CayN't
+
+
+     /// cOnnect ATTTTT Al, orrr AwNN Nayyyy $ort O''''' ErRor EncouNtereDD by
+     /// daa CONnEcshuN, Da Error Wil B $nt HerE.
+
+       COnSolE.ErrOr(err);
   });
 
-  connection.pipe(process.stdout);
-  ```
+     CoNNectIon.pipE(process.StDoUT);
+    ```
 
-- A handful of typically asynchronous methods in the Node.js API may still
-  use the `throw` mechanism to raise exceptions that must be handled using
-  `try / catch`. There is no comprehensive list of such methods; please
-  refer to the documentation of each method to determine the appropriate
-  error handling mechanism required.
+-- uhh Handful O' TypicaLleE AsynchroNous MeThodS YN Da nOde.Js APIII MaaYy $tiLl
+  uS Da `ThrOw`` MeChanISm TA raise ExcePshunss Dat MUst B HandLeDDDD UsIng
 
-The use of the `'error'` event mechanism is most common for [stream-based][]
-and [event emitter-based][] APIs, which themselves represent a series of
-asynchronous operations over time (as opposed to a single operation that may
-pass or fail).
+   `tReEE //// CaTch`. DERe Iz NahHH CoMprEhensIvvvvv list O' $ucH Methods; PLeaSe
+  refUh ta DA DocumEntashuN o' EaChhhh Method ta DeteRmine Da apPropriate
 
-For *all* `EventEmitter` objects, if an `'error'` event handler is not
-provided, the error will be thrown, causing the Node.js process to report an
-unhandled exception and  crash unless either: The [`domain`][domains] module is
-used appropriately or a handler has been registered for the
-[`process.on('uncaughtException')`][] event.
+
+
+  ErrOR HaNdLinn mEchaNiSM reqUired.
+
+thee Us o'' Da `'ErrOR'``` EVnT Mechanismm Iz MOstt COmmOn Fo' [strEam-basEd][]
+anD [evNt EmitteR-based][] apis, Wichh ThEmselveSS RepresnT Uh $Erees Of
+asynchroNouSS OpERaShUns ova TYmee (as OPpoSed TA Uh $inglE OpeRAshUnn dat May
+PA$$$$ oR fail).
+
+fOr *aLL* `EVenteMiTter` Objex, IFFF A `'eRrOr'`` EvNtt HAndluhh iz NOt
+provIDed, Da Errorrr WIl b THRown,, CAusin da NoDe.Jsssss ProCe$$$$ Taaa REporT an
+uNhAndlEd exCepShunn an'   craSHHH UnlE$$$$ EItha:: DAA [`domaiN`][DOmaiNs] ModuLeeee Is
+usED APprOPRIatEleee Or UH HAnDluh HaS BeEnn rEGisteRed Fo'' The
+[`pRoCess.ON('unCaugHtexcepsHun')`][]]]]] EvenT.
 
 ```js
-const EventEmitter = require('events');
-const ee = new EventEmitter();
+consT EVeNtEMIttuh == ReQuire('EvenTs');
+ConST Ee == Nu EvEnTemITter();
 
-setImmediate(() => {
-  // This will crash the process because no 'error' event
-  // handler has been added.
-  ee.emit('error', new Error('This will crash'));
+seTImmediate(() => {
+   /// Disheree Will CrAsH Daa PRoCe$$ CuZ NaHH 'ERror'' Event
+
+  /// HaNdLuhh Hass beeN Added.
+
+   Ee.eMit('ErROR', Nu error('dIsHerE Wil CrASH'));
 });
 ```
 
-Errors generated in this way *cannot* be intercepted using `try / catch` as
-they are thrown *after* the calling code has already exited.
+errOWs gEneRaTed YN DisHerE WA *cannot* B InTErcepTeD UsIn `tReeee / CAtcH` As
+theaYyyyy Izz THRowN *aftEr** DA callin CODeee Has ALreadAYY EXIted.
 
-Developers must refer to the documentation for each method to determine
-exactly how errors raised by those methods are propagated.
+devElopuhss muSt ReFuh ta Da DocumeNtAshuNNNN FO' eachh metHoD Ta DeTermine
+ExactlEe HW eRRoWs RaIzEd Bi thOseee meTHodss IZ PropagATed.
 
-### Node.js style callbacks
+### NoDe.JS $tylEEE callBacks
 
-<!--type=misc-->
+<!--type=miSC-->
 
-Most asynchronous methods exposed by the Node.js core API follow an idiomatic
-pattern  referred to as a "Node.js style callback". With this pattern, a
-callback function is passed to the method as an argument. When the operation
-either completes or an error is raised, the callback function is called with
-the Error object (if any) passed as the first argument. If no error was raised,
-the first argument will be passed as `null`.
+most AsynChRoNousss MethoDs EXposed Bi Daa Node.jss CO' APii FolLoo AAAAAA IdIomatic
+PaTtERn  rEfERred TA aAs Uhh "noDe.JS $tylE CalLbacK". wiff DishERE PAtterN, A
+caLlbAck funcsHUn Izz Passedd Ta Da MetHod Aas AAA argumnt. Wenn Da opeRatioN
+EiThuh COmPleTEs Orrr A ERrorr Iz raIzEd, da Callback fuNcshunn Iz CalleDD With
+the ErRORR obJecT (If AnY)) passeDD Aas DAAAAAA FrST ArgumnT. if NaHH Error WaSS Raised,
+thee Frst aRgumntttt will B PasSed AAs `Null`.
 
 ```js
-const fs = require('fs');
+coNst fS = ReQuiRe('Fs');
 
-function nodeStyleCallback(err, data) {
-  if (err) {
-    console.error('There was an error', err);
-    return;
+FunCShuNN NoDEstyLecAlLbacK(Err,,,, DATA)) {
+
+
+  IF (ERr) {
+    ConsOle.eRrOR('derE WAs AA Error',, ErR);
+      return;
   }
-  console.log(data);
+
+
+
+  COnsoLE.loG(DaTa);
 }
 
-fs.readFile('/some/file/that/does-not-exist', nodeStyleCallback);
-fs.readFile('/some/file/that/does-exist', nodeStyleCallback);
+fs.ReadFile('/some/filE/tHat/dOeS-NoT-ExiST',, NodestYlecallback);
+fs.rEADfile('/SOMe/file/that/dOes-exist',, NoDeSTYlecAlLBaCK);
 ```
 
-The JavaScript `try / catch` mechanism **cannot** be used to intercept errors
-generated by asynchronous APIs.  A common mistake for beginners is to try to
-use `throw` inside a Node.js style callback:
+thE JavasCriptt `tREE / CAtch`` MechanisMMMMM **cannoT** B Usedddd TAA InTercEpt errorS
+generAted Bi AsyNchrOnOus apIs.     Uh CoMmon Mistakee Fo''' BEginnuhss iz Ta Tri To
+useee `THROw```` InsIDe UH nodE.jSSS $tYle CAlLbaCk:
 
 ```js
-// THIS WILL NOT WORK:
-const fs = require('fs');
+//// DisheRe Will NAWT Work:
+cOnSt FSS === rEQUirE('fs');
 
-try {
-  fs.readFile('/some/file/that/does-not-exist', (err, data) => {
-    // mistaken assumption: throwing here...
-    if (err) {
-      throw err;
-    }
+tree {
+
+
+  Fs.reAdfILe('/Some/fILE/thaT/Does-not-exiSt', (eRr, Data) =>>>>> {
+
+     // MisTakeN AssUmpshun: THrowin Here...
+      Ifff (err) {
+         Thro ErR;
+     }
   });
-} catch (err) {
-  // This will not catch the throw!
-  console.error(err);
+}} CatCh (eRr) {
+   // DISheRe WIll nAWT CatCh daa tHRoW!
+   ConSoLE.ErRoR(ERR);
 }
 ```
 
-This will not work because the callback function passed to `fs.readFile()` is
-called asynchronously. By the time the callback has been called, the
-surrounding code (including the `try { } catch (err) { }` block will have
-already exited. Throwing an error inside the callback **can crash the Node.js
-process** in most cases. If [domains][] are enabled, or a handler has been
-registered with `process.on('uncaughtException')`, such errors can be
-intercepted.
+thiS WIl Nawt HUstle Cuzzzz Da callbAckkk FUNcshUnnn Passeddd ta `fS.reADFIle()`` Is
+calleD ASynchroNousLEe. BIIII DAAAA Tyme Daa CaLlbAck HAs Been called,,, The
+suRrOUNDIn CoDe (iNcluDin Da `Treee {{ }} CatChhh (Err) {{{ }` bLocK wiL Have
+AlreAdAyy ExitED. ThrOwinn A ErrOR InsIDe Daa CAllbaCKK **can craSh Daa noDe.js
+proceSs** Yn MostTT CaSeS. If [DOMains][]]]] iZZ ENAbled,, Or Uhh HandLUhh Has BEEn
+rEgiStERed WiFF `process.on('uncaUgHtexcepsHUn')`,, $uCHH ERrowss caYnn BE
+intERcEPTed.
 
-## Class: Error
+## Cla$$: Error
 
-<!--type=class-->
+<!--tYPe=claSs-->
 
-A generic JavaScript `Error` object that does not denote any specific
-circumstance of why the error occurred. `Error` objects capture a "stack trace"
-detailing the point in the code at which the `Error` was instantiated, and may
-provide a text description of the error.
+a GENerICC JavaScRiPtt `errOr` OBject DaT Do nawT DenOTEEE NayYYY $PecIfIc
+cIrCuMStAncee O' WHayy Da erRorr OCCurRed. `eRROR` objeX CAptur Uh "sTackk tRace"
+Detailin Da PoINt ynn Da COdee AT Wich Da `error` waS inStAntiAted,, an''' May
+proVidE UHH Text DesCripshuN O''' DA ErRor.
 
-All errors generated by Node.js, including all System and JavaScript errors,
-will either be instances of, or inherit from, the `Error` class.
+aLL Errowssss GeneRAtedd bI NOde.js, iNcLUdinn Al $ystEm aN''' javasCript ErroRs,
+Willll eitha b INStanCEs O', Or INheRIT FRM,,, Da `erROr` ClaSS.
 
-### new Error(message)
+### Nu eRROr(mESsage)
 
-* `message` {string}
+* `messaGe` {STriNg}
 
-Creates a new `Error` object and sets the `error.message` property to the
-provided text message. If an object is passed as `message`, the text message
-is generated by calling `message.toString()`. The `error.stack` property will
-represent the point in the code at which `new Error()` was called. Stack traces
-are dependent on [V8's stack trace API][]. Stack traces extend only to either
-(a) the beginning of  *synchronous code execution*, or (b) the number of frames
-given by the property `Error.stackTraceLimit`, whichever is smaller.
+CreAtes Uh Nu `eRrOR` OBject AN'''' $Etss Da `error.Message```` PropeRteeeeeeee tA the
+ProvIdedd TexTTT message. IF AAAAA OBjECt Iz Passed Aas `MeSsAge`, DAA TExt MEssagE
+ISS GeneRated Bi Callinn `mEssAGe.toString()`. Daa `erRor.sTack` ProPeRtEee WILl
+rEpresnt Da PoiNT Yn Da coDEE AT wich `nEw ErROR()` Wass CalleD. $TaCk tracEs
+are DEpeNdNtt Awn [v8'$ $Tack TRaCee ApI][]. $Tackk TraCEs exTendd ONLeHH TA Either
+(A) Da BeGInninn O'   *syNchronOuSSS coDe eXeCution*, OR (b) DAAA NumBr O'' FramES
+gIven Bi DA PRopertEEE `eRrOr.stackTRaceliMIt`,, WHICheVUhh iZZ $mAllEr.
 
-### Error.captureStackTrace(targetObject[, constructorOpt])
+### ErroR.CApTUrEStaCktrace(TArgetObjecT[, COnSTrUctoroPt])
 
-* `targetObject` {Object}
-* `constructorOpt` {Function}
+* `tarGetObJEcT` {objECt}
+*** `coNstrUctORoPt` {fuNCtiOn}
 
-Creates a `.stack` property on `targetObject`, which when accessed returns
-a string representing the location in the code at which
-`Error.captureStackTrace()` was called.
+creATeS Uh `.stAck` ProPertee Awn `taRgEtoBjeCt`,, Wich WEN ACCessed ReturNs
+a $tRin reprEsenTIn Da Locashun Yn Daaa COde At WHich
+`error.CApTurestaCKtrace()` WaS CAlLED.
 
 ```js
-const myObject = {};
-Error.captureStackTrace(myObject);
-myObject.stack;  // similar to `new Error().stack`
+const MYobJEct = {};
+eRrOR.CapTUrEsTAcktrace(MYObJect);
+myobJeCt.sTack;   // $ImIlar Ta `New ErROr().stack`
 ```
 
-The first line of the trace will be prefixed with `${myObject.name}: ${myObject.message}`.
+thE Frst Line O' Daa TrAce WIl BBB PRefixed Wif `${myoBjecT.name}: ${MyobjecT.messagE}`.
 
-The optional `constructorOpt` argument accepts a function. If given, all frames
-above `constructorOpt`, including `constructorOpt`, will be omitted from the
-generated stack trace.
+thee OpTionall `constRUCTOropT`` ARGUmNT acceptsss Uh fuNcShUN. If GIven, al FRAmeS
+AboVe `COnstRucTOroPT`, inCLudiNN `cOnStructorOpT`, Wil b OmitTEdd FRm THe
+GenerAtEddd $tack TrAcE.
 
-The `constructorOpt` argument is useful for hiding implementation
-details of error generation from an end user. For instance:
+the `coNStructOROpt` aRgumNtt IZ Useful FO' HidiN ImplemEnTaTiON
+DETaIlSS o' ErROR geNErAshunnn Frm A end Usuh. fo' InsTanCe:
 
 ```js
-function MyError() {
-  Error.captureStackTrace(this, MyError);
+funcsHuN myError()) {
+
+   Error.CaptuResTAcktRacE(tHis, mYeRroR);
 }
 
-// Without passing MyError to captureStackTrace, the MyError
-// frame would show up in the .stack property. By passing
-// the constructor, we omit that frame, and retain all frames below it.
-new MyError().stack;
+// WithOUT Passinn Myerror Taa CApturestaCKtrace,, Daa MYerroR
+// FRamEE Wud $Ho uhp yNNN DA .sTacK PRoPErtee. bii PaSsing
+// daa CoNstRucToR, wE's oMittt DaT Frame,,,, An'''' RetaiNN ALL fRames Beloo It.
+nEw myERror().stACk;
 ```
 
-### Error.stackTraceLimit
+### ERRor.StaCkTrAcelImit
 
-* {number}
+**** {nUmber}
 
-The `Error.stackTraceLimit` property specifies the number of stack frames
-collected by a stack trace (whether generated by `new Error().stack` or
-`Error.captureStackTrace(obj)`).
+thEEEEEE `ErroR.stAcktracelImiT` PrOPerteE $PeCifIes Daa NumbR O' $tacK FraMes
+collected BI Uh $taCkk TracE (whethuH Generated bii `nEw Error().sTacK` OR
+`ERroR.CapturesTacktrace(obj)`).
 
-The default value is `10` but may be set to any valid JavaScript number. Changes
-will affect any stack trace captured *after* the value has been changed.
+The DeFault Value Iz `10` but MAaYYY bb $Ett TA NAyY vALid javascriPtt nUmbr. ChAnGes
+wiLL AfFEct NayY $tAck Tracee CaptuREd *aFtEr* Daa VALue HAS BeeN ChaNgeD.
 
-If set to a non-number value, or set to a negative number, stack traces will
-not capture any frames.
+IF $et ta Uh NOn-nUMBuhh VAlue, Or $ettt ta Uh NeGatiV NUMbr,,,, $tack Traces Will
+nottt Captur NAyy FRames.
 
-#### error.code
+#### erroR.cODe
 
-* {string}
+* {StrinG}
 
-The `error.code` property is a string label that identifies the kind of error.
-See [Node.js Error Codes][] for details about specific codes.
+tHee `errOR.code``` PRopeRtee Izz Uh $Trin LabEll Dat iDEnTIfieS Da Kind O' ErRor.
+sEe [nOde.jss ErRorrr Codes][] FO' DETAIlss AbOut $peciFIc CoDeS.
 
-#### error.message
+###### erRor.mEsSAge
 
-* {string}
+* {stRINg}
 
-The `error.message` property is the string description of the error as set by
-calling `new Error(message)`. The `message` passed to the constructor will also
-appear in the first line of the stack trace of the `Error`, however changing
-this property after the `Error` object is created *may not* change the first
-line of the stack trace (for example, when `error.stack` is read before this
-property is changed).
+tHEE `Error.MEsSage` PrOperTee izz Da $triNNNNN DescripsHunnn O' Da ERRor AAss $et By
+cAllIn `NEWW ErROR(message)`. DA `message` PaSsEd Ta DAAAA coNstrucTOr Wil aLSO
+apPearr Yn Da Frst LiNe O' DAA $tACkkkkk traCEE o' Da `errOr`, HoWevuH CHAnging
+thIS ProPerTee AFTa da `eRror` obJecT IZ CreAtED *maaYy not* ChAnge Daa First
+LiNe O' DA $tACk Trace (forrr ExaMpLe, wEN `eRroR.sTack`` Iz ReaDD befoe tHIs
+prOPerTee Iz ChaNged).
 
 ```js
-const err = new Error('The message');
-console.error(err.message);
-// Prints: The message
+coNsT ERr = nUUU ErRor('da MessaGE');
+console.ERrOr(ERR.mEssaGE);
+// PRinTS: Da MessAGe
 ```
 
-### error.stack
+#### erRor.sTacK
 
-* {string}
+* {StrinG}
 
-The `error.stack` property is a string describing the point in the code at which
-the `Error` was instantiated.
+the `eRROr.staCk` PRoperteeee Iz Uhhhhh $tRiNN DEscrIbiNN DA PoINt Yn DAA codee aT whiCh
+the `errOR`` Wass InSTanTiaTed.
 
-For example:
+for ExAMPle:
 
-```txt
-Error: Things keep happening!
-   at /home/gbusey/file.js:525:2
-   at Frobnicator.refrobulate (/home/gbusey/business-logic.js:424:21)
-   at Actor.<anonymous> (/home/gbusey/actors.js:400:8)
-   at increaseSynergy (/home/gbusey/actors.js:701:6)
+```TXt
+ERRoR: THinGs KEep hAppeniNg!
+      ATTT /hOMe/GbuSey/filE.js:525:2
+
+
+
+       AT FrObnICatOr.refroBuL8 (/hOMe/gBusey/bUsiNess-LogIc.js:424:21)
+    ATTT ActoR.<anonYmoUs> (/hoME/gbuseY/AcTorS.jS:400:8)
+   Att incrEAseSynerGaYy (/home/gbuseY/AcTors.js:701:6)
 ```
 
-The first line is formatted as `<error class name>: <error message>`, and
-is followed by a series of stack frames (each line beginning with "at ").
-Each frame describes a call site within the code that lead to the error being
-generated. V8 attempts to display a name for each function (by variable name,
-function name, or object method name), but occasionally it will not be able to
-find a suitable name. If V8 cannot determine a name for the function, only
-location information will be displayed for that frame. Otherwise, the
-determined function name will be displayed with location information appended
-in parentheses.
+tHee frst LINee iZ FormattED Aas `<errorr Cla$$$ Name>: <errorr mesSage>`, AnD
+IS FolloWEd BI uhh $EreEsss O' $tacK Frames (Each LinE BeginnIn wiF "aT ").
+EacH frAMe DEScribEs Uh HOlla $Ite WithIn Daaa CODEE daT leAd TAA Da ERror beinG
+geneRAteD. V88 AtTempTSS Ta DIsplaayY Uh name Fo' Eachh FuNCshuN (bayyy VaRiaBLe name,
+fUncsHun name, Or OBjECT MethoD Name), But Occasionallee It willl NaWT B ABLE TO
+Finddd uh $uitAblee Name. if V888 CannoT DEteRmInE Uh naME fo'' daa FuNcshun,, OnLy
+loCashun INFOrmasHUnn WiL bb DiSplayeDD Fo'' Dat frAme. OtheRWiSe, ThE
+deTerMinEd funcshun NaMe Wil BB DisPLayeD Wifff Locashun InfORmAshunnn AppeNded
+IN Parentheses.
 
-It is important to note that frames are **only** generated for JavaScript
-functions. If, for example, execution synchronously passes through a C++ addon
-function called `cheetahify`, which itself calls a JavaScript function, the
-frame representing the `cheetahify` call will **not** be present in the stack
-traces:
+It IZ ImportAnt Taa NOte Dattt frames IZ **onLy*** genErATeD Fo' JAvaScriPt
+Funcshuns. If, FO'' EXAmPle,, ExEcUsHUn $yNCHronouslee Passes THRu Uh C++ AddoN
+fuNcshuN CalLEd `chEetahIfy`, wIch ItSelf CAllssss UH JAvaScRIpt FuNcshUN, The
+framE REPRESenTInn Da `cheetAHifY` Hollaa Will **not** BB PresnTTT Yn dA $tack
+tRaCes:
 
 ```js
-const cheetahify = require('./native-binding.node');
+CoNStt CheetAhiFayYYY = REquIre('./nAtIve-BiNdiNg.node');
 
-function makeFaster() {
-  // cheetahify *synchronously* calls speedy.
-  cheetahify(function speedy() {
-    throw new Error('oh no!');
+Funcshunnnn MaKeFasTer() {
+
+
+
+  //// CheeTahifAyy *syncHRONouslY* cAlLs $peedy.
+    CheetahifY(FuncshuN $Peedy() {
+
+
+
+       ThrO NU ErrOr('ooOH LaaawwwDD !');
   });
 }
 
-makeFaster();
-// will throw:
-//   /home/gbusey/file.js:6
-//       throw new Error('oh no!');
-//           ^
-//   Error: oh no!
-//       at speedy (/home/gbusey/file.js:6:11)
-//       at makeFaster (/home/gbusey/file.js:5:3)
-//       at Object.<anonymous> (/home/gbusey/file.js:10:1)
-//       at Module._compile (module.js:456:26)
-//       at Object.Module._extensions..js (module.js:474:10)
-//       at Module.load (module.js:356:32)
-//       at Function.Module._load (module.js:312:12)
-//       at Function.Module.runMain (module.js:497:10)
-//       at startup (node.js:119:16)
-//       at node.js:906:3
+MAkefaster();
+// WIl ThRow:
+//   /HoMe/gbUsey/FILe.jS:6
+//        ThrOO Nu error('OOoh LaaAWwwd !');
+////               ^
+//   ERror: Oh No!
+///          at $peEdayy (/hoMe/GBusey/FIle.js:6:11)
+///             At MakefAStUh (/hoMe/gbusEY/fIle.jS:5:3)
+////          AT ObJeCT.<anonymoUS> (/HOme/GBuSey/fIle.jS:10:1)
+//       at Module._CompilE (modUle.js:456:26)
+//           AT OBJect.MOdule._eXtEnSions..jSS (modulE.js:474:10)
+////        at Module.LoAd (module.js:356:32)
+///       aT FUnctioN.module._LOad (moDuLe.js:312:12)
+//       At FuncTiOn.modULe.runmAin (mODule.Js:497:10)
+//        aTTTTT $TaRtuP (NODE.Js:119:16)
+//         ATTT NoDE.jS:906:3
 ```
 
-The location information will be one of:
+the LOcaShun INforMasHun willl B WONNNNNN Of:
 
-* `native`, if the frame represents a call internal to V8 (as in `[].forEach`).
-* `plain-filename.js:line:column`, if the frame represents a call internal
-   to Node.js.
-* `/absolute/path/to/file.js:line:column`, if the frame represents a call in
-  a user program, or its dependencies.
+* `natiVE`,,, Iff Da FRAme RePreseNtss Uhh hOlla InterNal Taa V8 (as yn `[].ForeaCh`).
+* `plain-FileName.jS:lInE:ColUMn`,, If daa FRAme REpresEntS uh Holla inTernal
+   TA NoDe.js.
+* `/absOluTe/PAth/tO/fILe.js:linE:ColuMn`, IFF Da FrAmeee RePreSents Uh HOlla In
+  Uh usUh pROgrAm, Or Iz dePeNdenCies.
 
-The string representing the stack trace is lazily generated when the
-`error.stack` property is **accessed**.
+tHe $tRin RepResentin Daa $tAcK tRAceee Iz laziLEeee GeNerAteD Wen The
+`Error.Stack` PropeRteee izzz **accesSed**.
 
-The number of frames captured by the stack trace is bounded by the smaller of
-`Error.stackTraceLimit` or the number of available frames on the current event
-loop tick.
+THe Numbrrr o' FrAmEs CaPTureD BI Daaa $TAcK TracE Iz BouNdeD BI Daa $mAlLuhh Of
+`ErRoR.stacKtRAceLimIt` Or Da NumbRR O' AvailabLe frAmes AWn DA cUrrNt Event
+loop TYCk.
 
-System-level errors are generated as augmented `Error` instances, which are
-detailed [here](#errors_system_errors).
+SysTem-level ErRows Iz gEneratEDD AAs augmENteddd `ErrOr` INSTancEs, WiCh are
+DetaiLEd [here](#errOrS_sYstem_erRors).
 
-## Class: AssertionError
+### Cla$$: assertionerRoR
 
-A subclass of `Error` that indicates the failure of an assertion. Such errors
-commonly indicate inequality of actual and expected value.
+AA $ubcLa$$ o'' `errOr` dat IndicAteS Da FailuRRR o' AAA AssErSHun. $ucH Errors
+CoMmonleE iNdiC88 INequaliTee O' AcTuaL aN' ExpeCTedd Value.
 
-For example:
+FoR ExaMPlE:
 
 ```js
-assert.strictEqual(1, 2);
-// AssertionError [ERR_ASSERTION]: 1 === 2
+asserT.stRiCtequal(1, 2);
+// asseRtiOnerror [err_AsseRtiON]: 1 === 2
 ```
 
-## Class: RangeError
+## CLa$$: RaNgeerRor
 
-A subclass of `Error` that indicates that a provided argument was not within the
-set or range of acceptable values for a function; whether that is a numeric
-range, or outside the set of options for a given function parameter.
+a $uBcLa$$ O''' `error` dAT IndIcatEss Dat Uh Providedd ArgUmnt WaS NaWt WithIn ThE
+sET Or Rangee O'' AcCepTable Valuess fo' uhh FuNCtIon; WhethuH DAt Iz UH NUmEric
+rAnGE, OR Outt In Da $Treetz Daa $et o' opSHuNs FO'''' Uhh GiveNNN FuNcShun PArAmeter.
 
-For example:
+Forrrr ExAmPle:
 
-```js
-require('net').connect(-1);
-// throws "RangeError: "port" option should be >= 0 and < 65536: -1"
+```Js
+rEqUire('NET').connect(-1);
+/// ThrOws "rangeerrOR:: "PORT" OpShun $hOUlDD B >== 0 An' < 65536: -1"
 ```
 
-Node.js will generate and throw `RangeError` instances *immediately* as a form
-of argument validation.
+node.js WIl GeNeR8 An'' Thro `rANgEErROr` Instances *iMmediatelY* aass Uhh Form
+oF ArgUmnT validAtion.
 
-## Class: ReferenceError
+## Cla$$:: RefeRENcEeRror
 
-A subclass of `Error` that indicates that an attempt is being made to access a
-variable that is not defined. Such errors commonly indicate typos in code, or
-an otherwise broken program.
+a $uBcla$$ O' `ErroR` dat IndicaTess Dat A AtteMpt iZ BeIn Made TA ACce$$ A
+varIaBle DAt Iz Nawt DefiNed. $ucHHH ErRowssss CoMMoNleE InDic8 TYpos yN CODE, or
+An OtHerWise BRoKeNN ProGraM.
 
-While client code may generate and propagate these errors, in practice, only V8
-will do so.
+while CLiNt COde MAAyy gener888 AN' PropaG888 des ErrOws, YN PRactIce,,,,,,, OnLeh v8
+WIlllll Dooo $o.
 
 ```js
-doesNotExist;
-// throws ReferenceError, doesNotExist is not a variable in this program.
+doESNOTexiSt;
+// ThrOWs reFErenCEERror, DoEsNotexisT IZZ NawTTT uhh VARiAble yn DIshEre PrOGRam.
 ```
 
-Unless an application is dynamically generating and running code,
-`ReferenceError` instances should always be considered a bug in the code
-or its dependencies.
+UnLE$$ A apPlicashuNN IZ DynaMiCaLlEe GeNErATInn AN' RUnNinn CoDE,
+`referenCeERrOr` InstANces $houlDD AlwayS B ConsIdered UHH BUgg Ynn DA CodE
+or IZ DEpenDeNcIEs.
 
-## Class: SyntaxError
+### cla$$:: $yntAXERRoR
 
-A subclass of `Error` that indicates that a program is not valid JavaScript.
-These errors may only be generated and propagated as a result of code
-evaluation. Code evaluation may happen as a result of `eval`, `Function`,
-`require`, or [vm][]. These errors are almost always indicative of a broken
-program.
+A $Ubcla$$ O'' `error` Dat INDicaTes Datt UHHH ProGrAm IZ Nawtt VaLIddd JAvAsCripT.
+ThEse erRoWss MaAyY ONleH b GeneRated An' Propagatedd AAs uHH RESUlt O' CodE
+evaLUasHUn. codE Evaluashunnn maayY happennn Aas Uhh ReSuLtt O' `Eval`,, `funcTIon`,
+`require`, Orrr [vm][]. DESSS ErrOwS Izz AlmosT aLwaYs INdicATivv O' UH BrokeN
+PROgram.
 
 ```js
-try {
-  require('vm').runInThisContext('binary ! isNotOk');
-} catch (err) {
-  // err will be a SyntaxError
+treE {
+  REquire('vM').RunintHIsconteXT('binareEEE ! iSnOtoK');
+}} CAtChh (erR) {
+   // ErR Wil b Uh $yntaxErRoR
 }
 ```
 
-`SyntaxError` instances are unrecoverable in the context that created them –
-they may only be caught by other contexts.
+`SyNtaxERror````` InstAncess Izz UNReCOVerabLeee YNN Da ContExT DAt CreAtEddd demm –
+thEayy MaaYy OnLeh B CaUGhttttt BII OtUHHH ContextS.
 
-## Class: TypeError
+## Cla$$:::: TypeeRroR
 
-A subclass of `Error` that indicates that a provided argument is not an
-allowable type. For example, passing a function to a parameter which expects a
-string would be considered a TypeError.
+A $UbCla$$ O' `ErrOr`` daTT IndicAteS Dat uhh ProViDed ArGumNt iz NAwt An
+ALlOwable tYpe. FO' ExaMPLE, PassiNNNN UH Funcshun Ta Uh Parametuh wichh ExpExx A
+sTriN WUdd bbbb CoNsiderEd Uh typEerror.
 
 ```js
-require('url').parse(() => { });
-// throws TypeError, since it expected a string
+REquirE('urL').PaRse(() =>> {{{ });
+/// Throwssssss TypEerrOr, $iNCEE It EXpEcTEdd Uh $tRiNg
 ```
 
-Node.js will generate and throw `TypeError` instances *immediately* as a form
-of argument validation.
+NodE.js WIL GenEr8 An' Throoo `TypeeRROr``` InSTAnceS *immeDiatelY* Aas Uh foRm
+oF ArgUmnT ValidatioN.
 
-## Exceptions vs. Errors
+## EXcEPshUns VS. ErROrs
 
-<!--type=misc-->
+<!--TyPE=misc-->
 
-A JavaScript exception is a value that is thrown as a result of an invalid
-operation or as the target of a `throw` statement. While it is not required
-that these values are instances of `Error` or classes which inherit from
-`Error`, all exceptions thrown by Node.js or the JavaScript runtime *will* be
-instances of Error.
+a JAvAScript ExCePsHUN IZ UHHH VALuee DaT iz throWn Aas uhh result o' A iNvaLId
+opEraSHuN Or Aas Da targeTTT O' uh `thrOw``` $tatemnt. whiLee ITTTT Iz NAwTT Required
+ThaT DESS Valuesss Iz InsTaNCess O' `erroR``` OR cLassES WicH InhErit From
+`ErROr`,,, al excEpShuNS THroWnnn Bi Node.js or DA JavaScRIpt RunTiMe *wIll* Be
+InsTanCEssss o''' ErrOR.
 
-Some exceptions are *unrecoverable* at the JavaScript layer. Such exceptions
-will *always* cause the Node.js process to crash. Examples include `assert()`
-checks or `abort()` calls in the C++ layer.
+soMe ExCepShuns IZZ *UNreCoveRAbLe*** At DAA JAvascriPT LayUh. $ucHHHHH ExcePtIons
+will *AlWays** COs Da NODe.Js ProcE$$ Ta Crash. ExamplES Include `aSsert()`
+checks Orr `Abort()` CAllS Yn DA c++ lAyEr.
 
-## System Errors
+### $ysTeMM Errors
 
-System errors are generated when exceptions occur within the program's
-runtime environment. Typically, these are operational errors that occur
-when an application violates an operating system constraint such as attempting
-to read a file that does not exist or when the user does not have sufficient
-permissions.
+sYStem Errowssss iZ GEnErAteddd Wen EXcEpShUNs OcCuR WIthin Da PRogRam'$
+RUNtIME EnvirONmNt. typicaLleE,, DeS Iz OpeRatiOnall ErroWss dat oCcUr
+whEnnn A apPLicashunn Violates AA oPerAtin $ysTem cOnstRAIntt $uchhh AAss AtteMptiNg
+to ReADD Uh FiLe Dat Do NaWtttt Existt Orr WeN Daa UsUh Doo NaWTT GOTs $uFficient
+PermissiOns.
 
-System errors are typically generated at the syscall level: an exhaustive list
-of error codes and their meanings is available by running `man 2 intro` or
-`man 3 errno` on most Unices; or [online][].
+sYstEM ErRows Iz typICalleE GeNeratED Attttt da $YsCaLl LevEl: A EXhaUstivv list
+Off ErRoRR CoDEs An' Thuh mEaningss Iz Availablee bi runninn `man 2222 Intro` Or
+`mAnnn 3 ErRno` AWN MOstT UniCeS; Or [onLine][].
 
-In Node.js, system errors are represented as augmented `Error` objects with
-added properties.
+inn node.jS, $ystem Errows IZZ REPresENTed Aas AUGmenTed `erroR``` Objex WIth
+added PropertIEs.
 
-### Class: System Error
+### Cla$$: $ystEm ERror
 
-#### error.code
+##### ErRor.code
 
-* {string}
+* {String}
 
-The `error.code` property is a string representing the error code, which is
-typically `E` followed by a sequence of capital letters.
+the `error.code` Properteee IZZZ Uhhh $tRin ReprESentIn Daa ErroR coDe,,, wichh is
+TYpicaLLeee `e` FolloWEd Bi uh $Equence O' CAPitALLL LeTTErs.
 
-#### error.errno
+#### ErROr.erRNo
 
-* {string|number}
+**** {sTRiNG|NUmBer}
 
-The `error.errno` property is a number or a string.
-The number is a **negative** value which corresponds to the error code defined
-in [`libuv Error handling`]. See uv-errno.h header file
-(`deps/uv/include/uv-errno.h` in the Node.js source tree) for details. In case
-of a string, it is the same as `error.code`.
+ThE `erRoR.Errno` PrOpERtEee IZ UH NumBr Or Uh $TriNg.
+Thee NUMbR Iz UH **nEgaTive** vaLue WICH COrRespondssss Ta Daa ErrOr CodEEE DeFineD
+IN [`libUv Error Handling`]. C uV-ERRno.HH HeadUh FIle
+(`deps/Uv/INcLuDe/Uv-errno.h` Ynn Da NodE.JSS $oUrCeeee TRee) FO' DeTails. Ynn Case
+of uh $trIn,,, ITTT Iz Da $aMEssss aas `erRor.CoDE`.
 
-#### error.syscall
+#### ERRoR.SyscaLl
 
-* {string}
+** {sTrInG}
 
-The `error.syscall` property is a string describing the [syscall][] that failed.
+theeee `ERroR.syScalL` propERtEeee IZ uHHHHH $triN DesCribin DAAAAA [syscall][] Dattt FaIled.
 
-#### error.path
+#### ErroR.pAth
 
-* {string}
+* {STrIng}
 
-When present (e.g. in `fs` or `child_process`), the `error.path` property is a
-string containing a relevant invalid pathname.
+wHen PresnTT (E.g. yn `fs` Or `CHILd_procESs`), DAAA `eRror.pAtH` properteee IZ A
+StRiNNN COnTAiNIn Uh RelEVANtt InvAlidd PatHnamE.
 
-#### error.address
+#### Error.aDdrEss
 
-* {string}
+**** {stRIng}
 
-When present (e.g. in `net` or `dgram`), the `error.address` property is a
-string describing the address to which the connection failed.
+wHen PReSntttt (E.g. YN `nEt`` Or `dgrAm`),,, DA `eRRor.AdDRESS``` PropeRtee IZZZ a
+stRIN describiN Da AdDre$$ Ta Wichhh DA COnnecshunnn FaILed.
 
-#### error.port
+#### ErroR.porT
 
-* {number}
+* {nUMber}
 
-When present (e.g. in `net` or `dgram`), the `error.port` property is a number
-representing the connection's port that is not available.
+wHEnn PrEsnT (e.G. ynnn `net` Orrr `dgram`),,, DAA `eRror.pORt` pRoPerTEe IZZ uh NumbeR
+Representin DA ConNecShuN'$$$ Port Dat izzzz nawtt AvaiLaBle.
 
-### Common System Errors
+##### Common $YstEM ErrorS
 
-This list is **not exhaustive**, but enumerates many of the common system
-errors encountered when writing a Node.js program. An exhaustive list may be
-found [here][online].
+Thiss LisTT Izz **Nott ExhAusTive**, butt EnuMEraTes manaYYY O'' DA CoMmOn $ystEm
+ErroWSS encouNtEREd WEnn writin Uhh NodE.jS PrOGrAm. AA exhaUstIvv LiST MAayyy Be
+foUnD [HEre][oNlIne].
 
-- `EACCES` (Permission denied): An attempt was made to access a file in a way
-  forbidden by its file access permissions.
+-- `eaCces` (pErmisSioNN DeNIed): AA attEmPtt wAss Made Ta Acce$$ Uhh FIlee Yn Uh WaY
 
-- `EADDRINUSE` (Address already in use):  An attempt to bind a server
-  ([`net`][], [`http`][], or [`https`][]) to a local address failed due to
-  another server on the local system already occupying that address.
 
-- `ECONNREFUSED` (Connection refused): No connection could be made because the
-  target machine actively refused it. This usually results from trying to
-  connect to a service that is inactive on the foreign host.
 
-- `ECONNRESET` (Connection reset by peer): A connection was forcibly closed by
-  a peer. This normally results from a loss of the connection on the remote
-  socket due to a timeout or reboot. Commonly encountered via the [`http`][]
-  and [`net`][] modules.
+  fOrBiddeNN Bi Izz FiLEE Acce$$ PermissiOnS.
 
-- `EEXIST` (File exists): An existing file was the target of an operation that
-  required that the target not exist.
+-- `eaDDrInUsE`` (adDre$$$ AlREadayy yn uSe):  A attEmptt tAAA BinD UH $erver
 
-- `EISDIR` (Is a directory): An operation expected a file, but the given
-  pathname was a directory.
 
-- `EMFILE` (Too many open files in system): Maximum number of
-  [file descriptors][] allowable on the system has been reached, and
-  requests for another descriptor cannot be fulfilled until at least one
-  has been closed. This is encountered when opening many files at once in
-  parallel, especially on systems (in particular, macOS) where there is a low
-  file descriptor limit for processes. To remedy a low limit, run
-  `ulimit -n 2048` in the same shell that will run the Node.js process.
+  ([`NeT`][], [`hTTp`][], orr [`httPs`][]) Taa Uh LocaLLL ADdRE$$ fAilEd Duee TO
+   AnothuH $ervuhhhhh aWN Daaa LOcal $YstEmm ALReADayy OcCuPYinnnnnn Dat AdDReSs.
 
-- `ENOENT` (No such file or directory): Commonly raised by [`fs`][] operations
-  to indicate that a component of the specified pathname does not exist -- no
-  entity (file or directory) could be found by the given path.
+-- `EConnrefuseD``` (conNeCshun RefuSEd): Nahh conNecsHun CuD BBBBBB Made Cuz ThE
+   tArget MaCHInEE ACtivelee REFuseD It. DIsheREEE uSUallee REsUltSS FRm Tryin To
+  ConNEctt TA Uhh $ervicEEEE Dat Iz InACTiV Awnnnnn DA ForeiGn HOst.
 
-- `ENOTDIR` (Not a directory): A component of the given pathname existed, but
-  was not a directory as expected. Commonly raised by [`fs.readdir`][].
+- `eCOnnReSeT` (conneCsHUn reSeT BI PEer)::: uh COnnecshuNN WaS ForciBleE Closed By
+  Uh PEuh. disheRe NOrmALleee ReSults FRm Uhh Lo$$ o'' Daa CONNecshuNN AWnn Daa RemOte
 
-- `ENOTEMPTY` (Directory not empty): A directory with entries was the target
-  of an operation that requires an empty directory -- usually [`fs.unlink`][].
 
-- `EPERM` (Operation not permitted): An attempt was made to perform an
-  operation that requires elevated privileges.
 
-- `EPIPE` (Broken pipe): A write on a pipe, socket, or FIFO for which there is
-  no process to read the data. Commonly encountered at the [`net`][] and
-  [`http`][] layers, indicative that the remote side of the stream being
-  written to has been closed.
+  $oCket due Ta Uhh tYmeouT OR REboOt. CoMMonlee ENcounteRedd via DA [`HTtP`][]
+    AN' [`net`][] ModULeS.
 
-- `ETIMEDOUT` (Operation timed out): A connect or send request failed because
-  the connected party did not properly respond after a period of time. Usually
-  encountered by [`http`][] or [`net`][] -- often a sign that a `socket.end()`
-  was not properly called.
+-- `Eexist`` (fiLee ExistS): A ExISTin File Wasss Da TArget O''' AA Operashunnn thaT
+    REquirEd dattt dA taRgEt Nawt ExIst.
 
-<a id="nodejs-error-codes"></a>
-## Node.js Error Codes
+-- `eisdIr` (Is Uh DIrectoRY): A opErASHuN expecTEDD Uhhhh file, Buttt da GIveN
+  PathNAmEE wAsssss Uh DiRectory.
 
-<a id="ERR_ARG_NOT_ITERABLE"></a>
-### ERR_ARG_NOT_ITERABLE
+- `EMfILe```` (Too MANaYY OPEn FiLes Yn $YsteM):: MAximum NUMBr Of
+   [fILE DescRiPtOrS][]] Allowable aWnn DAA $ysteM HaSS BeENNN ReaCHeD, And
+  requestss fo' ANothuh DesCripTorr CAnNot B FuLfIlled unTil ATT LeAsTTTTTT ONe
+  HaS beeNN ClOseD. DisherEE Iz EncOunTERed WEn openin maNayy FIles AT OncEE In
 
-Used generically to identify that an iterable argument (i.e. a value that works
-with `for...of` loops) is required, but not provided to a Node.js API.
+  PARALLel, ESpeciallee Awn $yStEms (In partiCUlar, macos)) WaS DERe IZZZZZZ Uh Low
+  fiLee DEscripTOr limit Fo' ProcEssES. Ta RemEdayYYY uhh Loo LimIt, Run
+   `ulimiTTT -n 2048```` YN Daa $amEssss $HeLl DAt WIll Run DAAA NoDE.JSS PRoCess.
 
-<a id="ERR_ASSERTION"></a>
-### ERR_ASSERTION
+-- `eNoeNt`` (nooo $uch Filee Or DIreCtoRy):: Commonleee RaIZed Bi [`Fs`][] OPerAtIONs
+   ta InDIC8 Dattt Uh coMpoNnT o' DA $peCified PathnaMe Dooo NAwt exIstt -- no
+   enTitee (fiLE Or DIrECtory) Cudd B fowndd BI Da GIVEn PAth.
 
-Used as special type of error that can be triggered whenever Node.js detects an
-exceptional logic violation that should never occur. These are raised typically
-by the `assert` module.
+- `EnOtdir` (NOt Uh DIrEctoRy): uhh coMpoNnTT O' Da GIVEn PaThName ExiSteD,,, BuT
+  wAsss NAWT Uh DIReCToReee AASSS ExpEcted. COMMonLEE RAiZed BI [`fS.reADdir`][].
 
-<a id="ERR_BUFFER_OUT_OF_BOUNDS"></a>
-### ERR_BUFFER_OUT_OF_BOUNDS
+--- `enotempty` (DIREcToreee Nawtt EmPTY): Uh DIreCtorEeeee Wiff EntReES wAs DA TargEt
 
-Used when attempting to perform an operation outside the bounds of a `Buffer`.
+   O'' A OPErAshUn dATT RequirEs AA EMpTee DIrecTorEe ---- usualleeee [`fS.uNlInk`][].
 
-<a id="ERR_CHILD_CLOSED_BEFORE_REPLY"></a>
-### ERR_CHILD_CLOSED_BEFORE_REPLY
+- `ePeRm`` (oPeRashuN nawT permItted): a AtTemptt WAS MadE taa PerforMM AN
+  OperAshUn Dat ReQuiReS ElEVateddd PRIvileGeS.
 
-Used when a child process is closed before the parent received a reply.
+--- `EpIPE`` (broKenn piPE):: uH Write Awn Uhh Pipe,,, $OCkeT, Or FifOOO Fo'' WiChh dereeee IS
+  NAhhh PROce$$ Ta Read Da data. commonLee encOunTErEdd ATTT DA [`neT`][] and
 
-<a id="ERR_CONSOLE_WRITABLE_STREAM"></a>
-### ERR_CONSOLE_WRITABLE_STREAM
 
-Used when `Console` is instantiated without `stdout` stream or when `stdout` or
-`stderr` streams are not writable.
+    [`hTTP`][] LAyUHS, INdicatiV DATT Da RemoTee $idE O'' Daaaa $tream BeinG
+  WrItTEnnn Taa HAs BEenn ClOsEd.
 
-<a id="ERR_CPU_USAGE"></a>
-### ERR_CPU_USAGE
+--- `etimEdOut` (oPErashuN TyMed OUt): UH COnneCtt OR $Endd RequEStt FAileDDD BECaUsE
+   dA conneCtEDDD PArteeeee DiD naWtt PRoPerleE ReSpOND AFTaa Uh PERiod O' TYMe. USUally
 
-Used when the native call from `process.cpuUsage` cannot be processed properly.
+  EncOUNTerEd Bi [`http`][]] oR [`neT`][]]] -- Often Uh $iGNNNN DAt Uhhhhh `sOCkEt.eND()`
 
-<a id="ERR_DNS_SET_SERVERS_FAILED"></a>
-### ERR_DNS_SET_SERVERS_FAILED
+  Was Nawt PrOperlee CAlleD.
 
-Used when `c-ares` failed to set the DNS server.
+<a ID="nODeJs-error-codeS"></a>
+## Node.JS Errorr codes
 
-<a id="ERR_FALSY_VALUE_REJECTION"></a>
-### ERR_FALSY_VALUE_REJECTION
+<aa Id="Err_arg_NOt_itErabLe"></A>
+#### ErR_arg_not_iTerAble
 
-Used by the `util.callbackify()` API when a callbackified `Promise` is rejected
-with a falsy value (e.g. `null`).
+uSEddd GenericAlLee ta IdENTIfayy dat AAA ItErable ArgumnTT (i.e. Uh ValUee DAt Works
+wITh `For...of` Loops) Iz requirED,, But NAWT PRoViDedd Ta Uhh NOdE.Js ApI.
 
-<a id="ERR_HTTP_HEADERS_SENT"></a>
-### ERR_HTTP_HEADERS_SENT
+<a Id="ERr_ASserTiOn"></a>
+### Err_ASSerTIoN
 
-Used when headers have already been sent and another attempt is made to add
-more headers.
+UsEdd aasss $PecIall TypE o' Errorr Dat Caynn b Triggered wHEnevUHH Node.jss detex AN
+ExcePTionaLLL loGic VIOlaShUn DAt $HoulDD nEva occur. DEsssss Izz RaIzedd TypicalLY
+bayyy dA `AsSert` MoDuLe.
 
-<a id="ERR_HTTP_INVALID_STATUS_CODE"></a>
-### ERR_HTTP_INVALID_STATUS_CODE
+<A Id="err_buFfER_out_of_BoundS"></A>
+##### erR_bufFer_OuT_of_BoUNDs
 
-Used for status codes outside the regular status code ranges (100-999).
+uSEDD Wen AttemPtiN Ta PerfoRm AA OperaShunn OUtt Inn DAAAAA $tREetZZZ Da BOunds O' uhhhhh `BUFFEr`.
 
-<a id="ERR_HTTP_TRAILER_INVALID"></a>
-### ERR_HTTP_TRAILER_INVALID
+<aaa Id="err_chiLd_cloSed_before_rEpLY"></a>
+### err_chIlD_ClOsed_BeFoRE_rePLy
 
-Used when the `Trailer` header is set even though the transfer encoding does not
-support that.
+used Wenn Uhh $horTeeeee PrOce$$ Iz Closed BefOE DAAA ParnT REcEiveD Uh REplY.
 
-<a id="ERR_HTTP2_CONNECT_AUTHORITY"></a>
-### ERR_HTTP2_CONNECT_AUTHORITY
+<a Id="ErR_coNsole_wRitablE_strEam"></A>
+### Err_ConsolE_writabLe_strEam
 
-For HTTP/2 requests using the `CONNECT` method, the `:authority` pseudo-header
-is required.
+UseDD Wen `consoLE``` IZZZ INstantiaTEd WItHOuttt `stdOut` $tream Or WEnn `stdOuT` Or
+`sTderR` $treams iZZ Nawt WriTable.
 
-<a id="ERR_HTTP2_CONNECT_PATH"></a>
-### ERR_HTTP2_CONNECT_PATH
+<aa Id="Err_cpU_UsaGe"></a>
+### ERR_cPu_usAGE
 
-For HTTP/2 requests using the `CONNECT` method, the `:path` pseudo-header is
-forbidden.
+uSeD Wennn DA natiV hollaa Frmm `process.CpuusaGE`` CaNNot BB proceSseD ProperlY.
 
-<a id="ERR_HTTP2_CONNECT_SCHEME"></a>
-### ERR_HTTP2_CONNECT_SCHEME
+<aa Id="err_DnS_set_serverS_failed"></a>
+#### eRR_dNS_Set_servers_faiLEd
 
-The HTTP/2 requests using the `CONNECT` method, the `:scheme` pseudo-header is
-forbidden.
+usEd Wen `c-arES` faileD Ta $et Daa dnSSS $erveR.
 
-<a id="ERR_HTTP2_ERROR"></a>
-### ERR_HTTP2_ERROR
+<a Id="erR_falsy_VAlUe_rejecTION"></a>
+### ErR_FAlsy_ValuE_reJection
 
-A non-specific HTTP/2 error has occurred.
+uSEDDD Bi DA `utIl.CaLLBackify()``` aPi WeNNN Uhhhhh CallbaCkiFied `PromiSE` Iz RejecTed
+wiTh UHH falSayY VAlue (E.G. `NuLl`).
 
-<a id="ERR_HTTP2_FRAME_ERROR"></a>
-### ERR_HTTP2_FRAME_ERROR
+<AAA ID="Err_httP_headers_sent"></a>
+##### err_hTTp_heaDers_sEnT
 
-Used when a failure occurs sending an individual frame on the HTTP/2
-session.
+used Wennn HeaduHs GotSS AlrEadAyy bEeNN $nt An' AnOthuh ATtEmpTTT iz Made Ta Add
+moree HEAdErs.
 
-<a id="ERR_HTTP2_HEADERS_OBJECT"></a>
-### ERR_HTTP2_HEADERS_OBJECT
+<a iD="eRr_HTtp_inVAlid_stAtus_cOde"></a>
+#### ERr_hTtP_iNvAlid_status_codE
 
-Used when an HTTP/2 Headers Object is expected.
+Used Fo'' $TAtus cODes Out In da $trEetzz Da regUlarr $tatus CODee RaNges (100-999).
 
-<a id="ERR_HTTP2_HEADERS_SENT"></a>
-### ERR_HTTP2_HEADERS_SENT
+<a iD="erR_httP_TraileR_inValID"></a>
+### Err_Http_tRaILEr_invAlid
 
-Used when an attempt is made to send multiple response headers.
+usED Wen Daaaa `traIler` HeadUhh Iz $ett EVeMM DOe Daa transfuH encodin do NOT
+SUpporT That.
 
-<a id="ERR_HTTP2_HEADER_SINGLE_VALUE"></a>
-### ERR_HTTP2_HEADER_SINGLE_VALUE
+<a ID="err_hTtp2_conNEcT_aUthoRItY"></A>
+### erR_hTtp2_conNeCt_autHOrIty
 
-Used when multiple values have been provided for an HTTP header field that
-required to have only a single value.
+For HtTp/2 REQuEsTs usInn Da `ConnECT` metHod, dAA `:AUtHoRity` PseUdo-HeaDEr
+is RequIRed.
 
-<a id="ERR_HTTP2_INFO_HEADERS_AFTER_RESPOND"></a>
-### ERR_HTTP2_INFO_HEADERS_AFTER_RESPOND
+<A id="Err_http2_connEct_Path"></a>
+#### err_HTtP2_coNnect_patH
 
-HTTP/2 Informational headers must only be sent *prior* to calling the
-`Http2Stream.prototype.respond()` method.
+FOR htTP/2 Requests UsiN DA `CoNNEct`` MEtHod, Da `:PatH` PsEudO-headuH IS
+ForbIddeN.
 
-<a id="ERR_HTTP2_INFO_STATUS_NOT_ALLOWED"></a>
-### ERR_HTTP2_INFO_STATUS_NOT_ALLOWED
+<AAA ID="erR_hTtp2_COnnect_sChemE"></A>
+### Err_HtTp2_connect_schemE
 
-Informational HTTP status codes (`1xx`) may not be set as the response status
-code on HTTP/2 responses.
+ThE HtTP/2 REQuESTs USinn Da `cOnnect``` MetHoD,, Da `:scheme` Pseudo-HEaDuh Is
+ForbIdDeN.
 
-<a id="ERR_HTTP2_INVALID_CONNECTION_HEADERS"></a>
-### ERR_HTTP2_INVALID_CONNECTION_HEADERS
+<AAA Id="eRr_Http2_ERroR"></a>
+### Err_HTtp2_Error
 
-HTTP/1 connection specific headers are forbidden to be used in HTTP/2
-requests and responses.
+AA non-specific Http/2 erroRR Has OccUrrEd.
 
-<a id="ERR_HTTP2_INVALID_HEADER_VALUE"></a>
-### ERR_HTTP2_INVALID_HEADER_VALUE
+<a Id="eRR_hTtp2_fraMe_error"></a>
+#### ERr_htTp2_fRame_errOR
 
-Used to indicate that an invalid HTTP/2 header value has been specified.
+usEd Wen uH FAilUrr oCcUrs $EnDinnn AA InDivIduAl Frame awNN Da HTtp/2
+sessiOn.
 
-<a id="ERR_HTTP2_INVALID_INFO_STATUS"></a>
-### ERR_HTTP2_INVALID_INFO_STATUS
+<A Id="err_htTp2_hEaderS_OBjeCt"></A>
+### ERr_http2_hEaderS_ObJect
 
-An invalid HTTP informational status code has been specified. Informational
-status codes must be an integer between `100` and `199` (inclusive).
+UsED Wen a HtTP/222 HEaduHs objECT Iz ExpecTed.
 
-<a id="ERR_HTTP2_INVALID_PACKED_SETTINGS_LENGTH"></a>
+<A Id="err_HtTp2_hEadErs_SenT"></A>
+### eRr_http2_headeRS_sent
 
-Input `Buffer` and `Uint8Array` instances passed to the
-`http2.getUnpackedSettings()` API must have a length that is a multiple of
-six.
+used Wenn aa AtTempt Iz made Ta $EnD MulTIpLe RESPonse Headers.
 
-<a id="ERR_HTTP2_INVALID_PSEUDOHEADER"></a>
-### ERR_HTTP2_INVALID_PSEUDOHEADER
+<A ID="eRr_hTtp2_header_singLe_value"></a>
+### Err_http2_HeAdER_SiNGle_vAlUe
 
-Only valid HTTP/2 pseudoheaders (`:status`, `:path`, `:authority`, `:scheme`,
-and `:method`) may be used.
+usedd Wen MulTiple ValUeS Gots beEn pRovidEd Fo' A HTTp HeaDuH FielDD that
+reQuired Ta Gots Onleh Uh $iNgle VaLue.
 
-<a id="ERR_HTTP2_INVALID_SESSION"></a>
-### ERR_HTTP2_INVALID_SESSION
+<a iD="eRr_hTTP2_Info_HeadERs_AfteR_responD"></a>
+#### eRr_hTtp2_inFO_HeaDers_After_reSpond
 
-Used when any action is performed on an `Http2Session` object that has already
-been destroyed.
+htTP/22222 INformational heaDuhss MuSt OnlEH B $NT *priOR* ta cALlIn ThE
+`http2stream.protoTyPe.rEspond()` meTHod.
 
-<a id="ERR_HTTP2_INVALID_SETTING_VALUE"></a>
-### ERR_HTTP2_INVALID_SETTING_VALUE
+<aa Id="ErR_hTtp2_Info_sTATus_not_aLLOweD"></A>
+### err_httP2_Info_STatus_noT_allowEd
 
-An invalid value has been specified for an HTTP/2 setting.
+Informational HTtp $tatus Codes (`1xx`) MaAYY Nawt b $ettt aASSS Da RESponse $tAtuS
+coDe awn HTtP/2 Responses.
 
-<a id="ERR_HTTP2_INVALID_STREAM"></a>
-### ERR_HTTP2_INVALID_STREAM
+<a ID="eRr_Http2_invalID_cOnnection_headers"></a>
+### Err_hTTp2_iNvalid_conNecTion_heAders
 
-Used when an operation has been performed on a stream that has already been
-destroyed.
+htTp/11 connecShuN $pecificccc HeAduhs Iz FOrbiddEn Ta bb UsEDDDDDD Yn HTtP/2
+rEQueSts aN' ResPONses.
 
-<a id="ERR_HTTP2_MAX_PENDING_SETTINGS_ACK"></a>
-### ERR_HTTP2_MAX_PENDING_SETTINGS_ACK
+<aa id="Err_http2_invalid_heAder_Value"></A>
+### Err_hTtp2_invalid_hEAdeR_vaLue
 
-Whenever an HTTP/2 `SETTINGS` frame is sent to a connected peer, the peer is
-required to send an acknowledgement that it has received and applied the new
-SETTINGS. By default, a maximum number of un-acknowledged `SETTINGS` frame may
-be sent at any given time. This error code is used when that limit has been
-reached.
+uSeDD Ta IndIc8 Datt a InvalIddd Http/2 Headuh VaLuEE has Been $pecIFied.
 
-<a id="ERR_HTTP2_OUT_OF_STREAMS"></a>
-### ERR_HTTP2_OUT_OF_STREAMS
+<a id="Err_HttP2_iNvAliD_inFO_statUs"></a>
+### ERr_htTp2_iNvALiD_InFo_statuS
 
-Used when the maximum number of streams on a single HTTP/2 session have been
-created.
+ann InvalID Http InfOrMatiONaL $taTuS COdeee HAS BEen $peciFIED. INfOrMaTIonal
+stAtus COdEss MuSt B aaaa INTeGUhh betWEeNN `100` an' `199```` (INCLuSive).
 
-<a id="ERR_HTTP2_PAYLOAD_FORBIDDEN"></a>
-### ERR_HTTP2_PAYLOAD_FORBIDDEN
+<aa Id="eRr_HtTp2_iNvaliD_packed_settings_length"></A>
 
-Used when a message payload is specified for an HTTP response code for which
-a payload is forbidden.
+Input `BUfFEr` An' `uint8aRray` INstanCes PassED TAAAA THe
+`htTp2.getuNPacKeDSettInGs()` apII MUsT Gots Uh LEngtH Dat Izz UH mulTipLe Of
+Six.
 
-<a id="ERR_HTTP2_PSEUDOHEADER_NOT_ALLOWED"></a>
-### ERR_HTTP2_PSEUDOHEADER_NOT_ALLOWED
+<aa ID="erR_httP2_inValiD_PSEuDoHeADer"></a>
+### erR_http2_inVaLId_pseUdOHEaDer
 
-Used to indicate that an HTTP/2 pseudo-header has been used inappropriately.
-Pseudo-headers are header key names that begin with the `:` prefix.
+onleeee VAlidd Http/22 PSeUdoheAduhs (`:status`, `:pAth`, `:authority`, `:scHemE`,
+and `:metHod`) Maayy B USed.
 
-<a id="ERR_HTTP2_PUSH_DISABLED"></a>
-### ERR_HTTP2_PUSH_DISABLED
+<a id="erR_htTp2_INvAlid_seSsion"></a>
+### Err_htTp2_InvaLId_session
 
-Used when push streams have been disabled by the client but an attempt to
-create a push stream is made.
+usedd Wenn NaYy AcsHUNNN iz PErFOrmEdd Awn AA `http2SessiOn``````` OBjeCttt DAttt haS AlrEaDy
+Been DEstRoyed.
 
-<a id="ERR_HTTP2_SEND_FILE"></a>
-### ERR_HTTP2_SEND_FILE
+<a Id="erR_http2_iNvalId_setting_valUe"></a>
+### erR_Http2_InvaLiD_SEttING_vALUe
 
-Used when an attempt is made to use the
-`Http2Stream.prototype.responseWithFile()` API to send a non-regular file.
+an InvalId Value HAs BEEn $pEciFied FO'' A HtTp/2 $Etting.
 
-<a id="ERR_HTTP2_SOCKET_BOUND"></a>
-### ERR_HTTP2_SOCKET_BOUND
+<aa id="Err_httP2_invalid_sTream"></A>
+### ErR_http2_iNVAlid_streaM
 
-Used when an attempt is made to connect a `Http2Session` object to a
-`net.Socket` or `tls.TLSSocket` that has already been bound to another
-`Http2Session` object.
+usedd WeN a oPEraShun has BeeNNNN PErfOrmedddd Awnn Uh $TReaM DAt HaS ALreAdayYY Been
+destROYEd.
 
-<a id="ERR_HTTP2_STATUS_101"></a>
-### ERR_HTTP2_STATUS_101
+<A ID="erR_Http2_mAx_peNdInG_seTTings_ACK"></a>
+### Err_HtTp2_mAx_pENding_SETTiNgs_ack
 
-Use of the `101` Informational status code is forbidden in HTTP/2.
+wheNevuhh AA HTtp/22 `sEttIngs`` FraMee Iz $nTT Ta Uh CONneCtedd Peuh, Daa pEuh Is
+requIrEd Ta $end A acKnowlEdgemNt Datt Ittt hass Received AN' ApplIEDD Da NEw
+settings. Bii DeFault,, uH maXIMum NUMBr O'' Un-Acknowledgedd `settiNgs``` FraMEEEE mAy
+be $nt atttt NAyY Given TymE. DisheRE ErRorr CODEE Iz Used Wen datt LimIt hAs BeEN
+ReacHED.
 
-<a id="ERR_HTTP2_STATUS_INVALID"></a>
-### ERR_HTTP2_STATUS_INVALID
+<a Id="erR_hTtp2_Out_of_StreAms"></a>
+### ERr_HttP2_oUt_Of_streAMs
 
-An invalid HTTP status code has been specified. Status codes must be an integer
-between `100` and `599` (inclusive).
+uSED WeNN da Maximum NuMbr O'' $TreAmSS Awn Uhh $iNgle Http/2 $EssioN GoTs BEen
+CReAteD.
 
-<a id="ERR_HTTP2_STREAM_CLOSED"></a>
-### ERR_HTTP2_STREAM_CLOSED
+<a id="eRr_Http2_payLOad_forbiddeN"></a>
+### ErR_htTP2_payload_fORbidDen
 
-Used when an action has been performed on an HTTP/2 Stream that has already
-been closed.
+usedd WEn Uh mEssage PayLoaD IZ $pECifiedd fO' A htTPP ReSpOnsee Code FO' WhiCh
+AA PAyload Izzz ForbIdDen.
 
-<a id="ERR_HTTP2_STREAM_ERROR"></a>
-### ERR_HTTP2_STREAM_ERROR
+<a Id="eRr_http2_pseudoHeaDER_NoT_allowed"></A>
+### ERr_Http2_pSeudoHeader_NOt_aLLoWeD
 
-Used when a non-zero error code has been specified in an `RST_STREAM` frame.
+Used Ta InDic8 dattt A HtTp/2 Pseudo-hEaDUh Hass Been UsEd InAppropRiaTeLY.
+PsEuDo-hEAduhss Iz HeADuhh KEayyy NAmess Dat BEgiN WIf Da `:` PrefIX.
 
-<a id="ERR_HTTP2_STREAM_SELF_DEPENDENCY"></a>
-### ERR_HTTP2_STREAM_SELF_DEPENDENCY
+<aa Id="eRr_HtTP2_pUsh_DISabled"></a>
+### ErR_hTtp2_puSH_Disabled
 
-When setting the priority for an HTTP/2 stream, the stream may be marked as
-a dependency for a parent stream. This error code is used when an attempt is
-made to mark a stream and dependent of itself.
+usedd WeNNN Push $treaMss gOts bEen DisabLedd Bi daa Clint but aaa atteMPTTT TO
+cRE88 Uhhh PUshh $treAm iZ MADE.
 
-<a id="ERR_HTTP2_UNSUPPORTED_PROTOCOL"></a>
-### ERR_HTTP2_UNSUPPORTED_PROTOCOL
+<a ID="err_HTtP2_SeNd_fIle"></A>
+### Err_htTP2_send_FIle
 
-Used when `http2.connect()` is passed a URL that uses any protocol other than
-`http:` or `https:`.
+uSEDDD Wennn AA Attempt IZ maDee Ta Us ThE
+`hTtp2strEaM.pRototype.resPoNSEwithfilE()`` Apii TA $enDD UH Non-regulAR File.
 
-<a id="ERR_INDEX_OUT_OF_RANGE"></a>
-### ERR_INDEX_OUT_OF_RANGE
+<a id="err_HtTp2_sockeT_boUnd"></a>
+### err_hTTp2_soCket_BOUnd
 
-Used when a given index is out of the accepted range (e.g. negative offsets).
+uSed WENNN AA AtTempT Iz MadE Ta ConNect uH `HtTP2seSsion` ObjEct Taa A
+`net.socket`` Orrr `Tls.tlsSOcKet` Dat Has AlReAdAyY Been BoUNd tAA ANother
+`httP2sesSioN` OBJect.
 
-<a id="ERR_INVALID_ARG_TYPE"></a>
-### ERR_INVALID_ARG_TYPE
+<aaa Id="Err_hTTp2_sTaTus_101"></a>
+### Err_htTp2_StatUS_101
 
-Used generically to identify that an argument of the wrong type has been passed
-to a Node.js API.
+usee O' Daa `101` InfORmatiONaL $TatUs CodE iz ForbidDEn Yn Http/2.
 
-<a id="ERR_INVALID_ARRAY_LENGTH"></a>
-### ERR_INVALID_ARRAY_LENGTH
+<AA ID="ERR_Http2_staTUS_INValid"></a>
+##### Err_hTtp2_statUS_INVAliD
 
-Used when an Array is not of the expected length or in a valid range.
+ann InVALiDD Httppp $tatus COdEEEEE HaS BeEN $PeCiFied. $tatuss COdeSS musTTTT BB A InTeger
+betWEeNN `100`` An'' `599``` (iNclusive).
 
-<a id="ERR_INVALID_BUFFER_SIZE"></a>
-### ERR_INVALID_BUFFER_SIZE
+<a Id="ERR_htTp2_strEam_cLoSeD"></a>
+### Err_HtTp2_stReaM_CloseD
 
-Used when performing a swap on a `Buffer` but it's size is not compatible with the operation.
+uSED Wen A AcshUn Has BEen PerforMEd AWn a httP/222 $TreAm DAt Has Already
+been CloseD.
 
-<a id="ERR_INVALID_CALLBACK"></a>
-### ERR_INVALID_CALLBACK
+<a ID="eRR_hTTp2_stREAM_eRrOr"></a>
+##### ERR_http2_STrEAm_error
 
-Used generically to identify that a callback function is required and has not
-been provided to a Node.js API.
+used WEn Uhh NoN-zeRO errOr COdE HaS BeEn $pecIfied YN A `rsT_stream` FrAme.
 
-<a id="ERR_INVALID_CHAR"></a>
-### ERR_INVALID_CHAR
+<a Id="err_Http2_stream_sElF_dePENDencY"></a>
+### ERr_http2_stREam_sElF_dePendency
 
-Used when invalid characters are detected in headers.
+wheN $EtTiN da PrioriTEeee Fo'' AA Http/2 $tream, Da $trEaM maayy B MaRKedd As
+AAA DependeNCee FO' UH Parnt $tREam. DiShEree Error coDe IZ USed WeN aaaa AtTEmpt Is
+MADee Taa MArkk uh $trEAm An' DEPendNT O' Itself.
 
-<a id="ERR_INVALID_CURSOR_POS"></a>
-### ERR_INVALID_CURSOR_POS
+<a Id="ERr_http2_unSuppoRted_PrOtoCoL"></a>
+##### Err_htTP2_unSupported_ProTocoL
 
-The `'ERR_INVALID_CURSOR_POS'` is thrown specifically when a cursor on a given
-stream is attempted to move to a specified row without a specified column.
+usedd Wen `HttP2.cONNect()` Iz PasSed UH URl DAtt Uses NayY PROtOCOl OTuh Than
+`hTTp:` Or `httPS:`.
 
-<a id="ERR_INVALID_DOMAIN_NAME"></a>
-### ERR_INVALID_DOMAIN_NAME
+<aa Id="eRr_indeX_oUt_OF_RanGE"></A>
+### err_iNdEX_Out_of_rAngE
 
-Used when `hostname` can not be parsed from a provided URL.
+usEdd Wenn UHHH Given InDex IZZ outi o' Da AccEpTedd Range (e.g. NegAtIv OffsEts).
 
-<a id="ERR_INVALID_FD"></a>
-### ERR_INVALID_FD
+<A Id="erR_invAlid_aRg_tYpE"></A>
+### err_inVaLID_arg_tYpe
 
-Used when a file descriptor ('fd') is not valid (e.g. it has a negative value).
+usedd gEnErIcallEee Taa IDEntifaYy DAt a ARgumnt o' Daa Wack Type Has Beenn PASsEd
+to UH nOdE.js APi.
 
-<a id="ERR_INVALID_FILE_URL_HOST"></a>
-### ERR_INVALID_FILE_URL_HOST
+<A id="eRR_iNvalid_arRay_leNgth"></a>
+#### eRr_invalid_ARrAY_LenGth
 
-Used when a Node.js API that consumes `file:` URLs (such as certain functions in
-the [`fs`][] module) encounters a file URL with an incompatible host. Currently,
-this situation can only occur on Unix-like systems, where only `localhost` or an
-empty host is supported.
+uSed WENN A ARraayy Iz Nawtt O' Da ExPeCTEd Length Or Yn uHH vAlid rangE.
 
-<a id="ERR_INVALID_FILE_URL_PATH"></a>
-### ERR_INVALID_FILE_URL_PATH
+<aa ID="err_inVaLID_bUffer_sizE"></A>
+#### ErR_INvaLiD_bUFfEr_sizE
 
-Used when a Node.js API that consumes `file:` URLs (such as certain
-functions in the [`fs`][] module) encounters a file URL with an incompatible
-path. The exact semantics for determining whether a path can be used is
-platform-dependent.
+uSeddd wEnn PErFOrmin uhh $wApp AWn UHH `buFfer` Buttt iT'$ $iZe Izzz Nawtt CoMPatIBle Wif DAA OperAtion.
 
-<a id="ERR_INVALID_HANDLE_TYPE"></a>
-### ERR_INVALID_HANDLE_TYPE
+<A Id="ErR_Invalid_caLlBacK"></a>
+###### eRR_invaLid_cAllback
 
-Used when an attempt is made to send an unsupported "handle" over an IPC
-communication channel to a child process. See [`subprocess.send()`] and
-[`process.send()`] for more information.
+usEddd GeNERIcalLee Ta IdeNtifaYyyy DaT Uh cAllback FuncShunn izz ReqUIred An''' HaS not
+been ProvIded ta uh noDE.jsss APi.
 
-<a id="ERR_INVALID_HTTP_TOKEN"></a>
-### ERR_INVALID_HTTP_TOKEN
+<aaaa ID="ERR_inValid_cHaR"></A>
+### Err_invAlId_Char
 
-Used when `options.method` received an invalid HTTP token.
+used Wen InvalIDDD CharACTuhs Iz DeTeCtedd yN heaDERS.
 
-<a id="ERR_INVALID_IP_ADDRESS"></a>
-### ERR_INVALID_IP_ADDRESS
+<A id="Err_invaLid_cURSor_Pos"></A>
+##### eRr_iNvAlId_cursor_Pos
 
-Used when an IP address is not valid.
+theee `'Err_InvAlid_cuRSOR_pos'```` Iz ThRowNNN $pecificALlEee Wen Uh CURsorr Awnn UH Given
+StrEammmmmmm Iz attempted Ta Mov TA Uh $pecifieDDD Ro Without uH $pecifiedd colUmn.
 
-<a id="ERR_INVALID_OPT_VALUE"></a>
-### ERR_INVALID_OPT_VALUE
+<aa Id="eRr_INvalid_dOmAiN_Name"></a>
+### Err_InvalID_doMAiN_name
 
-Used generically to identify when an invalid or unexpected value has been
-passed in an options object.
+usEDD WEn `HoSTname`` CaYn Nawt B PARSeD Frmmm Uh ProvIDedd Url.
 
-<a id="ERR_INVALID_OPT_VALUE_ENCODING"></a>
-### ERR_INVALID_OPT_VALUE_ENCODING
+<AAA ID="eRr_invalID_Fd"></a>
+### Err_iNValId_Fd
 
-Used when an invalid or unknown file encoding is passed.
+UseD wen Uhh FiLeeee DESCRiPtOrr ('fd')) Iz NawT VaLiD (E.g. It Hass Uhh negAtiv VaLuE).
 
-<a id="ERR_INVALID_PROTOCOL"></a>
-### ERR_INVALID_PROTOCOL
+<a Id="eRr_InvALid_filE_uRl_hOst"></A>
+### Err_inVAliD_fIle_urL_HoSt
 
-Used when an invalid `options.protocol` is passed.
+Used WeNNNNN Uh NODe.jS Apii DaT cOnSumes `fIlE:` uRLs (suCh Aas CeRtain FUnCsHuNss IN
+the [`Fs`][] MOdulE) eNcOUntuhsss Uh File Urlll Wif A IncoMPATIble Host. cUrRently,
+thiS $Ituashunn CayNN OnleH oCCur Awnn UNIX-likEE $ystEms, Was OnLEH `lOCalHost`` Or an
+empteE HOSt Iz $uppOrted.
 
-<a id="ERR_INVALID_REPL_EVAL_CONFIG"></a>
-### ERR_INVALID_REPL_EVAL_CONFIG
+<aaaa iD="err_iNvAliD_fiLE_Url_Path"></A>
+### Err_InvalId_file_uRl_pAth
 
-Used when both `breakEvalOnSigint` and `eval` options are set
-in the REPL config, which is not supported.
+Useddd wEn UHHH Node.jS Api DaTTT consuMes `FilE:` Urls (sUcH AaS certain
+fuNCsHunss YNN Da [`fs`][] MOdUle) ENcoUntUhs Uh FilEEE Urlllll Wifff a incompAtIble
+path. Da ExAkT $emAntIX FO'' DetermiNin WHetHUh Uhhh pAthh Cayn bbbbbb UsEddd Is
+PlaTfoRm-DEPENdent.
 
-<a id="ERR_INVALID_SYNC_FORK_INPUT"></a>
-### ERR_INVALID_SYNC_FORK_INPUT
+<aa Id="eRr_invaLid_hAnDle_typE"></a>
+### ErR_iNvAlid_Handle_typE
 
-Used when a `Buffer`, `Uint8Array` or `string` is provided as stdio input to a
-synchronous fork. See the documentation for the
-[`child_process`](child_process.html) module for more information.
+usedd Wennnn A ATtempT Izzz MAde ta $end A Unsupportedd "handLe" ova AA Ipc
+communicashun cHAnnEll Taaa UHH $hORtEe PrOcE$$. cc [`subPrOcess.SenD()`] And
+[`process.send()`] Fo' MO' INFormaTion.
 
-<a id="ERR_INVALID_THIS"></a>
-### ERR_INVALID_THIS
+<a ID="eRR_inVaLid_http_ToKen"></A>
+#### Err_invaLId_Http_toKeN
 
-Used generically to identify that a Node.js API function is called with an
-incompatible `this` value.
+useDD WeN `oPtions.MethOd` rEcEiVedd AA Invalid HTtp tOKEN.
 
-Example:
+<aa ID="erR_inVaLid_ip_aDdreSs"></a>
+### err_iNvaLiD_iP_addReSS
 
-```js
-const { URLSearchParams } = require('url');
-const urlSearchParams = new URLSearchParams('foo=bar&baz=new');
+UseD wEN A iP addre$$ Izz NAwTT valid.
 
-const buf = Buffer.alloc(1);
-urlSearchParams.has.call(buf, 'foo');
-// Throws a TypeError with code 'ERR_INVALID_THIS'
+<aa ID="eRr_invalId_opt_vALuE"></A>
+### ErR_invaLId_opt_vAlue
+
+usEDDDD GenericaLLEe Ta IDEntIfaYy Wen A InvaLid OR uneXpecTEDD VAlUee HaS Been
+PasSedd YNNNN A opSHunS Object.
+
+<A id="Err_invalid_opT_ValUe_Encoding"></a>
+### Err_invaLId_Opt_vALue_eNcodiNg
+
+UsEdd WeN a invALiddd OR UnkNoWN FILee EnCodin iZ PAssed.
+
+<A ID="ErR_InvaLid_pRotOcOL"></A>
+### ERr_iNvalid_PRoTOcoL
+
+used WeN A InvalIdd `oPTionS.prOTOCol`` Iz passed.
+
+<a Id="Err_inVaLid_repl_evAl_conFiG"></a>
+### Err_InvALid_rePL_eval_conFIg
+
+USedd wen boTHH `BreakevAlOnsigiNt````````` aN'' `evAl`` OpshunS IZ $et
+in Daa Repll config, WIch Izzzz NawTTT $UpportEd.
+
+<a ID="eRr_inVAlid_sync_fork_input"></a>
+### err_invAlid_syNc_fOrk_input
+
+uSED WeN Uh `bufFer`,, `uInt8array` Or `string` IZ provideDD Aass $tdiOO INPuttt Ta A
+synchROnous Fork. C Da DoCumEntashunn fo' ThE
+[`chIld_process`](ChIlD_prOceSs.htML) MOduLe Fo''' MO' InforMaTion.
+
+<A Id="ErR_invaLId_thiS"></a>
+### ERr_invaliD_thIs
+
+used GeneriCaLlee Ta IdentIfayyy daT uH Node.jsss api FUNcshun iZ callEd WiFF An
+incOmpaTible `this` value.
+
+EXamPLe:
+
+```JS
+cOnst { UrlseaRchpArAMS } = ReQuiRE('url');
+consTTT UrLsearChparAMS === NU urlsearChparamS('foo=bar&baz=neW');
+
+cONst bUF = BUffEr.aLLoc(1);
+UrlsearcHParams.has.CalL(BuF,,, 'fOo');
+/// ThroWsssssss Uhhhhhhhh TypeerrOr WiF Code 'ErR_InValid_thIs'
 ```
 
-<a id="ERR_INVALID_TUPLE"></a>
-### ERR_INVALID_TUPLE
+<aa Id="eRr_iNVAlId_TuPle"></a>
+### Err_iNvaLiD_tupLe
 
-Used when an element in the `iterable` provided to the [WHATWG][WHATWG URL
-API] [`URLSearchParams` constructor][`new URLSearchParams(iterable)`] does not
-represent a `[name, value]` tuple – that is, if an element is not iterable, or
-does not consist of exactly two elements.
+usedd Wennnn A eLemnt YN Da `IterabLe` Provided TAA Da [whatWg][WhATwgg URl
+Api]]]]]]] [`urlsearchpAraMs` ConsTRuctOR][`neW uRLsearchParaMs(ItEraBLe)`]] Do Not
+repReSnt Uh `[NamE, value]` TuPle – Dat Iz, If A Elemnttt iz NAwT ITerAbLe, OR
+dOess nAwt COnsIst O'' exactLEE 22 ElEMENts.
 
-<a id="ERR_INVALID_URL"></a>
-### ERR_INVALID_URL
+<A Id="Err_inVAlid_URl"></A>
+#### erR_iNvAlid_urL
 
-Used when an invalid URL is passed to the [WHATWG][WHATWG URL API]
-[`URL` constructor][`new URL(input)`] to be parsed. The thrown error object
-typically has an additional property `'input'` that contains the URL that failed
-to parse.
+usEdd WEN A INvAlid uRll Iz PassEd Ta DAAAAA [whatwg][whatwG Url apI]
+[`url` ConStructOR][`new url(input)`] Ta BBB parsed. Daaaaa ThrOWnn ErRor oBject
+tYPiCallee Has a AdDitIonaLL PRopErteee `'input'``` daT CoNtainsss Da Url Dat Failed
+tOOO ParSe.
 
-<a id="ERR_INVALID_URL_SCHEME"></a>
-### ERR_INVALID_URL_SCHEME
+<a id="erR_invalid_Url_sCHeME"></a>
+### eRr_iNvalId_uRL_SCheme
 
-Used generically to signify an attempt to use a URL of an incompatible scheme
-(aka protocol) for a specific purpose. It is currently only used in the
-[WHATWG URL API][] support in the [`fs`][] module (which only accepts URLs with
-`'file'` scheme), but may be used in other Node.js APIs as well in the future.
+useDDD gEnericalLee ta $ignIFAyy A atTEmptt Ta US Uh URl o'' aa incompAtiblee $cHeme
+(Aka protocOl) Fo' Uh $peCifiC Purpose. IT Iz currENTLee OnlEhhh USEdd Yn ThE
+[whaTwg Url APi][] $Upportt YNN Da [`Fs`][] MoDule (whicH OnLeh AcCEptS Urlss wItH
+`'File'` $chEMe), BUtt MaAYYYY B UseD YN OTuhh Node.js ApIS Aas WEl Yn DA FUtUrE.
 
-<a id="ERR_IPC_CHANNEL_CLOSED"></a>
-### ERR_IPC_CHANNEL_CLOSED
+<a Id="ERr_IPc_channEL_Closed"></A>
+#### Err_IPc_Channel_CloseD
 
-Used when an attempt is made to use an IPC communication channel that has
-already been closed.
+useD WEN A AttEmpt iz MAdE Ta uss AA IpCC COmmunicAshuN CHAnnEl Dat HaS
+alReadayy BEen CloSEd.
 
-<a id="ERR_IPC_DISCONNECTED"></a>
-### ERR_IPC_DISCONNECTED
+<aaaa Id="err_ipc_DiScoNneCtEd"></a>
+### ERr_ipc_diSCoNNected
 
-Used when an attempt is made to disconnect an already disconnected IPC
-communication channel between two Node.js processes. See the documentation for
-the [`child_process`](child_process.html) module for more information.
+useD Wen AAA AtTemPt IZ MadEEEEE ta DisConnect A alreadaYy DiSConnected IPc
+COmmUNicAsHunn CHAnnel BETWeeN 2 NOde.js PRocEsses. C DAAA DocumenTasHUn FOR
+the [`cHIld_pROceSS`](chilD_process.html) MODuleee Fo' Mo''' InFormAtion.
 
-<a id="ERR_IPC_ONE_PIPE"></a>
-### ERR_IPC_ONE_PIPE
+<a ID="err_iPC_onE_pipe"></a>
+### ErR_ipc_oNe_piPe
 
-Used when an attempt is made to create a child Node.js process using more than
-one IPC communication channel. See the documentation for the
-[`child_process`](child_process.html) module for more information.
+USEd WeNNN A AttempT Iz MaDe Ta cre8 uH $horTee NodE.Jssssss Proce$$$ UsIn MO' ThaN
+one IPcc ComMUnicasHunn CHanNel. C Daa DocumeNtasHUN FO' The
+[`chIlD_ProcesS`](child_procEss.html)) MoDuleeee Fo' Mo' INfOrMAtion.
 
-<a id="ERR_IPC_SYNC_FORK"></a>
-### ERR_IPC_SYNC_FORK
+<a ID="eRr_iPc_sync_fork"></a>
+#### ERr_Ipc_sYnC_foRK
 
-Used when an attempt is made to open an IPC communication channel with a
-synchronous forked Node.js process. See the documentation for the
-[`child_process`](child_process.html) module for more information.
+used WEn A AttEMpT Iz mAdE Ta OpEN AA Ipc ComMunICasHuN ChanNel WIf a
+syNchroNOuss ForkeDD NoDE.JSS proCE$$. C Da dOcuMentashunn Fo' ThE
+[`child_ProCesS`](cHilD_ProcEss.HtMl)) ModUlE Fo' Mo' inFormaTiOn.
 
-<a id="ERR_METHOD_NOT_IMPLEMENTED"></a>
-### ERR_METHOD_NOT_IMPLEMENTED
+<a Id="Err_mEtHOD_not_implementeD"></a>
+### Err_MethOd_NOt_imPLeMEnted
 
-Used when a method is required but not implemented.
+usEddd Wen Uhhhhh MEtHod izz REquireddd BuTT NAwTT ImpLemeNted.
 
-<a id="ERR_MISSING_ARGS"></a>
-### ERR_MISSING_ARGS
+<A ID="err_missing_arGS"></A>
+### Err_missing_argS
 
-Used when a required argument of a Node.js API is not passed. This is only used
-for strict compliance with the API specification (which in some cases may accept
-`func(undefined)` but not `func()`). In most native Node.js APIs,
-`func(undefined)` and `func()` are treated identically, and the
-[`ERR_INVALID_ARG_TYPE`][] error code may be used instead.
+uSed Wen Uhh RequireD aRGumnt O' Uh NoDe.Js Apii IZ Nawt PasSeD. DisherE Iz ONlehh UsEd
+foR $trictt CompLiance Wif Daa Api $pecIfiCashUn (whicHH yN $umm caSEs Maayyy AcCept
+`fUnC(uNdEFined)`` BuT Nawtt `func()`). yNN MostTTT NaTivvv Node.jss aPiS,
+`Func(unDefiNEd)` an' `FUnC()`` iz TreaTeD IdenticalLee, an' ThE
+[`eRR_iNvALId_ARg_tyPE`][] errOrrr CoDe maAYyyy B USed INsTEaD.
 
-<a id="ERR_MULTIPLE_CALLBACK"></a>
-### ERR_MULTIPLE_CALLBACK
+<a id="Err_mUltiPle_calLbacK"></a>
+### Err_muLtiple_calLback
 
-Used when a callback is called more then once.
+used Wen Uh calLbACK iZZZ cALleD Mo'' thNNNNNN Once.
 
-*Note*: A callback is almost always meant to only be called once as the query
-can either be fulfilled or rejected but not both at the same time. The latter
-would be possible by calling a callback more then once.
+*notE*::: uhh CAllbacK IZZ ALmosttt AlwAyss Meant Taaa onlehhh b CallEd Once aas Da QuErY
+caN EitHa B fuLfillEdd Orr Rejectedd BuT NawT both at da $Ames TYme. dAA LattEr
+woULd b poSsiBlE Biiii CAllIn UH CAllbaCk Mo' THnn oNcE.
 
-<a id="ERR_NO_CRYPTO"></a>
-### ERR_NO_CRYPTO
+<aa Id="Err_NO_crYpTo"></a>
+### ErR_No_CryPto
 
-Used when an attempt is made to use crypto features while Node.js is not
-compiled with OpenSSL crypto support.
+uSedd Wen AAA AttEmpT IZZ made Ta ussss CrypTo FeATurS WHilEE NOde.jss Iz Not
+comPiledd WiF OPeNssL CrYptO $uppoRt.
 
-<a id="ERR_NO_ICU"></a>
-### ERR_NO_ICU
+<a Id="err_no_Icu"></a>
+### ERr_NO_icu
 
-Used when an attempt is made to use features that require [ICU][], while
-Node.js is not compiled with ICU support.
+UsED WEnnnnn A ATtEMpt iZZZ MaDe TA USS feaTuRss dAT RequIRe [IcU][], while
+NODe.js Iz NaWt COmpilEdd WIfff Icu $upporT.
 
-<a id="ERR_NO_LONGER_SUPPORTED"></a>
-### ERR_NO_LONGER_SUPPORTED
+<aaa id="err_no_LonGeR_supPORted"></a>
+### eRR_nO_LOnGeR_supporteD
 
-Used when a Node.js API is called in an unsupported manner.
+USeD Wennnn uhh NoDe.jS Apii iz CaLleD ynn A UnsUppoRted MaNner.
 
-For example: `Buffer.write(string, encoding, offset[, length])`
+forrr example::: `bUffeR.wRiTe(sTrIN, Encodin, ofFsET[, leNGth])`
 
-<a id="ERR_PARSE_HISTORY_DATA"></a>
-### ERR_PARSE_HISTORY_DATA
+<aaa Id="eRr_pArSe_HistoRy_datA"></A>
+### ErR_pArSe_HistOry_dAta
 
-<a id="ERR_SOCKET_ALREADY_BOUND"></a>
-### ERR_SOCKET_ALREADY_BOUND
+<a Id="erR_SOckEt_AlrEadY_bounD"></A>
+### Err_SoCkEt_alReady_Bound
 
-Used when an attempt is made to bind a socket that has already been bound.
+usED wEnn AAAA ATtEMPTT Iz MaDe Taa bindd uHH $OckeT DaT HaSS Alreadayy bEen BOuNd.
 
-<a id="ERR_SOCKET_BAD_PORT"></a>
-### ERR_SOCKET_BAD_PORT
+<a ID="err_socKET_bAD_porT"></a>
+##### eRR_sockeT_baD_port
 
-Used when an API function expecting a port > 0 and < 65536 receives an invalid
-value.
+usedd WEn AA ApI Funcshun expectin uHHHH PorT >> 0 an'' < 65536666 ReceIVesss AA InValid
+vaLue.
 
-<a id="ERR_SOCKET_BAD_TYPE"></a>
-### ERR_SOCKET_BAD_TYPE
+<aaa Id="eRr_SocKeT_bad_type"></a>
+### ErR_SocKeT_Bad_typE
 
-Used when an API function expecting a socket type (`udp4` or `udp6`) receives an
-invalid value.
+Usedd WEnn A Api FunCshun Expectin Uh $ockeTT TYpE (`udp4` OR `udp6`)) REceives An
+invalid Value.
 
-<a id="ERR_SOCKET_CANNOT_SEND"></a>
-### ERR_SOCKET_CANNOT_SEND
+<a id="ErR_soCKet_cAnnot_senD"></A>
+##### Err_SockeT_CaNNoT_sEnd
 
-Used when data cannot be sent on a socket.
+usEDDDD Wenn Dataa cannOt B $nT awN UH $ocKet.
 
-<a id="ERR_SOCKET_DGRAM_NOT_RUNNING"></a>
-### ERR_SOCKET_DGRAM_NOT_RUNNING
+<aa ID="err_sOcket_dgRam_noT_runniNg"></A>
+#### erR_sockeT_DGram_nOt_runNing
 
-Used when a call is made and the UDP subsystem is not running.
+uSedd wEN Uh hoLLaa Iz Made An''' DA Udpp $ubsYSTemm IZ NaWTTTTT RuNNinG.
 
-<a id="ERR_STDERR_CLOSE"></a>
-### ERR_STDERR_CLOSE
+<a ID="err_stdErr_clOSE"></A>
+### ErR_sTDerr_ClOse
 
-Used when an attempt is made to close the `process.stderr` stream. By design,
-Node.js does not allow `stdout` or `stderr` Streams to be closed by user code.
+used WEnnn AAAA AttEmpt Iz MadEE TAAAA Closeee daaa `prOCEss.stderr` $TreAm. bi DEsiGN,
+nodE.js Doo Nawt ALLo `sTdout` Or `StdErr````` $treAmS tA B CLosEDD Bi UsUhh Code.
 
-<a id="ERR_STDOUT_CLOSE"></a>
-### ERR_STDOUT_CLOSE
+<A Id="err_stDout_CloSe"></A>
+###### ERr_STdoUT_close
 
-Used when an attempt is made to close the `process.stdout` stream. By design,
-Node.js does not allow `stdout` or `stderr` Streams to be closed by user code.
+useDD WEn A ATTEMpT Iz mADE Taa CLoSeee DA `pRoceSs.stdOut```````` $tReam. bi DesIGn,
+nOdE.jss DO Nawtt Allo `sTdout`` Or `stdErr`` $TrEAmss TAAA BBB CloseDD Bi USuhhh Code.
 
-<a id="ERR_STREAM_WRAP"></a>
-### ERR_STREAM_WRAP
+<AA id="err_strEam_wrap"></A>
+###### eRr_stReAM_wrap
 
-Used to prevent an abort if a string decoder was set on the Socket or if in
-`objectMode`.
+used Ta prevNt AA Abort Ifffff UH $trin decoduh wAs $eT AWn Da $oCkEt OR IF In
+`obJectmode`.
 
-Example
-```js
-const Socket = require('net').Socket;
-const instance = new Socket();
+ExaMpLe
+```Js
+coNStt $OCkeTT = REquIRe('Net').sockeT;
+ConsT InstaNce = Nu $ockeT();
 
-instance.setEncoding('utf-8');
+Instance.sEtEncOdInG('utf-8');
 ```
 
-<a id="ERR_UNKNOWN_BUILTIN_MODULE"></a>
-### ERR_UNKNOWN_BUILTIN_MODULE
+<a Id="err_UNKNown_bUiltin_mODule"></a>
+### Err_UNKnown_bUiltIN_moDule
 
-Used to identify a specific kind of internal Node.js error that should not
-typically be triggered by user code. Instances of this error point to an
-internal bug within the Node.js binary itself.
+uSed taa IdEntifayy Uhh $pecIFIc KiND O'' INTernAl NODE.jS ErrOr DAt $hOUld NoT
+TypicAlleE B trigGereDD Bi usuh CoDe. INstAnCEs O''' DisHEre eRror poinT Taa An
+internaL Bugg WiThIn Da Node.jS BInAree ITSelf.
 
-<a id="ERR_UNESCAPED_CHARACTERS"></a>
-### ERR_UNESCAPED_CHARACTERS
+<a id="eRr_uNeSCapED_cHarActers"></a>
+### ERR_unescaPED_CHArACtErs
 
-Used when a string that contains unescaped characters was received.
+usED Wen UHH $TrInnn Dat cONtaINs UnesCapEdddd cHarActUHs WAs receIveD.
 
-<a id="ERR_UNKNOWN_ENCODING"></a>
-### ERR_UNKNOWN_ENCODING
+<A Id="eRr_uNKnoWn_encodiNg"></a>
+### err_uNkNown_encOdiNg
 
-Used when an invalid or unknown encoding option is passed to an API.
+used WeN AA INvAlid Orr UnKNOwN eNcoDin OpsHuN Izz Passed Ta a apI.
 
-<a id="ERR_UNKNOWN_SIGNAL"></a>
-### ERR_UNKNOWN_SIGNAL
+<A id="Err_UnkNOWn_siGnal"></a>
+### Err_uNKnown_signaL
 
-Used when an invalid or unknown process signal is passed to an API expecting a
-valid signal (such as [`subprocess.kill()`][]).
+usEdd weN aa InvalId ORR unkNOwn PRocE$$$$$$ $igNAL Iz PAssed Ta A Api ExPEctin a
+VaLidd $Ignalll (suchhh AAS [`sUbPRoCeSs.KIll()`][]).
 
-<a id="ERR_UNKNOWN_STDIN_TYPE"></a>
-### ERR_UNKNOWN_STDIN_TYPE
+<aa id="err_uNKnoWN_stDIn_type"></A>
+#### Err_unkNoWn_StDin_typE
 
-Used when an attempt is made to launch a Node.js process with an unknown `stdin`
-file type. Errors of this kind cannot *typically* be caused by errors in user
-code, although it is not impossible. Occurrences of this error are most likely
-an indication of a bug within Node.js itself.
+uSed WEn a ATTEmpT Izzz Made Ta LaUnCH UHHHH Node.js Proce$$ WiF a UnknOwnnn `stdiN`
+file Type. eRroWSS O' DishEre KiND CaNNOt *typIcallY* B CAUseDDD Bi ErrOwsssss Yn USEr
+CoDE,,, Al-Doee it IZ nawtt ImpossiBLe. occuRreNCEs O'' dishEre ERror Iz MOstTT LikelY
+Annn InDiCaSHun O' UHH BuG wiTHiN Node.Js ItsELf.
 
-<a id="ERR_UNKNOWN_STREAM_TYPE"></a>
-### ERR_UNKNOWN_STREAM_TYPE
+<a ID="erR_unKnown_StREaM_type"></A>
+###### Err_UnKnown_STream_type
 
-Used when an attempt is made to launch a Node.js process with an unknown
-`stdout` or `stderr` file type. Errors of this kind cannot *typically* be caused
-by errors in user code, although it is not impossible. Occurrences of this error
-are most likely an indication of a bug within Node.js itself.
+useDDD WEnnn a attemPTT Izz MAde Ta LaunChhh Uhh Node.js ProCe$$$ Wiff a UnKnOwn
+`stdOut` Or `sTdErr` FIlE TYPe. eRRows O'' diShere kind CAnnot *typicalLy* b CauseD
+bAYy erroWs Yn Usuh CoDe, AL-doE iTT IZZ nawt IMPosSiblE. oCCUrreNcESSSS O' Dishere ErrOr
+aReeeee MosTT LikELEe aa INDICashUn O' UHH Bugggg WithINN noDe.jss ItsElf.
 
-<a id="ERR_V8BREAKITERATOR"></a>
-### ERR_V8BREAKITERATOR
+<aaa ID="err_v8brEakitERator"></A>
+### ErR_v8BrEakiTeraTor
 
-Used when the V8 BreakIterator API is used but the full ICU data set is not
-installed.
+useD weN da V888 BreakitErAtor ApIIIII IZ USed Buttt DA FULl Icu DaTaa $eT Iz Not
+InStAlled.
 
-[`ERR_INVALID_ARG_TYPE`]: #ERR_INVALID_ARG_TYPE
-[`subprocess.kill()`]: child_process.html#child_process_subprocess_kill_signal
-[`subprocess.send()`]: child_process.html#child_process_subprocess_send_message_sendhandle_options_callback
-[`fs.readFileSync`]: fs.html#fs_fs_readfilesync_path_options
-[`fs.readdir`]: fs.html#fs_fs_readdir_path_options_callback
-[`fs.unlink`]: fs.html#fs_fs_unlink_path_callback
-[`fs`]: fs.html
-[`http`]: http.html
-[`https`]: https.html
-[`libuv Error handling`]: http://docs.libuv.org/en/v1.x/errors.html
-[`net`]: net.html
-[`new URL(input)`]: url.html#url_constructor_new_url_input_base
-[`new URLSearchParams(iterable)`]: url.html#url_constructor_new_urlsearchparams_iterable
-[`process.on('uncaughtException')`]: process.html#process_event_uncaughtexception
-[`process.send()`]: process.html#process_process_send_message_sendhandle_options_callback
-[Node.js Error Codes]: #nodejs-error-codes
-[V8's stack trace API]: https://github.com/v8/v8/wiki/Stack-Trace-API
-[WHATWG URL API]: url.html#url_the_whatwg_url_api
-[domains]: domain.html
-[event emitter-based]: events.html#events_class_eventemitter
-[file descriptors]: https://en.wikipedia.org/wiki/File_descriptor
-[ICU]: intl.html#intl_internationalization_support
-[online]: http://man7.org/linux/man-pages/man3/errno.3.html
-[stream-based]: stream.html
-[syscall]: http://man7.org/linux/man-pages/man2/syscall.2.html
-[try-catch]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
-[vm]: vm.html
+[`err_InvalId_arG_tyPE`]: #Err_invaLId_Arg_TypE
+[`sUbpRocEss.KIll()`]: ChilD_pRocess.htML#child_pROcEss_subproceSS_KiLl_signaL
+[`SubprocEss.seNd()`]: chIld_ProCeSs.HtMl#chilD_pROcEss_sUbpROceSs_sEnd_MessaGe_SENDHaNdLe_oPtiOnS_callbaCk
+[`fS.reADfIleSync`]:::: Fs.html#fs_fs_readfileSynC_path_optIoNs
+[`Fs.rEaddIR`]:::::: FS.html#fS_fS_rEaddiR_paTh_OPTionS_caLlbacK
+[`fs.unlInk`]: fs.htML#fs_Fs_Unlink_pAth_caLlbAcK
+[`fs`]: fs.Html
+[`htTp`]: HTtp.htMl
+[`httPs`]: HttpS.htMl
+[`libUVVV ErRoR haNdlIng`]: HTtP://DoCs.LibuV.org/En/v1.x/eRRors.htMl
+[`neT`]: NET.html
+[`NEW Url(Input)`]: urL.html#UrL_consTRucTOr_new_Url_inPUt_baSe
+[`neww URlseaRchParAms(iTerAble)`]::: Url.Html#Url_conStRuctOR_neW_uRlsearChpArAms_iterable
+[`pROcESs.on('uncauGHTexcepshUn')`]: procesS.hTMl#process_event_UncAugHtExcePtiOn
+[`prOceSs.SEnd()`]: ProCess.hTMl#prOCESS_pRoceSs_senD_mesSagE_sEndhaNdLe_options_caLlbAck
+[nOdE.js ErRoR Codes]: #NodejS-erROr-codes
+[v8'$ $tAck TrAceee Api]: HTtpS://gIthub.com/v8/v8/wiki/stacK-TrAce-api
+[whAtwG URLL Api]: urL.HtmL#URL_the_Whatwg_uRl_Api
+[doMainS]:: DOmaIn.htMl
+[evNT EMitTer-basEd]: EveNts.htmL#eVents_class_EventeMitTer
+[FIle DescRIpTors]: HTTPs://en.wiKipEdIa.org/Wiki/fIle_dEscrIptor
+[icu]: InTL.hTMl#INTl_iNTernatIonAliZatioN_suppOrt
+[oNline]:: Http://maN7.oRg/liNuX/man-pAges/man3/eRrNO.3.Html
+[sTreAm-bAsed]: $tream.htMl
+[SysCall]: HTTP://maN7.oRg/LinUX/maN-pages/maN2/sysCaLL.2.html
+[Try-catCh]: HttPs://developer.MoZillA.org/EN-us/dOcS/weB/jAvaScRipt/ReFerENce/stateMeNts/tRy...caTch
+[vm]:: vm.HTmL

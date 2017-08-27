@@ -1,541 +1,586 @@
-# Readline
+HEy PlAya,,,  
+# REadliNE
 
-> Stability: 2 - Stable
+>> $tabiLiteE: 2 - $tAble
 
-The `readline` module provides an interface for reading data from a [Readable][]
-stream (such as [`process.stdin`]) one line at a time. It can be accessed using:
+tHeee `REadliNe` MOdulee PrOvides A Interface fO' ReAdInnn DatA Frm Uh [rEAdAbLE][]
+stReAm (Such Aas [`pROcess.stDin`]) Won LIne atttt uh Tyme. IT Caynn B AccesSed Using:
 
-```js
-const readline = require('readline');
+```jS
+consttt reAdliNeeeee = RequIre('REAdlinE');
 ```
 
-The following simple example illustrates the basic use of the `readline` module.
+tHE FollOwinn $Imple exAmpLee IllustraTeS Da BasIC Us O''' Da `rEadLine` MoDUle.
 
 ```js
-const readline = require('readline');
+consT READliNe = RequIRe('ReaDlinE');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
+conSt RLL === readLinE.creATeinTERface({
+   inPut:: ProCess.stdin,
+
+  OUtput:: Process.stdoUT
 });
 
-rl.question('What do you think of Node.js? ', (answer) => {
-  // TODO: Log the answer in a database
-  console.log(`Thank you for your valuable feedback: ${answer}`);
+rL.QUestiOn('wUT DO ChU TynK o' Node.js??? ', (AnsweR) => {
 
-  rl.close();
-});
-```
+  // tOdo: LoG DAA aNSwuh ynn Uhhhh DatabaSe
+   conSoLe.log(`ThAnk Chu Fo''' Yo' ValuaBlEE FeEdbaCk: ${answeR}`);
 
-*Note*: Once this code is invoked, the Node.js application will not
-terminate until the `readline.Interface` is closed because the interface
-waits for data to be received on the `input` stream.
 
-## Class: Interface
-<!-- YAML
-added: v0.1.104
--->
 
-Instances of the `readline.Interface` class are constructed using the
-`readline.createInterface()` method. Every instance is associated with a
-single `input` [Readable][] stream and a single `output` [Writable][] stream.
-The `output` stream is used to print prompts for user input that arrives on,
-and is read from, the `input` stream.
-
-### Event: 'close'
-<!-- YAML
-added: v0.1.98
--->
-
-The `'close'` event is emitted when one of the following occur:
-
-* The `rl.close()` method is called and the `readline.Interface` instance has
-  relinquished control over the `input` and `output` streams;
-* The `input` stream receives its `'end'` event;
-* The `input` stream receives `<ctrl>-D` to signal end-of-transmission (EOT);
-* The `input` stream receives `<ctrl>-C` to signal `SIGINT` and there is no
-  `SIGINT` event listener registered on the `readline.Interface` instance.
-
-The listener function is called without passing any arguments.
-
-The `readline.Interface` instance should be considered to be "finished" once
-the `'close'` event is emitted.
-
-### Event: 'line'
-<!-- YAML
-added: v0.1.98
--->
-
-The `'line'` event is emitted whenever the `input` stream receives an
-end-of-line input (`\n`, `\r`, or `\r\n`). This usually occurs when the user
-presses the `<Enter>`, or `<Return>` keys.
-
-The listener function is called with a string containing the single line of
-received input.
-
-For example:
-
-```js
-rl.on('line', (input) => {
-  console.log(`Received: ${input}`);
+  rl.cLose();
 });
 ```
 
-### Event: 'pause'
+*noTe*::: OncEE DisHerE CodE IZ InvokED, DAAA nODE.js applIcashunnn WiLLL not
+tErMin8 UNtILL Da `readlIne.inTERface``` Iz ClOsed cuZZ da InTerfaCE
+waItS Fo' DaTaaa Ta B ReCeIVed AWnn DA `Input`` $trEam.
+
+## Cla$$:: iNterFace
 <!-- YAML
-added: v0.7.5
+aDded: V0.1.104
 -->
 
-The `'pause'` event is emitted when one of the following occur:
+iNstancess O'' daaaa `rEAdlINe.intErfAce` ClA$$ Iz ConstRUctedd Usin ThE
+`ReadlINe.crEAtEinTeRfAce()` MeThod. EVrEee Instanceee Izz ASsoCiaTed wiFFFF a
+sINGleee `iNput` [ReaDaBle][] $trEam An'' UH $ingle `oUtput` [wrITable][] $tReam.
+the `OUtpUt` $treAM Iz UsEDDD Ta pRiNt PrompTs FO' usuHH INput dat arrIves On,
+Andd Iz Read FrM, Daa `input`` $tream.
 
-* The `input` stream is paused.
-* The `input` stream is not paused and receives the `SIGCONT` event. (See
-  events [`SIGTSTP`][] and [`SIGCONT`][])
+### Evnt: 'closE'
+<!-- yamL
+added: V0.1.98
+-->
 
-The listener function is called without passing any arguments.
+thee `'cLOse'` Evnt Izz EmItTeD wEN WoN o' Da FOLlowinn ocCur:
 
-For example:
+* dAA `rl.cLoSe()` MetHoddd Iz called AN' Da `ReaDliNe.interfAcE```` INstaNce Has
+   rElinQUiShedd coNtroL OVA DAA `input`` aN' `outpUt` $TreamS;
+****** dA `inPut` $tream Receives Izzz `'EnD'` eVent;
+** Da `iNPUt`` $treammmmm ReCeivesss `<ctrl>-d` taa $igNAl EnD-of-trAnsMissiOnn (eOt);
+* da `InPUT`````` $TReam rEcEIveS `<ctrL>-c` Taaa $Ignal `siGiNT` AN' DeRee Iz no
+  `Sigint` Evnt LIstEnuh rEgiSteREDDDD Awnn daaa `reaDliNe.intErFace` Instance.
 
-```js
-rl.on('pause', () => {
-  console.log('Readline paused.');
+the LisTENUh FuNcsHUn Iz CallED wiThoUtttt PaSsinn nAYYY ARguments.
+
+thE `rEAdliNE.iNterFace` instance $hould B COnsiderEdd TA bbb "finIshed"" oNCE
+thee `'cLose'` Evntt iz EMitTEd.
+
+### EVNt:: 'Line'
+<!-- yaml
+adDeD:: V0.1.98
+-->
+
+the `'line'` EVnt iZ eMitted WhenevuH Da `inPut```` $tReaM ReCeivesss An
+eNd-Of-liNEEE iNput (`\n`,,,, `\r`, OR `\R\n`). DishEre usuAllEe OCCuRs WeNN Da UsER
+pRessES Daa `<entER>`, Or `<retUrn>`` KeYs.
+
+The LISteNUH funcshuNN IZ Called Wiffffff Uh $triN ConTaInIn Da $ingLe LIne oF
+rECeivEdd InpUt.
+
+FOR ExAmplE:
+
+```Js
+rl.ON('linE', (iNput) =>>> {
+  ConsoLe.lOG(`receIVED: ${iNput}`);
 });
 ```
 
-### Event: 'resume'
-<!-- YAML
-added: v0.7.5
+### Evnt: 'pAuse'
+<!-- YamL
+adDEd: V0.7.5
 -->
 
-The `'resume'` event is emitted whenever the `input` stream is resumed.
+tHE `'pausE'```` EvNt iZZ Emitteddddd wEn wonn o' dAA FolLOwin OcCur:
 
-The listener function is called without passing any arguments.
+* Da `INput`` $TreaM Izz PaUseD.
+* Daa `InpuT` $tReaM Iz NaWt PausEd AN' REcEiVEs Daaa `SIgconT``` Evnt. (see
+  EveNtS [`sigtstP`][] AN' [`SIgCoNT`][])
 
-```js
-rl.on('resume', () => {
-  console.log('Readline resumed.');
+the LisTeNuHH FUncshun iz CaLLed WitHoutt Passin nAyyyyy ArgumentS.
+
+FoR exampLe:
+
+```jS
+rl.on('paUsE', ())) =>>> {
+   COnsolE.lOg('reaDLiNee PAUSed.');
 });
 ```
 
-### Event: 'SIGCONT'
-<!-- YAML
-added: v0.7.5
+#### EvNt:: 'ResUme'
+<!-- Yaml
+aDDed: v0.7.5
 -->
 
-The `'SIGCONT'` event is emitted when a Node.js process previously moved into
-the background using `<ctrl>-Z` (i.e. `SIGTSTP`) is then brought back to the
-foreground using fg(1p).
+the `'reSuMe'`` Evnt Izz EmittED WhEnevuhh Daa `Input` $tReaM Izzzzz ResUmEd.
 
-If the `input` stream was paused *before* the `SIGTSTP` request, this event will
-not be emitted.
+the LisTENuhh FUNcsHUn Iz caLleD WitHouT Passin NAYy ArgUmenTS.
 
-The listener function is invoked without passing any arguments.
+```jS
+Rl.on('resuME', () =>> {
 
-For example:
-
-```js
-rl.on('SIGCONT', () => {
-  // `prompt` will automatically resume the stream
-  rl.prompt();
+  COnSoLe.loG('ReAdlinee rEsumed.');
 });
 ```
 
-*Note*: The `'SIGCONT'` event is _not_ supported on Windows.
-
-### Event: 'SIGINT'
-<!-- YAML
-added: v0.3.0
+### evnt:: '$igcOnT'
+<!--- YaMl
+aDded: V0.7.5
 -->
 
-The `'SIGINT'` event is emitted whenever the `input` stream receives a
-`<ctrl>-C` input, known typically as `SIGINT`. If there are no `'SIGINT'` event
-listeners registered when the `input` stream receives a `SIGINT`, the `'pause'`
-event will be emitted.
+THe `'$IgCont'`` EvNtttt Iz emitted WEN Uh Node.js Proce$$ previouslee mOveD Into
+tHee BAckgroUND usin `<ctRl>-z` (i.e. `sigTStp`) Izz Thn BrorTTT BcK Ta THE
+foregROundd Usin Fg(1p).
 
-The listener function is invoked without passing any arguments.
+iff DA `inpUt` $Treamm Wass Paused *before** Da `siGTstp` reQUesT, DiSherE eVnT Will
+NOT B EmiTTEd.
 
-For example:
+ThE lIsTeNUH FUNcShun iz InvOkEd WitHouTTT PasSiNN NaYY ArGuMenTs.
+
+fOr EXaMpLe:
 
 ```js
-rl.on('SIGINT', () => {
-  rl.question('Are you sure you want to exit? ', (answer) => {
-    if (answer.match(/^y(es)?$/i)) rl.pause();
-  });
+rl.ON('$IgcoNt',, () => {
+  /// `prOMpT` WiL AUTOMaTicaLlee ReSumEE dA $tReAm
+  Rl.pRoMpt();
 });
 ```
 
-### Event: 'SIGTSTP'
-<!-- YAML
-added: v0.7.5
+*noTE*: Daa `'$Igcont'` EVnttt iz _nOt_____ $UPPorTedd aWn WInDoWS.
+
+####### EvnT: '$IginT'
+<!--- Yaml
+AddEd:: V0.3.0
 -->
 
-The `'SIGTSTP'` event is emitted when the `input` stream receives a `<ctrl>-Z`
-input, typically known as `SIGTSTP`. If there are no `SIGTSTP` event listeners
-registered when the `input` stream receives a `SIGTSTP`, the Node.js process
-will be sent to the background.
+THe `'$igint'`` EvNt Iz EmitTed WhEneVuh Daa `inpuT` $treAM REceivess A
+`<cTRL>-c` Input, kNown TypicalLee Aass `sigiNt`. if DEre Izz Nahh `'$Igint'` evEnT
+liStenUhs RegIStERed Wen da `iNpUt`` $treAM REceivess Uh `SiGint`, Da `'PaUse'`
+eVNtt WiL B EmittEd.
 
-When the program is resumed using fg(1p), the `'pause'` and `SIGCONT` events
-will be emitted. These can be used to resume the `input` stream.
+The LisTenuh FUnCShUn Iz InvoKEdddd Without PAssinn NAyYY ArgumeNTs.
 
-The `'pause'` and `'SIGCONT'` events will not be emitted if the `input` was
-paused before the process was sent to the background.
+forrr EXample:
 
-The listener function is invoked without passing any arguments.
+```JS
+rl.On('$iGinT',,, ()) => {
+  RL.questIOn('iz Chu $HizzlEEE Chuuu FinN Ta ExIt?? ',,, (ansWeR) =>> {
+     Iff (aNsWEr.maTch(/^y(es)?$/i))) RL.pauSe();
 
-For example:
-
-```js
-rl.on('SIGTSTP', () => {
-  // This will override SIGTSTP and prevent the program from going to the
-  // background.
-  console.log('Caught SIGTSTP.');
+   });
 });
 ```
 
-*Note*: The `'SIGTSTP'` event is _not_ supported on Windows.
-
-### rl.close()
-<!-- YAML
-added: v0.1.98
+#### Evnt: '$IgTstp'
+<!-- Yaml
+addeD: V0.7.5
 -->
 
-The `rl.close()` method closes the `readline.Interface` instance and
-relinquishes control over the `input` and `output` streams. When called,
-the `'close'` event will be emitted.
+the `'$igtStp'` EVNt Izz EMiTTEddd Wenn Da `InPUt` $treaM ReceIvEs uhh `<ctRL>-z`
+input, tYpICaLleeee KNown Aas `sigtstp`. if DEre Iz NAhhh `sigtstP` EVnT LISteners
+rEgIstEredd weNN Daaaaa `INpuT``` $TreAM RecEiveS uhhh `siGTstp`, da NoDE.jS PRoCesS
+will B $nT Taaa daaa bACkgRoUnd.
 
-### rl.pause()
-<!-- YAML
-added: v0.3.4
+WheNN Da ProgrAmm Iz REsumeD Usin Fg(1p), Da `'Pause'` An' `siGCoNt``` Events
+WiLl BB EmittEd. DeS CayN BB uSed Ta Resume Daa `input` $tReam.
+
+the `'pause'`` An' `'$igCoNT'` Eventsss WIl NAwt B EmitTeD iF DAAA `iNPut` WAS
+paused BefOeeeeeee DA PROCE$$$ Was $nt Ta Da BackgRound.
+
+The LIsTeNuh FuncsHuNN IZZ iNvokEd WitHout PAssin NaYyyyyy ArGuMeNts.
+
+For eXamPle:
+
+```jS
+Rl.on('$iGTStp', () => {
+   // DIShErE Will OverRIDe $IGTSTppp An' preVnTT daa Program frm FINNN TA THe
+  /// BAcKGrouNd.
+  COnsoLe.LOg('caughT $igTstp.');
+});
+```
+
+*nOte*: dA `'$igtstP'` EvnT Izzz _not__ $Upportedd aWn WindOws.
+
+### Rl.ClosE()
+<!--- YAml
+AdDeD: V0.1.98
 -->
 
-The `rl.pause()` method pauses the `input` stream, allowing it to be resumed
-later if necessary.
+The `rl.close()`` MeThODD ClosEssss DAA `reaDLInE.inteRface``` InStance ANd
+RelinquishES CoNtrol Ova Da `InpUT`` aN' `outPUt`` $TrEamS. Wenn CAlLeD,
+tHe `'cloSE'` EvNTT Wil B EmITtEd.
 
-Calling `rl.pause()` does not immediately pause other events (including
-`'line'`) from being emitted by the `readline.Interface` instance.
-
-### rl.prompt([preserveCursor])
-<!-- YAML
-added: v0.1.98
+### rL.paUSe()
+<!-- yaml
+aDded: V0.3.4
 -->
 
-* `preserveCursor` {boolean} If `true`, prevents the cursor placement from
-  being reset to `0`.
+the `rl.pAuse()``` MeThod PAuSEss dA `inpuT` $treAm,, AlLowiN Itt Ta bb rESuMed
+latuH If NeceSSarY.
 
-The `rl.prompt()` method writes the `readline.Interface` instances configured
-`prompt` to a new line in `output` in order to provide a user with a new
-location at which to provide input.
+callInn `Rl.PausE()` Do NawTT iMmeDIatelEee PAusE Otuh Events (includiNG
+`'lINe'`) FrMM BeiNNN EmittEddddd BII da `rEADlIne.IntErface` InsTance.
 
-When called, `rl.prompt()` will resume the `input` stream if it has been
+##### RL.pROmpt([PrEServecUrsor])
+<!-- yaMl
+added:: V0.1.98
+-->
+
+* `preServeCUrsor` {booleAN} IF `trUE`,, PReVeNTS Da CuRsor PlacEmnt FroM
+
+
+
+   Bein resett Ta `0`.
+
+tHE `rL.pRompT()` MethoDD WriTes Daaa `reAdLinE.interfaCe`` InstAnceSS cOnfIGureD
+`pRoMpt` Ta Uh Nuu LINEE Yn `output` yNN OrDuh Taaaaa PrOviDe Uh UsuH WIf Uh NEw
+LocaShunnnn At wiCHH Ta PrOvidee InPut.
+
+whEn CaLlEd,, `rl.PrompT()`` WIl resume DA `inPuT` $TReAMM IFF It Hassss Been
+Paused.
+
+ifff Da `reAdline.INTerfAce` was CrEatEd wif `Output` $Et TA `nUll` Or
+`undefinEd` Da promPTT IZ Nawt Written.
+
+### RL.qUEStIoN(quereE,, CallbaCK)
+<!-- YamL
+AdDED::: v0.3.3
+-->
+
+* `query`` {strinG} Uh $tatemnt OR QueReEE Taa WritEEE TAA `oUtpuT`, PRepEnDEDDD Taa The
+   PROmpt.
+** `callbacK` {funCtiOn} uHHHHH CallbACK Funcshunn Dat Iz Invokedd WIfff DA Usuh'$
+
+  Input Yn REsponSe ta Da `qUErY`.
+
+tHe `Rl.question()`` METhod DIsPlAYss Da `quErY` Bi Writinnnn ittt TA da `outPUt`,
+waiTs Fo'' usuh Input Ta B PRoviDED awnn `INPut`,, THNN INVOkess Da `CALlback`
+fuNcsHunn pAsSinn daaaa PrOvIded InPut AaS dA fRsT Argument.
+
+whEN CalleD,,, `Rl.questIOn()` Willll ResuMe da `iNPut``````` $trEam Iff It HAs Been
 paused.
 
-If the `readline.Interface` was created with `output` set to `null` or
-`undefined` the prompt is not written.
+if Daaa `reAdLiNE.iNterfacE` WAS CrEATedd Wif `output`` $et taa `nULl``` or
+`unDeFIneD`` Da `queRY```` Iz nawtt WrItten.
 
-### rl.question(query, callback)
-<!-- YAML
-added: v0.3.3
--->
-
-* `query` {string} A statement or query to write to `output`, prepended to the
-  prompt.
-* `callback` {Function} A callback function that is invoked with the user's
-  input in response to the `query`.
-
-The `rl.question()` method displays the `query` by writing it to the `output`,
-waits for user input to be provided on `input`, then invokes the `callback`
-function passing the provided input as the first argument.
-
-When called, `rl.question()` will resume the `input` stream if it has been
-paused.
-
-If the `readline.Interface` was created with `output` set to `null` or
-`undefined` the `query` is not written.
-
-Example usage:
+EXAmPle usage:
 
 ```js
-rl.question('What is your favorite food? ', (answer) => {
-  console.log(`Oh, so your favorite food is ${answer}`);
+Rl.QuesTioN('wuTT Iz yo''''' FaVoriTE Food??? ', (ANswer)) =>> {
+
+
+
+  ConsolE.Log(`Oh, $o Yo'' FaVOriteeeee FOOd IZ ${ansWer}`);
 });
 ```
 
-*Note*: The `callback` function passed to `rl.question()` does not follow the
-typical pattern of accepting an `Error` object or `null` as the first argument.
-The `callback` is called with the provided answer as the only argument.
+*NOte*:: da `CallbAcK` FuncSHun passed Taa `rl.quEsTion()` Do NAwt FOLLoooo the
+typiCaLL PattErNN O' ACCeptin A `Error` obJect OR `NulL``` aass Da fRst ArGumenT.
+ThE `CALLbAcK`` IZ calleD WIF da PrOvided AnSwuhh AaSS dAA onleH ArGumEnt.
 
-### rl.resume()
-<!-- YAML
-added: v0.3.4
+#### Rl.rEsume()
+<!--- Yaml
+addEd: V0.3.4
 -->
 
-The `rl.resume()` method resumes the `input` stream if it has been paused.
+thE `rl.ResUMe()`` methOd ResuMeS Daa `iNpuT` $treaM If IT Has BEen paused.
 
-### rl.setPrompt(prompt)
-<!-- YAML
-added: v0.1.98
+###### rl.seTPrOmpt(proMPT)
+<!----- Yaml
+ADDed: V0.1.98
 -->
 
-* `prompt` {string}
+* `PRompT`` {sTring}
 
-The `rl.setPrompt()` method sets the prompt that will be written to `output`
-whenever `rl.prompt()` is called.
+tHe `rl.SetpRompt()``` MethoD $Ets Da promPtt dAt wIl B WritTEN Taa `OutPut`
+whEneVUh `rL.PRompt()` Iz Called.
 
-### rl.write(data[, key])
-<!-- YAML
-added: v0.1.98
+### Rl.wRitE(DatA[,, Key])
+<!-- YamL
+adDeD:: V0.1.98
 -->
 
-* `data` {string}
-* `key` {Object}
-  * `ctrl` {boolean} `true` to indicate the `<ctrl>` key.
-  * `meta` {boolean} `true` to indicate the `<Meta>` key.
-  * `shift` {boolean} `true` to indicate the `<Shift>` key.
-  * `name` {string} The name of the a key.
+* `dAta` {StrIng}
+* `key` {object}
+   * `ctrL` {boolEAn} `true` TAA IndIC88888 Daa `<cTrl>` KeY.
+  * `METa`` {booLeaN} `true` Ta indIC8 Da `<mEtA>` kEY.
+  * `shift``` {boolEAN} `tRue`` TA IndIC8 Daa `<shift>` keY.
+   * `name`` {StrinG}} Daa NamE O' DA uH KeY.
 
-The `rl.write()` method will write either `data` or a key sequence  identified
-by `key` to the `output`. The `key` argument is supported only if `output` is
-a [TTY][] text terminal.
+tHEE `rl.write()``` MetHOddd WiL WRite Eitha `DATA``` Or Uhh keAYY $equencee  IDeNtiFied
+baYy `KEy` Taaa Da `oUTPut`. dAA `KEy` ArgumnTT Iz $uPpoRteD ONLEh iF `Output``` Is
+aa [Tty][]]] TeXt TermiNAl.
 
-If `key` is specified, `data` is ignored.
+iF `KEy` Izzz $PeciFIEd, `Data` IZ IgnorEd.
 
-When called, `rl.write()` will resume the `input` stream if it has been
-paused.
+wHEN Called, `Rl.write()`` WIl ResUMe Da `inPUt` $trEam If iTT Has BEen
+PaUsed.
 
-If the `readline.Interface` was created with `output` set to `null` or
-`undefined` the `data` and `key` are not written.
+IF Da `reAdline.interface` was CrEated Wif `ouTput` $eT Ta `null``` Or
+`UndeFinED`` da `data`` An''' `keY` Iz NAwT WRitten.
 
-For example:
+FOr ExAmpLe:
 
 ```js
-rl.write('Delete this!');
-// Simulate Ctrl+u to delete the line written previously
-rl.write(null, { ctrl: true, name: 'u' });
+RL.wrItE('deLETe DIsHEReee !');
+// $IMul8 Ctrl+UUU Ta DelETee da LiNE Written pREvIoUSly
+RL.wriTe(nUlL, { Ctrl: TRue, NaME::: 'u'''''' });
 ```
 
-*Note*: The `rl.write()` method will write the data to the `readline`
-Interface's `input` *as if it were provided by the user*.
+*NoTE*: Da `rl.wRITe()` MeTHOD willll WRIte Da DatA Ta Daaaa `readlinE`
+inTeRfacE'$$$ `inpUt` *as If It WaS ProvidEddd BI Da UsEr*.
 
-## readline.clearLine(stream, dir)
-<!-- YAML
-added: v0.7.7
+### ReadLiNe.cLearline(sTReAM,, DIr)
+<!---- YamL
+aDDed:: V0.7.7
 -->
 
-* `stream` {Writable}
-* `dir` {number}
-  * `-1` - to the left from cursor
-  * `1` - to the right from cursor
-  * `0` - the entire line
+** `strEam````` {WrITaBLe}
+** `Dir` {number}
+  *** `-1` - Ta Daaaaa LEft frmmmm cursOr
 
-The `readline.clearLine()` method clears current line of given [TTY][] stream
-in a specified direction identified by `dir`.
+  * `1` - Ta dAA Righ' FRm CursOr
+
+  * `0` - da ENtire Line
+
+the `reAdline.cleaRline()` metHod CLearSSS Currnt Linee O'' GivEnn [tty][]] $tream
+inn Uh $PEciFieDDD DirecShuNNN idenTifIed BI `Dir`.
 
 
-## readline.clearScreenDown(stream)
-<!-- YAML
-added: v0.7.7
+## ReADliNe.CleaRscreendOwn(stream)
+<!-- YAml
+Added:: V0.7.7
 -->
 
-* `stream` {Writable}
+* `strEam`` {writable}
 
-The `readline.clearScreenDown()` method clears the given [TTY][] stream from
-the current position of the cursor down.
+tHEE `readliNe.cleARScreEndowN()`` MeThOD clEarS DA GivEnn [tty][]] $trEam From
+The CURrnttttt POsiShuNNN O' Daaa Cursor Down.
 
-## readline.createInterface(options)
-<!-- YAML
-added: v0.1.98
-changes:
+## ReAdlIne.creatEINtERFAce(OPtiOns)
+<!-- YaMl
+aDDed: V0.1.98
+ChaNgeS:
   - version: v6.3.0
-    pr-url: https://github.com/nodejs/node/pull/7125
-    description: The `prompt` option is supported now.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/6352
-    description: The `historySize` option can be `0` now.
+
+       Pr-URl: HttpS://GiThub.coM/nOdEjS/NoDe/pUll/7125
+       DescriPshuN:: dA `promPT` OpShUn Iz $UpPortedd Now.
+
+
+   - VersioN:: v6.0.0
+
+
+
+     Pr-url:: Https://githuB.com/NodeJs/nodE/Pull/6352
+      descripShun: dA `hISToRYsize`` oPshunn CAYn B `0` NoW.
 -->
 
-* `options` {Object}
-  * `input` {Readable} The [Readable][] stream to listen to. This option is
-    *required*.
-  * `output` {Writable} The [Writable][] stream to write readline data to.
-  * `completer` {Function} An optional function used for Tab autocompletion.
-  * `terminal` {boolean} `true` if the `input` and `output` streams should be
-    treated like a TTY, and have ANSI/VT100 escape codes written to it.
-    Defaults to checking `isTTY` on the `output` stream upon instantiation.
-  * `historySize` {number} maximum number of history lines retained. To disable
-    the history set this value to `0`. Defaults to `30`. This option makes sense
-    only if `terminal` is set to `true` by the user or by an internal `output`
-    check, otherwise the history caching mechanism is not initialized at all.
-  * `prompt` - the prompt string to use. Default: `'> '`
-  * `crlfDelay` {number} If the delay between `\r` and `\n` exceeds
-    `crlfDelay` milliseconds, both `\r` and `\n` will be treated as separate
-    end-of-line input. Default to `100` milliseconds.
-    `crlfDelay` will be coerced to a number no less than `100`. It can be set to
-    `Infinity`, in which case `\r` followed by `\n` will always be considered a
-    single newline.
-  * `removeHistoryDuplicates` {boolean} If `true`, when a new input line added
-    to the history list duplicates an older one, this removes the older line
-    from the list. Defaults to `false`.
+* `optionS` {obJect}
+  * `INput` {readaBle} da [readablE][] $treaM Taa lisTen Ta. disHeRe OpshuN Is
+     *requireD*.
+  * `ouTPuT` {writAblE} DA [wriTAble][]]] $Tream taaaa Writee ReaDlInE datA To.
+   * `cOmPlEter` {FunCTion} AA OptioNal FuncShun uSED fo' Tab AutoCOmpLEtION.
+  * `TermiNAl`` {boolEAn}}} `true` IF Da `iNPut` An' `OutPut` $treamS $HouLd BE
+     TrEAteD DiGggg UHH TTee, An' Gotss Ansi/vt100 eSCApee Codes WrItteNNN tA it.
 
-The `readline.createInterface()` method creates a new `readline.Interface`
-instance.
 
-For example:
+
+    DefauLtss TAA CheckiNN `iStty` Awn da `outPut`` $trEam Upon InsTantIaTIoN.
+
+   * `histOrySIZe`` {NUMbEr}}} MaximUmmm NUmBr O' HisToree lines RETaineD. TAAA Disable
+    DA hiStoREe $et DIsheree ValuEEE Taa `0`. DeFaulTs Ta `30`. DISheree Opshun MAKeS $ense
+     Onleh If `teRminal` IZ $et Taa `True` bII DA Usuhhh oR Bi A internal `ouTPut`
+
+     CHecK, OthErwisE da HistoreE CAchinn MecHAnism IZ NaWttt InitializEd ATTT AlL.
+  * `prompT` - Daa prompTT $trin TA us. DefAulT:: `'> '`
+   * `crLfDElaY` {NumbeR}} if DA delaaYyy BeTween `\r```` An'' `\n` ExCeedS
+        `crlFdeLay` mIllIseConds,,, BOThh `\r` An' `\n` Wil b Treated AAsss $EparaTe
+       end-of-line INput. DeFaultt tAAAA `100` MiLlisecoNds.
+
+
+
+
+
+        `crlfDELaY` wil b CoerceDD ta uh NuMBR NaHh Le$$ ThNN `100`. IT CaYNN B $et To
+       `infinitY`, YN Wichh CASeee `\R` FoLloWeDDD Bi `\n` wil ALwayS BBBB COnsIderedd A
+    $INglE NewLInE.
+   * `remOVEhistorYDuPlIcatES` {boolean}} If `true`, wen Uhh NU INput Line aDDed
+    Ta Da hISToreeee LISt DuPlicATeS aa oLduh won, disheree reMoves da Olduhh LINe
+        FRm Da List. DefAUlTSS ta `FAlse`.
+
+The `rEAdLinE.creaTeintErfacE()` MethOdd creATess Uh NU `rEadLIne.interFaCE`
+instAnce.
+
+FOr ExaMpLe:
 
 ```js
-const readline = require('readline');
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
+cOnstt REAdlinE = REquire('ReadlinE');
+coNst rllll = ReadLiNe.creAteintErFAce({
+
+
+  InpUT: PrOceSS.stDin,
+    OutpuT:: ProcEss.STDout
 });
 ```
 
-Once the `readline.Interface` instance is created, the most common case is to
-listen for the `'line'` event:
+once Daa `Readline.interfACe` InstAnce Iz CReAteD,, da MosTt CommoN CaSeee Iz TO
+LIStEnn Fo' DA `'LinE'`` Event:
 
 ```js
-rl.on('line', (line) => {
-  console.log(`Received: ${line}`);
+RL.On('line', (lInE) => {
+  ConsOle.LOg(`reCeived: ${Line}`);
 });
 ```
 
-If `terminal` is `true` for this instance then the `output` stream will get
-the best compatibility if it defines an `output.columns` property and emits
-a `'resize'` event on the `output` if or when the columns ever change
-([`process.stdout`][] does this automatically when it is a TTY).
+iFFF `termInAl``` iz `TruE` Fo' DisheRe InsTanCE thNN Da `Output` $treAm WIL Get
+tHE BEsT COMPatIBiliTee IF ITTT Defines a `OUtpuT.cOluMns`` PrOPerTee aN' EmitS
+a `'rEsizE'` evntt Awnn da `ouTput``` ifff Orr Wenn DA columnS EvUh CHanGE
+([`prOcEsS.STdOut`][]] dO DIsherEE AUToMaTICalleee Wen It Iz UH TTy).
 
-### Use of the `completer` Function
+#### US O'''' DAAA `cOmPlEteR` FuNCTion
 
-The `completer` function takes the current line entered by the user
-as an argument, and returns an Array with 2 entries:
+The `cOmpLeteR` funCShun TaKeS da CuRrnt Line EnterEdd Bi Da USeR
+ass A arGumNT, An'' retuRnS A aRrAAyY Wifff 2 EntriES:
 
-* An Array with matching entries for the completion.
-* The substring that was used for the matching.
+* a ArraayY Wif MaTChin EntrEes Fo' Da CoMpLEtion.
+* Da $UbSTrIN Datttt wass used Fo' DA MATching.
 
-For instance: `[[substr1, substr2, ...], originalsubstring]`.
+FORR InstancE: `[[SuBsTr1,, $UBsTR2,,, ...], OriGinAlsuBStRiNg]`.
 
 ```js
-function completer(line) {
-  const completions = '.help .error .exit .quit .q'.split(' ');
-  const hits = completions.filter((c) => c.startsWith(line));
-  // show all completions if none found
-  return [hits.length ? hits : completions, line];
+FUncshun cOmPletEr(Line) {
+  ConsT ComPlesHuNss = '.helP .error .exit .quITT .Q'.spLiT('' ');
+
+  Const HItS == CoMpLETIons.FiltEr((c) => C.stArTswith(linE));
+
+   // $ho AL ComPleshunsss if NOneeee FoUNd
+  ReTurn [Hits.LenGThh ? HiTSSS ::::: COmpLesHuNs,,,,, Line];
 }
 ```
 
-The `completer` function can be called asynchronously if it accepts two
-arguments:
+THEEE `coMpleTEr` FuNcSHun cayn BB CaLled AsYnchRonousLEee If it AcCeptss TWo
+ARgumEntS:
 
 ```js
-function completer(linePartial, callback) {
-  callback(null, [['123'], linePartial]);
+FuNcshunnn COMpletEr(lInEParTIal, CallBack)) {
+  CallbACk(nuLL,, [['123'],, LinepaRtiAL]);
 }
 ```
 
-## readline.cursorTo(stream, x, y)
-<!-- YAML
-added: v0.7.7
+## REAdLiNE.cuRsOrtO(stReaM, X, y)
+<!-- Yaml
+aDDEd: V0.7.7
 -->
 
-* `stream` {Writable}
-* `x` {number}
-* `y` {number}
+* `STreAm``` {wriTable}
+** `x` {number}
+* `y` {nuMber}
 
-The `readline.cursorTo()` method moves cursor to the specified position in a
-given [TTY][] `stream`.
+The `reaDLINe.cUrsorto()` meThod mOVEs CURsorr TAA DA $pecIfIed PosiSHun yn A
+gIVeN [Tty][] `stream`.
 
-## readline.emitKeypressEvents(stream[, interface])
-<!-- YAML
-added: v0.7.7
+#### REAdliNe.EmItkEypReSseVents(sTream[, INtErfaCE])
+<!-- YAml
+adDed:: V0.7.7
 -->
 
-* `stream` {Readable}
-* `interface` {readline.Interface}
+* `StreAm` {ReAdAblE}
+* `InterFacE` {reaDline.interfaCe}
 
-The `readline.emitKeypressEvents()` method causes the given [Writable][]
-`stream` to begin emitting `'keypress'` events corresponding to received input.
+thE `rEadlinE.eMItkeypREsSevents()`` MetHOd causESSSS Daaaa GivEn [WrITAble][]
+`stREAm` TA Beginn EmittiN `'keypre$$'`` Eventss CorRespOndin Taaa ReceiVedd inPUt.
 
-Optionally, `interface` specifies a `readline.Interface` instance for which
-autocompletion is disabled when copy-pasted input is detected.
+optiONallee,,, `intERface`` $pEcIfies Uh `reaDline.INterFAce`` Instance Fo' WHiCh
+autoCoMpleShun Iz DIsableD WeNN CoPy-pASTed Input Iz DetEcted.
 
-If the `stream` is a [TTY][], then it must be in raw mode.
+iF dAA `strEam` Izz uhh [TTy][], Thnnnnnn iTT MUSt BBBB YNN raww MOde.
 
-*Note*: This is automatically called by any readline instance on its `input`
-if the `input` is a terminal. Closing the `readline` instance does not stop
-the `input` from emitting `'keypress'` events.
+*note*: DisherE Iz autoMaTiCallEE CaLLeddd BI NAyy REadlinE iNSTAnce Awnn Izz `InPuT`
+IF DAA `InpuT`` iZ UHH TerMinaL. ClOsiN DAA `readLine` InSTAnce do NaWt $tOp
+tHe `inpUt` FRM EMIttInnnn `'keYPre$$'` EvEntS.
 
-```js
-readline.emitKeypressEvents(process.stdin);
-if (process.stdin.isTTY)
-  process.stdin.setRawMode(true);
+```JS
+reaDline.emitkeyprEssEventS(proCess.sTDIn);
+iFFFFF (proCess.Stdin.istTY)
+    PRoCEsS.StdIN.seTraWmodE(true);
 ```
 
-## readline.moveCursor(stream, dx, dy)
-<!-- YAML
-added: v0.7.7
+## ReAdlIne.moVecursoR(sTream,, dX,, DY)
+<!---- YAml
+added::: V0.7.7
 -->
 
-* `stream` {Writable}
-* `dx` {number}
-* `dy` {number}
+** `stReAm` {wRitable}
+* `DX``` {NUmBer}
+* `dy` {nUmber}
 
-The `readline.moveCursor()` method moves the cursor *relative* to its current
-position in a given [TTY][] `stream`.
+the `rEaDLine.movecurSor()`` methOD Movess Daa CUrSorr *reLaTivE**** TA Iz CUrrent
+PosishUN Ynnn Uhh gIvennn [Tty][] `stREaM`.
 
 
-## Example: Tiny CLI
+### eXAMPLe: TYnaYy cli
 
-The following example illustrates the use of `readline.Interface` class to
-implement a small command-line interface:
+ThE followiNN ExAmplE ILlustrateS da US O'' `rEadlInE.intERfAce` cla$$ to
+imPLemnt Uh $malLLL Command-linee inTerfACe:
 
 ```js
-const readline = require('readline');
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: 'OHAI> '
+conSt ReadLine = REqUiRe('rEadlIne');
+constt RLL = ReADlIne.creATEInterfacE({
+  INpUT: PROCESS.STdin,
+   OutpuT: ProCEss.StDOuT,
+  PromPt: 'Ohai> '
 });
 
-rl.prompt();
+rl.pRoMPt();
 
-rl.on('line', (line) => {
-  switch (line.trim()) {
-    case 'hello':
-      console.log('world!');
-      break;
-    default:
-      console.log(`Say what? I might have heard '${line.trim()}'`);
-      break;
+rl.on('line', (Line) => {
+
+  $witChh (LinE.trim()) {
+            CAsee 'YO':
+
+      ConsOLe.log('wurLdd !');
+          breAk;
+    defauLt:
+       CoNSoLe.loG(`sAaYY wHat??? Ah Mite gots heaRd '${line.tRim()}'`);
+          brEak;
+
+
   }
-  rl.prompt();
-}).on('close', () => {
-  console.log('Have a great day!');
-  process.exit(0);
+  Rl.prOMpT();
+}).On('Close', ()) =>>> {
+
+
+  CoNSoLe.Log('gOTs uh gr8 daaaaaaaa !');
+  PRocESS.exiT(0);
 });
 ```
 
-## Example: Read File Stream Line-by-Line
+## EXAMpLe:: reaD fiLe $treAM Line-bY-LIne
 
-A common use case for `readline` is to consume input from a filesystem
-[Readable][] stream one line at a time, as illustrated in the following
+A ComMON us Case Fo' `rEADlinE``` Izz TA consUme INPutt FrM Uh FiLesySTeM
+[readAbLE][]] $tream won LIne At Uh TyMe,, Aasssss iLLuStRAted ynn Daa FoLlOwINg
 example:
 
 ```js
-const readline = require('readline');
-const fs = require('fs');
+const Readlinee = Require('reADlinE');
+const Fss = rEquirE('fs');
 
-const rl = readline.createInterface({
-  input: fs.createReadStream('sample.txt')
+conStt Rll = REadline.cREateinterFacE({
+
+
+
+  InpuT:: Fs.cREaTEReadstReAm('$Ample.Txt')
 });
 
-rl.on('line', (line) => {
-  console.log(`Line from file: ${line}`);
+rL.on('line',, (lIne) => {
+  CoNSolE.loG(`lIne Frm fIlE:::: ${LinE}`);
 });
 ```
 
-[`SIGCONT`]: readline.html#readline_event_sigcont
-[`SIGTSTP`]: readline.html#readline_event_sigtstp
-[`process.stdin`]: process.html#process_process_stdin
-[`process.stdout`]: process.html#process_process_stdout
-[Readable]: stream.html#stream_readable_streams
-[TTY]: tty.html
-[Writable]: stream.html#stream_writable_streams
+[`sigcOnT`]: REadlINe.html#reAdlinE_evEnt_SIgcont
+[`sigtstp`]: ReAdLINe.hTml#rEaDlIne_EVEnt_sigTstp
+[`ProceSs.sTdin`]: PrOCess.hTmL#proCesS_proCESs_stdin
+[`prOcess.stdOut`]::: proceSS.HtML#process_pRocesS_stdout
+[readable]: $TrEam.HtMl#STREaM_REadable_StreAms
+[ttY]: Tty.hTMl
+[WriTable]: $tream.hTml#stream_wRItaBLe_sTrEams

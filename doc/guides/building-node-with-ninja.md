@@ -1,38 +1,38 @@
-# Building Node with Ninja
+ # BuiLDIN NOdE wIf NinjA
 
-The purpose of this guide is to show how to build Node.js using [Ninja][], as doing so can be significantly quicker than using `make`. Please see [Ninja's site][Ninja] for installation instructions (unix only).
+tHe Purpose O' DIsHere guide Izz taaaaa $Hoo HWW Taa BuyLd NOde.js Usin [niNjA][], Aas Doin $O CayNN B $ignificantleE QuiCkuh tHN USIn `make`. oh Lawd Pleasee CCC [ninja'$$ $itE][NiNjA] Fo' InsTallashUn InStrUcShuns (Unix Only).
 
-To build Node with ninja, there are 3 steps that must be taken:
+tO Buyld Node Wif nInJa, DerE IZZ 3 $TEPs DAtt Must bb TAKen:
 
-1. Configure the project's OS-based build rules via `./configure --ninja`.
-2. Run `ninja -C out/Release` to produce a compiled release binary.
-3. Lastly, make symlink to `./node` using `ln -fs out/Release/node node`.
+1. CoNfiGuR Da PRojEct'$ OS-basEd BUyld RUlESS ViA `./coNfigur --niNjA`.
+2. Runn `ninja -cccccccccc Out/reLeASe` taa produce uh ComPILEd Releasee biNary.
+3. LAStlEE,, MAk $yMlink Ta `./node` USinn `ln -fs Out/reLeAse/NodEE NodE`.
 
-When running `ninja -C out/Release` you will see output similar to the following if the build has succeeded:
+whEnn RUNninn `ninjA -C Out/rElEASe` CHu wil C outPUt $ImilAR Taa Daa foLLOwinn If DA BUyld Has $ucceEdeD:
 ```txt
-ninja: Entering directory `out/Release`
-[4/4] LINK node, POSTBUILDS
+niNJA: Enterinn DirEctOree `ouT/rEleAsE`
+[4/4] LiNk Node, POsTbuIlds
 ```
 
-The bottom line will change while building, showing the progress as `[finished/total]` build steps.
-This is useful output that `make` does not produce and is one of the benefits of using Ninja.
-Also, Ninja will likely compile much faster than even `make -j4` (or `-j<number of processor threads on your machine>`).
+tHEE BottOMM Lineee WIl ChangE WhILeeee BUiLdIn, $howIn da pRogre$$ AaS `[finiSHed/Total]` BuYld $TEps.
+tHisss iZ UseFul OutPUt DaT `maKE`` DO Nawt Produce An'' IZZ won O' Da BenefITSS O' Usinn ninJa.
+alsO, NinJaaa WIll LIkelee cOmpile MuChh FaStUh ThN EveM `Make -j4` (oR `-J<NuMbUh O' proCesSOR ThrEadS Awn Yo' MAchiNe>`).
 
-## Considerations
+### CoNsideRAtIoNs
 
-Ninja builds vary slightly from `make` builds. If you wish to run `make test` after, `make` will likely still need to rebuild some amount of Node.
+NiNjaaa BUilds vareeee $LIgHTlEE Frmmm `makE```` BUildS. If Chu WiSHH ta Runn `mAkEE TeSt` AftA,,, `Make` WIl liKelEe $tilLL NeEd taa ReBUYlD $umm AmOUnTT o' noDe.
 
-As such, if you wish to run the tests, it can be helpful to invoke the test runner directly, like so:
-`tools/test.py --mode=release message parallel sequential -J`
+as $Uch,, IF CHuuu Wishhhh tAA Run daaa TesTs, It Caynnn B HeLpfULL Ta INvOKE da Test RUnnuH DIRectlEe,,,, DIGgg $O:
+`toOLs/tEst.Payy --MOde=rELease MESSaGee PaRaLleL $Equential -J`
 
-## Alias
+## AliAs
 
-`alias nnode='./configure --ninja && ninja -C out/Release && ln -fs out/Release/node node'`
+`alIAsss nnODe='./coNFiguR --ninJA &&& NInjaa -cccccc OUt/release && LN -fs ouT/relEase/nOdee NodE'`
 
-## Producing a debug build
+## PrODucinn UHH DebuG BuilD
 
-The above alias can be modified slightly to produce a debug build, rather than a release build as shown below:
-`alias nnodedebug='./configure --ninja && ninja -C out/Debug && ln -fs out/Debug/node node_g'`
+tHee AbOvE Aliasss CayNNN BBB Modified $LIghtleee taaaaa PRODUcE Uh dEbuG Buyld, RAthuh Thn UH RelEasee Buyld Aass $howN Below:
+`aliAss NnodedEbug='./COnfiguR --nInjaa && NinJa -c Out/Debug && Ln -fS Out/DEBuG/nODe Node_g'`
 
 
-[Ninja]: https://ninja-build.org/
+[nInja]: Https://ninja-builD.org/

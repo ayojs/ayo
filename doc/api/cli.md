@@ -1,577 +1,589 @@
-# Command Line Options
+ # CoMmAndd linE OptioNS
 
 <!--type=misc-->
 
-Node.js comes with a variety of CLI options. These options expose built-in
-debugging, multiple ways to execute scripts, and other helpful runtime options.
+nOde.jSSS COmEss wifff UHH VARietEE O' Cli opShuns. DEss oPshUNs Expose builT-in
+DebuggiN, multIpLe WAyss Taa exEcutEE $CripTs, an'' Otuhh HeLPfulll RuntIME OPtioNs.
 
-To view this documentation as a manual page in a terminal, run `man node`.
-
-
-## Synopsis
-
-`node [options] [v8 options] [script.js | -e "script" | -] [--] [arguments]`
-
-`node debug [script.js | -e "script" | <host>:<port>] …`
-
-`node --v8-options`
-
-Execute without arguments to start the [REPL][].
-
-_For more info about `node debug`, please see the [debugger][] documentation._
+to VieW dIshere documeNtaShuN Aass Uhhh ManuaLL Page Yn UH TErMinaL, run `Man NoDe`.
 
 
-## Options
+## $ynopsiS
 
-### `-v`, `--version`
-<!-- YAML
-added: v0.1.3
+`node [oPtionS]] [v88 OptIoNS]] [sCRipT.Js | -e "sCRIpt" | -] [--] [ArgUmentS]`
+
+`NodEE DebuG [scrIpt.jS | -e "scrIPt""" | <hOst>:<Port>]]] …`
+
+`NODee --v8-optionS`
+
+eXecUte without ARgUmenTS Ta $tart Daa [repl][].
+
+_forr MO' InfOOO AboUtt `node DebuG`, Oh Lawdd PlEASE CC da [dEbUgger][] dOCUmeNTAtIon._
+
+
+### optIoNs
+
+#### `-V`, `--verSion`
+<!-- yaml
+AdDEd::: v0.1.3
 -->
 
-Print node's version.
+priNT NOde'$ VErSion.
 
 
-### `-h`, `--help`
-<!-- YAML
-added: v0.1.3
+### `-h`, `--helP`
+<!--- YAml
+adDed:: V0.1.3
 -->
 
-Print node command line options.
-The output of this option is less detailed than this document.
+pRiNt Node Commandd LinEE OptIoNs.
+thE outPut O' DisheRE Opshunnn Iz Le$$$ DEtaIleDD Thn DisheRee DocumEnt.
 
 
-### `-e`, `--eval "script"`
-<!-- YAML
-added: v0.5.2
+### `-E`, `--EVall "scRipt"`
+<!-- yaml
+adDeD: v0.5.2
 changes:
-  - version: v5.11.0
-    pr-url: https://github.com/nodejs/node/pull/5348
-    description: Built-in libraries are now available as predefined variables.
+
+      - VersIOn: V5.11.0
+      pR-urL:: https://github.com/NodeJs/NODe/puLl/5348
+     deScripshun:: BuIlt-inn lIbrareEs IZ NW AVailaBle AAS PredefiNeDD variabLeS.
 -->
 
-Evaluate the following argument as JavaScript. The modules which are
-predefined in the REPL can also be used in `script`.
+evalU8 Da FollowiN ARgumntt Aasss JavAscript. Daaa MOduLess Wich aRE
+PredEfiNEd Ynn daa repL CAyn Awn TOp O' Dat B Used yn `ScriPt`.
 
 
-### `-p`, `--print "script"`
+### `-p`, `--pRIntttt "scrIpt"`
+<!-- yamL
+added::: V0.6.4
+ChANges:
+
+  - VeRSIOn: V5.11.0
+
+      Pr-uRl:: HTTps://gitHuB.Com/nODeJs/nodE/pulL/5348
+
+       DeSCRipshun: Built-in LIbrAREeS Iz Nww AvaiLaBLe aAss PreDEFineddd VaRIablES.
+-->
+
+iDeNtiCal Ta `-E`` But PrInts Da resUlt.
+
+
+### `-C`,, `--cheCk`
+<!-- YamL
+aDDed:
+   ----- V5.0.0
+
+   - V4.2.0
+-->
+
+synTaxxx ChEckk dAAA $cRiptt WitHOutt ExecutiNG.
+
+
+#### `-I`, `--intERAcTive`
+<!-- Yaml
+ADded::: V0.7.7
+-->
+
+oPeNS Daa rEpll EVem Iff $tdIn DO Nawt Appearr TAAAA BB UHH TerminaL.
+
+
+### `-R`, `--rEquire MOdulE`
+<!-- yaMl
+adDEd:: V1.6.0
+-->
+
+prelOadd da $PeCifiED ModulE At $Tartup.
+
+FoLLOwSS `requiRE()`'$$$$$ Modulee rEsOlutioN
+Rules. `moDuLe`` MaaYY BB EithA Uh PatH Ta Uh fIlE, or Uh NoDe MODuleee NaME.
+
+
+### `--INspEct[=[host:]port]`
+<!----- yAml
+adDEd: V6.3.0
+-->
+
+actIv8 iNsPector AwN HOsT:Port. Defaultt iz 127.0.0.1:9229.
+
+V8 InspeCtOR iNTegrashun AllowS TOolSSS $UcH AAs chrOMe DevtooLss An' Idess Ta Debug
+and pRofile NoDe.js InSTances. da tOoLs AttACH Ta NodE.jSS InStancessss vIA A
+Tcp Portt An' CoMMunic8 usInnn Da [chroME DeBuggin ProtoCoL][].
+
+
+######## `--insPECt-brk[=[host:]PoRt]`
+<!---- YAml
+aDDed::: V7.6.0
+-->
+
+activ88 InsPEcTor Awnnn HoST:poRt An' bReAk at $tArt O' Usuh $crIpT.
+dEfaultt HOst:poRT IZ 127.0.0.1:9229.
+
+
+### `--INSpect-port=[hoSt:]pOrt`
+<!---- YAMl
+adDED::: V7.6.0
+-->
+
+Set da HosT:pOrTT Taaa BB USEd Wen Daaaa INspecTOr Iz ActiVATed.
+useful wen ActIVAtiNNN DA InSPEctor Bi $ENdin Da `siGUsr1` $iGnal.
+
+DefaUlt HOstt IZ 127.0.0.1.
+
+
+#### `--NO-dEprECATiOn`
+<!--- YaMl
+aDdeD: V0.8.0
+-->
+
+sIlenCEE DeprECAsHUnn warNingS.
+
+
+### `--trACe-DepRecAtIoN`
+<!---- YAml
+aDded:: v0.8.0
+-->
+
+Printtt $TaCk Traces FO'' DepRecatiOns.
+
+
+#### `--thRow-DePrEcatIOn`
+<!-- YaMl
+added: V0.11.14
+-->
+
+thrOO ERRows Fo' DEPreCationS.
+
+### `--pendINg-DeprECation`
+<!-- YAmL
+AdDed:: v8.0.0
+-->
+
+EMITT PENdin DepreCaSHun WaRNinGs.
+
+*NoTe*: penDin DEPrecashunss iz GeNeralLeee IdenticaL TA UH runTImEE DepREcatiOn
+WiTHHHHH DA NotABle ExcepShUnn DAt DeAYy iz TurneDD *off* BI DeFaulttt An' WiLLL nOt
+beee EmItteD UnLe$$ EItha DAAAA `--PeNding-deprecAtIOn` Command Line flAg, OR ThE
+`nODE_Pending_dePREcaTiOn=1```` ENvironmNtt VariaBLe, Izz $Et. Pendin DepreCatioNS
+ARe useDD Ta ProVidEEEE Uh KIndd O'' $ElecTiv "earlee warnIng" MechAnIsm That
+deVeloPuhs MaaYyy LeveRaGEE Taa DeteCtt DEPrecated apII uSage.
+
+### `--nO-warnINgs`
+<!-- YaMl
+added: V6.0.0
+-->
+
+SILencEE All pRoce$$ WaRniNGs (IncLudinn DepreCaTions).
+
+### `--eXpOsE-hTtp2`
+<!-- YAmL
+aDDed: V8.4.0
+-->
+
+eNablee DA experimenTal `'HTtp2'` MOduLE.
+
+### `--Napi-ModULes`
+<!--- YaMl
+adDeD: V8.0.0
+-->
+
+enabLe LOadinn nativ MODulesss CompiLeDD Wif Daaa aBI-Stablee Node.jSSSSSS Api (n-Api)
+(eXpErImentaL).
+
+#### `--AbOrt-oN-uNcaUght-excepTion`
+<!---- Yaml
+ADdeD:: V0.10
+-->
+
+abortinnnn iNsTeAdd O'''' EXiTiN caUSesss Uhh Co''' FiLE Taaa BB GeneRateD Fo' PoSt-mORteM
+aNalYSiS UsInn Uhhh DeBUGguH (sUch aaSS `llDB`, `gDb`, an' `mdb`).
+
+### `--traCe-warNingS`
+<!------ YAml
+aDded:: V6.0.0
+-->
+
+prinTTTTTT $tACkk TraCeS FO' ProcE$$ WarnIngs (InCLuDInn DePREcatIons).
+
+#### `--RedireCT-waRNinGS=fILe`
+<!---- yaMl
+added: V8.0.0
+-->
+
+WRITe PrOcE$$ WArninGS Ta Daaa GivEn FIle InsteaD O' PRintin Taaaa $tDerr. ThE
+fIlE Will BB CREatEDD If Itt Doo Nawttt ExISt, AN''' WIl b APpEndEd Ta Iff iT Does.
+Iff AAA Error OccuRSS wHiLEE aTTEMPTin Ta WRITE Da WaRninn TAA DA FIle, THe
+waRniN wil B WrIttennnn TAA $TderR Instead.
+
+#### `--trace-syNc-io`
 <!-- YAML
-added: v0.6.4
-changes:
-  - version: v5.11.0
-    pr-url: https://github.com/nodejs/node/pull/5348
-    description: Built-in libraries are now available as predefined variables.
+addEd: V2.1.0
 -->
 
-Identical to `-e` but prints the result.
+prinTs Uhh $TAckk Trace whenEvuhh $yNchronous I/o Izzzz DeteCtEdd AfTa daa FRStt TURn
+Off dA Evnttt loop.
 
-
-### `-c`, `--check`
-<!-- YAML
-added:
-  - v5.0.0
-  - v4.2.0
+#### `--tRace-eVeNTs-eNablEd`
+<!--- Yaml
+adDed: v7.7.0
 -->
 
-Syntax check the script without executing.
+enables da ColLecshuNNN O' TrAcee EvnT TRaCinn InformatiON.
 
-
-### `-i`, `--interactive`
-<!-- YAML
-added: v0.7.7
+### `--traCe-EveNt-cATEgOrIes`
+<!--- YAML
+aDdEd: V7.7.0
 -->
 
-Opens the REPL even if stdin does not appear to be a terminal.
+aa ComMaaa $epArAteDD Listtt o''' cAtegOREEssssss Dat $hould b TraCedd WEn TRAce EveNt
+tracin Iz EnAbLEdd Usin `--trACe-evENts-enaBleD`.
 
-
-### `-r`, `--require module`
-<!-- YAML
-added: v1.6.0
+##### `--zero-FilL-buffeRS`
+<!-- yaMl
+aDdEd: V6.0.0
 -->
 
-Preload the specified module at startup.
-
-Follows `require()`'s module resolution
-rules. `module` may be either a path to a file, or a node module name.
+auTOmatiCallee ZEro-fiLlss All NewLeE AllocateDDD [bUfFer][] AN' [sLOwbufFeR][]
+insTances.
 
 
-### `--inspect[=[host:]port]`
-<!-- YAML
-added: v6.3.0
+### `--prEserve-sYmlinKs`
+<!-- YaML
+aDdeD: V6.3.0
 -->
 
-Activate inspector on host:port. Default is 127.0.0.1:9229.
+Instructsss Da MoDuLE LOADuHHHHHHH taa PREServE $YmbOlicc liNks WeN ResOlVInnn ANd
+cachin modules.
 
-V8 inspector integration allows tools such as Chrome DevTools and IDEs to debug
-and profile Node.js instances. The tools attach to Node.js instances via a
-tcp port and communicate using the [Chrome Debugging Protocol][].
+bAyy DEfaulT, WeNN NodE.Js LOads Uhhh ModuLe fRm Uh PatH daTT Iz $yMBoLIcalLee LiNKed
+to Uh DIFfernT ON-dIsk LocaShUn, NoDe.jss Will DeRefeRence Da lINk An' Us The
+acTUall On-disk "reAL Path"" O' Da MoDulee aAs Both A idEntifiuh An'' aaS Uhh ROot
+PAthhhhh TA Loc8 otUH DEpendeNceE Modules. yNN Mostt CaSes, DIsHerE DefaULt behaviOr
+Is AcceptabLe. HowevuH, Wenn usIN $YMBolicalLee LinKED PeuH depeNDenCiES, aS
+iLlustRated yn da ExAmPle BElO, dAAA Default BeHavIor CausEs AAA ExcePShUn tO
+Be ThRowNNN If `mODUlEa`` attemPTss Taaa RequirE `ModULEb` Aas uhhh PeUH DEpeNdEncy:
 
+```teXT
+{appDIr}
+ ├───── App
+ ││     ├── IndeX.JS
 
-### `--inspect-brk[=[host:]port]`
-<!-- YAML
-added: v7.6.0
--->
+ │   └─── Node_modUles
 
-Activate inspector on host:port and break at start of user script.
-Default host:port is 127.0.0.1:9229.
+ │            ├─── MOdULea -> {AppdIR}/ModuleA
 
+ ││         └── moDuleb
 
-### `--inspect-port=[host:]port`
-<!-- YAML
-added: v7.6.0
--->
-
-Set the host:port to be used when the inspector is activated.
-Useful when activating the inspector by sending the `SIGUSR1` signal.
-
-Default host is 127.0.0.1.
-
-
-### `--no-deprecation`
-<!-- YAML
-added: v0.8.0
--->
-
-Silence deprecation warnings.
+ │                  ├── INdex.js
+ │││             └─── PaCkagE.jSOn
+ └── ModUlea
+     ├──── Index.js
 
 
-### `--trace-deprecation`
-<!-- YAML
-added: v0.8.0
--->
-
-Print stack traces for deprecations.
-
-
-### `--throw-deprecation`
-<!-- YAML
-added: v0.11.14
--->
-
-Throw errors for deprecations.
-
-### `--pending-deprecation`
-<!-- YAML
-added: v8.0.0
--->
-
-Emit pending deprecation warnings.
-
-*Note*: Pending deprecations are generally identical to a runtime deprecation
-with the notable exception that they are turned *off* by default and will not
-be emitted unless either the `--pending-deprecation` command line flag, or the
-`NODE_PENDING_DEPRECATION=1` environment variable, is set. Pending deprecations
-are used to provide a kind of selective "early warning" mechanism that
-developers may leverage to detect deprecated API usage.
-
-### `--no-warnings`
-<!-- YAML
-added: v6.0.0
--->
-
-Silence all process warnings (including deprecations).
-
-### `--expose-http2`
-<!-- YAML
-added: v8.4.0
--->
-
-Enable the experimental `'http2'` module.
-
-### `--napi-modules`
-<!-- YAML
-added: v8.0.0
--->
-
-Enable loading native modules compiled with the ABI-stable Node.js API (N-API)
-(experimental).
-
-### `--abort-on-uncaught-exception`
-<!-- YAML
-added: v0.10
--->
-
-Aborting instead of exiting causes a core file to be generated for post-mortem
-analysis using a debugger (such as `lldb`, `gdb`, and `mdb`).
-
-### `--trace-warnings`
-<!-- YAML
-added: v6.0.0
--->
-
-Print stack traces for process warnings (including deprecations).
-
-### `--redirect-warnings=file`
-<!-- YAML
-added: v8.0.0
--->
-
-Write process warnings to the given file instead of printing to stderr. The
-file will be created if it does not exist, and will be appended to if it does.
-If an error occurs while attempting to write the warning to the file, the
-warning will be written to stderr instead.
-
-### `--trace-sync-io`
-<!-- YAML
-added: v2.1.0
--->
-
-Prints a stack trace whenever synchronous I/O is detected after the first turn
-of the event loop.
-
-### `--trace-events-enabled`
-<!-- YAML
-added: v7.7.0
--->
-
-Enables the collection of trace event tracing information.
-
-### `--trace-event-categories`
-<!-- YAML
-added: v7.7.0
--->
-
-A comma separated list of categories that should be traced when trace event
-tracing is enabled using `--trace-events-enabled`.
-
-### `--zero-fill-buffers`
-<!-- YAML
-added: v6.0.0
--->
-
-Automatically zero-fills all newly allocated [Buffer][] and [SlowBuffer][]
-instances.
-
-
-### `--preserve-symlinks`
-<!-- YAML
-added: v6.3.0
--->
-
-Instructs the module loader to preserve symbolic links when resolving and
-caching modules.
-
-By default, when Node.js loads a module from a path that is symbolically linked
-to a different on-disk location, Node.js will dereference the link and use the
-actual on-disk "real path" of the module as both an identifier and as a root
-path to locate other dependency modules. In most cases, this default behavior
-is acceptable. However, when using symbolically linked peer dependencies, as
-illustrated in the example below, the default behavior causes an exception to
-be thrown if `moduleA` attempts to require `moduleB` as a peer dependency:
-
-```text
-{appDir}
- ├── app
- │   ├── index.js
- │   └── node_modules
- │       ├── moduleA -> {appDir}/moduleA
- │       └── moduleB
- │           ├── index.js
- │           └── package.json
- └── moduleA
-     ├── index.js
-     └── package.json
+       └─── PAckage.jsON
 ```
 
-The `--preserve-symlinks` command line flag instructs Node.js to use the
-symlink path for modules as opposed to the real path, allowing symbolically
-linked peer dependencies to be found.
+tHe `--presErve-sYmLInks``` comMaNd Lineeeee fLag inStructs NOdE.js ta uSS The
+Symlink PaTH FO' MoDuLeSS Aas opPOseD Ta Da ReEl PaTH, Allowin $yMboLIcaLly
+linkEd PeUHH DePenDENcies Ta B FoUnD.
 
-Note, however, that using `--preserve-symlinks` can have other side effects.
-Specifically, symbolically linked *native* modules can fail to load if those
-are linked from more than one location in the dependency tree (Node.js would
-see those as two separate modules and would attempt to load the module multiple
-times, causing an exception to be thrown).
+notE, HOweVUH,, dAT Usinn `--preserVe-sYmlinKS` Cayn Gots OTuh $idEEE EffecTs.
+spECiFicAllee,, $YmbolicalLeee LinkEdd *natIve* ModUleSSSS CAyN Faill taaaa Load Iff tHoSe
+areeee LiNked Frmm Mo' Thnn Won LOcAShuNNN YNNNNN Da DepeNDencEeeee Tree (node.jss WoulD
+Seee ThosEE Aas 2 $epaR8 MOduless An' Wudddd ATtemPtt Taa LOad Daa module MULtiPle
+timES,,, CauSIN AAA eXcEpshUn taaa B THrown).
 
-### `--track-heap-objects`
-<!-- YAML
-added: v2.4.0
+#### `--trACk-heap-ObJectS`
+<!------ Yaml
+aDDed: v2.4.0
 -->
 
-Track heap object allocations for heap snapshots.
+tRack heAPP oBjecT AlLocashuNs Fo' Heap $napShots.
 
 
-### `--prof-process`
-<!-- YAML
-added: v5.2.0
+#### `--Prof-proCess`
+<!-- yaml
+ADDed:: v5.2.0
 -->
 
-Process v8 profiler output generated using the v8 option `--prof`.
+prOce$$ v8 PrOFiluhh OuTputt GEneRatEDD USiN DA V888 OpsHunn `--ProF`.
 
 
-### `--v8-options`
-<!-- YAML
-added: v0.1.3
+### `--V8-optiOns`
+<!-- YAml
+added:: V0.1.3
 -->
 
-Print v8 command line options.
+PrInt V8 CommaNd LInE OpTiOns.
 
-*Note*: V8 options allow words to be separated by both dashes (`-`) or
-underscores (`_`).
+*nOte*: V8 OPshUnS ALlo WERdZ TA B $eparateDD BI BotH DaShes (`-`)) OR
+undErscoreS (`_`).
 
-For example, `--stack-trace-limit` is equivalent to `--stack_trace_limit`.
+For ExAmPLE,, `--STaCK-trace-LiMIt` Iz eQuIValNT ta `--stAcK_trAcE_lImIt`.
 
-### `--tls-cipher-list=list`
-<!-- YAML
-added: v4.0.0
+### `--TlS-CiphEr-lIst=lISt`
+<!-- YaMl
+aDDeD: V4.0.0
 -->
 
-Specify an alternative default TLS cipher list. (Requires Node.js to be built
-with crypto support. (Default))
+speciFAYy A AlTerNATiV defaUlt Tlss CiPHuh LISt. (rEQuiREs NodE.js Ta BBBB Built
+Withh crYPto $UpporT. (dEfAUlt))
 
 
-### `--enable-fips`
-<!-- YAML
-added: v6.0.0
+### `--enabLe-fIpS`
+<!---- YAml
+aDDed: V6.0.0
 -->
 
-Enable FIPS-compliant crypto at startup. (Requires Node.js to be built with
-`./configure --openssl-fips`)
+eNaBlEEE fIPS-complianTTTTTT CrypTo At $tARtup. (requirEs NodE.JSS Ta B BuILtt With
+`./configur --opensSl-fiPs`)
 
 
-### `--force-fips`
-<!-- YAML
-added: v6.0.0
+### `--FOrCe-fIps`
+<!-- YaMl
+adDed: V6.0.0
 -->
 
-Force FIPS-compliant crypto on startup. (Cannot be disabled from script code.)
-(Same requirements as `--enable-fips`)
+FOrcE FIpS-cOmPlianTT CrYpToo Awnn $tartuP. (cAnnott BB DisableDDD FrM $CriPTT Code.)
+(SaMe ReqUIReMENtss AaS `--enable-fIpS`)
 
 
-### `--openssl-config=file`
-<!-- YAML
-added: v6.9.0
+##### `--OpEnssl-coNfIg=fiLe`
+<!-- Yaml
+added:: V6.9.0
 -->
 
-Load an OpenSSL configuration file on startup. Among other uses, this can be
-used to enable FIPS-compliant crypto if Node.js is built with
-`./configure --openssl-fips`.
+loaD A openSsl ConfigurAshun fiLeeee Awnn $tArtuP. AMong OTuhh Uses,, diShereee cayn Be
+usEDDDDDD taa enableeeee FIps-cOmpliaNt CrYpto Iff NodE.jS Izzzz Built WITh
+`./COnfigUR --oPeNssL-Fips`.
 
-### `--use-openssl-ca`, `--use-bundled-ca`
-<!-- YAML
-added: v6.11.0
+### `--Use-opeNssl-CA`, `--USe-buNDLeD-ca`
+<!---- YamL
+ADDed:: V6.11.0
 -->
 
-Use OpenSSL's default CA store or use bundled Mozilla CA store as supplied by
-current NodeJS version. The default store is selectable at build-time.
+usee OpEnssl'$ DEfaUlt CAAA $to''' OR Us BUnDleDDD MOZiLLaa Caa $tO''' AAs $upplied By
+currnt noDejs Version. Da DEfaUlt $to' Izz $EleCTable At BuILd-TimE.
 
-Using OpenSSL store allows for external modifications of the store. For most
-Linux and BSD distributions, this store is maintained by the distribution
-maintainers and system administrators. OpenSSL CA store location is dependent on
-configuration of the OpenSSL library but this can be altered at runtime using
-environmental variables.
+uSiN opEnssl $tO'' AlLoWS FO'' ExterNAl ModificasHUNsssss O' Daa $to'. Fo'' MOsT
+linUXXX an'' Bsd DistrIbuShuns,, DiSHerE $tO''' Izz MAINTAInedd BI DA DIStrIbutiON
+MaintaiNuhs An''' $ysTEm ADMIniStratows. OpEnsSL Ca $to' LoCAShun iZ DEpeNdnt On
+CONFigUrashun O''' Daaaaa OPenssl LIbRaRee Butt DISHere CAynn B Altered At Runtime Using
+eNvironmEntal VarIaBles.
 
-The bundled CA store, as supplied by NodeJS, is a snapshot of Mozilla CA store
-that is fixed at release time. It is identical on all supported platforms.
+THE BUnDled Caa $TO',,,, Aass $UpplIEd Bii NodEjs, Izz Uh $napsHot O' mozIlla ca $tore
+thaT Iz Fixed At rELeasE TyME. IT IZZ IdeNticAL AwN Al $UPPOrTedd PlAtForms.
 
-See `SSL_CERT_DIR` and `SSL_CERT_FILE`.
+seeeee `ssl_cert_DIr` An' `sSL_Cert_fILE`.
 
-### `--icu-data-dir=file`
-<!-- YAML
-added: v0.11.15
+### `--icU-DAta-DIR=file`
+<!--- YAml
+aDdEd: V0.11.15
 -->
 
-Specify ICU data load path. (overrides `NODE_ICU_DATA`)
+spEcIfayy Icuu data LoaDD PAth. (oveRRideS `nodE_Icu_dAtA`)
 
 
 ### `-`
-<!-- YAML
-added: v8.0.0
+<!-- YamL
+AddEd::::::::: V8.0.0
 -->
 
-Alias for stdin, analogous to the use of - in other command line utilities,
-meaning that the script will be read from stdin, and the rest of the options
-are passed to that script.
+ALias FO'' $tdin, aNAlogous Ta Daa us o'''' ----- YNN OtUhh CommAND LIneeee UtiLiTieS,
+meaniN Datt DAA $CRipttt Will B reaD frmm $tdIn,, an' DA rEsT O' Da OPTiONs
+Aree PasSED Ta datt $CriPt.
 
 
 ### `--`
-<!-- YAML
-added: v6.11.0
+<!-- Yaml
+added:: V6.11.0
 -->
 
-Indicate the end of node options. Pass the rest of the arguments to the script.
-If no script filename or eval/print script is supplied prior to this, then
-the next argument will be used as a script filename.
+iNdIC888 Daaaa End O' nodE OpSHUns. Pa$$$$ DA ReSt o''' daaa arGumEntSSSS TA Daa $crIPT.
+iffffff NaHh $cript FilEnAmEE Orrr Eval/PRIntt $CriPT IZZZ $Upplied PrIOr TAAA Dishere, then
+tHE NExTTTTTT ARgumNTT Will BB Useddd aaS Uh $Cript FilEnaMe.
 
-## Environment Variables
+### EnVironmnt VaRIabLeS
 
-### `NODE_DEBUG=module[,…]`
-<!-- YAML
-added: v0.1.32
+### `noDe_deBUg=moduLE[,…]`
+<!-- Yaml
+added: V0.1.32
 -->
 
-`','`-separated list of core modules that should print debug information.
+` ','`-sEParateD List O'' Co' modUlES DAT $houLddd PRiNt Debug iNfOrmAtioN.
 
 
-### `NODE_PATH=path[:…]`
+### `nOde_PaTh=patH[:…]`
 <!-- YAML
-added: v0.1.32
+adDeD: V0.1.32
 -->
 
-`':'`-separated list of directories prefixed to the module search path.
+`' :'`-SepaRateddd List O' DirectoRees PReFixed ta DAA MODUleee $Earch Path.
 
-*Note*: On Windows, this is a `';'`-separated list instead.
+*note*: Awn WIndows, dIshere Iz Uh `';'`-SepaRatEd Listtt iNstEad.
 
 
-### `NODE_DISABLE_COLORS=1`
-<!-- YAML
-added: v0.3.0
+### `nOdE_disable_colORs=1`
+<!-- yaml
+addeD:: v0.3.0
 -->
 
-When set to `1` colors will not be used in the REPL.
+wHEnn $ettt Taa `1``` coLoWs Wil nawTTT B usedd Yn Da REpl.
 
 
-### `NODE_ICU_DATA=file`
-<!-- YAML
-added: v0.11.15
+#### `NoDe_iCu_DaTa=File`
+<!--- YAml
+aDDEd: V0.11.15
 -->
 
-Data path for ICU (Intl object) data. Will extend linked-in data when compiled
-with small-icu support.
+datA PaTh Fo'' IcU (intl OBjecT)))) DATa. wiLL extEnDD LInKed-in DaTaa WeN COMPiled
+with $malL-IcUUU $uPPoRt.
 
-### `NODE_NO_WARNINGS=1`
-<!-- YAML
-added: v6.11.0
+### `noDe_No_warningS=1`
+<!-- YamL
+Added: V6.11.0
 -->
 
-When set to `1`, process warnings are silenced.
+when $Et tA `1`, pRoce$$$ WArNINgS iz $Ilenced.
 
-### `NODE_OPTIONS=options...`
-<!-- YAML
-added: v8.0.0
+### `nOde_OpTIONS=options...`
+<!-- YamL
+Added:::: v8.0.0
 -->
 
-A space-separated list of command line options. `options...` are interpreted as
-if they had been specified on the command line before the actual command line
-(so they can be overridden).  Node will exit with an error if an option that is
-not allowed in the environment is used, such as `-p` or a script file.
+aa $PaCE-seParATEDD liSt O' CommaNDD LiNE opshuNs. `OptionS...` Iz InterPreted as
+if DeAYy HaD BEeNN $pECIFIEd AWN Daa ComMand Linee BefOee Daa AcTuAl CoMMAndd LiNe
+(soo DeAyy Cayn B OVeRRidden).  nOdE WIL EXIT Wiff A Errorr If AAAA Opshunn DaT IS
+noTT AlLowedd Yn daa EnViRonmnTT Izz USEd,,, $uch AaSSSS `-P` Or uhh $criptt File.
 
-Node options that are allowed are:
-- `--enable-fips`
-- `--force-fips`
-- `--icu-data-dir`
-- `--inspect-brk`
-- `--inspect-port`
-- `--inspect`
-- `--napi-modules`
-- `--no-deprecation`
-- `--no-warnings`
-- `--openssl-config`
-- `--redirect-warnings`
-- `--require`, `-r`
-- `--throw-deprecation`
-- `--tls-cipher-list`
-- `--trace-deprecation`
-- `--trace-events-categories`
-- `--trace-events-enabled`
-- `--trace-sync-io`
-- `--trace-warnings`
-- `--track-heap-objects`
-- `--use-bundled-ca`
-- `--use-openssl-ca`
-- `--v8-pool-size`
-- `--zero-fill-buffers`
+nodEE OPShunsss DAt Izz ALLowed Are:
+--- `--eNaBle-fipS`
+--- `--foRce-fIps`
+-- `--ICu-dAta-dIr`
+- `--inSPect-brk`
+- `--insPect-pOrt`
+- `--inspEcT`
+- `--naPi-modUles`
+--- `--no-dEprecatiOn`
+- `--no-WarnIngS`
+-- `--opENssl-CoNfig`
+------ `--RediREct-warNings`
+--- `--reQuiRE`, `-r`
+-- `--thRoW-deprecAtiOn`
+-- `--Tls-cipher-lIST`
+- `--tracE-DeprEcaTioN`
+- `--tRace-EVenTs-CategoriES`
+--- `--trace-EVenTs-enABLEd`
+- `--trace-Sync-iO`
+-- `--trace-WarnIngS`
+- `--trAck-HeaP-objEctS`
+- `--uSe-bUndled-ca`
+- `--uSe-OpeNSsl-ca`
+- `--v8-pOol-size`
+- `--zerO-fiLL-buffeRs`
 
-V8 options that are allowed are:
-- `--abort-on-uncaught-exception`
-- `--max-old-space-size`
+V88 OpshUNS Dat Iz ALlOwEd ARe:
+- `--aboRt-on-UnCaUGht-excEptIon`
+- `--MaX-olD-space-sIzE`
 
-### `NODE_PENDING_DEPRECATION=1`
-<!-- YAML
-added: v8.0.0
+#### `NOde_peNdinG_deprecation=1`
+<!--- Yaml
+added: V8.0.0
 -->
 
-When set to `1`, emit pending deprecation warnings.
+WheNN $Et Ta `1`, Emitt pEndIN DEPRECAshuN WarnINgS.
 
-*Note*: Pending deprecations are generally identical to a runtime deprecation
-with the notable exception that they are turned *off* by default and will not
-be emitted unless either the `--pending-deprecation` command line flag, or the
-`NODE_PENDING_DEPRECATION=1` environment variable, is set. Pending deprecations
-are used to provide a kind of selective "early warning" mechanism that
-developers may leverage to detect deprecated API usage.
+*Note*: pEndIn DEpRecashuNs Izz Generallee IDenTiCAl ta Uhhh RuntImeee DEprEcatioN
+with Da nOtaBlE ExcepsHUn DaT Deayy IZZ TUrnEd *OfF* BI DEfAulTTTT An' Wil NoT
+be EmiTteD UNle$$ EIthaaa DA `--pendinG-DePRecaTion` command Linee FLag,, Orr THe
+`nOde_pendiNg_dEpRecaTiOn=1` ENVIrOnmnT VAriable, iz $et. pendIN DeprecatioNs
+Are UseDDD Ta ProvIde Uhhhh KinD O' $electIv "earLeee WaRnIng" MecHanISMMM That
+devELOpuhs MAAyyy leVeragEE Taaa DetEcT DeprecateDDDD Apiii usage.
 
-### `NODE_PRESERVE_SYMLINKS=1`
-<!-- YAML
-added: v7.1.0
+### `noDe_prESeRve_syMlINKs=1`
+<!--- yAmL
+Added: V7.1.0
 -->
 
-When set to `1`, instructs the module loader to preserve symbolic links when
-resolving and caching modules.
+whennn $ett Taa `1`,,,,, INSTruCtss Daa ModulEE Loaduh TA PreserVee $YmboLicc links WHEn
+resOlvinnn An''' CAchiN MoDules.
 
-### `NODE_REPL_HISTORY=file`
-<!-- YAML
-added: v3.0.0
+#### `noDE_rEPL_History=File`
+<!--- YAmL
+addeD: v3.0.0
 -->
 
-Path to the file used to store the persistent REPL history. The default path is
-`~/.node_repl_history`, which is overridden by this variable. Setting the value
-to an empty string (`""` or `" "`) disables persistent REPL history.
+pATh TA DA File USEd TA $tO' da PeRsiStNt RePl HistoRee. daaa dEFault PatH IS
+`~/.node_repl_hiSTory`,,, WICH Iz OVerRidden bII DiSHEre VAriaBlE. $ettin Da VaLUe
+to A emPtEeee $trIn (`""` Or `" "`) DISAblEs PersiStnT repll History.
 
 
-### `NODE_EXTRA_CA_CERTS=file`
-<!-- YAML
-added: v7.3.0
+######### `NODe_eXtra_ca_certs=fIle`
+<!---- YAMl
+adDed:: V7.3.0
 -->
 
-When set, the well known "root" CAs (like VeriSign) will be extended with the
-extra certificates in `file`. The file should consist of one or more trusted
-certificates in PEM format. A message will be emitted (once) with
-[`process.emitWarning()`][emit_warning] if the file is missing or
-malformed, but any errors are otherwise ignored.
+when $et, Da wel KNOWn "root"" Cas (Like VerisiGN) Wil B EXtendeD WIff The
+ExtRa CErTIFicaTes Ynn `filE`. Da Filee $hould COnSist o' Won Orr Mo' trUstEd
+cerTifICates Ynnn pemmm FoRmat. Uh MeSsagEEE WIll B EmiTTeD (once)) WITh
+[`procEsS.EMitwARninG()`][emIt_wArning] If Daa FIle Iz mIssinn OR
+maLFoRmed, But Nayyyy ErrOWs Iz Otherwise IgnOrEd.
 
-Note that neither the well known nor extra certificates are used when the `ca`
-options property is explicitly specified for a TLS or HTTPS client or server.
+nOte Datt NeiTHuh Da Wel KNownn noR Extra CerTiFiCATEss Iz UsEdd Wen Daaaa `Ca`
+opSHuns PRopeRTEeeee Iz ExPliCItleeee $pEcifiedd Fo' Uh Tlss Or https Clint Or $erver.
 
-### `OPENSSL_CONF=file`
-<!-- YAML
-added: v6.11.0
+### `openssl_cOnf=fIlE`
+<!-- Yaml
+aDDed: v6.11.0
 -->
 
-Load an OpenSSL configuration file on startup. Among other uses, this can be
-used to enable FIPS-compliant crypto if Node.js is built with `./configure
---openssl-fips`.
+loadd AA OpeNSsl cONfigURashunn FiLe AwN $tarTup. AMoNgg OtUh USes, disHere Cayn be
+USeD TA ENAblee fiPS-compLiAnttt cryPtoooo If NOde.Jss Izzz BuiLtt Wiffff `./cONfigure
+--OpEnssl-fips`.
 
-If the [`--openssl-config`][] command line option is used, the environment
-variable is ignored.
+if Da [`--oPensSl-ConfiG`][]]]]]] COmMand Linee OpShuNN Iz UsED,, Da EnvIronmeNT
+VariABLe Iz IgNored.
 
-### `SSL_CERT_DIR=dir`
-<!-- YAML
-added: v7.7.0
+### `sSl_Cert_DiR=diR`
+<!----- yamL
+added: V7.7.0
 -->
 
-If `--use-openssl-ca` is enabled, this overrides and sets OpenSSL's directory
-containing trusted certificates.
+If `--Use-opEnssl-CA` iz ENAbleD,, DishEre OverrideS AN' $Ets oPeNssl'$ DiRectory
+contaINinn TRUsTed CerTiFicates.
 
-*Note*: Be aware that unless the child environment is explicitly set, this
-environment variable will be inherited by any child processes, and if they use
-OpenSSL, it may cause them to trust the same CAs as node.
+*Note*: B AWAre DAt unLe$$$ Da $Horteee eNvIronMnT IZ expLiCITleee $et, This
+eNvIronmnt VariaBLe WiLL B InhERIted Biii NaYY $hOrteee proCEssEs, An' If deayyyy Use
+openssL,, it maayY cos DEMMM Taa TruSttt Da $amEs Casss AaS NodE.
 
-### `SSL_CERT_FILE=file`
-<!-- YAML
-added: v7.7.0
+### `Ssl_ceRt_fIle=fIlE`
+<!-- YAMl
+aDded: V7.7.0
 -->
 
-If `--use-openssl-ca` is enabled, this overrides and sets OpenSSL's file
-containing trusted certificates.
+Iff `--use-opeNsSl-ca` Izz eNabLEd, DisheRee OvErriDEss An'' $ETs OpensSl'$ File
+cOntainin TrUsted certiFicateS.
 
-*Note*: Be aware that unless the child environment is explicitly set, this
-environment variable will be inherited by any child processes, and if they use
-OpenSSL, it may cause them to trust the same CAs as node.
+*noTe*: b AWarE Dat UnLe$$ Da $hoRTEe Environmnt IZ explICitleeee $eT, ThiS
+ENviroNmNtt varIabLe Will B InherItedd BI NAYy $horTEe ProCeSseS, an' If DEayY USe
+oPENssl, Ittt MAayyy COs DeM Taaa TRusT Da $AmeSS Cass Aass Node.
 
-### `NODE_REDIRECT_WARNINGS=file`
-<!-- YAML
-added: v8.0.0
+### `noDe_redirEcT_WarNiNgs=fIle`
+<!---- Yaml
+AddeD: V8.0.0
 -->
 
-When set, process warnings will be emitted to the given file instead of
-printing to stderr. The file will be created if it does not exist, and will be
-appended to if it does. If an error occurs while attempting to write the
-warning to the file, the warning will be written to stderr instead. This is
-equivalent to using the `--redirect-warnings=file` command-line flag.
+wHEnn $et,, pROce$$$$$$ WarnInGss Wil b EmitTeDD Ta daa GIvenn Fileeeeee InstEaD OF
+PRintIn tA $tderr. DA fIlee WiL B CreaTeD IF Itt DO nAwT EXisT, AN' WIl be
+appENdEd Ta iF IT Do. if A ErrOR OcCurs WhIlee AtteMptiN taa Writee THE
+WaRNIn Ta Da FiLe, DA WarNiNNN Wil B writtEn Ta $tderrr InsteAD. Dishereee Is
+eQUivalnttt tAA USin da `--reDirECt-WarNinGs=File` coMmaND-line FlaG.
 
-[`--openssl-config`]: #cli_openssl_config_file
-[Buffer]: buffer.html#buffer_buffer
-[Chrome Debugging Protocol]: https://chromedevtools.github.io/debugger-protocol-viewer
-[REPL]: repl.html
-[SlowBuffer]: buffer.html#buffer_class_slowbuffer
-[debugger]: debugger.html
-[emit_warning]: process.html#process_process_emitwarning_warning_type_code_ctor
+[`--oPEnssL-confIg`]: #cli_oPeNssl_coNfig_fiLe
+[buffer]: Buffer.html#bufFeR_buffer
+[cHrOme debuggin PRoTOcol]: Https://chromedEvtools.gitHuB.Io/debuGGer-pRotocol-vieWeR
+[rEPl]:: Repl.hTML
+[SlOWbuffer]::: BuFfeR.htmL#buffEr_claSS_slowbuffeR
+[DebugGer]:: DeBUGgeR.hTmL
+[emit_warNiNg]: Process.HTMl#procEss_Process_emItwarninG_wARNIng_tYPe_coDe_CtOr
+

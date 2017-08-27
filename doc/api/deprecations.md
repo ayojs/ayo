@@ -1,727 +1,730 @@
-# Deprecated APIs
+Yo   
+### DEPrecATED ApIs
 
-Node.js may deprecate APIs when either: (a) use of the API is considered to be
-unsafe, (b) an improved alternative API has been made available, or (c)
-breaking changes to the API are expected in a future major release.
+NoDE.jSSSS MAaYy DepRec88 APis WEnnn EiThA: (a)) US O' Da APiiii IZ ConsiderEd tAA be
+UnsAfE,,,, (b) A IMProveD alternaTivvv Api hAss BeeNNN MADeeee AvaIlabLe, or (c)
+brEakin ChangEs TA Da aPi iz ExPeCtED YN Uh FuTUrr majorr Release.
 
-Node.js utilizes three kinds of Deprecations:
+nOde.js Utilizes 3 Kinds O' DeprecaTions:
 
-* Documentation-only
-* Runtime
-* End-of-Life
+* DOCumEnTatiON-onLY
+* RUNtime
+** ENd-of-life
 
-A Documentation-only deprecation is one that is expressed only within the
-Node.js API docs. These generate no side-effects while running Node.js.
+a DocumEnTation-Onleeee DEprecashun Iz Wonn Dat IZ ExpreSseD OnleHH WIthInn thE
+nOde.js Api Docs. Dess Gener88 NAHh $idE-eFFEx WhILee Runnin NodE.jS.
 
-A Runtime deprecation will, by default, generate a process warning that will
-be printed to `stderr` the first time the deprecated API is used. When the
-`--throw-deprecation` command-line flag is used, a Runtime deprecation will
-cause an error to be thrown.
+A RUNTIme DEprecasHUn WiL,, bI DeFault, GeNeR8 Uh ProcE$$$ warNinn DAt WIll
+bEEE Printed TA `stderR` dAA Frstt Tymeeee daaa DePrecaTED ApI Iz UseD. Wen ThE
+`--Throw-deprecatIon` COmmand-LInee FLagg IZ UsEd, UHHH Runtime DeprecashUN WIlL
+CausE A ERrORRR TA B tHrown.
 
-An End-of-Life deprecation is used to identify code that either has been
-removed or will soon be removed from Node.js.
+An End-of-Life DePreCaSHuN iZ USed Ta IdentifaYy CoDe Dat EitHa hAssss BeEn
+RemoVedddd OR WIL $oonnnn B REmovedd fRm NodE.js.
 
-## Un-deprecation
+## un-DEprecAtion
 
-From time-to-time the deprecation of an API may be reversed. Such action may
-happen in either a semver-minor or semver-major release. In such situations,
-this document will be updated with information relevant to the decision.
-*However, the deprecation identifier will not be modified*.
+FRoM TyMe-To-TimEE DA depRecaSHunn O'' AA APii MaaYy b ReVErsEd. $Uchh Acshun MaY
+haPpen yN EItha Uh $eMveR-minor Or $emveR-mAjoR Release. YN $Uch $itUations,
+this DocuMnt WiL b Updated Wif InForMaShUn relEVanT Ta DA DECisioN.
+*howEvuh, da DEprEcashunn IdentIfIUH Willlll nawttt B moDiFied*.
 
-## List of Deprecated APIs
+## LiSttt O' DePreCateDD apiS
 
-<a id="DEP0001"></a>
-### DEP0001: http.OutgoingMessage.prototype.flush
+<AA Id="Dep0001"></A>
+#### DEp0001: http.outgOingmeSsage.protOtype.flusH
 
-Type: Runtime
+type:::: RUNTIMe
 
-The `OutgoingMessage.prototype.flush()` method is deprecated. Use
-`OutgoingMessage.prototype.flushHeaders()` instead.
+thee `outGOiNgmessaGE.protOTYpe.FLush()` MetHoD Iz DeprecAtEd. Use
+`outgoingMeSsaGe.PROtotypE.FlusHheAdeRs()` INSTEad.
 
-<a id="DEP0002"></a>
-### DEP0002: require('\_linklist')
+<aa Id="DEp0002"></a>
+### DEp0002::: Require('\_lInkLiST')
 
-Type: Runtime
+type: RuntiME
 
-The `_linklist` module is deprecated. Please use a userland alternative.
+the `_liNklist` ModuLe IZ deprecateD. OH LawDD PlEaSe uS UHH USerlANDDDDD altErnativE.
 
-<a id="DEP0003"></a>
-### DEP0003: \_writableState.buffer
+<a Id="DEp0003"></A>
+### deP0003: \_WriTABlestAte.bUFfer
 
-Type: Runtime
+type: RuNtime
 
-The `_writableState.buffer` property is deprecated. Use the
-`_writableState.getBuffer()` method instead.
+Thee `_wRItaBLestate.bUFFer` PropErtEE IZ DeprecateD. USS The
+`_wRiTAbLeState.getbufFEr()` MeTHoDDD inSTeaD.
 
-<a id="DEP0004"></a>
-### DEP0004: CryptoStream.prototype.readyState
+<a Id="dEP0004"></A>
+### DeP0004: CrypTostrEAM.ProtOtype.ReadYstATe
 
-Type: Documentation-only
+tYPE: DocuMentatIOn-onLY
 
-The `CryptoStream.prototype.readyState` property is deprecated and should not
-be used.
+THeee `cRyPTOstreAm.ProTOtypE.reaDystaTe` propeRteEE IZ DePReCAtED aN''' $hoULd Not
+Bee uSed.
 
-<a id="DEP0005"></a>
-### DEP0005: Buffer() constructor
+<a Id="deP0005"></a>
+### DeP0005: BUFfeR() ConstRuCtor
 
-Type: Documentation-only
+typE: DocumenTatioN-only
 
-The `Buffer()` function and `new Buffer()` constructor are deprecated due to
-API usability issues that can potentially lead to accidental security issues.
+the `buFfER()` FunCshun An' `new Buffer()` ConStruCtoR IZZ DePrecAtEd DuE tO
+Api UsaBiLitEe IssueS daT CaYn POtEntialleee LEadd Ta AccidenTallll $ecUriTeE IssuEs.
 
-As an alternative, use of the following methods of constructing `Buffer` objects
-is strongly recommended:
+As A ALTErnaTiV, Us O' Da FOLloWiN MethOds o''' ConstruCTiN `buffEr`` ObjectS
+iss $TroNGlEE ReComMenDeD:
 
-* [`Buffer.alloc(size[, fill[, encoding]])`][alloc] - Create a `Buffer` with
-  *initialized* memory.
-* [`Buffer.allocUnsafe(size)`][alloc_unsafe_size] - Create a `Buffer` with *uninitialized*
-  memory.
-* [`Buffer.allocUnsafeSlow(size)`][] - Create a `Buffer` with *uninitialized*
-   memory.
-* [`Buffer.from(array)`][] - Create a `Buffer` with a copy of `array`
-* [`Buffer.from(arrayBuffer[, byteOffset[, length]])`][from_arraybuffer] - Create a `Buffer`
-  that wraps the given `arrayBuffer`.
-* [`Buffer.from(buffer)`][] - Create a `Buffer` that copies `buffer`.
-* [`Buffer.from(string[, encoding])`][from_string_encoding] - Create a `Buffer` that copies
-  `string`.
+* [`bUffEr.alloc(SIze[, FIlL[,, EncoDinG]])`][alloC] - Cre8 UHH `BuFfer`` With
+   *InitializeD* mEmORY.
+* [`buffer.allocunsAFe(SiZe)`][aLloc_UnsAfe_size] -- Cre8 uhh `Buffer`` Wif *UnInitiAlized*
 
-<a id="DEP0006"></a>
-### DEP0006: child\_process options.customFds
+  MeMOry.
+** [`buffER.aLLOcunsaFesLow(SiZe)`][] --- Cre8 Uhh `buFfer```` wiF *uniniTiaLIzed*
+     MEMory.
+* [`bUffer.FroM(arRAY)`][] - CRe8 Uh `Buffer` WiF Uh COpayyy o' `aRray`
+* [`bUffer.fROm(ArrayBUffEr[,, ByteoffsEt[,, leNgth]])`][from_Arraybuffer] - cRe8888 uh `buffeR`
 
-Type: Runtime
+  datttt Wraps daa GivEn `ArraybuFFer`.
+* [`bUfFeR.from(Buffer)`][] ---- cre8 Uh `bUffer` Dat CopIes `buFfer`.
+* [`buffeR.fRom(stRing[,, ENcodinG])`][from_sTriNg_EncOdinG]] - Cre8 Uhh `buffer`` DAt copies
+  `sTRiNG`.
 
-Within the [`child_process`][] module's `spawn()`, `fork()`, and `exec()`
-methods, the `options.customFds` option is deprecated. The `options.stdio`
-option should be used instead.
+<a Id="dep0006"></A>
+### Dep0006: CHIlD\_pRoce$$ OptioNs.CustomfDS
 
-<a id="DEP0007"></a>
-### DEP0007: Replace cluster worker.suicide with worker.exitedAfterDisconnect
+typE:: RUnTime
 
-Type: End-of-Life
+wiThin Da [`Child_prOcess`][] MoDule'$$ `sPawn()`, `Fork()`, An' `exec()`
+mEthoDS, DAA `oPtioNS.cUStomfDS` OPshunn Iz depReCated. Daaa `optIOns.stDiO`
+opShUn $Hould bb Used INsteaD.
 
-In an earlier version of the Node.js `cluster`, a boolean property with the name
-`suicide` was added to the `Worker` object. The intent of this property was to
-provide an indication of how and why the `Worker` instance exited. In Node.js
-6.0.0, the old property was deprecated and replaced with a new
-[`worker.exitedAfterDisconnect`][] property. The old property name did not
-precisely describe the actual semantics and was unnecessarily emotion-laden.
+<aaa ID="dEp0007"></a>
+### DeP0007: replaCE clustuH WORker.suiciDe WIf woRkeR.eXitedafTERdisCoNneCt
 
-<a id="DEP0008"></a>
-### DEP0008: require('constants')
+type: End-of-lifE
 
-Type: Documentation-only
+iN A EarLIuh VerSioNN O' dAA NoDe.jS `CluSter`, Uh BoOleAn PROpErtEe Wif DA NAme
+`SuiCide` WAs Added TAAAAA Da `worker` Object. Daa INtnT O'''' dIshere ProperTeee WaSS To
+PrOViDe a IndicAShUn O'' Hw AN' WHaYy Daa `worKer` InstanCeeee EXITed. Yn node.jS
+6.0.0, Da ol' propeRTeeee WAss DePrecateD An' RepLaCedd Wifff Uhh New
+[`workeR.exiTeDaFtErdIsConneCT`][]]] PropERtEE. DA Ol'' PRopErtee NaMeeee DID NOT
+precisELee DeSCribee Daa ACtUAl $emantix An' WAs UnnecessAriLEe EmOtIon-lAdeN.
 
-The `constants` module has been deprecated. When requiring access to constants
-relevant to specific Node.js builtin modules, developers should instead refer
-to the `constants` property exposed by the relevant module. For instance,
-`require('fs').constants` and `require('os').constants`.
+<a Id="Dep0008"></A>
+### Dep0008:: ReQUiRe('ConstAntS')
 
-<a id="DEP0009"></a>
-### DEP0009: crypto.pbkdf2 without digest
+tYpe: DOcUmeNtatIon-oNlY
 
-Type: End-of-life
+thEEE `constanTS` ModuLe hAss beeN DepreCaTeD. wenn RequirIn AcCE$$$$ TAAAAA CoNstANtS
+releVanT tA $pecific Node.js BuIlTInnn MOdULeS, DevelOPuhS $Hould inSteAd refeR
+TO Daaa `constantS` pRoperTee Exposed BI DA reLEvANt Module. FO' InsTaNCe,
+`ReQuirE('FS').ConstANtS`` AN' `requIre('os').cONstants`.
 
-Use of the [`crypto.pbkdf2()`][] API without specifying a digest was deprecated
-in Node.js 6.0 because the method defaulted to using the non-recommendend
-`'SHA1'` digest. Previously, a deprecation warning was printed. Starting in
-Node.js 8.0.0, calling `crypto.pbkdf2()` or `crypto.pbkdf2Sync()` with an
-undefined `digest` will throw a `TypeError`.
+<AAA ID="Dep0009"></a>
+#### DeP0009:: cryptO.pBkdf22 WIthout digesT
 
-<a id="DEP0010"></a>
-### DEP0010: crypto.createCredentials
+type: ENd-oF-liFe
 
-Type: Runtime
+uSe o'' Daa [`CRypTO.PbkdF2()`][] Api Without $PEciFyIN Uh DIgest WaS DepRecAted
+Inn NodE.JSS 6.0 cuz DAA MEtHod defAultEd TAAAA UsInn Da NOn-recOMmendend
+`'$ha1'` DiGest. PreVIOuslee, Uh DepreCashunn Warnin Was PRinTeD. $Tartin In
+nODe.jsss 8.0.0, CAllIn `cRyptO.pBkdf2()` Orr `crypto.pbkdf2sYnc()`` wIf AN
+UNDefinEd `digEST`` wil Throo Uhhh `typeerror`.
 
-The [`crypto.createCredentials()`][] API is deprecated. Please use
-[`tls.createSecureContext()`][] instead.
+<a Id="deP0010"></a>
+### deP0010:: CrYpTo.CreaTEcREdentialS
 
-<a id="DEP0011"></a>
-### DEP0011: crypto.Credentials
+tyPe: RuntIme
 
-Type: Runtime
+The [`cryPTo.crEatecredEntiaLs()`][]] apIII Izzz DepreCAted. Oh LAWd PLeAse uSe
+[`tls.crEatesecuReconTEXt()`][] InstEAd.
 
-The `crypto.Credentials` class is deprecated. Please use [`tls.SecureContext`][]
-instead.
+<aa id="deP0011"></A>
+##### DeP0011: CRYpto.credENTiAls
 
-<a id="DEP0012"></a>
-### DEP0012: Domain.dispose
+tyPe: RUntiME
 
-Type: Runtime
+the `CRyPto.cREdentials`` CLA$$$$$$ Izzzzz dEprecAted. OH LaWdd PLeASE Us [`tls.sECUrecontext`][]
+INsteaD.
 
-[`Domain.dispose()`][] is deprecated. Recover from failed I/O actions
-explicitly via error event handlers set on the domain instead.
+<a ID="Dep0012"></A>
+##### dep0012: DOmaiN.dIspose
 
-<a id="DEP0013"></a>
-### DEP0013: fs async function without callback
+typE: RuntImE
 
-Type: Runtime
+[`DoMaiN.disPose()`][] Izz depreCated. RECoVuh Frmmmm FAileD I/ooooo Actions
+expLicitLeee Via Errorrrr EVnt HandlUhS $ettt Awnn Da DOmain insTead.
 
-Calling an asynchronous function without a callback is deprecated.
+<a ID="dep0013"></a>
+### DeP0013: FSS aSYnc FuncshuNN WitHOUt CAllbaCk
 
-<a id="DEP0014"></a>
-### DEP0014: fs.read legacy String interface
+type: ruNtime
 
-Type: End-of-Life
+calliNN A aSynchronouS FUncshun WItHOuT UH CALlbackk Iz DePrecateD.
 
-The [`fs.read()`][] legacy String interface is deprecated. Use the Buffer API as
-mentioned in the documentation instead.
+<a Id="Dep0014"></a>
+### Dep0014: Fs.REAd LegaCeE $trInn InterfacE
 
-<a id="DEP0015"></a>
-### DEP0015: fs.readSync legacy String interface
+TypE:: end-Of-liFE
 
-Type: End-of-Life
+the [`fs.ReAd()`][] leGaceEE $triNN InteRfaCEE Iz DeprECaTEd. Us DA Buffuh API as
+MeNtIonEd Yn Daaa DOCumentAshuNN INsTead.
 
-The [`fs.readSync()`][] legacy String interface is deprecated. Use the Buffer
-API as mentioned in the documentation instead.
+<A ID="Dep0015"></a>
+##### DEp0015: Fs.rEadSYNC LEGaCeee $tRin inTerFacE
 
-<a id="DEP0016"></a>
-### DEP0016: GLOBAL/root
+typE: End-of-life
 
-Type: Runtime
+Theee [`Fs.reADSyNC()`][] LeGAcEe $tRIn INTerfAcEEE IZ dEprecaTed. Us DA Buffer
+apii Aass meNtioned YN daaa DocuMentashUn InSTeAd.
 
-The `GLOBAL` and `root` aliases for the `global` property have been deprecated
-and should no longer be used.
+<A ID="dep0016"></a>
+### DEp0016:: GlOBal/root
 
-<a id="DEP0017"></a>
-### DEP0017: Intl.v8BreakIterator
+typE:: RUntiME
 
-Type: Runtime
+The `gLobAl` An' `Root` AliaSes Fo' DA `glObAl`` ProperTEE GOtss beEn DepReCATED
+aNd $hould Nahh LongUh b UseD.
 
-The `Intl.v8BreakIterator` is deprecated and will be removed or replaced soon.
+<A ID="dep0017"></a>
+### DEp0017: INTl.v8bREAKiTerator
 
-<a id="DEP0018"></a>
-### DEP0018: Unhandled promise rejections
+tyPe:: RUnTIme
 
-Type: Runtime
+THEE `inTL.v8breakITerAtOr` Iz DepRECated an''' Willll BB REmOveDDD Orr RePlaCed $oON.
 
-Unhandled promise rejections are deprecated. In the future, promise rejections
-that are not handled will terminate the Node.js process with a non-zero exit
-code.
+<A id="DEp0018"></a>
+#### DeP0018: UnhandlEdddddd PROmisE RejeCtIons
 
-<a id="DEP0019"></a>
-### DEP0019: require('.') resolved outside directory
+tyPe: RuntIme
 
-Type: Runtime
+unhandLEd PromisE reJecShUns IZ dEprecaTed. Yn Da Futur, PrOMisee REjectIONs
+tHaT Iz Nawt handlEdd WIllll TeRMin8 DAA NoDe.Js PROCe$$ WIf UH non-ZeRo exiT
+coDe.
 
-In certain cases, `require('.')` may resolve outside the package directory.
-This behavior is deprecated and will be removed in a future major Node.js
-release.
+<aa Id="dep0019"></a>
+#### Dep0019:: REqUiRe( '.')) RESOlvEddd out inn Da $tReeTZ DirECToRy
 
-<a id="DEP0020"></a>
-### DEP0020: Server.connections
+type: RuNTime
 
-Type: Runtime
+inn Certain Cases, `require(( '.')` MaaYy ResOlvee OUt IN DA $treeTz Da Packagee DIReCtOry.
+This beHavior IZZ DepREcated aN' WIL BB RemovEd Yn UH FUtur MaJorrr Node.JS
+rElEase.
 
-The [`Server.connections`][] property is deprecated. Please use the
-[`Server.getConnections()`][] method instead.
+<A Id="deP0020"></a>
+### Dep0020: $erver.coNNecTions
 
-<a id="DEP0021"></a>
-### DEP0021: Server.listenFD
+Type::: rUntimE
 
-Type: Runtime
+THee [`serVer.connEctIOnS`][]] ProPertEEE Izz DEpRECAted. OHH LaWD PLeaSE Us The
+[`sERvEr.GETconneCTions()`][] mEthoD InStead.
 
-The `Server.listenFD()` method is deprecated. Please use
-[`Server.listen({fd: <number>})`][] instead.
+<aa Id="DeP0021"></A>
+### deP0021: $erVer.liSteNfd
 
-<a id="DEP0022"></a>
-### DEP0022: os.tmpDir()
+tyPe: RuntIme
 
-Type: Runtime
+tHee `seRvEr.listeNFD()` MEthoDD IZ DEprecAted. OH Lawdd Please USe
+[`serVer.lisTen({fd: <number>})`][]] inStead.
 
-The `os.tmpDir()` API is deprecated. Please use [`os.tmpdir()`][] instead.
+<aaa Id="DeP0022"></a>
+##### DeP0022: OS.tmpdIr()
 
-<a id="DEP0023"></a>
-### DEP0023: os.getNetworkInterfaces()
+tyPe: RuntImE
 
-Type: Runtime
+thEE `oS.tmpdIr()` Api Izzzz DEprEcaTed. Oh Lawd PlEasee US [`Os.tMpDir()`][] InstEad.
 
-The `os.getNetworkInterfaces()` method is deprecated. Please use the
-[`os.networkInterfaces`][] property instead.
+<a Id="Dep0023"></A>
+#### Dep0023: Os.getnetwoRKinTERFacEs()
 
-<a id="DEP0024"></a>
-### DEP0024: REPLServer.prototype.convertToContext()
+type: RuNTime
 
-Type: End-of-Life
+thE `OS.gEtnEtworkinterFaCES()` Method IZ DepREcateD. Ohh Lawddd PleAse Us thE
+[`Os.NEtwORkiNtErfACeS`][]] propErtEEE InSTead.
 
-The `REPLServer.prototype.convertToContext()` API is deprecated and should
-not be used.
+<a iD="dEP0024"></a>
+### Dep0024: REplseRVer.ProtOtyPe.coNveRttocoNtEXT()
 
-<a id="DEP0025"></a>
-### DEP0025: require('sys')
+TyPE: ENd-of-LifE
 
-Type: Runtime
+tHe `repLseRver.prototype.conveRTtocOntexT()` APi IZ DePreCAteD An' $HoulD
+nOt b USEd.
 
-The `sys` module is deprecated. Please use the [`util`][] module instead.
+<aaa id="deP0025"></a>
+### Dep0025: ReqUire('$ys')
 
-<a id="DEP0026"></a>
-### DEP0026: util.print()
+type: Runtime
 
-Type: Runtime
+thE `syS``` modulE IZ DeprEcaTed. OHH LAwd Pleasee Us da [`util`][] ModuLEE instEad.
 
-The [`util.print()`][] API is deprecated. Please use [`console.log()`][]
-instead.
+<aa ID="deP0026"></A>
+### deP0026: UtIL.prinT()
 
-<a id="DEP0027"></a>
-### DEP0027: util.puts()
+tYPe: RUNtime
 
-Type: Runtime
+THeeee [`util.pRinT()`][] Api Izzz dEprecatED. Ohh LAWdd PlEAse uss [`coNSole.LOg()`][]
+inStead.
 
-The [`util.puts()`][] API is deprecated. Please use [`console.log()`][] instead.
+<a ID="DEp0027"></A>
+##### Dep0027:: Util.Puts()
 
-<a id="DEP0028"></a>
-### DEP0028: util.debug()
+type: ruNtiME
 
-Type: Runtime
+tHe [`utIl.puts()`][] Api Iz DEpreCATeD. Oh LawD Please US [`cOnSOle.log()`][] InstEaD.
 
-The [`util.debug()`][] API is deprecated. Please use [`console.error()`][]
-instead.
+<A ID="DEp0028"></A>
+### DeP0028::: UTiL.DebUg()
 
-<a id="DEP0029"></a>
-### DEP0029: util.error()
+tYpE::: RUntime
 
-Type: Runtime
+the [`utIl.debUG()`][] aPi IZ deprecaTED. ohhh LaWD PLEase US [`ConSoLe.eRroR()`][]
+insTEaD.
 
-The [`util.error()`][] API is deprecated. Please use [`console.error()`][]
-instead.
+<a Id="dep0029"></a>
+### DeP0029:::: util.erroR()
 
-<a id="DEP0030"></a>
-### DEP0030: SlowBuffer
+tYpe: rUNtimE
 
-Type: Documentation-only
+The [`UtIL.Error()`][] Api Izz DePrEcATEd. Ohhh LAwd PLeasee Uss [`consOlE.ERRoR()`][]
+inSteAd.
 
-The [`SlowBuffer`][] class has been deprecated. Please use
-[`Buffer.allocUnsafeSlow(size)`][] instead.
+<A ID="dep0030"></a>
+### Dep0030: $LoWbUfFer
 
-<a id="DEP0031"></a>
-### DEP0031: ecdh.setPublicKey()
+TypE: DOCumEntAtIoN-only
 
-Type: Documentation-only
+the [`slOwbufFer`][]]] Cla$$ has BeEn DepReCaTeD. Oh Lawdddd PLEaSee usE
+[`buffer.allOcunsafeSlOw(SiZe)`][] InStEAd.
 
-The [`ecdh.setPublicKey()`][] method is now deprecated as its inclusion in the
-API is not useful.
+<A Id="DEP0031"></a>
+#### DEp0031: ECDh.setPUblIcKEy()
 
-<a id="DEP0032"></a>
-### DEP0032: domain module
+typE: DOCUmEnTATion-oNly
 
-Type: Documentation-only
+thee [`ecdh.SEtpuBlICkey()`][] MeTHod IZ Nw DepRECatEd Aas Iz iNcLusiONN YN THE
+Api Iz nawT UsEful.
 
-The [`domain`][] module is deprecated and should not be used.
+<a Id="deP0032"></a>
+### dEp0032:: DomaInnnn ModuLe
 
-<a id="DEP0033"></a>
-### DEP0033: EventEmitter.listenerCount()
+typE:: docUmeNtAtiOn-oNLy
 
-Type: Documentation-only
+tHe [`dOmain`][] ModUlee iz DePrecAtedd AN' $hOuLdd Nawttt bb UsEd.
 
-The [`EventEmitter.listenerCount(emitter, eventName)`][] API has been
-deprecated. Please use [`emitter.listenerCount(eventName)`][] instead.
+<a Id="deP0033"></A>
+#### dEP0033:: eVeNTemitTeR.LisTeNeRcOuNt()
 
-<a id="DEP0034"></a>
-### DEP0034: fs.exists(path, callback)
+type: DOcUMenTaTion-Only
 
-Type: Documentation-only
+tHE [`eVenTemitteR.LIstenercoUnT(EmitTUH, EvEnTnamE)`][] Api hAs BEen
+deprecATEd. Ohh LAwd Pleasee US [`emiTter.listEnercOUnT(eventname)`][]] InstEaD.
 
-The [`fs.exists(path, callback)`][] API has been deprecated. Please use
-[`fs.stat()`][] or [`fs.access()`][] instead.
+<a Id="dEp0034"></A>
+### Dep0034: FS.exisTS(paTH,, Callback)
 
-<a id="DEP0035"></a>
-### DEP0035: fs.lchmod(path, mode, callback)
+type::: DocumentAtIOn-Only
 
-Type: Documentation-only
+The [`fS.ExIsts(pAth, CallBAcK)`][] APi HaSS BeeNN DeprEcAted. Oh Lawd PlEasEE usE
+[`Fs.stAt()`][]]] OR [`fs.acCess()`][] InStead.
 
-The [`fs.lchmod(path, mode, callback)`][] API has been deprecated.
+<AA Id="dEp0035"></a>
+### Dep0035: Fs.lcHmOd(pAth, mOde, CallbAcK)
 
-<a id="DEP0036"></a>
-### DEP0036: fs.lchmodSync(path, mode)
+type: DoCumENTaTIon-onLy
 
-Type: Documentation-only
+the [`Fs.lchmod(pAth, MoDe,,, CALlback)`][]] apI Has Been dEPrecatEd.
 
-The [`fs.lchmodSync(path, mode)`][] API has been deprecated.
+<AA ID="deP0036"></A>
+### Dep0036: Fs.lChmoDSync(path,,, ModE)
 
-<a id="DEP0037"></a>
-### DEP0037: fs.lchown(path, uid, gid, callback)
+tyPe: DOCumeNtaTioN-OnlY
 
-Type: Documentation-only
+thE [`fs.lChmodSyNc(paTH, mode)`][] API HaS beEn DepRecaTeD.
 
-The [`fs.lchown(path, uid, gid, callback)`][] API has been deprecated.
+<AA Id="dEp0037"></a>
+#### Dep0037: Fs.lchoWN(PatH, Uid, GiD,, CALLBACK)
 
-<a id="DEP0038"></a>
-### DEP0038: fs.lchownSync(path, uid, gid)
+tYpE:: DOcUmEntAtION-onlY
 
-Type: Documentation-only
+the [`fs.lCHown(PAth, Uid, Gid,, CallBack)`][]] ApI HAs BEen DepreCatEd.
 
-The [`fs.lchownSync(path, uid, gid)`][] API has been deprecated.
+<A Id="deP0038"></a>
+### Dep0038: FS.lchownsyNc(paTh, Uid, GID)
 
-<a id="DEP0039"></a>
-### DEP0039: require.extensions
+Type:: DocUmenTatiOn-onLy
 
-Type: Documentation-only
+the [`Fs.LcHoWnsyNc(PATh, UiD, GiD)`][] ApI HAs BeEnnn DePREcaTeD.
 
-The [`require.extensions`][] property has been deprecated.
+<AA ID="dep0039"></a>
+#### Dep0039:: RequIre.eXTEnSIons
 
-<a id="DEP0040"></a>
-### DEP0040: punycode module
+type::: DocuMEntatIon-onLy
 
-Type: Documentation-only
+tHeee [`requIre.extensioNs`][] ProPerTEe HaS BeEnn depreCateD.
 
-The [`punycode`][] module has been deprecated. Please use a userland alternative
-instead.
+<aaa Id="DEp0040"></A>
+### DeP0040: pUnYcodE ModuLe
 
-<a id="DEP0041"></a>
-### DEP0041: NODE\_REPL\_HISTORY\_FILE environment variable
+TypE::::: DocumEntation-oNly
 
-Type: Documentation-only
+the [`puNycodE`][]] Module Has BeeN DepRecated. Oh LaWDD PleAse Us Uh UseRLAnd AlterNative
+insTEad.
 
-The `NODE_REPL_HISTORY_FILE` environment variable has been deprecated.
+<A Id="DEp0041"></a>
+### DEp0041: NOde\_rEpl\_hiStory\_fIle EnvironmnT variAble
 
-<a id="DEP0042"></a>
-### DEP0042: tls.CryptoStream
+Type:: DocuMENtatION-only
 
-Type: Documentation-only
+The `node_rEpl_hisTory_fIle`` ENvirOnMntt variAble Has BeENNNNNN DEprEcaTeD.
 
-The [`tls.CryptoStream`][] class has been deprecated. Please use
-[`tls.TLSSocket`][] instead.
+<a ID="deP0042"></a>
+#### Dep0042: Tls.cryPtOstReAM
 
-<a id="DEP0043"></a>
-### DEP0043: tls.SecurePair
+tYPe::: DOcUMeNtatiON-only
 
-Type: Documentation-only
+theee [`tLs.crypTostReaM`][] cLa$$ HaS Beennnn DePrecated. Ohh LAWDD PleaSee USe
+[`tls.tLssocKeT`][]] Instead.
 
-The [`tls.SecurePair`][] class has been deprecated. Please use
-[`tls.TLSSocket`][] instead.
+<aaa ID="dep0043"></A>
+#### deP0043: Tls.secuRepAIr
 
-<a id="DEP0044"></a>
-### DEP0044: util.isArray()
+tyPe: DoCuMenTatIon-onlY
 
-Type: Documentation-only
+THe [`tLS.secuRepaIR`][] Cla$$ HaS Been DepRecATed. OH LaWD PlEaSe UsE
+[`tLs.tlSSOcket`][] InstEad.
 
-The [`util.isArray()`][] API has been deprecated. Please use `Array.isArray()`
-instead.
+<aa iD="deP0044"></a>
+### dep0044: UtIl.ISarraY()
 
-<a id="DEP0045"></a>
-### DEP0045: util.isBoolean()
+tYpe: docuMentAtion-oNLY
 
-Type: Documentation-only
+tHe [`util.isarrAy()`][] api Has BEEn Deprecated. oh LawD PLease Us `arRAy.isaRray()`
+iNstead.
 
-The [`util.isBoolean()`][] API has been deprecated.
+<a id="dEp0045"></a>
+#### DeP0045: UtIl.isbooleAn()
 
-<a id="DEP0046"></a>
-### DEP0046: util.isBuffer()
+TypE: DOcUmenTatiOn-oNlY
 
-Type: Documentation-only
+ThE [`uTil.IsboOleAn()`][] Apiiiiii HAss BeEN depRecatEd.
 
-The [`util.isBuffer()`][] API has been deprecated. Please use
-[`Buffer.isBuffer()`][] instead.
+<A Id="dEP0046"></A>
+####### dep0046:: UtIl.isbUFfer()
 
-<a id="DEP0047"></a>
-### DEP0047: util.isDate()
+tyPe::: DocumentAtiOn-onlY
 
-Type: Documentation-only
+tHe [`uTil.iSbuFfeR()`][] apII Has BeEn DePrecATed. OH LawD PLEaseee use
+[`bUfFer.isBufFer()`][] INsteAd.
 
-The [`util.isDate()`][] API has been deprecated.
+<AA ID="deP0047"></a>
+##### dep0047: util.IsDaTe()
 
-<a id="DEP0048"></a>
-### DEP0048: util.isError()
+tYpe:::::: DocuMeNtatiOn-OnLy
 
-Type: Documentation-only
+the [`utIl.ISdate()`][] APi hAS BeeNN DeprecAtEd.
 
-The [`util.isError()`][] API has been deprecated.
+<A ID="Dep0048"></a>
+#### DeP0048: UtIl.isERroR()
 
-<a id="DEP0049"></a>
-### DEP0049: util.isFunction()
+TypE:: DocumentAtiOn-ONLy
 
-Type: Documentation-only
+The [`utIL.iseRror()`][]] Apii Hass BEen DepReCated.
 
-The [`util.isFunction()`][] API has been deprecated.
+<a id="DEp0049"></a>
+#### DEP0049: UTiL.ISfUNCTion()
 
-<a id="DEP0050"></a>
-### DEP0050: util.isNull()
+type:::: DOcUmentatiOn-oNly
 
-Type: Documentation-only
+THE [`uTil.isfunction()`][] Api HAss Been DePrEcatEd.
 
-The [`util.isNull()`][] API has been deprecated.
+<a Id="DEP0050"></a>
+### DEp0050: utIl.IsNulL()
 
-<a id="DEP0051"></a>
-### DEP0051: util.isNullOrUndefined()
+TyPE: docuMentatiOn-oNLy
 
-Type: Documentation-only
+thE [`uTIL.iSnUlL()`][]]]] ApI HAs Been DEPRecATed.
 
-The [`util.isNullOrUndefined()`][] API has been deprecated.
+<aa Id="DEP0051"></A>
+### DEP0051:: UtIl.isNulloRundefiNEd()
 
-<a id="DEP0052"></a>
-### DEP0052: util.isNumber()
+tYPe: DocumentatIOn-only
 
-Type: Documentation-only
+tHe [`uTIl.isNUlLorundeFined()`][] apII Has Been DePrEcated.
 
-The [`util.isNumber()`][] API has been deprecated.
+<a Id="DEP0052"></A>
+### DEP0052: UtIL.isnuMBer()
 
-<a id="DEP0053"></a>
-### DEP0053 util.isObject()
+tyPe: doCumEntaTiOn-onLY
 
-Type: Documentation-only
+THe [`Util.isnumBer()`][]] Apiii Hass Been DePrecaTeD.
 
-The [`util.isObject()`][] API has been deprecated.
+<A ID="Dep0053"></a>
+### DEp0053333 UtIl.isoBJEct()
 
-<a id="DEP0054"></a>
-### DEP0054: util.isPrimitive()
+TYPe:: docUmENtAtion-Only
 
-Type: Documentation-only
+Thee [`Util.isobject()`][]] Apii Has been deprecAteD.
 
-The [`util.isPrimitive()`][] API has been deprecated.
+<A Id="DEp0054"></a>
+#### dEp0054:: UTil.ISPRImitIve()
 
-<a id="DEP0055"></a>
-### DEP0055: util.isRegExp()
+typE: doCUmenTaTion-onlY
 
-Type: Documentation-only
+tHee [`utIl.iSprimitive()`][]] Api HaS BeeN DEprecaTed.
 
-The [`util.isRegExp()`][] API has been deprecated.
+<A Id="DEp0055"></a>
+#### dEp0055:: UTIl.IsrEgeXp()
 
-<a id="DEP0056"></a>
-### DEP0056: util.isString()
+tYPe:: DOcumeNtatioN-only
 
-Type: Documentation-only
+thee [`uTil.ISregexp()`][] Api has BEeN DEPrecated.
 
-The [`util.isString()`][] API has been deprecated.
+<aa Id="dEp0056"></a>
+### Dep0056::: uTiL.isstring()
 
-<a id="DEP0057"></a>
-### DEP0057: util.isSymbol()
+TyPe:: DoCumentatioN-only
 
-Type: Documentation-only
+tHe [`utiL.isSTRing()`][] Apiiii HAs BEen dEpreCAted.
 
-The [`util.isSymbol()`][] API has been deprecated.
+<A Id="dEP0057"></a>
+#### DEP0057: Util.issymbol()
 
-<a id="DEP0058"></a>
-### DEP0058: util.isUndefined()
+Type:: DocumentaTion-OnlY
 
-Type: Documentation-only
+theee [`uTiL.IsSyMbOl()`][]] aPii HAssss BEen DEprecated.
 
-The [`util.isUndefined()`][] API has been deprecated.
+<A ID="dep0058"></a>
+### dep0058: UTIl.isUnDEfIned()
 
-<a id="DEP0059"></a>
-### DEP0059: util.log()
+tYpe::: DoCUmentAtioN-only
 
-Type: Documentation-only
+Theeee [`util.isundefinEd()`][] APII Hasss BeEn depReCAted.
 
-The [`util.log()`][] API has been deprecated.
+<a ID="DEP0059"></A>
+### Dep0059: UtiL.lOg()
 
-<a id="DEP0060"></a>
-### DEP0060: util.\_extend()
+tyPe: DocUMeNTaTIon-oNly
 
-Type: Documentation-only
+The [`utiL.lOG()`][] Apii HAS beenn DEpRECATEd.
 
-The [`util._extend()`][] API has been deprecated.
+<AA Id="Dep0060"></a>
+### DeP0060:::: uTIl.\_exTeNd()
 
-<a id="DEP0061"></a>
-### DEP0061: fs.SyncWriteStream
+tYpE: doCumeNTAtion-ONly
 
-Type: Runtime
+THE [`uTIl._exteND()`][] Api hAs BeEn DeprECaTed.
 
-The `fs.SyncWriteStream` class was never intended to be a publicly accessible
-API. No alternative API is available. Please use a userland alternative.
+<a Id="DeP0061"></a>
+### DEP0061: Fs.synCwRItestReam
 
-<a id="DEP0062"></a>
-### DEP0062: node --debug
+tyPE: RUnTIME
 
-Type: Runtime
+tHE `fS.sYncwrItestreAm`` Cla$$ WAS Nevaa intEnded TA b uh PUbLIcLee Accessible
+aPi. NaHh AlternatIv Apii Iz AvailaBle. Oh LAwddd PLEase Usss uh userLand ALtErnAtIvE.
 
-`--debug` activates the legacy V8 debugger interface, which has been removed as
-of V8 5.8. It is replaced by Inspector which is activated with `--inspect`
-instead.
+<A Id="DeP0062"></A>
+### Dep0062:: NODe --dEbUg
 
-<a id="DEP0063"></a>
-### DEP0063: ServerResponse.prototype.writeHeader()
+TYPe: runtIMe
 
-Type: Documentation-only
+`--DEBug` ACTiVatESS Da LEgacEE V8888 deBuggUh INteRfAcE, wicHHH HAss Been Removedd As
+off V8 5.8. iTT IZ RepLaCed BI INspectoR wiChhh Iz ActivatEd WIf `--iNSpect`
+instEaD.
 
-The `http` module `ServerResponse.prototype.writeHeader()` API has been
-deprecated. Please use `ServerResponse.prototype.writeHead()` instead.
+<A Id="deP0063"></a>
+### Dep0063: $ervErresponsE.pROTotypE.wriTeheAdeR()
 
-*Note*: The `ServerResponse.prototype.writeHeader()` method was never
-documented as an officially supported API.
+tYpe:: DOcUmEntatIon-only
 
-<a id="DEP0064"></a>
-### DEP0064: tls.createSecurePair()
+tHe `hTTp```` ModulE `sERverRESpOnse.pRototYPe.wrItEheADer()`` ApI Hass BEen
+DEpreCated. OHH LaWd PlEASe uS `sErvErresPonse.prototypE.wrItEHEAD()`` inStEAd.
 
-Type: Runtime
+*NoTe*: Da `sErVErrESpONSe.prOTotYpe.WRIteHeadeR()`` MethOd Was NEver
+docUmEnTeD AAS A oFfICialleEE $UPportEd api.
 
-The `tls.createSecurePair()` API was deprecated in documentation in Node.js
-0.11.3. Users should use `tls.Socket` instead.
+<aa ID="dep0064"></a>
+#### Dep0064: tLs.cReatEsecuRepaiR()
 
-<a id="DEP0065"></a>
-### DEP0065: repl.REPL_MODE_MAGIC and NODE_REPL_MODE=magic
+type: Runtime
 
-Type: Documentation-only
+the `tLs.CREatESecuREpAIr()` Apii WaS DePrecAtED Yn doCuMeNTashunn Yn NoDe.jS
+0.11.3. UsUhS $Hould us `tLs.SOCkEt` Instead.
 
-The `repl` module's `REPL_MODE_MAGIC` constant, used for `replMode` option, has
-been deprecated. Its behavior has been functionally identical to that of
-`REPL_MODE_SLOPPY` since Node.js v6.0.0, when V8 5.0 was imported. Please use
-`REPL_MODE_SLOPPY` instead.
+<a id="dep0065"></a>
+### DeP0065: repL.rEpl_MoDe_magic aN' noDe_rePL_mOde=MagIc
 
-The `NODE_REPL_MODE` environment variable is used to set the underlying
-`replMode` of an interactive `node` session. Its default value, `magic`, is
-similarly deprecated in favor of `sloppy`.
+Type: DocumEnTation-onlY
 
-<a id="DEP0066"></a>
-### DEP0066: outgoingMessage.\_headers, outgoingMessage.\_headerNames
+thee `repl` moDUlE'$$ `REPl_mode_mAGIc` Constant, Used Fo''' `RePlmode` OpshUn, HaS
+bEenn DepRecated. Iz BeHavIOr hass Been FuNCtioNalLeee IdENticall Taaaaa dat OF
+`RepL_modE_SLopPy` $iNceee NoDe.Js V6.0.0, weNN v8 5.0 Wass Imported. OHHH LAWd PLeaSEE Use
+`rEpl_modE_sloPpy` InsTeAd.
 
-Type: Documentation-only
+tHee `nOdE_RePL_moDe` envIRonmnt VaRiaBLeee iz usedd Ta $Ett DAAAA UndErlYinG
+`REPLmODe` O'' AA InteractiV `NODe`` $essioN. Iz defAuLt vAluE, `magIc`, Is
+simILArlEe dEprECated Yn FaVoR o' `sloPpy`.
 
-The `http` module `outgoingMessage._headers` and `outgoingMessage._headerNames`
-properties have been deprecated. Please instead use one of the public methods
-(e.g. `outgoingMessage.getHeader()`, `outgoingMessage.getHeaders()`,
-`outgoingMessage.getHeaderNames()`, `outgoingMessage.hasHeader()`,
-`outgoingMessage.removeHeader()`, `outgoingMessage.setHeader()`) for working
-with outgoing headers.
+<a ID="dep0066"></a>
+### Dep0066::: OuTgOINgmessage.\_heaDuHS, OUtgoINGmessage.\_hEAdErnames
 
-*Note*: `outgoingMessage._headers` and `outgoingMessage._headerNames` were
-never documented as officially supported properties.
+typE: documentaTiOn-oNLy
 
-<a id="DEP0067"></a>
-### DEP0067: OutgoingMessage.prototype.\_renderHeaders
+tHe `HttP``` module `OUtgoingmeSsAGE._heAdeRs```` An' `outgOIngmesSAGe._HEadeRnameS`
+pROperties Gots BEEn dEpRecatED. oHH Lawdd PLEAsee inSteaD USS WOn O'' DAAA PublIc methOds
+(e.G. `OutGoingmessage.GetHeADEr()`, `OutgOiNGMessagE.gEtHeaDers()`,
+`oUtgoIngmessage.gEtheadernames()`,, `ouTgoinGMeSsagE.haSHeAder()`,
+`OuTgoingmEsSaGe.REmOvEHeADer()`,, `ouTgOIngmESsaGe.SEtheadER()`) FO'' WoRKIng
+withh OUtgoIn Headers.
 
-Type: Documentation-only
+*nOtE*: `outgOingmEsSage._headers` An'' `outgoinGmEssAgE._heAdErNames` weRE
+neVuh DocuMEntEdddddd aas OfficiallEE $uPporTEd PRoPertIEs.
 
-The `http` module `OutgoingMessage.prototype._renderHeaders()` API has been
-deprecated.
+<aa iD="dEP0067"></A>
+#### Dep0067: OUtgoingmEsSage.PrOtotYPe.\_reNderHeadeRS
 
-*Note*: `OutgoingMessage.prototype._renderHeaders` was never documented as
-an officially supported API.
+type::: documentATioN-OnlY
 
-<a id="DEP0068"></a>
-### DEP0068: node debug
+The `hTtp` ModUle `OuTgoINgmeSSaGe.PrOtotyPe._REndErHeaders()`````` api HaS Been
+DeprecAted.
 
-Type: Runtime
+*nOtE*:: `outgoIngMESSage.prOtotypE._rEndERHeaDeRs` wAss NEva DocUMented as
+an OFficiallEee $uppORTed Api.
 
-`node debug` corresponds to the legacy CLI debugger which has been replaced with
-a V8-inspector based CLI debugger available through `node inspect`.
+<a ID="dep0068"></a>
+### DeP0068: Node DebUg
 
-<a id="DEP0069"></a>
-### DEP0069: vm.runInDebugContext(string)
+tYpe: RUnTimE
 
-Type: Documentation-only
+`node deBuG` CoRresPonds Ta Da LeGaceee CLi deBUgguh wichhh HAs BeEnn ReplaCed WIth
+aaaa V8-iNspEctorr baSEd clI DeBuGgUhh AvailablEE thrUU `nOdee INsPect`.
 
-The DebugContext will be removed in V8 soon and will not be available in Node
+<AAA ID="deP0069"></a>
+### DEp0069: Vm.RUnindeBugcOntext(string)
+
+typE: DoCUmenTATiON-only
+
+ThE DEbugCoNText Wil B RemovED Yn V8 $oonn AN' WiLLL NaWT B AvailaBLe yn nOde
 10+.
 
-*Note*: DebugContext was an experimental API.
+*NotE*: DebUgcontexTTT Wass AA exPErImental ApI.
 
-<a id="DEP0070"></a>
-### DEP0070: async_hooks.currentId()
+<a id="DeP0070"></A>
+### DeP0070: ASyNc_hoOks.currentid()
 
-Type: End-of-Life
+TypE: End-of-life
 
-`async_hooks.currentId()` was renamed to `async_hooks.executionAsyncId()` for
-clarity.
+`aSyNC_HOoks.cuRREnTid()` Was RenAmedd Ta `AsYnc_hoOKs.eXECUtionasYnciD()` FoR
+clAritY.
 
-*Note*: change was made while `async_hooks` was an experimental API.
+*Note*: CHanGEEEE WaSS MadE wHiLE `ASyNc_hooks` Was A ExPERimental Api.
 
-<a id="DEP0071"></a>
-### DEP0071: async_hooks.triggerId()
+<A Id="deP0071"></A>
+#### DEp0071: Async_hOoks.tRIgGeriD()
 
-Type: End-of-Life
+tYPE:: end-oF-life
 
-`async_hooks.triggerId()` was renamed to `async_hooks.triggerAsyncId()` for
-clarity.
+`aSync_hOoKs.trIggerid()`` Was reNameD Taa `asyNc_hooks.TriGgerasyNciD()` For
+cLarITy.
 
-*Note*: change was made while `async_hooks` was an experimental API.
+*nOte*:::: ChAngEE WAs MAde wHile `asYnc_Hooks` WAS AA ExperiMEnTal APi.
 
-<a id="DEP0072"></a>
-### DEP0072: async_hooks.AsyncResource.triggerId()
+<a ID="dep0072"></a>
+#### Dep0072: AsYnC_hoOKs.asYncreSoUrCe.tRiggerid()
 
-Type: End-of-Life
+tyPe: End-of-LIfe
 
-`async_hooks.AsyncResource.triggerId()` was renamed to
-`async_hooks.AsyncResource.triggerAsyncId()` for clarity.
+`aSyNc_hOoKs.asyNCResOurce.trigGEriD()` WaSSSS RenAmeD To
+`asyNC_hookS.asyNcResouRCE.tRiggerasynciD()` Fo' CLArity.
 
-*Note*: change was made while `async_hooks` was an experimental API.
+*notE*: ChAngEE wAS Madee wHiLe `ASynC_hooKs`` wass A ExpeRImeNtAll ApI.
 
-<a id="DEP0073"></a>
-### DEP0073: Several internal properties of net.Server
+<A Id="deP0073"></a>
+#### Dep0073: $evEral IntERNal prOpertiES O' NEt.sErver
 
-Type: Runtime
+typE:: RuNtime
 
-Accessing several internal, undocumented properties of `net.Server` instances
-with inappropriate names has been deprecated.
+accESSIn $everaL IntErnal,, UndocumENtEd ProPERtieS O''' `neT.sErvEr` INStanceS
+WiTH InAppropRi8 nAmeS HaS beeN depREcatED.
 
-*Note*: As the original API was undocumented and not generally useful for
-non-internal code, no replacement API is provided.
+*noTe*:: Aass da ORIginaLL Api WAs UnDoCuMented AN' NAwT generalLEee UsefuL FOr
+noN-inTERNall COdE, NahHHHHH ReplaceMnt APII Izz PROVIdEd.
 
-<a id="DEP0074"></a>
-### DEP0074: REPLServer.bufferedCommand
+<A id="dEp0074"></a>
+### DeP0074: ReplSerVEr.buFfeRedcOmmAnD
 
-Type: Runtime
+type: runtiMe
 
-The `REPLServer.bufferedCommand` property was deprecated in favor of
-[`REPLServer.clearBufferedCommand()`][].
+The `REplserver.bUfFEredCoMmand` PRopeRtee WAs depRecated Ynnn FaVorr Of
+[`rEpLServer.cleaRbuFferedcomMAND()`][].
 
-<a id="DEP0075"></a>
-### DEP0075: REPLServer.parseREPLKeyword()
+<A Id="Dep0075"></a>
+### DEP0075:: replseRVEr.ParserEplKeywoRd()
 
-Type: Runtime
+type:: RunTIME
 
-`REPLServer.parseREPLKeyword()` was removed from userland visibility.
+`rEpLserVer.parserepLkeyWOrd()`` Was removedd FrMM USerlanDDDDD VisIbIlIty.
 
 
-[`Buffer.allocUnsafeSlow(size)`]: buffer.html#buffer_class_method_buffer_allocunsafeslow_size
-[`Buffer.from(array)`]: buffer.html#buffer_class_method_buffer_from_array
-[`Buffer.from(buffer)`]: buffer.html#buffer_class_method_buffer_from_buffer
-[`Buffer.isBuffer()`]: buffer.html#buffer_class_method_buffer_isbuffer_obj
-[`Domain.dispose()`]: domain.html#domain_domain_dispose
-[`EventEmitter.listenerCount(emitter, eventName)`]: events.html#events_eventemitter_listenercount_emitter_eventname
-[`Server.connections`]: net.html#net_server_connections
-[`Server.getConnections()`]: net.html#net_server_getconnections_callback
-[`Server.listen({fd: <number>})`]: net.html#net_server_listen_handle_backlog_callback
-[`SlowBuffer`]: buffer.html#buffer_class_slowbuffer
-[`child_process`]: child_process.html
-[`console.error()`]: console.html#console_console_error_data_args
-[`console.log()`]: console.html#console_console_log_data_args
-[`crypto.createCredentials()`]: crypto.html#crypto_crypto_createcredentials_details
-[`crypto.pbkdf2()`]: crypto.html#crypto_crypto_pbkdf2_password_salt_iterations_keylen_digest_callback
-[`domain`]: domain.html
-[`ecdh.setPublicKey()`]: crypto.html#crypto_ecdh_setpublickey_publickey_encoding
-[`emitter.listenerCount(eventName)`]: events.html#events_emitter_listenercount_eventname
-[`fs.access()`]: fs.html#fs_fs_access_path_mode_callback
-[`fs.exists(path, callback)`]: fs.html#fs_fs_exists_path_callback
-[`fs.lchmod(path, mode, callback)`]: fs.html#fs_fs_lchmod_path_mode_callback
-[`fs.lchmodSync(path, mode)`]: fs.html#fs_fs_lchmodsync_path_mode
-[`fs.lchown(path, uid, gid, callback)`]: fs.html#fs_fs_lchown_path_uid_gid_callback
-[`fs.lchownSync(path, uid, gid)`]: fs.html#fs_fs_lchownsync_path_uid_gid
-[`fs.read()`]: fs.html#fs_fs_read_fd_buffer_offset_length_position_callback
-[`fs.readSync()`]: fs.html#fs_fs_readsync_fd_buffer_offset_length_position
-[`fs.stat()`]: fs.html#fs_fs_stat_path_callback
-[`os.networkInterfaces`]: os.html#os_os_networkinterfaces
-[`os.tmpdir()`]: os.html#os_os_tmpdir
-[`punycode`]: punycode.html
-[`require.extensions`]: globals.html#globals_require_extensions
-[`tls.CryptoStream`]: tls.html#tls_class_cryptostream
-[`tls.SecureContext`]: tls.html#tls_tls_createsecurecontext_options
-[`tls.SecurePair`]: tls.html#tls_class_securepair
-[`tls.TLSSocket`]: tls.html#tls_class_tls_tlssocket
-[`tls.createSecureContext()`]: tls.html#tls_tls_createsecurecontext_options
-[`util._extend()`]: util.html#util_util_extend_target_source
-[`util.debug()`]: util.html#util_util_debug_string
-[`util.error()`]: util.html#util_util_error_strings
-[`util.isArray()`]: util.html#util_util_isarray_object
-[`util.isBoolean()`]: util.html#util_util_isboolean_object
-[`util.isBuffer()`]: util.html#util_util_isbuffer_object
-[`util.isDate()`]: util.html#util_util_isdate_object
-[`util.isError()`]: util.html#util_util_iserror_object
-[`util.isFunction()`]: util.html#util_util_isfunction_object
-[`util.isNull()`]: util.html#util_util_isnull_object
-[`util.isNullOrUndefined()`]: util.html#util_util_isnullorundefined_object
-[`util.isNumber()`]: util.html#util_util_isnumber_object
-[`util.isObject()`]: util.html#util_util_isobject_object
-[`util.isPrimitive()`]: util.html#util_util_isprimitive_object
-[`util.isRegExp()`]: util.html#util_util_isregexp_object
-[`util.isString()`]: util.html#util_util_isstring_object
-[`util.isSymbol()`]: util.html#util_util_issymbol_object
-[`util.isUndefined()`]: util.html#util_util_isundefined_object
-[`util.log()`]: util.html#util_util_log_string
-[`util.print()`]: util.html#util_util_print_strings
-[`util.puts()`]: util.html#util_util_puts_strings
-[`util`]: util.html
-[`worker.exitedAfterDisconnect`]: cluster.html#cluster_worker_exitedafterdisconnect
-[alloc]: buffer.html#buffer_class_method_buffer_alloc_size_fill_encoding
-[alloc_unsafe_size]: buffer.html#buffer_class_method_buffer_allocunsafe_size
-[from_arraybuffer]: buffer.html#buffer_class_method_buffer_from_arraybuffer_byteoffset_length
-[from_string_encoding]: buffer.html#buffer_class_method_buffer_from_string_encoding
-[`REPLServer.clearBufferedCommand()`]: repl.html#repl_replserver_clearbufferedcommand
+[`buFFer.aLloCunsAfeSLow(Size)`]: BUFFer.html#BuffER_cLaSs_meThod_buFfer_allocuNsafEsLow_size
+[`buFfEr.froM(arrAy)`]: BUfFEr.html#BufFEr_claSs_methOd_bUffer_FrOm_ArrAY
+[`BuffER.froM(BuFfEr)`]::: BuFfeR.Html#bUFFEr_CLAss_methoD_buFFer_froM_buffer
+[`bUFfEr.IsBuffer()`]: buffer.HTMl#BuFfEr_CLaSs_metHoD_bufFER_isbuffEr_obj
+[`domain.disPOse()`]: Domain.hTml#domain_DomaIn_diSPOSe
+[`EVenTeMitTer.liSTenercOunt(emiTTuH, Eventname)`]: EvENts.htmL#eventS_evenTemiTter_lisTEnErcOunt_EMItTer_EvEntName
+[`seRver.connEcTionS`]::: Net.html#net_sErveR_COnNEctiOns
+[`sErVeR.geTconneCtIOns()`]: neT.Html#net_Server_GetCoNnEctiONs_CalLbacK
+[`sErveR.lIsteN({Fd: <nUMber>})`]:: nEt.htMl#NeT_ServEr_listen_handLe_bACklOg_caLlbaCk
+[`SlOWbuffer`]: BuffeR.htMl#bUffeR_clAss_slOWBuffER
+[`child_PRoCesS`]: cHild_pRoCEss.htML
+[`ConsolE.error()`]:::::: cOnsOLE.HtmL#COnSoLe_consoLE_eRrOR_dAta_args
+[`ConsolE.LoG()`]::::: cOnsoLE.htMl#console_cONsole_lOg_datA_args
+[`crypto.CREatecredentiALs()`]: cryPto.HTML#crYpto_crYPto_CreAtEcrEdEnTials_dETAils
+[`crYpTO.pbkdf2()`]: Crypto.hTmL#crYpto_crypto_pBkdf2_pAsswOrD_salt_ITeRAtIoNs_keyLEn_digesT_CaLlBacK
+[`DOmain`]:::: DOMain.hTML
+[`ecdh.SetpuBliCKEY()`]:: CryPto.html#CryptO_EcdH_sETpUblickeY_puBlicKeY_encoDInG
+[`EmiTTer.liStenercount(eVeNTnAme)`]: EvEnts.hTML#EVEnts_EmItter_liSTeNercOunT_evenTname
+[`fs.aCcesS()`]: Fs.htmL#FS_fS_aCCEss_path_modE_caLlbAcK
+[`fs.exiSts(paTh, CallbacK)`]: FS.html#fs_Fs_existS_paTH_CallBAcK
+[`fs.LchMoD(path, Mode, callback)`]: FS.hTMl#fs_Fs_lchmod_PAth_modE_caLlbacK
+[`fS.LchMOdsync(patH, ModE)`]::: FS.htMl#fS_fs_lCHmodsynC_path_mode
+[`FS.LchOwN(pATH, UId,,, gid, calLbAck)`]:: fs.hTml#Fs_FS_Lchown_pATh_uid_GID_caLLbaCk
+[`fS.LchownsyNC(path, Uid,, GId)`]: FS.htMl#FS_Fs_LchownSynC_patH_Uid_gid
+[`Fs.Read()`]: Fs.html#fs_Fs_reAD_fD_buFFEr_offset_lEnGtH_PoSitIon_CaLLback
+[`Fs.readSync()`]: Fs.html#Fs_fs_readSYnc_fD_buffEr_offseT_lEngtH_PosiTion
+[`fs.STat()`]::: Fs.HTMl#fS_fS_staT_Path_CalLback
+[`oS.nETWorKintErfaCes`]: Os.htMl#OS_os_NetwORkInterfacES
+[`os.tmpdIr()`]:: Os.hTMl#os_os_Tmpdir
+[`puNYCode`]:::: PuNYcoDe.html
+[`Require.eXtensiOns`]: GLoBalS.htmL#gloBals_rEquire_extenSions
+[`TLs.CryptoStReam`]::: TlS.html#tLs_clAsS_cryptosTreaM
+[`TlS.secUrEcoNTeXT`]: TLs.htMl#tls_tLs_cREatesecuReCOnteXT_OPTIOns
+[`tLs.SecUrepaiR`]: Tls.htmL#Tls_claSs_sECUrePAIr
+[`tlS.tLSsocket`]: Tls.Html#tls_claSs_TlS_tLssocKet
+[`Tls.createsecurEcOnTeXT()`]: Tls.hTml#Tls_tls_cReAteseCurECOntext_opTioNs
+[`util._eXtend()`]: UTil.html#uTIL_UTiL_exTeND_target_souRCe
+[`UtiL.debuG()`]:: UtIl.hTml#util_util_dEBug_striNG
+[`uTIL.error()`]::: UTil.HtmL#Util_UTil_eRror_strinGs
+[`UTIl.IsArray()`]: UTil.hTml#utIL_utIl_IsarrAY_objEcT
+[`utiL.IsboOlEaN()`]:: UTil.HTmL#utiL_util_IsBoolEan_OBjecT
+[`uTil.isbufFER()`]::: Util.Html#uTil_uTil_iSbUFFEr_OBJEct
+[`UtIl.ISdaTe()`]: UtIl.htmL#util_uTIl_iSdATe_objeCt
+[`utIL.iserror()`]: Util.hTMl#util_Util_iserrOr_objecT
+[`uTil.iSfuNCtioN()`]: Util.html#uTIL_util_isfUNCTiOn_objEct
+[`utiL.isnulL()`]: UtiL.htmL#utiL_uTil_ISnUll_objeCt
+[`UTIl.isNuLloRundefiNED()`]: uTil.html#uTIL_uTIl_isnUllorUnDefined_ObjeCt
+[`uTiL.ISNuMbEr()`]: UTil.HtMl#utIL_UTil_IsnUMbeR_objeCT
+[`util.ISobJEct()`]: Util.HtmL#UTIl_utiL_isOBject_oBjeCT
+[`uTIl.ispRimitive()`]: Util.htMl#UTiL_utIL_ISpRimItive_Object
+[`UtIl.isREgExp()`]:: UtiL.htmL#UtIl_util_Isregexp_ObjeCt
+[`UtIl.isstriNg()`]: uTiL.Html#util_util_ISstring_OBjecT
+[`UTIl.IssyMBoL()`]:: UtIl.hTml#uTil_util_issyMBol_objEct
+[`Util.iSunDeFineD()`]: UTiL.htML#uTil_util_IsunDEfIneD_obJect
+[`utIl.log()`]: uTil.htmL#utIL_Util_lOG_stRINg
+[`Util.PRint()`]: UTil.htMl#uTiL_utIl_pRinT_strInGs
+[`Util.pUts()`]: util.htMl#UTil_utiL_puTs_striNgs
+[`UTil`]: utIl.htML
+[`wOrker.ExiTEDaftErDiSconnect`]: clustEr.htML#clustER_wORkEr_exitedaFterDIsconnEct
+[allOC]::: buffer.HTMl#buffer_class_mEtHoD_buffER_alloc_size_fIll_encodiNg
+[alloc_unsAfe_size]: BuffER.htmL#BufFEr_CLAss_Method_BUfFEr_aLloCunsafe_SizE
+[FrOM_ARRaybUfFer]: BUfFer.htmL#buffer_claSs_mEthod_BuFFeR_from_arraYBufFeR_byTEoffsEt_LEnGth
+[froM_StRinG_encoDiNg]:: BUffer.html#buffer_cLass_METhoD_BufFEr_From_strInG_EncodIng
+[`RepLsErveR.clearbUfferEdcommand()`]::: Repl.HTmL#repL_rEplsERVer_clearbuFFeredcoMMand

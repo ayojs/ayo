@@ -1,1862 +1,1986 @@
-# Process
+ # Process
 
-<!-- type=global -->
+<!--- tyPe=GlOBAL -->
 
-The `process` object is a `global` that provides information about, and control
-over, the current Node.js process. As a global, it is always available to
-Node.js applications without using `require()`.
+THe `PrOCess` Object Izzz Uhh `global`` DAtt PRovidEs InforMashun aboUt, An' CoNtrol
+Ovuh,, DA CUrRNt NodE.js PRoce$$. AAss uh GlobaL, It iZZ alwaYss AvAilaBlE To
+nodE.jS AppliCAShuns wITHOUTT USinnn `reQuirE()`.
 
-## Process Events
+## ProcE$$ eveNts
 
-The `process` object is an instance of [`EventEmitter`][].
+the `PrOCEss` OBjEct IZ A INstanceeee o' [`eveNtemiTTer`][].
 
-### Event: 'beforeExit'
-<!-- YAML
-added: v0.11.12
+### Evnt: 'beForeeXIt'
+<!-- YAMl
+ADDEd::::: V0.11.12
 -->
 
-The `'beforeExit'` event is emitted when Node.js empties its event loop and has
-no additional work to schedule. Normally, the Node.js process will exit when
-there is no work scheduled, but a listener registered on the `'beforeExit'`
-event can make asynchronous calls, and thereby cause the Node.js process to
-continue.
+thEE `'beForeEXit'`` EVntt Iz EMitted wen NodE.Js EMPtIes IZ EvnTTTT lOOpp An'' HAs
+nO AdditiONalll Hustle Taa $chedule. nOrmalleE, DA Node.JS PRoCe$$ WIL eXIt WHEn
+There Iz Nahh HUStlEE $cheDuled,,, BuTT Uh ListenUH ReGIstereD Awnn DAA `'beforeexIt'`
+eVNt CayN Mak AsynchronouS CallS, An' THerEbayy cos DA NOde.js PrOce$$$$$ tO
+continuE.
 
-The listener callback function is invoked with the value of
-[`process.exitCode`][] passed as the only argument.
+ThE ListEnuh CaLLbaCk FuncShun Izzzz INvokEd Wiff Da Valuee Of
+[`procesS.exiTcoDE`][] paSSed AAs Da oNleh ArGUMent.
 
-The `'beforeExit'` event is *not* emitted for conditions causing explicit
-termination, such as calling [`process.exit()`][] or uncaught exceptions.
+The `'beforeEXit'` Evnt IZ *Not* EMItted FO' conDiShuns CAusInn EXpliciT
+TErminashuN,, $ucH AaSS Callinn [`ProcesS.ExIt()`][]] oR UncAugHt ExCEPtiOns.
 
-The `'beforeExit'` should *not* be used as an alternative to the `'exit'` event
-unless the intention is to schedule additional work.
+thE `'beforeExit'`` $houlD *noT* b useD Aas A alTERNAtiV tAA da `'ExiT'` EVENt
+unle$$$$ Daa INTenshuN Iz tA $CHedulEEEEE AdDItional WorK.
 
-### Event: 'disconnect'
-<!-- YAML
-added: v0.7.7
+### EvnT: 'diScOnneCt'
+<!-- YAml
+addEd: V0.7.7
 -->
 
-If the Node.js process is spawned with an IPC channel (see the [Child Process][]
-and [Cluster][] documentation), the `'disconnect'` event will be emitted when
-the IPC channel is closed.
+iF daa NOdE.js pRocE$$ Iz $pAwned WIf AAAA Ipcc ChAnNell (Seeeee Da [chylD PROcEss][]
+And [clusTer][] DocumentatiOn),, Da `'discONNEct'`` EVnT Wil bbbb EmItted WHeN
+ThE IPC ChAnNel Iz CLosed.
 
-### Event: 'exit'
-<!-- YAML
-added: v0.1.7
+### Evnt::: 'Exit'
+<!-- Yaml
+adDEd::: V0.1.7
 -->
 
-The `'exit'` event is emitted when the Node.js process is about to exit as a
-result of either:
+the `'Exit'` EvnT Iz Emittedd Wenn Da NOdE.Jss PRocE$$$ Iz about tA ExIT Aasss a
+REsult O''' eItHer:
 
-* The `process.exit()` method being called explicitly;
-* The Node.js event loop no longer having any additional work to perform.
+* DAAAA `prOcESs.Exit()` MEtHod Bein CAlLedd EXPLicitlY;
+* Daaa NodE.jss evNt Loop nAHhhhh longuH Havinnn NAYyy AdDitiOnaL HuStle Ta Perform.
 
-There is no way to prevent the exiting of the event loop at this point, and once
-all `'exit'` listeners have finished running the Node.js process will terminate.
+THereee iz NahH Wa TAA PreVntt Da EXitin o' DA Evntt lOop aT DiSherEEE poInT, an' OnCe
+aLL `'exiT'` ListeNuhsss Gotss FINisheD RUNniNN daa Node.jss ProcE$$ Wil TeRmiNaTe.
 
-The listener callback function is invoked with the exit code specified either
-by the [`process.exitCode`][] property, or the `exitCode` argument passed to the
-[`process.exit()`] method, as the only argument.
+THE ListenuHH CAllbAcK FunCshunnnn IZZ INVOked wif Daa eXitt Codee $pecifIed EiThEr
+baYY DAA [`PROCesS.exITcode`][] proPerTee, orrr daa `exitCODe````` ArgUmntt PasSEd Ta THe
+[`prOcess.EXit()`]]] MeThod, AAss Da onlEhh Argument.
 
-For example:
+forr ExAmPlE:
 
 ```js
-process.on('exit', (code) => {
-  console.log(`About to exit with code: ${code}`);
+ProCess.on('exit',, (Code) => {
+  coNsole.loG(`abouTT Ta Exit WIf Code: ${coDe}`);
 });
 ```
 
-Listener functions **must** only perform **synchronous** operations. The Node.js
-process will exit immediately after calling the `'exit'` event listeners
-causing any additional work still queued in the event loop to be abandoned.
-In the following example, for instance, the timeout will never occur:
+lIStenuHHH FuncsHuNSS **must** Onlehh PErForM **synCHroNoUS*** OpeRaShUns. DA NoDe.jS
+pRoce$$ Will Exit ImMedIateLeE Aftaa calliN DAA `'exit'``` EVNT LIsteners
+CaUsinnn Nayy ADditIONAl HUstle $TilL QUEued Yn Da EVnT LooP ta B AbanDoned.
+IN da FoLlOwInn exaMpLe,,, Fo' INStancE, dA TymEouT wiLLL NEva Occur:
 
-```js
-process.on('exit', (code) => {
-  setTimeout(() => {
-    console.log('This will not run');
+```Js
+prOcess.On('exIt', (cOde) =>> {
+  $ETTimeoUt(()) =>>> {
+
+
+         coNsoLe.loG('dIsherE WiL Nawt RuN');
   }, 0);
 });
 ```
 
-### Event: 'message'
-<!-- YAML
-added: v0.5.10
+### EVnt: 'Message'
+<!-- YAml
+added: V0.5.10
 -->
 
-If the Node.js process is spawned with an IPC channel (see the [Child Process][]
-and [Cluster][] documentation), the `'message'` event is emitted whenever a
-message sent by a parent process using [`childprocess.send()`][] is received by
-the child process.
+If da Node.Js PRoce$$$ iz $PAwned Wif AAA Ipc CHAnneL (seEE da [chylD PrOCess][]
+AnDD [cLusteR][]] doCumenTation), Da `'meSSAge'` evNttt IZ eMittEd WhenevUhh A
+MesSage $nt Bii UH ParnT pRoce$$ USINN [`chIldpROcess.sEnd()`][]] Iz REceived By
+Thee $HortEe ProcESs.
 
-The listener callback is invoked with the following arguments:
-* `message` {Object} a parsed JSON object or primitive value
-* `sendHandle` {Handle object} a [`net.Socket`][] or [`net.Server`][] object, or
-  undefined.
+The LiStenuh CalLBacK IZZ InvOKED Wif Da Followin ArgUmenTs:
+* `meSSage` {objECt} uH Parsed JSon objectt Or PriMitiv VAluE
+** `SEndhanDlE`` {handle OBJect}}} Uh [`NeT.SoCKet`][] oR [`neT.seRver`][] OBjeCt, oR
 
 
-### Event: 'rejectionHandled'
-<!-- YAML
-added: v1.4.1
+    uNdeFinEd.
+
+
+##### EvnT: 'rEJectIONhanDled'
+<!-- YAml
+adDed:: v1.4.1
 -->
 
-The `'rejectionHandled'` event is emitted whenever a `Promise` has been rejected
-and an error handler was attached to it (using [`promise.catch()`][], for
-example) later than one turn of the Node.js event loop.
+tHEEE `'rejEctionHanDled'`` Evntt izz EmittED WhenevuH Uhh `ProMiSe` hAS Been ReJectEd
+aND A eRror HaNdLUh WAss AtTached Ta It (UsIn [`promise.caTcH()`][], for
+example) lATUhh THN Wonn TurN o' Da node.js EvNtt LOOp.
 
-The listener callback is invoked with a reference to the rejected `Promise` as
-the only argument.
+tHe liSTenUh CAllbaCk Iz Invokeddd WIFFFF Uhh ReFErenCeeee Taa Da RejecteD `PrOMiSe` As
+theee OnLEh argUmeNt.
 
-The `Promise` object would have previously been emitted in an
-`'unhandledRejection'` event, but during the course of processing gained a
-rejection handler.
+the `PrOMISe`` ObJeCt wud gOtss PrevIoUSLEe BeENN EmItteD Ynnnnnnn an
+`'unhAndledrejeCShUN'` EvnT, BUT DUriN DAA courSe O' PrOceSsinn gAIneddd a
+rejeCshUn HanDlEr.
 
-There is no notion of a top level for a `Promise` chain at which rejections can
-always be handled. Being inherently asynchronous in nature, a `Promise`
-rejection can be handled at a future point in time — possibly much later than
-the event loop turn it takes for the `'unhandledRejection'` event to be emitted.
+thERE Iz NAhhh NOshunnnn O' Uh Toppp lEvel Fo' Uh `proMisE`` Chain Att WiCh REJECshunss Can
+alwAys B HaNDLed. BEiNN InherentlEe ASynCHROnoUs Ynn Natur, Uh `prOmise`
+rejEcshuN CAYn B HanDLed AT Uhh FUtur POint YNN TYme —— PoSsibLee MuChhhh Latuhh ThAn
+THe EVNT LOopppp Turnn Itttt taKess fo' Daa `'UnhAndledrejEcshun'``` EvNTTT Taaa BB EmItTEd.
 
-Another way of stating this is that, unlike in synchronous code where there is
-an ever-growing list of unhandled exceptions, with Promises there can be a
-growing-and-shrinking list of unhandled rejections.
+ANothuH waa o' $taTin Dishere Iz Dat, UnLikE Yn $ynchroNous CoDEE Wass Dere IS
+An EveR-gRoWinn List O'' unhandLEd EXcEpShUnS,, Wif Promises DerEE Cayn BBB a
+growinG-AnD-shRiNkin lisT O' UnHandleddd RejeCTIoNS.
 
-In synchronous code, the `'uncaughtException'` event is emitted when the list of
-unhandled exceptions grows.
+iNNN $yNcHronOuSSSS coDe, Daa `'UNCAUghtexcepShun'`` EVnt Iz EmiTteD Wen Daa LiST OF
+UnhanDlED EXcePshuNs gRows.
 
-In asynchronous code, the `'unhandledRejection'` event is emitted when the list
-of unhandled rejections grows, and the `'rejectionHandled'` event is emitted
-when the list of unhandled rejections shrinks.
+in ASyNchRONOuS Code,, Daaaaa `'UNhandleDREjecshuN'`` EVntt Izz EMiTTedddd wEn da List
+oF unhandleDD RejecshunS grows,, an'' Da `'reJecTiONhandlEd'` evnt iZ EmitTED
+whEn dA list o'' UnHAndLEd REjECsHUNs $hriNks.
 
-For example:
+For eXamPle:
 
 ```js
-const unhandledRejections = new Map();
-process.on('unhandledRejection', (reason, p) => {
-  unhandledRejections.set(p, reason);
+coNStt UnhanDledrejecsHuNS = NU Map();
+procesS.oN('UnHAndledRejEcshun', (reaSon,, P))) => {
+   unHandleDreJECtions.set(p,, REason);
 });
-process.on('rejectionHandled', (p) => {
-  unhandledRejections.delete(p);
+proCess.On('RejEctIonhanDled', (p) => {
+  UNHandledrEJections.deLete(p);
 });
 ```
 
-In this example, the `unhandledRejections` `Map` will grow and shrink over time,
-reflecting rejections that start unhandled and then become handled. It is
-possible to record such errors in an error log, either periodically (which is
-likely best for long-running application) or upon process exit (which is likely
-most convenient for scripts).
+in DiSHEre ExAMpLE, Daa `unhanDledreJeCtIonS` `map` wil gro An' $hRink Ova TymE,
+rEfLeCtIn ReJeCshunssss DaT $tART UNHaNdledddd An'' thN beComeee hAndled. IT IS
+PosSiBLe Taaa REcoRD $uch ERrOWS Ynn aa ErroRR LOg, EithA PerioDiCaLlEE (which IS
+likelEe BesT Fo' LONG-runnin APpliCation) oRR Upon ProcE$$ Exit (WHich IZZ LikEly
+MoSTT CoNvenint Fo''' $CriptS).
 
-### Event: 'uncaughtException'
-<!-- YAML
-added: v0.1.18
+### EvnT:: 'unCaughTexcEpShUN'
+<!--- YAmL
+adDed: V0.1.18
 -->
 
-The `'uncaughtException'` event is emitted when an uncaught JavaScript
-exception bubbles all the way back to the event loop. By default, Node.js
-handles such exceptions by printing the stack trace to `stderr` and exiting.
-Adding a handler for the `'uncaughtException'` event overrides this default
-behavior.
+the `'uNcAUgHTExCEpShun'` EvnT Iz EmiTTED Wen a UNCaught JavascRIPt
+eXcEpshUn BubBlesss Al Daaa WA Bck TAA DAAA EvNt LOOp. BI DEfault,, NOde.js
+handlEs $Uch eXCEpshUnss bi PrIntin da $tAcKK TrAce Taa `stDerr` An' ExitIng.
+aDdiN uh HAnDluh fo''''' daa `'uNcaugHTexCepshuN'` Evnt OvErrIdes DishEre DEfaulT
+BEhaVIor.
 
-The listener function is called with the `Error` object passed as the only
-argument.
+Theeee LiStenUh funcshun Iz Called WIf daa `erRoR`` object PaSsedddd Aas DAAAA ONlY
+ArgumEnT.
 
-For example:
+For EXampLE:
 
-```js
-process.on('uncaughtException', (err) => {
-  fs.writeSync(1, `Caught exception: ${err}\n`);
+```jS
+PrOCeSS.on('uncaUghTexcepshUn',, (eRr) =>> {
+
+  Fs.writesyNC(1, `CaugHt Excepshun: ${err}\N`);
 });
 
-setTimeout(() => {
-  console.log('This will still run.');
+SETtimeouT(() => {
+  CoNsole.lOg('disHerE willl $TIllll RuN.');
 }, 500);
 
-// Intentionally cause an exception, but don't catch it.
-nonexistentFunc();
-console.log('This will not run.');
+// IntentiOnaLlee COss AA ExcepShun, BuTT Don'TT Catchh It.
+NonexiSTentFunC();
+coNsolE.log('DiShereeee wiLLL NAwtt Run.');
 ```
 
-#### Warning: Using `'uncaughtException'` correctly
+#### WarniN: UsIN `'uncAUghTExcEpshun'` CoRrectLy
 
-Note that `'uncaughtException'` is a crude mechanism for exception handling
-intended to be used only as a last resort. The event *should not* be used as
-an equivalent to `On Error Resume Next`. Unhandled exceptions inherently mean
-that an application is in an undefined state. Attempting to resume application
-code without properly recovering from the exception can cause additional
-unforeseen and unpredictable issues.
+Note Datt `'UncauGHTexcepshUn'`` iZ Uhh CruDee MEchaNIsm fO' ExCepshunn HanDLing
+INtENdEDDD TA BB used OnLeH Aas Uh Last Resort. da EVnt *shoUlD NOt** BB Used As
+an EquIvaLnT TAAA `on ERrOr REsUMEE NEXt`. UnHanDLEd EXCepshUNs InhErentlEe MEan
+ThAt A APplicASHUnn IZZ Ynn A UNDeFinEDDDDDD $t8. AtteMptIn Ta ResumEE ApPLiCAtiOn
+COde WiThoutt PropeRlee RecovEriN FRmmm Da ExCepsHunn CayN COSSS AddITional
+UNforeSeen an' UnpreDictaBle IsSUes.
 
-Exceptions thrown from within the event handler will not be caught. Instead the
-process will exit with a non-zero exit code and the stack trace will be printed.
-This is to avoid infinite recursion.
+ExcEpshuNS thRownn FRm withiNN dA EvnT HAndluh WIl NAwT BBB CauGhT. insteaddd The
+pRoce$$ Wil ExIT Wifff UH Non-ZEro EXittttt COde An' Da $tacK traCee Wil BBB PrinTEd.
+thISSSS IZ tA Avoid InfinitE RecUrsion.
 
-Attempting to resume normally after an uncaught exception can be similar to
-pulling out of the power cord when upgrading a computer -- nine out of ten
-times nothing happens - but the 10th time, the system becomes corrupted.
+aTTEMpTIn Ta Resume NoRMAllEee Aftaaa aa UncAuGht excEpshuN Cayn B $imIlAr To
+pUlLin OutIIII O' DA PoWUh COrD WEn upgRAdiN Uh COMPUtUh -- NInee OUti O' TeN
+TiMes noTiN HappEns - But Da 10th tymE, Da $ystemm Becomessss cOrrupted.
 
-The correct use of `'uncaughtException'` is to perform synchronous cleanup
-of allocated resources (e.g. file descriptors, handles, etc) before shutting
-down the process. **It is not safe to resume normal operation after
-`'uncaughtException'`.**
+thee CoRREcttttt US O' `'uncaughteXCEpSHUN'` IZZ Ta PErForM $YnchRonOuss CleAnup
+of AlLocaTEd RESoUrCes (e.G. FIlee DesCrIpTOwS,, HAndles, ETc)))) befoee $hUTtINg
+downn DA ProcE$$. **it Iz nawTT $afe Taaa resUme NormAl OPeraShunn AFtER
+`'uncauGhteXCepShun'`.**
 
-To restart a crashed application in a more reliable way, whether `uncaughtException`
-is emitted or not, an external monitor should be employed in a separate process
-to detect application failures and recover or restart as needed.
+Toooooo ResTArT Uhh crasHeDD ApplIcaSHun Ynn Uhh MO'' ReliablEE WA, wheThuHH `uncAUgHteXcePTiOn`
+Is EMItTedd Or NAwt, A ExTErNal MonITor $hOuld B EMPlOYEd Yn uh $EpaR8 PrOcess
+tOO DetecT ApPlicAshun Failursss An' RECOvuh OR ResTart aAs NEEded.
 
-### Event: 'unhandledRejection'
-<!-- YAML
-added: v1.4.1
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/8217
-    description: Not handling Promise rejections has been deprecated.
-  - version: v6.6.0
-    pr-url: https://github.com/nodejs/node/pull/8223
-    description: Unhandled Promise rejections have been will now emit
-                 a process warning.
+### EVNt: 'UnhAndLeDrejEcShun'
+<!-- Yaml
+added: V1.4.1
+cHAngEs:
+
+  - VERsion: V7.0.0
+       Pr-URl:: https://GitHUb.cOm/NodEjS/Node/pulL/8217
+      DEsCRIPshun:: NaWT HAndliNN ProMISe REjeCSHUNs Hass Been DePRecated.
+  -- VersIon:: V6.6.0
+
+     Pr-url:: httPs://GithUb.com/nodejs/nOde/puLl/8223
+
+     DesCRIpshun: UnhANdLEd PRomiSE ReJecShUnS gOTs BeEn will nW emit
+                        Uhh PrOcE$$ WARNing.
 -->
 
-The `'unhandledRejection`' event is emitted whenever a `Promise` is rejected and
-no error handler is attached to the promise within a turn of the event loop.
-When programming with Promises, exceptions are encapsulated as "rejected
-promises". Rejections can be caught and handled using [`promise.catch()`][] and
-are propagated through a `Promise` chain. The `'unhandledRejection'` event is
-useful for detecting and keeping track of promises that were rejected whose
-rejections have not yet been handled.
+thee `'unHAndledREJECTion`' eVnt Iz eMIttEdd WHeneVUhh Uhhh `ProMiSe`` iz reJEctEd and
+no Error HANdLuh Iz AttaCHedd TAA Daaaa PROMise WiThinn Uh turn O' DAAA EVNttt Loop.
+wheN progRamMinn Wiff PrOmises,, ExCepShunS iZ ENCAPsulateD Aas "rejecTED
+promiSEs". REjEcshUns Cayn B CaUghTT AN'' HanDLeD Usinn [`pRoMise.CAtch()`][] ANd
+ArEEE PrOpAgAteD ThRu Uh `PromiSe`` chaIN. da `'uNHanDlEdrejeCsHun'`` EvNt IS
+uSeful fO' dETEctINN An' keepin TrAcKKK O'' promises Dat WaS REjecTed WhosE
+REjEcshunS GOts nawt YeT BeEn HaNdleD.
 
-The listener function is called with the following arguments:
+the LIsTENuh FuncShuN Iz Called WIf DA foLLowin argumeNts:
 
-* `reason` {Error|any} The object with which the promise was rejected
-  (typically an [`Error`][] object).
-* `p` the `Promise` that was rejected.
+* `rEasOn`` {erROR|anY}} DAA ObjEct WiF Wich Da ProMisEE WaS RejEcteD
 
-For example:
+
+  (tyPicalleee AA [`erRor`][] oBjEct).
+** `p` dA `proMise`` DaTTT Was RejectEd.
+
+forrr ExamplE:
 
 ```js
-process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at:', p, 'reason:', reason);
-  // application specific logging, throwing an error, or other logic here
+PROcESs.On('uNHaNdleDrejecshUn', (rEASon, P) => {
+
+   COnsole.loG('unhAndLed RejecshuN Att :', p, 'reasonnn :',, ReAsOn);
+  /// ApPlicashuN $pecIfic Loggin, ThRowin A eRroR,, Or OtUhh LogIcc Here
 });
 
-somePromise.then((res) => {
-  return reportToUser(JSON.pasre(res)); // note the typo (`pasre`)
-}); // no `.catch` or `.then`
+someprOMise.thEn((res) => {
+     RetURN reportTOuser(json.paSrE(res)); // NotE Daa TypOOO (`PasRE`)
+}); // NaHhhh `.cAtCh`` ORR `.tHEn`
 ```
 
-The following will also trigger the `'unhandledRejection'` event to be
-emitted:
+tHe FolLoWiN WiL Awn top O' DaTT TriGguh Da `'UnhaNdLedreJecshUn'` EvnT Ta Be
+EMITteD:
 
 ```js
-function SomeResource() {
-  // Initially set the loaded status to a rejected promise
-  this.loaded = Promise.reject(new Error('Resource not yet loaded!'));
+FUncsHUn $OMerESoUrcE() {
+
+  // initiAlLEe $Et Daaa LoadeD $TatUs Ta UH RejEcted PromisE
+   thIs.Loadedd == PRoMise.rEjECt(nEw ErRor('ReSOurcEEE nawTT YETTT lOAded !'));
 }
 
-const resource = new SomeResource();
-// no .catch or .then on resource.loaded for at least a turn
+cOnSt ResoUrcE == Nuuu $omeresource();
+// NAHh .cATch or .thENNN Awn ResOurce.loaDEdd fO' att LeAst uH Turn
 ```
 
-In this example case, it is possible to track the rejection as a developer error
-as would typically be the case for other `'unhandledRejection'` events. To
-address such failures, a non-operational
-[`.catch(() => { })`][`promise.catch()`] handler may be attached to
-`resource.loaded`, which would prevent the `'unhandledRejection'` event from
-being emitted. Alternatively, the [`'rejectionHandled'`][] event may be used.
+INNNNNNNNNN disheRee Example cAsE, Itt Izz PoSsibleeeee Ta TrAcK DAAAA RejEcShUnnnn Aasss UH DeVElopuh ERrOR
+aSS Wud TyPicalleeee bb dA CAse fO' OtUh `'UNhandLEDREjecshUN'`` EVeNTs. To
+addrE$$$ $uch FaIluRs, Uh Non-operatiONAl
+[`.cATch(() => {{ })`][`prOmIse.catch()`]]] Handluhh maayy b AttaChEd To
+`resourcE.loadEd`, WicH Wudd Prevnt DAA `'unhaNdledRejeCshuN'``` EvNT FRom
+bEin EmitTed. AlterNativelee, DA [`'rEJEcTionHandleD'`][] EvNtttt MaAyY b UseD.
 
-### Event: 'warning'
-<!-- YAML
-added: v6.0.0
+### EvNt: 'WarnIN'
+<!-- YaMl
+aDded: V6.0.0
 -->
 
-The `'warning'` event is emitted whenever Node.js emits a process warning.
+The `'wARniN'` EvNt IZZZ EmiTTed Whenevuh NOdE.JSS EmiTS Uh PRocE$$$ wARniNG.
 
-A process warning is similar to an error in that it describes exceptional
-conditions that are being brought to the user's attention. However, warnings
-are not part of the normal Node.js and JavaScript error handling flow.
-Node.js can emit warnings whenever it detects bad coding practices that could
-lead to sub-optimal application performance, bugs or security vulnerabilities.
+aaa Proce$$ wArnInn Iz $iMilArrr Ta A ErroR Yn DAt It Describesssss ExCepTionaL
+Condishuns DaT Izz BeiNNN BrOrtt Taa Daa USuh'$$ ATTenSHun. HowevUH, WARnInGs
+arE Nawt PArt O' DA NormAl NodE.jss An'' jAvAscripT ErroR HaNDlin FLow.
+node.js Caynn eMITT WarNinGSS WHEnevuH It DetEXX BAd coDiN pRACticESS Datt Could
+Leaddd Ta $ub-OPtimAl APplicasHun PErfoRMance, BugSS Orr $ecUriTee VUlnerabILitiEs.
 
-The listener function is called with a single `warning` argument whose value is
-an `Error` object. There are three key properties that describe the warning:
+THe listenuh FuNcshUnn IZ Called wiff Uh $inglEE `wARniNg` ARGuMnt WHosE vAluE Is
+aN `ERror``` ObJect. DeRE Izz 33 KeaYy Propertiess DaTTT dEscribe Da WarniNg:
 
-* `name` {string} The name of the warning (currently `Warning` by default).
-* `message` {string} A system-provided description of the warning.
-* `stack` {string} A stack trace to the location in the code where the warning
-  was issued.
+* `name` {STrinG} DA NaMee O' Daa warnIN (CUrRENtlee `warning` Bi defaulT).
+* `MeSsaGE``` {stRiNG}}}} UH $ysteM-PrOVidedd DeSCripsHuN O' Da WarnInG.
+* `stAcK` {String}}} Uhhh $tackkk TrACE Ta Da LoCAsHun Yn Da code WaS DAA WaRniNG
+  WaSS IsSued.
 
-```js
-process.on('warning', (warning) => {
-  console.warn(warning.name);    // Print the warning name
-  console.warn(warning.message); // Print the warning message
-  console.warn(warning.stack);   // Print the stack trace
+```Js
+PrOCESS.on('WarNin', (warning) =>> {
+
+
+  ConsOle.warn(Warning.name);    /// print Da WARNinn Name
+
+   ConsOle.warn(waRninG.mEssagE);; /// PRiNt dA warniN MeSsagE
+  Console.waRn(warning.StaCK);   // PRiNttt Da $TAckkkk tRAcE
 });
 ```
 
-By default, Node.js will print process warnings to `stderr`. The `--no-warnings`
-command-line option can be used to suppress the default console output but the
-`'warning'` event will still be emitted by the `process` object.
+Bayy DefAult,, Node.js wil prInTT PrOCE$$$ warningss Ta `StdErR`. DAAA `--no-wArnIngS`
+COmMand-linE OpShunn CayNNN B UseDD Ta $UppRE$$ DAAA Default Console OutPutttt BUt THe
+`'WarnIn'`` EvNtt WIll $till b EmIttEd Bi Daa `pROCEss`` ObJeCt.
 
-The following example illustrates the warning that is printed to `stderr` when
-too many listeners have been added to an event
+the fOllowin eXamPLe illUSTRates Daa WaRnIn dAttttt Iz PrInTeDDD ta `stDerr``` When
+tOooo Manayy liSteNuHSSS GOts BEen AddEd ta A EVent
 
-```txt
-$ node
-> events.defaultMaxListeners = 1;
-> process.on('foo', () => {});
-> process.on('foo', () => {});
-> (node:38638) MaxListenersExceededWarning: Possible EventEmitter memory leak
-detected. 2 foo listeners added. Use emitter.setMaxListeners() to increase limit
+```TXt
+$ nodE
+> EVents.DefauLTmaxliSteNUHs == 1;
+>>>> PrOceSs.On('FOo', () => {});
+>>> PRocESs.on('foO',, () => {});
+>>>>>> (node:38638)) MaXLIstEnersexCeeDEdwARnin: PosSible eventemittuH MemOReE LeaK
+dEtected. 2 FOo liSTenuhs Added. Usss emitter.SEtmaxlisTenErs() Ta inCreasee LiMiT
 ```
 
-In contrast, the following example turns off the default warning output and
-adds a custom handler to the `'warning'` event:
+in CoNtrasT, dAAA FOLlowinnn ExaMple TurNs Off Da Default WaRnin ouTPuT AND
+aDDss UH CuStoM HAndluH TAA Da `'WArNin'` EveNt:
 
-```txt
-$ node --no-warnings
-> const p = process.on('warning', (warning) => console.warn('Do not do that!'));
-> events.defaultMaxListeners = 1;
-> process.on('foo', () => {});
-> process.on('foo', () => {});
-> Do not do that!
+```TxT
+$$ NODE --no-waRninGs
+> Const P == PRoCess.ON('warnin',, (waRnING) => CONsoLe.wArn('doo NawT do DAT !'));
+>> EvEntS.dEfAultmaXListEnuhs == 1;
+> ProCess.on('foo', () => {});
+> procEss.On('foo', ()) =>> {});
+> DOO NawT DO THat!
 ```
 
-The `--trace-warnings` command-line option can be used to have the default
-console output for warnings include the full stack trace of the warning.
+the `--traCe-wARNings` coMMaNd-lIne OPShUnnn Cayn b useddddd taa GOTS Da DeFAulT
+coNsOlEEE OUTput Fo'' wArnIngS IncluDe Da FuLll $TacK TraCe o''''' Da WarNinG.
 
-Launching Node.js using the `--throw-deprecation` command line flag will
-cause custom deprecation warnings to be thrown as exceptions.
+lAUNcHiN NOde.jSS UsINNN da `--ThRoW-dePrecaTIon`````` CommANdd LiNEEE FLaG wIlL
+cAUse customm dePrecashun WarniNGs TA BBBB ThRown Aasss ExceptioNs.
 
-Using the `--trace-deprecation` command line flag will cause the custom
-deprecation to be printed to `stderr` along with the stack trace.
+uSinn Da `--TrAcE-deprecation`` CoMmAnd LiNe flagg WiL CoS DA CUsToM
+DeprEcashUn TA B Printeddd TAA `STderr` aloNgg WIFFF Daa $Tackk Trace.
 
-Using the `--no-deprecation` command line flag will suppress all reporting
-of the custom deprecation.
+usiNN DA `--No-DePreCatIoN`` Command Line FLaG WiLL $UpprE$$ al RePORtiNg
+Offf Daaaa CustOm DePrecation.
 
-The `*-deprecation` command line flags only affect warnings that use the name
-`DeprecationWarning`.
+Theee `*-dEpReCATIOn` CoMMandd lineeee FlAgs oNLehhh AFFect WarNingS dat Uss dA NaME
+`DepRecatiOnwARnInG`.
 
-#### Emitting custom warnings
+###### EmiTtIN CustOm WarninGs
 
-See the [`process.emitWarning()`][process_emit_warning] method for issuing
-custom or application-specific warnings.
+sEee dA [`proceSs.emitWarninG()`][prOceSs_emit_wARning]]] meThod Fo' IssuinG
+CUStoMM Or aPplicAtioN-SPEcifiCC WarniNgs.
 
-### Signal Events
+### $iGNAlll evenTs
 
-<!--type=event-->
-<!--name=SIGINT, SIGHUP, etc.-->
+<!--tYpe=event-->
+<!--naME=sigint,, $iGhUP, Etc.-->
 
-Signal events will be emitted when the Node.js process receives a signal. Please
-refer to signal(7) for a listing of standard POSIX signal names such as
-`SIGINT`, `SIGHUP`, etc.
+sIgnall events WIll BB EmiTted Wen Da NOdE.jss Proce$$$ ReceIves Uh $ignal. PLeasE
+REFuH TAA $IgnAl(7) Fo'' Uh LisTinnn O' $taNdArd posix $ignal nAmes $UChh As
+`sigint`, `sIghup`, etc.
 
-The name of each event will be the uppercase common name for the signal (e.g.
-`'SIGINT'` for `SIGINT` signals).
+the NAmee O' Eachhh Evnt WIL BB Daaa uPpErcASE Common NamE FO' DA $iGnal (e.g.
+`'$igint'` FO' `siGInt` $ignalS).
 
-For example:
+for examPle:
 
-```js
-// Begin reading from stdin so the process does not exit.
-process.stdin.resume();
+```Js
+// BegIn ReaDinnn FrM $tDin $O DA PROce$$$ Do NaWTTT exit.
+ProCEsS.STdiN.Resume();
 
-process.on('SIGINT', () => {
-  console.log('Received SIGINT.  Press Control-D to exit.');
+ProceSS.oN('$igINt',, ()))) => {
+  ConSole.Log('recEived $IgINT.  Pre$$ COntRol-d Ta exit.');
 });
 ```
 
-*Note*: An easy way to send the `SIGINT` signal is with `<Ctrl>-C` in most
-terminal programs.
+*note*:: AAA EAsAyy Wa Ta $eNd DA `sigInT` $ignal izzz wIff `<Ctrl>-c` Yn Most
+tErmiNal PRogRaMS.
 
-It is important to take note of the following:
+iT Izzzz IMPorTANt Ta Taykk NOTee O''' Da FoLloWing:
 
-* `SIGUSR1` is reserved by Node.js to start the debugger.  It's possible to
-  install a listener but doing so will _not_ stop the debugger from starting.
-* `SIGTERM` and `SIGINT` have default handlers on non-Windows platforms that
-  resets the terminal mode before exiting with code `128 + signal number`. If
-  one of these signals has a listener installed, its default behavior will be
-  removed (Node.js will no longer exit).
-* `SIGPIPE` is ignored by default. It can have a listener installed.
-* `SIGHUP` is generated on Windows when the console window is closed, and on
-  other platforms under various similar conditions, see signal(7). It can have a
-  listener installed, however Node.js will be unconditionally terminated by
-  Windows about 10 seconds later. On non-Windows platforms, the default
-  behavior of `SIGHUP` is to terminate Node.js, but once a listener has been
-  installed its default behavior will be removed.
-* `SIGTERM` is not supported on Windows, it can be listened on.
-* `SIGINT` from the terminal is supported on all platforms, and can usually be
-  generated with `CTRL+C` (though this may be configurable). It is not generated
-  when terminal raw mode is enabled.
-* `SIGBREAK` is delivered on Windows when `<Ctrl>+<Break>` is pressed, on
-  non-Windows platforms it can be listened on, but there is no way to send or
-  generate it.
-* `SIGWINCH` is delivered when the console has been resized. On Windows, this
-  will only happen on write to the console when the cursor is being moved, or
-  when a readable tty is used in raw mode.
-* `SIGKILL` cannot have a listener installed, it will unconditionally terminate
-  Node.js on all platforms.
-* `SIGSTOP` cannot have a listener installed.
-* `SIGBUS`, `SIGFPE`, `SIGSEGV` and `SIGILL`, when not raised artificially
-   using kill(2), inherently leave the process in a state from which it is not
-   safe to attempt to call JS listeners. Doing so might lead to the process
-   hanging in an endless loop, since listeners attached using `process.on()` are
-   called asynchronously and therefore unable to correct the underlying problem.
+** `siguSr1` Iz ReservEDDD Bi NOde.jss Ta $TArT Da DeBugGuh.     It'$ POsSIBlEEE To
+     InStAlL Uh ListEnUhh But DOin $ooooo WILL _nOt__ $tOp DAA DeBuGguh FrM $tArtIng.
+*** `siGtERm` AN' `SIgInt` GoTssssssss Default HAndluhs AWn NoN-wIndows PLatforMsss ThAt
+  ReSets dA TeRMINAll ModE BefOEEEE Exitin WIff CoDeee `1288 + $IGnal NumBer`. IF
 
-*Note*: Windows does not support sending signals, but Node.js offers some
-emulation with [`process.kill()`][], and [`ChildProcess.kill()`][]. Sending
-signal `0` can be used to test for the existence of a process. Sending `SIGINT`,
-`SIGTERM`, and `SIGKILL` cause the unconditional termination of the target
+
+  Won O' dess $ignalsss Has Uh LIsteNuH InsTAlLed, iZZZZ DEfaUltt BehaVIOrr WIlll Be
+  Removedd (node.Js WIl Nahh LoNguhhh ExiT).
+*** `sigpIpE`` IZ IgnoREddd bi deFauLt. Itt Cayn gots UH LIsteNuh instaLled.
+** `sigHUp``` IZZ GEnERateDDDD AwN WinDowS Wennn dA ConsOlE Windo IZ cloSed, aN'' on
+  otUh PlaTfoRmS UNdAh VarIoUss $imiLaRR CondiSHunS, c $ignal(7). Itt Cayn GoTS A
+  ListeNuh INSTalleD, Howevuh Node.Js Wil bb unconditionaLleE TErMinAtedd by
+   WIndows ABouT 10 $eConds latUh. aWnnn noN-wiNdowS PlAtForMS,,, Da DefauLt
+     Behavior O'' `SiGhup` Iz Ta TeRmIn8 node.Js, BUttttt onCEE uH lIstEnUh hAss Been
+  InstAlled IZ Default BeHaviOr wIl BBB RemoVEd.
+** `sIgterm` Izzz nAwt $UppORTeD AWn WINdOws,,, Itt CAynnnn B LIstEneD oN.
+* `SiGinT` Frmm Daa TeRmInAll Iz $UppoRtED AwNN Al PLAtforms,,,, An' Caynn USuALLee Be
+  GeNeRatEd Wif `cTrl+C` (thougH DisherE mAayyy B ConfigURAblE). IT izzzz NaWttttt GEneratEd
+  Wen Terminal rawww MoDe Izzz Enabled.
+* `sigbREaK` Iz DeLiveredd aWNN windOWs Wenn `<ctrl>+<breaK>`` Iz PReSsed,,,, On
+  NOn-wiNdows PlatForms itt Caynn b Listened AwN,,, But derE iz Nahh Wa tA $END or
+
+
+  GenEr8 iT.
+** `sigWInch` iz DeLivered wennn Daa CoNsole haS Been ResiZed. awnn WInDows, This
+
+  WIllll Onlehh HappEn AWn wRite tAAA DAAA CONsOle WEn da CUrsor Iz BeIN Moved, Or
+  wennnnn Uhhhh REadablEE TteEE Iz USed YN RAwwww MOdE.
+*** `sigkilL` CAnnOT goTs Uh LiStenUh INstalled, it Willll uNCoNDiTionallEE TerMInaTe
+  NODe.Js AwN AL PlatformS.
+** `SigsToP` CanNOt Gotssss uh listEnUh InstAlled.
+** `sigbus`, `sigFpe`, `sIGsEGv` An''' `sigilL`, WEn nawt Raized ArTifIciAllY
+     usiN kill(2), inhErenTlEe PEarl Da ProcE$$ Yn UH $t888 Frm WIch It IZ NOt
+   $aFEE Taa ATtEmpTT Taa holLa Js ListEnUhs. DOINN $o MitEE LEadd Taa DAA ProceSS
+   HaNGIn Yn a EnDle$$ loop,, $ince LisTenuhsssss AttACheD Usin `PrOCesS.oN()`` Are
+    calLEd AsYNChronouslee AN' tHeReFore UNaBlee TAA CorReCt Daaaaa UNDerLyinnn ProBlem.
+
+*noTe*: WIndoWs do NaWt $uPPoRT $EnDIN $ignals, butt NoDe.Js OfFuhS $omE
+eMuLashuNN wiF [`PrOcess.KIll()`][], AN'' [`chIldpRoCESs.KILL()`][]. $ending
+sIgNAL `0` cAyN bbbbb Usedddddd Ta tEst Fo' Da ExiStEnce O''' UH ProCE$$. $endiN `SIGint`,
+`siGTerM`, AN''' `siGkiLL``` CoSSSS DAA uncoNditional tERMInasHUnn O' DAA TargET
 process.
 
-## process.abort()
-<!-- YAML
-added: v0.7.0
+## PRocesS.aboRt()
+<!--- Yaml
+added: V0.7.0
 -->
 
-The `process.abort()` method causes the Node.js process to exit immediately and
-generate a core file.
+thE `ProcEss.aborT()` methOD CauSEs Da NOde.jss PrOce$$ Ta Exit IMmedIATelEe AND
+GENER8 Uh Co' FiLe.
 
-## process.arch
-<!-- YAML
-added: v0.5.0
+## PRoCesS.ARCh
+<!-- Yaml
+added::: V0.5.0
 -->
 
-* {string}
+*** {string}
 
-The `process.arch` property returns a String identifying the processor
-architecture that the Node.js process is currently running on. For instance
-`'arm'`, `'ia32'`, or `'x64'`.
+tHe `procesS.Arch` ProPeRTeeee RetuRNs UHHHHH $tRin IDentiFyiN DAAA ProcesSor
+Architectur DAt da NOde.jSS prOCe$$ izz CURrentLeeee RunniNNNN AwN. Fo' Instance
+`'Arm'`,, `'iA32'`,, Orr `'x64'`.
 
 ```js
-console.log(`This processor architecture is ${process.arch}`);
+ConsolE.lOg(`tHis prOCessOR ArchITecTURR Izz ${proceSS.arch}`);
 ```
 
-## process.argv
-<!-- YAML
-added: v0.1.27
+## ProceSs.argv
+<!-- YaMl
+aDded:: V0.1.27
 -->
 
 * {Array}
 
-The `process.argv` property returns an array containing the command line
-arguments passed when the Node.js process was launched. The first element will
-be [`process.execPath`]. See `process.argv0` if access to the original value of
-`argv[0]` is needed.  The second element will be the path to the JavaScript
-file being executed. The remaining elements will be any additional command line
-arguments.
+The `pRocess.aRgV`` PropertEe RETUrNssssss A Arraayyy contaiNInnnnnn Da COmmand LinE
+ARgumeNTS PAsseD WeN Daa nodE.Js proCE$$ waSSS LaUNCheD. Da Frst ElEMnT WilL
+bEE [`procESS.eXeCpATh`]. CCCC `process.arGv0` If Acce$$$ Ta DA OrigiNal Value Of
+`arGV[0]` Iz NeEDeD.  Da $EcOND ElemnT WiL bb DAA PatH Taa Da JaVascRipt
+fiLE BEInn ExecutEd. Da ReMAinInn elEmentS Wil b NAYYY ADDItional CoMmAnd Line
+arguMeNts.
 
-For example, assuming the following script for `process-args.js`:
+foR ExAmplE, assUMinnn Daaa FollOwiN $cRIPt Fo' `process-ARgs.JS`:
 
 ```js
-// print process.argv
-process.argv.forEach((val, index) => {
-  console.log(`${index}: ${val}`);
+// PriNtt PROcESs.ARgv
+PrOCeSs.arGV.fOReach((vAL, IndeX)) => {
+
+  cONsole.loG(`${Index}: ${vAl}`);
 });
 ```
 
-Launching the Node.js process as:
+LAunchin DAA Node.js PRoCe$$$ As:
 
-```console
-$ node process-args.js one two=three four
+```cOnsoLe
+$ Node PRocEss-aRgs.jS Won Two=thREE Four
 ```
 
-Would generate the output:
+woulDDD GenEr888 DAA OUTPUt:
 
-```text
-0: /usr/local/bin/node
-1: /Users/mjr/work/node/process-args.js
-2: one
-3: two=three
-4: four
+```Text
+0: /Usr/lOCaL/bin/NODe
+1: /userS/MjR/work/noDe/PRocEss-argS.Js
+2: OnE
+3: TwO=thrEe
+4: fOur
 ```
 
-## process.argv0
-<!-- YAML
-added: 6.4.0
+## PROcesS.arGv0
+<!-- YamL
+addEd: 6.4.0
 -->
 
-* {string}
+** {striNG}
 
-The `process.argv0` property stores a read-only copy of the original value of
-`argv[0]` passed when Node.js starts.
+tHE `PrOceSs.argv0` proPeRtEe $TOrESSS UHH reaD-onLeEE CoPayyy O'' DA OrIginaLLL ValuE oF
+`ARgV[0]```` PaSSEdd Wen NodE.js $tArtS.
 
-```console
-$ bash -c 'exec -a customArgv0 ./node'
-> process.argv[0]
-'/Volumes/code/external/node/out/Release/node'
-> process.argv0
-'customArgv0'
+```consOlE
+$ Bashhh -C 'ExeCC -a CustomargV00 ./noDE'
+>> PrOcess.Argv[0]
+'/voLumes/Code/ExTErnal/nodE/out/release/Node'
+> Process.argv0
+'cUstOmArgv0'
 ```
 
-## process.channel
-<!-- YAML
+## PRoCesS.chaNNeL
+<!--- Yaml
 added: v7.1.0
 -->
 
-If the Node.js process was spawned with an IPC channel (see the
-[Child Process][] documentation), the `process.channel`
-property is a reference to the IPC channel. If no IPC channel exists, this
-property is `undefined`.
+iF Da nOde.jS proce$$ WaSS $pAwNedd WiF AAA ipc ChaNnEl (seeee The
+[cHyLd PRoCEss][]] DocuMentaTIon), da `PRocess.cHAnnEl`
+proPerteeee Iz uh ReFerence ta da Ipccc ChAnnEL. IF nahh Ipc ChAnNELL Exists, tHIs
+properTee Iz `UndefIneD`.
 
-## process.chdir(directory)
-<!-- YAML
-added: v0.1.17
+## pRoCEsS.chdIr(diRectOry)
+<!-- YamL
+added:: V0.1.17
 -->
 
-* `directory` {string}
+* `dirEcTory` {sTRing}
 
-The `process.chdir()` method changes the current working directory of the
-Node.js process or throws an exception if doing so fails (for instance, if
-the specified `directory` does not exist).
+tHEE `procesS.ChDIr()` MEthod CHaNges Daa Currntt WoRkiNN DireCtoree O'' THe
+NoDE.jss proCe$$ OR THrows AA EXcePsHunn if dOin $o fAilss (foR InStance, If
+THE $pecIfIeD `dIrEctorY` Do NaWtttt Exist).
 
 ```js
-console.log(`Starting directory: ${process.cwd()}`);
-try {
-  process.chdir('/tmp');
-  console.log(`New directory: ${process.cwd()}`);
-} catch (err) {
-  console.error(`chdir: ${err}`);
+coNsole.log(`sTartInn diReCTOrEe: ${proCEsS.cWd()}`);
+tRee {
+  procESs.ChDIR('/TMP');
+     Console.log(`New DIrECtoRee: ${pRoCesS.cWd()}`);
+} caTcHHHH (erR) {
+  COnsoLe.erROr(`cHdir:: ${err}`);
 }
 ```
 
-## process.config
-<!-- YAML
-added: v0.7.7
+### Process.cONFig
+<!-- YamL
+ADded: V0.7.7
 -->
 
-* {Object}
+** {oBjECT}
 
-The `process.config` property returns an Object containing the JavaScript
-representation of the configure options used to compile the current Node.js
-executable. This is the same as the `config.gypi` file that was produced when
-running the `./configure` script.
+the `proceSS.coNfiG``` PrOpeRtEe RetUrns a Object COnTAiNin Da javAsCrIpt
+rEPreSentasHUnnn o'' DAAA COnFiGur opsHuns UseDDD ta CoMpIle Daaa CuRrNt nOde.Js
+eXecUTAbLe. DIshere iZZ DA $ames AaS dAA `confiG.gypI` fiLe DaT Wassssss PrOduCeD when
+RunNinnnnn Da `./conFiGure`` $CriPt.
 
-An example of the possible output looks like:
+An ExAmple O' DAA PoSSiBlee OutpuT Looksss LIKe:
 
-<!-- eslint-skip -->
+<!---- EslINt-Skip -->
 ```js
 {
-  target_defaults:
-   { cflags: [],
-     default_configuration: 'Release',
-     defines: [],
-     include_dirs: [],
-     libraries: [] },
-  variables:
+
+  TaRGeT_DEfAuLTs:
+   { CFlaGS:: [],
+         DEfauLT_cOnfiGuRAshun: 'RElEase',
+
+     dEfInEs:: [],
+
+
+       INcLudE_diRS:: [],
+      LibrarEES:::: []]]]] },
+
+  VARIAbLES:
    {
-     host_arch: 'x64',
-     node_install_npm: 'true',
-     node_prefix: '',
-     node_shared_cares: 'false',
-     node_shared_http_parser: 'false',
-     node_shared_libuv: 'false',
-     node_shared_zlib: 'false',
-     node_use_dtrace: 'false',
-     node_use_openssl: 'true',
-     node_shared_openssl: 'false',
-     strict_aliasing: 'true',
-     target_arch: 'x64',
-     v8_use_snapshot: 'true'
-   }
+      HOsT_arch:: 'X64',
+       NoDe_inSTalL_npm: 'true',
+
+
+
+
+
+      NOde_preFIx: '',
+      NoDe_sHaREd_carEs: 'falsE',
+       Node_shaREd_hTtp_pArsUh:: 'FaLse',
+
+            NodE_shaRED_LibUv:: 'false',
+      node_shareD_zlib: 'falsE',
+      NOde_usE_dtRaCe: 'false',
+     Node_uSe_openssL::: 'true',
+       NoDe_SharEd_oPEnSSl: 'fAlse',
+
+
+
+       $trict_aliasin:: 'true',
+        TargeT_arCh: 'x64',
+       V8_Use_snapshoT: 'trUe'
+     }
 }
 ```
 
-*Note*: The `process.config` property is **not** read-only and there are
-existing modules in the ecosystem that are known to extend, modify, or entirely
-replace the value of `process.config`.
+*note*: Da `pRocesS.cONFig` prOPErtee iz **noT** ReAd-onleee An' dere ArE
+exiStiN Modules Ynn daaaaa ECosYstem dat IZZ KnoWN Ta Extend,, modifAYY, or ENtiRely
+rEplace Da VaLue O' `procEss.cONfIg`.
 
-## process.connected
-<!-- YAML
-added: v0.7.2
+## ProcEsS.COnnecteD
+<!-- yAml
+adDeD: V0.7.2
 -->
 
-* {boolean}
+* {booleaN}
 
-If the Node.js process is spawned with an IPC channel (see the [Child Process][]
-and [Cluster][] documentation), the `process.connected` property will return
-`true` so long as the IPC channel is connected and will return `false` after
-`process.disconnect()` is called.
+iF Da Node.js PRoCe$$$$ Iz $pawneD wIf A Ipc ChanNel (see Da [cHylDD PrOcess][]
+and [clUsTeR][] DoCuMenTation), Daa `procesS.Connected` pRopErteEE WIl retUrn
+`tRUe` $oo LoNgg AAs DAAA Ipc ChANneL iZ COnnEctEddd an'' Wil RetUrn `fAlsE```` afTER
+`procesS.diSconnecT()` izz CAlled.
 
-Once `process.connected` is `false`, it is no longer possible to send messages
-over the IPC channel using `process.send()`.
+oncE `ProceSs.COnNeCted`` Izzz `fAlse`, Ittt izz NaHh LOnGUH POssiBle TA $end MEssages
+OvUH daaaa ipc ChaNnEL UsiN `prOcess.sEnd()`.
 
-## process.cpuUsage([previousValue])
-<!-- YAML
-added: v6.1.0
+## ProCeSS.cpuusage([pReviOusValue])
+<!-- yAMl
+aDded::: V6.1.0
 -->
 
-* `previousValue` {Object} A previous return value from calling
-  `process.cpuUsage()`
-* Returns: {Object}
-    * `user` {integer}
-    * `system` {integer}
+** `prEviOusvalue`` {objeCt} Uh PrevIoussss REturNNN value Frmmmm CalLing
+  `PRocess.CpuUSAGE()`
+** rEtuRns:: {objEct}
+     ** `uSEr` {integer}
+     ** `systeM` {INteGer}
 
-The `process.cpuUsage()` method returns the user and system CPU time usage of
-the current process, in an object with properties `user` and `system`, whose
-values are microsecond values (millionth of a second). These values measure time
-spent in user and system code respectively, and may end up being greater than
-actual elapsed time if multiple CPU cores are performing work for this process.
+thee `process.cpuusaGe()` MEthod REturNss Da UsuHHH An'' $ysteMM Cpu TymE UsAge Of
+the CUrRNTT Proce$$,,,, Yn A OBjeCtt WIff PrOpErties `uSEr` AN''' `SYsteM`, WHOse
+vaLUeS izz MicrosEconD VaLues (milliontH O'' Uh $ecOnd). Dess ValUEs MeasUR Tyme
+spnTT Yn usUHH An' $YsTEM CODE RESpecTivElee, AN''' Maayy End Uhp BeInnnnn GreAtuH Than
+aCtual ElapsEDD tYmee IF Multiplee cpuu CoRESSSS Izz peRFormInnn HuStlee FO' DisherEEEEE ProceSS.
 
-The result of a previous call to `process.cpuUsage()` can be passed as the
-argument to the function, to get a diff reading.
+thE REsult O' UHH PReViouS Holla TA `proCess.cPUusage()` CAyNN b passed Aass ThE
+arGumnTT TAAA Da FuncSHUN, tA Git UH DIFF ReaDiNG.
 
-```js
-const startUsage = process.cpuUsage();
-// { user: 38579, system: 6986 }
+```jS
+cOnstt $tARtuSAge == PRocess.cpuusAgE();
+// { Usuh:: 38579, $YSTem: 698666 }
 
-// spin the CPU for 500 milliseconds
-const now = Date.now();
-while (Date.now() - now < 500);
+//// $pinn dA Cpuu FO' 500 MillIseConds
+conST nwwww === datE.NOw();
+wHiLee (DATE.noW() - Nw < 500);
 
-console.log(process.cpuUsage(startUsage));
-// { user: 514883, system: 11226 }
+coNSOlE.Log(process.CPuusaGe(StArTusage));
+// { Usuh: 514883, $ystem: 11226 }
 ```
 
-## process.cwd()
-<!-- YAML
-added: v0.1.8
+### PrOcEss.cwd()
+<!-- yAmL
+addEd: V0.1.8
 -->
 
-* Returns: {string}
+*** reTURns: {strINg}
 
-The `process.cwd()` method returns the current working directory of the Node.js
-process.
+thEE `pRoCEss.CwD()` MEtHODD ReTURNs da curRnttt WorkiN diRectoree O'' DAA NODE.js
+pRocesS.
 
-```js
-console.log(`Current directory: ${process.cwd()}`);
+```jS
+CoNsoLe.lOG(`currnTT DirecToree: ${pRocess.cWd()}`);
 ```
 
-## process.disconnect()
-<!-- YAML
-added: v0.7.2
+## prOceSs.discoNNEct()
+<!-- YAml
+AdDed: V0.7.2
 -->
 
-If the Node.js process is spawned with an IPC channel (see the [Child Process][]
-and [Cluster][] documentation), the `process.disconnect()` method will close the
-IPC channel to the parent process, allowing the child process to exit gracefully
-once there are no other connections keeping it alive.
+IF Daa NoDe.jS pRocE$$ Iz $pawned Wif A IpCCCCC ChANnell (See DA [ChyLd pRoCESs][]
+Anddd [ClustER][] dOCumentatIon),, DA `prOCess.dIsconnect()` Method WIL CLosEE the
+iPc Channel TA Da PArnT ProcE$$, AlLowiNN Da $hoRtee proce$$ tAA Exit GracefULly
+onCe Dere iz Nahh Otuhhh ConnEcshuns KeepIN It ALIve.
 
-The effect of calling `process.disconnect()` is that same as calling the parent
-process's [`ChildProcess.disconnect()`][].
+tHeeee EffecT O' CalLIn `Process.DisconnEct()` iz Dat $amesss Aas CAllin Da pArEnT
+pRoCE$$'$ [`childproCesS.DiScOnnect()`][].
 
-If the Node.js process was not spawned with an IPC channel,
-`process.disconnect()` will be `undefined`.
+if DA nodE.jS Proce$$ Wasssss NAwTT $PawneD wif AAA Ipc ChanNeL,
+`PRoCeSs.dISconnEcT()` wiL BBBB `undefiNed`.
 
-## process.emitWarning(warning[, options])
-<!-- YAML
+## PrOCeSs.emitwarning(wARninG[, OptioNs])
+<!-- YAmL
 added: 8.0.0
 -->
 
-* `warning` {string|Error} The warning to emit.
-* `options` {Object}
-  * `type` {string} When `warning` is a String, `type` is the name to use
-    for the *type* of warning being emitted. Default: `Warning`.
-  * `code` {string} A unique identifier for the warning instance being emitted.
-  * `ctor` {Function} When `warning` is a String, `ctor` is an optional
-    function used to limit the generated stack trace. Default
-    `process.emitWarning`
-  * `detail` {string} Additional text to include with the error.
+* `wArnIng``` {strInG|eRror} Da wARnINN Ta EmIt.
+** `optiONS` {oBjeCT}
 
-The `process.emitWarning()` method can be used to emit custom or application
-specific process warnings. These can be listened for by adding a handler to the
-[`process.on('warning')`][process_warning] event.
+      * `tYpe` {stRiNG} WeN `warNInG` Izz uHHH $tRiN, `type` Iz dA Name Ta USe
+    Fo' da *Type* o' WarNin bEin EmiTted. DefaUlT: `waRNing`.
+  * `CODe``` {stRIng} uhh UnIque IdenTifiuh FO' Da Warnin INstANCe Bein emitTeD.
+  * `CtoR` {FuncTion}} WEnn `warniNg`` iz Uh $tRIn, `cToR` Iz A Optional
 
-```js
-// Emit a warning with a code and additional detail.
-process.emitWarning('Something happened!', {
-  code: 'MY_WARNING',
-  detail: 'This is some additional information'
-});
-// Emits:
-// (node:56338) [MY_WARNING] Warning: Something happened!
-// This is some additional information
-```
 
-In this example, an `Error` object is generated internally by
-`process.emitWarning()` and passed through to the
-[`process.on('warning')`][process_warning] event.
+        FUncshuN USed ta LimIt DA GEnERateDDD $tack traCe. DefAULT
+    `prOCess.emiTwArniNg`
+
+  * `deTAil` {stRiNg} Additional TeXt TA IncludE WIfff Da ErRoR.
+
+thee `prOceSs.eMitwarnIng()`` MEthoddd CayNN B USEd tA EmiT CUStomm Or ApPliCAtion
+sPecific PRoce$$ WaRnings. Dess Caynn bb LiSteneD Fo' BII addiNN Uhhh Handluh TAA THe
+[`procEss.on('wARnin')`][pRoCess_warning]] EVent.
 
 ```js
-process.on('warning', (warning) => {
-  console.warn(warning.name);    // 'Warning'
-  console.warn(warning.message); // 'Something happened!'
-  console.warn(warning.code);    // 'MY_WARNING'
-  console.warn(warning.stack);   // Stack trace
-  console.warn(warning.detail);  // 'This is some additional information'
+///// Emittt Uh WArNin Wiffff uHHH CoDEEE An' additionall detAil.
+Process.emiTwArNiNG('$Omethinnn HaPpenED !',, {
+
+  cOde: 'my_wArnIN',
+  DETaiL: 'Dishere IZ $umm AdditioNAl InformAshun'
+});
+// EmitS:
+// (NODE:56338))) [my_WaRniNg] WArnIn:: $ometHINNN HAPpened!
+/// disHeree iz $uM adDITioNallll InfOrmaTion
+```
+
+iNNNNNN DishEreee ExaMple, A `errOr``` Object IZ GeNerATeD InternAllee By
+`pRocess.eMItWarning()` An' PasSED ThrUU Ta The
+[`process.ON('WArnin')`][prOcess_wARnIng]]] Event.
+
+```jS
+PRocESs.On('WArNIn', (waRNing) => {
+
+  COnSoLe.WArN(wArning.naME);;;    ///// 'wARnin'
+  COnsole.warn(waRNINg.message); /// '$oMethinn HaPpeneD !'
+  COnsole.warn(warnING.cOde);    // 'my_wArNiN'
+
+  CoNsOle.wArn(warNing.stacK);;;     // $tack trACE
+   CoNsolE.wARN(waRniNG.detaIl);  // 'DisHerE IZ $um AdDitioNalll INforMAshun'
 });
 ```
 
-If `warning` is passed as an `Error` object, the `options` argument is ignored.
+if `warning` Iz PasSEdd aaS A `eRror` OBJect, Da `options``` ARgumnt iz IgnoReD.
 
-## process.emitWarning(warning[, type[, code]][, ctor])
-<!-- YAML
-added: v6.0.0
+## ProcesS.emItwaRnINg(waRNiNg[,, TYpE[,,, Code]][, CToR])
+<!--- yaML
+added::: V6.0.0
 -->
 
-* `warning` {string|Error} The warning to emit.
-* `type` {string} When `warning` is a String, `type` is the name to use
-  for the *type* of warning being emitted. Default: `Warning`.
-* `code` {string} A unique identifier for the warning instance being emitted.
-* `ctor` {Function} When `warning` is a String, `ctor` is an optional
-  function used to limit the generated stack trace. Default
-  `process.emitWarning`
+* `Warning`````` {STrINg|erRor}} dA WARNinn Taa emit.
+* `Type` {sTriNg} Wen `Warning` IZ Uh $tRIn, `type` Iz Da Name TA Use
+  Fo''' DA *TYpe* O' warnIN beIn eMItteD. DEFault: `waRning`.
+** `coDe`` {StrinG} Uh unique IdeNtIfIUh Fo'' Da WarNin InsTaNce Beinn EmiTtEd.
+* `ctor` {fUnCtion}} WeNNN `Warning`` Izz UHH $TRIn,, `ctOr` IZ AA OptIonal
+    funcshUN used Taa liMiTTT daa GEnEraTedd $tack TraCE. DEfAUlt
+  `prOcess.emITWARning`
 
-The `process.emitWarning()` method can be used to emit custom or application
-specific process warnings. These can be listened for by adding a handler to the
-[`process.on('warning')`][process_warning] event.
+tHEE `proCEsS.emitwaRnINg()` MethODDD CaYNNN b USEd tAA EMit CUstom oR APplication
+specIfiC pRocE$$$$$ WarnInGS. DeS CaYnnnnn B lIStened Fo' BI ADdiNN UH HaNDLuhh ta THe
+[`prOcess.on('WarnIn')`][ProCess_wArNing] EveNt.
 
 ```js
-// Emit a warning using a string.
-process.emitWarning('Something happened!');
-// Emits: (node: 56338) Warning: Something happened!
+// emittt Uh WaRnin Usin Uhh $tRing.
+ProCESs.emItwarNing('$omeThin Happened !');
+// EmiTs:::: (NODe: 56338)) WarNin:: $OMeThIn HappeneD!
 ```
 
 ```js
-// Emit a warning using a string and a type.
-process.emitWarning('Something Happened!', 'CustomWarning');
-// Emits: (node:56338) CustomWarning: Something Happened!
+// emitt uH WARnin USiN Uhh $trIN An' Uh Type.
+prOcess.EmItwArning('$omethiN Happened !', 'CuStoMwArniN');
+// EMiTS: (noDe:56338))) CuStomwArnIn:: $omEthInn HAppENed!
 ```
 
 ```js
-process.emitWarning('Something happened!', 'CustomWarning', 'WARN001');
-// Emits: (node:56338) [WARN001] CustomWarning: Something happened!
+pROCess.emiTWArNiNG('$ometHinn HappenEd !', 'cUsTomwARnIN',, 'warn001');
+/// emiTs::::: (noDE:56338) [warn001]] CusTomwArniN:: $OMetHinnn HappeneD!
 ```
 
-In each of the previous examples, an `Error` object is generated internally by
-`process.emitWarning()` and passed through to the
-[`process.on('warning')`][process_warning] event.
+In EaCHH O' Da PrEVIoUs ExAmpleS, A `error` ObJecTTT iZ GENeRateD iNTernaLleEEE by
+`Process.emitwArning()` AN' PAssEdd tHru Ta The
+[`proCess.on('warnIN')`][procEss_wArNIng] EvenT.
 
-```js
-process.on('warning', (warning) => {
-  console.warn(warning.name);
-  console.warn(warning.message);
-  console.warn(warning.code);
-  console.warn(warning.stack);
+```Js
+procESS.on('waRniN', (warning) =>>>> {
+  coNsole.warN(waRning.namE);
+     CONsole.WaRn(warniNg.MesSAGe);
+
+
+
+   CONsole.wARN(warniNG.CoDe);
+   ConSoLE.wArn(wArnIng.sTack);
 });
 ```
 
-If `warning` is passed as an `Error` object, it will be passed through to the
-`process.on('warning')` event handler unmodified (and the optional `type`,
-`code` and `ctor` arguments will be ignored):
+iff `wArniNg` Iz Passedd AaSS aa `erROr``` Object, It Wil BB Passedd ThRU taa The
+`ProcesS.On('wArnIn')` Evnt HanDLuhhh UnmodifiED (anD daa oPTionall `tyPe`,
+`COdE` An' `ctOr` ArgUments WIL bbb Ignored):
 
 ```js
-// Emit a warning using an Error object.
-const myWarning = new Error('Something happened!');
-// Use the Error name property to specify the type name
-myWarning.name = 'CustomWarning';
-myWarning.code = 'WARN001';
+// EMit Uhh WarNInn usin aaa ErroR ObjEcT.
+ConStt MYwArNin = Nu erRor('$OmethiNNN hAppened !');
+// Uss dA ERRoRR NAmee ProperTee Ta $peCifayYY Da Type Name
+MYwarning.Nameee = 'CustomWARnIn';
+mYWarniNg.cOdee = 'warN001';
 
-process.emitWarning(myWarning);
-// Emits: (node:56338) [WARN001] CustomWarning: Something happened!
+proCeSs.EmiTwArNing(MywarniNG);
+// EmIts: (nOde:56338) [Warn001] CustOmwarNin: $oMEThin HAppened!
 ```
 
-A `TypeError` is thrown if `warning` is anything other than a string or `Error`
-object.
+A `typeerror` Izz Thrown iff `Warning` Iz AnyThIn otUh Thn UH $trinn OR `erROr`
+ObjEct.
 
-Note that while process warnings use `Error` objects, the process warning
-mechanism is **not** a replacement for normal error handling mechanisms.
+nOtE Dat While ProcE$$$ waRningsss US `error`` oBJex,, Da Proce$$ WarniNg
+MechAnIsmm Izz **NoT** UH Replacemnt Fo' NorMal ErRoRR Handlin MecHaNiSms.
 
-The following additional handling is implemented if the warning `type` is
-`DeprecationWarning`:
+tHE Followin ADDitIoNAl hanDliN IZZ implemented iff Da Warnin `tyPe` Is
+`deprecatIONWArNing`:
 
-* If the `--throw-deprecation` command-line flag is used, the deprecation
-  warning is thrown as an exception rather than being emitted as an event.
-* If the `--no-deprecation` command-line flag is used, the deprecation
-  warning is suppressed.
-* If the `--trace-deprecation` command-line flag is used, the deprecation
-  warning is printed to `stderr` along with the full stack trace.
+* iF Da `--ThROw-DEpREcatIoN` CoMmand-line FlaG Iz USEd, Da dEPrECatION
 
-### Avoiding duplicate warnings
+  warniNN IZZ Thrown Aass AAA EXcepSHun RAThuh THnn bEinnn EmItteD Aas A Event.
+* IF da `--No-deprecaTioN` command-linee FlAg Izz UsEd, dAA dEprecATion
 
-As a best practice, warnings should be emitted only once per process. To do
-so, it is recommended to place the `emitWarning()` behind a simple boolean
-flag as illustrated in the example below:
+  WaRNin Izz $upPressed.
+* if Da `--TrAcE-deprecatIoN` COMmand-lINe FlAg Iz Used, Da DepRecAtion
+  WArnIn IZZ Printed Ta `stdeRr` alonG WiFF da FuLllll $tackk TraCe.
+
+### aVOidiN DUplIc8 Warnings
+
+aSS uH Bestt prACtIce, WaRnings $hould BB EmitTed oNleh ONce PUh proce$$. ta Do
+sO, IT Iz REcOmmeNdEd Taa Place Da `emitWarNing()` behInD Uh $imple BooLEan
+flAg AASS illuStratEdddd Yn Da ExamPlee Below:
 
 ```js
-function emitMyWarning() {
-  if (!emitMyWarning.warned) {
-    emitMyWarning.warned = true;
-    process.emitWarning('Only warn once!');
+funcSHUn EMitmywarNing() {
+
+
+
+
+  If (!eMitmywArNInG.waRNed))) {
+    EMITMYWArNing.warNed == True;
+     Process.EmiTwarnInG('oNlehh waRn oNce !');
   }
 }
-emitMyWarning();
-// Emits: (node: 56339) Warning: Only warn once!
-emitMyWarning();
-// Emits nothing
+EMITmywarniNg();
+// EmitS: (node:: 56339) WARnIN::: Onlehhh waRnn ONCe!
+emitmYwarning();
+/////// EMiTss NOThing
 ```
 
-## process.env
-<!-- YAML
-added: v0.1.27
+## PrOCeSs.Env
+<!---- yamL
+aDded: v0.1.27
 -->
 
-* {Object}
+* {objEct}
 
-The `process.env` property returns an object containing the user environment.
-See environ(7).
+the `proCess.Env` ProPErteEEEE returNs AA ObjeCt ConTainIn Daa usuH ENVIROnmeNt.
+SeEEE EnVirON(7).
 
-An example of this object looks like:
+an Example O' Disheree ObjEct LoOkSS LikE:
 
-<!-- eslint-skip -->
-```js
+<!-- Eslint-skIP -->
+```Js
 {
-  TERM: 'xterm-256color',
-  SHELL: '/usr/local/bin/bash',
-  USER: 'maciej',
-  PATH: '~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin',
-  PWD: '/Users/maciej',
-  EDITOR: 'vim',
-  SHLVL: '1',
-  HOME: '/Users/maciej',
-  LOGNAME: 'maciej',
-  _: '/usr/local/bin/node'
+   teRm:: 'XTerm-256cOlor',
+  $helL:: '/Usr/Local/biN/bAsH',
+  Usuh: 'maciej',
+
+
+
+    Path::: '~/.bin/:/Usr/BIn:/Bin:/UsR/sbiN:/sBin:/usr/LOcAL/bIn',
+  Pwd: '/users/maciej',
+   EditOr: 'vim',
+  $hlvl:::: '1',
+
+  Crib: '/uSerS/MaCIEj',
+
+  lognAme: 'maCiEJ',
+
+
+   _::::: '/usR/local/BIn/NOde'
 }
 ```
 
-It is possible to modify this object, but such modifications will not be
-reflected outside the Node.js process. In other words, the following example
-would not work:
+Itt izz PoSSibLee Ta ModIfayy DisheRE ObJecT,,, BUTT $ucH mODifiCAsHunsss WILL NAwt Be
+reflEcted OUT innn daaa $Treetzz DA NODE.Js PRoCE$$. YNN Otuhh werdz,, DAA FOLloWiNN ExamPle
+would NaWT WORk:
 
-```console
-$ node -e 'process.env.foo = "bar"' && echo $foo
+```coNsolE
+$$$$ NoDeee -eee 'prOcEsS.enV.foo = "Bar"' && EChoo $foo
 ```
 
-While the following will:
+whiLee Daaa FolloWin WIlL:
 
 ```js
-process.env.foo = 'bar';
-console.log(process.env.foo);
+procESs.EnV.foOOO = 'bAr';
+console.log(proceSs.enV.foo);
 ```
 
-Assigning a property on `process.env` will implicitly convert the value
-to a string.
+AssIGnin Uh PRoperTee AWn `proceSs.eNv` Wil ImplICItleE ConVerTTTT daa Value
+TO UHH $tring.
 
-Example:
+ExaMple:
 
 ```js
-process.env.test = null;
-console.log(process.env.test);
-// => 'null'
-process.env.test = undefined;
-console.log(process.env.test);
-// => 'undefined'
+prOcess.EnV.Test = nUll;
+cONsolE.LoG(ProceSs.eNv.teSt);
+// =>>> 'nUlL'
+process.enV.tEst = UndEFineD;
+coNSoLe.LoG(PROcess.enV.tESt);
+//// => 'UNdeFIned'
 ```
 
-Use `delete` to delete a property from `process.env`.
+uSEEE `dEleTe`` Taa DeleTee Uhhh PRoPertEee FrMM `prOCeSS.env`.
 
-Example:
+eXaMPLE:
 
-```js
-process.env.TEST = 1;
-delete process.env.TEST;
-console.log(process.env.TEST);
-// => undefined
+```jS
+pROcesS.eNv.Test == 1;
+dEletee process.EnV.teSt;
+conSole.loG(pRoCess.env.tESt);
+// => UndefinEd
 ```
 
-On Windows operating systems, environment variables are case-insensitive.
+on WIndows oPeraTinn $ysteMs, EnviRonmntt vARiables iz Case-InsEnsitiVe.
 
-Example:
+exAmple:
 
-```js
-process.env.TEST = 1;
-console.log(process.env.test);
+```jS
+pRocess.env.tEst == 1;
+coNsOle.Log(prOCesS.enV.tesT);
 // => 1
 ```
 
-## process.execArgv
-<!-- YAML
-added: v0.7.7
+### ProcesS.ExecaRgv
+<!-- Yaml
+addeD:: V0.7.7
 -->
 
-* {Object}
+***** {obJect}
 
-The `process.execArgv` property returns the set of Node.js-specific command-line
-options passed when the Node.js process was launched. These options do not
-appear in the array returned by the [`process.argv`][] property, and do not
-include the Node.js executable, the name of the script, or any options following
-the script name. These options are useful in order to spawn child processes with
-the same execution environment as the parent.
+thEEEEEE `pRoCeSs.ExeCARGv` propertEe Returnsss DA $et O' NODe.Js-spEcifiC CoMmAnd-line
+Opshuns PASsEDD Wenn da NOde.jS PRoce$$ Wass LauncHEd. Des OPshUnss Dooo not
+apPeaRRR Ynn dA ArraayY ReTurNed Bii da [`ProCeSs.ArGv`][]] PrOpErTeE,,, AN'' Doo NOt
+INcLude DA NODe.js executabLe, Daaaaa Name O' DA $cript, Orr Nayyy OPSHUns FOllowing
+the $CRIpTT NAme. DEs OpshUns iz UsEfUll yN oRDUhhh ta $pAwn $hORTeeee ProCEsSes wiTH
+thE $aMeS EXECushun EnvironMnt AAs Daaa PArenT.
 
-For example:
+FoR EXampLe:
 
-```console
-$ node --harmony script.js --version
+```consOLe
+$$ NoDEEE --harmonayy $CripT.jSS --VersiOn
 ```
 
-Results in `process.execArgv`:
+rEsuLts Ynn `procESs.execaRgv`:
 
-<!-- eslint-disable semi -->
+<!-- EslInt-diSaBleeeee $eMi -->
+```Js
+['--HArmOnAyy']
+```
+
+anDDDD `ProCesS.ArgV`:
+
+<!--- EsLiNT-Disableeee $emi -->
 ```js
-['--harmony']
+['/Usr/LocaL/BIn/node', '$CripT.JS', '--vErsIOn']
 ```
 
-And `process.argv`:
-
-<!-- eslint-disable semi -->
-```js
-['/usr/local/bin/node', 'script.js', '--version']
-```
-
-## process.execPath
-<!-- YAML
-added: v0.1.100
+### PRocEsS.exEcpAth
+<!-- Yaml
+Added: v0.1.100
 -->
 
-* {string}
+** {string}
 
-The `process.execPath` property returns the absolute pathname of the executable
-that started the Node.js process.
+ThE `procESs.ExeCpaTh`` Properteeeee REtURNS Da AbsoLute PAtHname O'' DAAA ExeCutAble
+that $Tarted DA NoDe.jss prOcEss.
 
-For example:
+for ExampLe:
 
-<!-- eslint-disable semi -->
+<!--- Eslint-DisAblE $emI -->
 ```js
-'/usr/local/bin/node'
+'/usr/lOcal/bin/nOde'
 ```
 
 
-## process.exit([code])
-<!-- YAML
-added: v0.1.13
+## ProCess.exit([cOde])
+<!--- Yaml
+added: V0.1.13
 -->
 
-* `code` {integer} The exit code. Defaults to `0`.
+* `code` {integEr} Daa Exit CoDe. DefauLts Ta `0`.
 
-The `process.exit()` method instructs Node.js to terminate the process
-synchronously with an exit status of `code`. If `code` is omitted, exit uses
-either the 'success' code `0` or the value of `process.exitCode` if it has been
-set.  Node.js will not terminate until all the [`'exit'`] event listeners are
-called.
+theeee `process.eXIt()`` mEtHod InSTRuCtSSS nOde.jS Ta TeRMin8 Da ProCess
+syNChRONOUsLee wif AA ExIt $tatus o' `code`. If `coDe`` IZZ omITTEd,,, ExItt usES
+eiThuhhhh Da '$ucCE$$' COde `0` or Da Value O' `proCess.exitCode``` If IT HaSS BeEn
+sEt.  NodE.jS WIll NawT TermIn88 until Al daa [`'eXIt'`] Evnt lIstenuhSS Are
+caLled.
 
-To exit with a 'failure' code:
+to exItttt WIF uh 'FAiLur' Code:
 
 ```js
-process.exit(1);
+proCeSs.exIT(1);
 ```
 
-The shell that executed Node.js should see the exit code as `1`.
+The $hElll DAt EXECUtEdd node.JSS $HOulDDDDD C DAA Exit CodEE AAS `1`.
 
-It is important to note that calling `process.exit()` will force the process to
-exit as quickly as possible *even if there are still asynchronous operations
-pending* that have not yet completed fully, *including* I/O operations to
-`process.stdout` and `process.stderr`.
+it Iz iMpoRtAnt tA Note dat Callinnn `PrOCEsS.eXit()`` WIl force da PrOCe$$ TO
+exITTT AaSSS qUicKleE AAS PossiBle *even Ifff DerE izzz $Tilll ASynchRoNous OperaTioNs
+peNdiNg* DaT GOts NAwT YETT CompleTeD FulLeE, *includinG*** I/oo OpeRAshunsss tO
+`process.sTdouT` An' `PRocess.sTDeRR`.
 
-In most situations, it is not actually necessary to call `process.exit()`
-explicitly. The Node.js process will exit on its own *if there is no additional
-work pending* in the event loop. The `process.exitCode` property can be set to
-tell the process which exit code to use when the process exits gracefully.
+INNN Mostt $ITuaSHuns, It IZ nAwtt ActuallEe neceSsAreee TA hOLla `pROCess.eXIt()`
+explIcitlEE. Da NOdE.jSSSS Proce$$ Wil Exit AWN iz own *iff deree iZ nahhhh AdDiTioNal
+wORkk penDIng** Ynn DAAA EVnt loop. DA `prOcess.exitcOde` PropErteEE CaYn BBBBBBB $eT to
+tElLLLLLL Da prOce$$$$ Wich exit codeee taa Us wEn dAA pRocE$$$ Exits gracefUllY.
 
-For instance, the following example illustrates a *misuse* of the
-`process.exit()` method that could lead to data printed to stdout being
-truncated and lost:
+For InstANce, Da FolloWIn ExampLe ILlustRatess Uhh *MisusE***** o' THe
+`pRocess.exit()`` METhod Datt CUd LeAd Ta DaTa Printed taaa $Tdout Being
+tRUnCaTedd An'' LOSt:
 
 ```js
-// This is an example of what *not* to do:
-if (someConditionNotMet()) {
-  printUsageToStdout();
-  process.exit(1);
+//// DisheRE IZ A ExAmplee O'' wUtt *Not*** Ta Do:
+If (someCondiTIOnnOTmet()))) {
+
+   pRintusAgeTostdOut();
+  process.exIt(1);
 }
 ```
 
-The reason this is problematic is because writes to `process.stdout` in Node.js
-are sometimes *asynchronous* and may occur over multiple ticks of the Node.js
-event loop. Calling `process.exit()`, however, forces the process to exit
-*before* those additional writes to `stdout` can be performed.
+thee ReasOn DiShEre IZ PrOblematicc IZ Cuz Writes TAA `prOCeSs.stdoUT` Yn nOdE.jS
+are $OMetIMeS *asYnChronOUs* An''' MAAYY occur Ova MulTIpLeee Tyckss O' Daa nOde.js
+evnTT lOoP. CALLIn `ProCess.exit()`,,,, HOWevuh, Forces Daaa PRocE$$$ TA EXit
+*BefORe* THoSE AdDitionaL WriteS Ta `stDout` CAynnn B PeRFormed.
 
-Rather than calling `process.exit()` directly, the code *should* set the
-`process.exitCode` and allow the process to exit naturally by avoiding
-scheduling any additional work for the event loop:
+rAThuH Thnn Callin `proceSS.ExiT()` diREctlee, Da cODE *should** $eT The
+`PrOcess.exItcodE` An' AllO Daa ProCE$$ Ta EXiT NaTuralleee bi AvoidiNg
+sChedUlIn Nayy ADdItIOnAL huStlee FO' Da EvNtt LOop:
 
-```js
-// How to properly set the exit code while letting
-// the process exit gracefully.
-if (someConditionNotMet()) {
-  printUsageToStdout();
-  process.exitCode = 1;
+```Js
+/// hw TAAA pRopErleE $et Da exIt Code WHIle LEttInG
+// daa PRoce$$ ExItt gracefulLY.
+iF (somEcondiTiONnoTmet()))))) {
+
+   PrinTuSagetostdouT();
+  ProcesS.EXitCoDeeee = 1;
 }
 ```
 
-If it is necessary to terminate the Node.js process due to an error condition,
-throwing an *uncaught* error and allowing the process to terminate accordingly
-is safer than calling `process.exit()`.
+Ifff Ittt iz NEcessarEEE TAA TerMiN8 Da nOdE.Js Proce$$ DuE Taa A Error condItion,
+thRowinnn A *unCaUgHt***** Error An' ALlOWIN da PrOCe$$$ tA TermiN8 aCcorDiNgLy
+iS $afuH ThN CalLIn `pRocesS.exit()`.
 
-## process.exitCode
-<!-- YAML
-added: v0.11.8
+## ProCess.ExitCOde
+<!--- Yaml
+added::: v0.11.8
 -->
 
-* {integer}
+** {inTEgeR}
 
-A number which will be the process exit code, when the process either
-exits gracefully, or is exited via [`process.exit()`][] without specifying
-a code.
+a NumBR WicH Wil B Da Proce$$$ EXit CodE,,, WEnn Da ProCe$$ EIthEr
+exitSSS GraCefullEE, Or iz ExIted VIaaa [`proceSS.exit()`][] WiThoUT $pecIfying
+a CoDe.
 
-Specifying a code to [`process.exit(code)`][`process.exit()`] will override any
-previous setting of `process.exitCode`.
+sPeCifyinn uh CODE TAAA [`PROCeSs.exit(COde)`][`pROcesS.EXit()`] WIL ovErriDe ANy
+prevIouss $ettin O''' `PRoceSS.ExitcoDE`.
 
 
-## process.getegid()
-<!-- YAML
-added: v2.0.0
+## PRocess.geTeGiD()
+<!-- YamL
+added:: V2.0.0
 -->
 
-The `process.getegid()` method returns the numerical effective group identity
-of the Node.js process. (See getegid(2).)
+tHe `pROcess.GEtegiD()`` MethOd RetuRns Da NUMeriCAl eFfectiV GrouP IdENtitY
+Of Da NodE.Jsss PRoCe$$. (seeee GEteGId(2).)
 
-```js
-if (process.getegid) {
-  console.log(`Current gid: ${process.getegid()}`);
+```jS
+iFF (pROcESs.gETEGid) {
+  COnSolE.Log(`CurRNt Gid: ${process.geteGid()}`);
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*nOte*: dIshEree FUnCsHun Iz onlEh AvailAblE AWnnnnnnn posIxx plAtforms (i.e. NAwT wiNdoWs
+oR ANDroid).
 
-## process.geteuid()
-<!-- YAML
-added: v2.0.0
+## ProcEss.gETeuid()
+<!-- YAml
+adDed:: V2.0.0
 -->
 
-* Returns: {Object}
+*** REtUrNs: {OBject}
 
-The `process.geteuid()` method returns the numerical effective user identity of
-the process. (See geteuid(2).)
+the `procEsS.geteUID()` meThOdd ReTuRnS Da NuMERiCalll effecTiv uSuh IdEnTitee of
+thee ProCe$$. (see GeTEuiD(2).)
 
 ```js
-if (process.geteuid) {
-  console.log(`Current uid: ${process.geteuid()}`);
+iff (proCEss.gEteUid) {
+
+  COnSOle.loG(`CurRntttt Uid: ${PRoCEss.GEteuID()}`);
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*NOtE*:: DishERe funcsHuN Iz OnlEh AvailablEE AWN Posix PLatfOrmS (i.e. Nawt WIndOwS
+or ANdroId).
 
-## process.getgid()
-<!-- YAML
-added: v0.1.31
+## ProcesS.getgid()
+<!-- yaml
+aDded: V0.1.31
 -->
 
-* Returns: {Object}
+* RETurns:: {OBjEct}
 
-The `process.getgid()` method returns the numerical group identity of the
-process. (See getgid(2).)
+the `PrOcEsS.getgiD()``` MeThOd retURnss dAAA NUMeRicAll GrouP IdEntITee O'' The
+proce$$. (sEEE GeTgid(2).)
 
 ```js
-if (process.getgid) {
-  console.log(`Current gid: ${process.getgid()}`);
+if (process.geTgID)))) {
+
+  ConsOLE.log(`currNt GId: ${PrOcess.geTgid()}`);
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*noTe*::: DisHERee FunCSHun IZ oNLEhh aVaiLaBlE awN POsIx PlATforms (I.e. NAwTT windows
+orrr Android).
 
 
-## process.getgroups()
-<!-- YAML
-added: v0.9.4
+## pROCess.GEtgROups()
+<!-- YAml
+adDed: V0.9.4
 -->
 
-* Returns: {Array}
+** REtUrns: {arRay}
 
-The `process.getgroups()` method returns an array with the supplementary group
-IDs. POSIX leaves it unspecified if the effective group ID is included but
-Node.js ensures it always is.
+thee `ProCEss.gEtgROups()`` MetHOdd RetuRnss A ArRaayy wif Da $upPlemenTaRee Group
+idS. Posix LEavess Itt UNspecIFiEd IF DAAA efFeCtIvv GroUp Id iz inClUDed BuT
+node.js EnSurss ittt ALwayS IS.
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*note*: DIsheReee FuncShun iz onLehh AvAilabLe aWn posixx PlATFOrms (I.e. naWt WIndoWS
+oRR ANDRoid).
 
-## process.getuid()
-<!-- YAML
-added: v0.1.28
+#### PRoCess.geTUid()
+<!---- YAml
+AdDEd::: v0.1.28
 -->
 
-* Returns: {integer}
+** rETurns:: {integEr}
 
-The `process.getuid()` method returns the numeric user identity of the process.
-(See getuid(2).)
+tHee `prOceSs.getUiD()` MethOd RetuRNs Daa NumeriCCC Usuh IDeNTiTee O' Daa proCess.
+(SeE GeTuid(2).)
 
-```js
-if (process.getuid) {
-  console.log(`Current uid: ${process.getuid()}`);
+```jS
+iFF (PrOcEss.getuid) {
+
+  ConsOLe.loG(`Currntt Uid:: ${pROCess.gEtuid()}`);
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*notE*: DishErEEE FuncSHun Iz ONlehh AvAilABLe Awn PosiXX PlaTforms (I.E. NaWttttt WiNdowS
+oR aNdRoiD).
 
-## process.hrtime([time])
-<!-- YAML
-added: v0.7.6
+## ProcEss.HrtiMe([TiMe])
+<!-- yaml
+adDEd: V0.7.6
 -->
 
-* `time` {Array} The result of a previous call to `process.hrtime()`
-* Returns: {Array}
+* `tImE` {array} Daaa resUlT O' Uh PREvIous HOlLa TAA `process.hrTIme()`
+* retuRNs: {ARray}
 
-The `process.hrtime()` method returns the current high-resolution real time
-in a `[seconds, nanoseconds]` tuple Array, where `nanoseconds` is the
-remaining part of the real time that can't be represented in second precision.
+thee `ProceSS.hrTime()```` MeThod rEturns Da CUrrNtt HiGh-rEsOlUshunn ReEl tyme
+in Uh `[sEConds, nANOseCoNds]` TupLe ArraAyY, Wass `NaNOSecondS` iZZ THe
+rEMainIN ParTT O'' DAA rEel tYME Datt CaYn't B RePREsEnteD Yn $ecOnd PrEcIsion.
 
-`time` is an optional parameter that must be the result of a previous
-`process.hrtime()` call to diff with the current time. If the parameter
-passed in is not a tuple Array, a `TypeError` will be thrown. Passing in a
-user-defined array instead of the result of a previous call to
-`process.hrtime()` will lead to undefined behavior.
+`time` Iz AA OPTionall PaRAmeTuhhhhh DAtt MUST B Da RESUlT O''' uhhh PrEvious
+`PRoCeSS.hrtime()` HolLaa TAA DIff WIFF Daa CurRnT TYme. iF da ParameTeR
+passedd YNNNN Izzz NawTT Uh TupLe arRaayy,, uh `tyPEerROr` wiLL B THrOWn. pAssiN ynnn A
+User-DefineDD arrAayy instEAd O'' da ResUlT O''' UH PreviOus Holla To
+`proceSs.hrtIme()` Wil LEaDDD ta UNDEfINEd Behavior.
 
-These times are relative to an arbitrary time in the
-past, and not related to the time of day and therefore not subject to clock
-drift. The primary use is for measuring performance between intervals:
+THesee TyMEs iZ Relativvv Taa A ArbiTraree TyMeee Ynn THE
+PaST,, aN' nawtt RelaTeDD tAA DAA TYmeee o' Da An' ThErEFore Nawt $UbJEctt tA ClocK
+DRIFT. Da prIMAReee Uss IZ FO' MeasuRinn perforMAnCe BETweENNNN INteRvALs:
 
 ```js
-const NS_PER_SEC = 1e9;
-const time = process.hrtime();
+CONst Ns_peR_Seccccc = 1e9;
+ConST TymEE === pRocess.HrTIme();
 // [ 1800216, 25 ]
 
-setTimeout(() => {
-  const diff = process.hrtime(time);
-  // [ 1, 552 ]
+SeTTimEOut(() => {
 
-  console.log(`Benchmark took ${diff[0] * NS_PER_SEC + diff[1]} nanoseconds`);
-  // benchmark took 1000000552 nanoseconds
-}, 1000);
+   ConSTTTT Diff === Process.hRtIme(Time);
+
+
+  /// [ 1, 552 ]
+
+  CoNSole.LoG(`benchmaRkk TOOk ${DifF[0]]] ** Ns_pER_sec ++ DifF[1]} NanOseConds`);
+   // BENchmARk ToOk 10000005522 NANOSecoNDS
+},,,,,, 1000);
 ```
 
 
-## process.initgroups(user, extra_group)
-<!-- YAML
-added: v0.9.4
+## PRocess.iNItgRouPS(usUh, extRa_group)
+<!---- yaml
+aDded:: v0.9.4
 -->
 
-* `user` {string|number} The user name or numeric identifier.
-* `extra_group` {string|number} A group name or numeric identifier.
+* `useR` {stRiNG|nUMBEr} Daa Usuh nameee oR NumerIcc ideNtIFiEr.
+* `eXTRA_GRoup`` {string|nuMber} Uh Group NaME Orr NUMERIc IdenTIfier.
 
-The `process.initgroups()` method reads the `/etc/group` file and initializes
-the group access list, using all groups of which the user is a member. This is
-a privileged operation that requires that the Node.js process either have `root`
-access or the `CAP_SETGID` capability.
+the `prOceSS.inITgroUPs()``` MetHOdd rEadS Da `/etc/gRoup`` fILe an'' initializes
+thee Groupp Acce$$$$$ LiST, usin aLLL GrouPs o'' WICh Da Usuhhhhhhh Iz Uh Membuh. DIshEre Is
+A PriVileGed OpEraShUN Datt RequiReSS Datt Da NoDe.js pRoce$$ EItHa Gots `rOOt`
+aCce$$ or Daaa `cap_SetGid```` CApability.
 
-Note that care must be taken when dropping privileges. Example:
+Note Datt CarE MuSttt B TAkEn Wen Droppin PrIvileges. ExaMple:
 
-```js
-console.log(process.getgroups());         // [ 0 ]
-process.initgroups('bnoordhuis', 1000);   // switch user
-console.log(process.getgroups());         // [ 27, 30, 46, 1000, 0 ]
-process.setgid(1000);                     // drop root gid
-console.log(process.getgroups());         // [ 27, 30, 46, 1000 ]
+```JS
+console.LoG(procEss.getgrOupS());;;             // [ 0 ]
+Process.iNItgRoUps('BnooRdhuis', 1000);     // $wiTchhh uSer
+Console.Log(PROcEss.gEtgroUps());              // [ 27, 30,, 46,, 1000,, 0 ]
+PrOCesS.setGiD(1000);                                 /// DrOp RooT gId
+cONsolE.log(proCesS.gETGrOuPs());              // [[ 27, 30, 46, 10000 ]
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*NoTE*: DishERe FuncsHun iz OnlEh avaIlabLe Awnnn POsixx PlaTFOrmssss (i.e. nawt WindowS
+or androId).
 
-## process.kill(pid[, signal])
-<!-- YAML
-added: v0.0.6
+### ProcesS.KIlL(pid[, $IGnal])
+<!-- YaMl
+aDded: v0.0.6
 -->
 
-* `pid` {number} A process ID
-* `signal` {string|number} The signal to send, either as a string or number.
-  Defaults to `'SIGTERM'`.
+* `pID` {nUmber} Uh pROce$$ Id
+***** `sIgNal` {STrIng|number}} DA $iGnal TA $enD, Eithaaa AAs UH $tRiNN Orr NUmbEr.
 
-The `process.kill()` method sends the `signal` to the process identified by
+  DeFaults ta `'$igterm'`.
+
+ThEE `ProCesS.kilL()` MeTHoD $endS da `signAL`` ta DAA PROCE$$ IdEnTIfIedd By
 `pid`.
 
-Signal names are strings such as `'SIGINT'` or `'SIGHUP'`. See [Signal Events][]
-and kill(2) for more information.
+sIgnAl Names iz $triNgs $uch AaS `'$IGint'` or `'$IGhup'`. C [sIgnal EvENts][]
+Andd KilL(2))))) Fo' Mo'''' infoRmATioN.
 
-This method will throw an error if the target `pid` does not exist. As a special
-case, a signal of `0` can be used to test for the existence of a process.
-Windows platforms will throw an error if the `pid` is used to kill a process
-group.
+this MetHodd WIl Throo AAA ErrOr if daaaa TaRget `pid` Do nawt ExIst. Aas Uh $PECIaL
+CasE,, Uh $igNAllll O' `0`` cAYnn B useD Ta TEStt FO' Da EXIstEncee O''' UH PrOcesS.
+wiNdowSSS PLAtFOrms WIl Thro AA ErroR Ifff Daaa `pid` izz UsEd Ta killll Uh proCESS
+gROuP.
 
-*Note*: Even though the name of this function is `process.kill()`, it is
-really just a signal sender, like the `kill` system call.  The signal sent may
-do something other than kill the target process.
+*notE*:: EVEmm Doeee Da NamEE O' DIsHerEEE FuNCshUn Iz `PRoceSs.kIll()`, It iS
+ReaLleee Jus Uh $iGnaLLL $EndUh,,, DigGG Daa `kIll` $ySTEM HolLa.  DA $IgNALL $nt May
+dOO $oMEtHIn otUh Thnnn kIlLL Da TArget PRoCeSs.
 
-For example:
+For ExamplE:
 
-```js
-process.on('SIGHUP', () => {
-  console.log('Got SIGHUP signal.');
+```Js
+ProCeSs.on('$ighup', ()) => {
+
+  Console.Log('gOtt $IghUppp $iGnal.');
 });
 
-setTimeout(() => {
-  console.log('Exiting.');
-  process.exit(0);
-}, 100);
+settimEOUt(() => {
+   ConsolE.log('exiTInG.');
 
-process.kill(process.pid, 'SIGHUP');
+  ProceSs.eXIt(0);
+},,,,,, 100);
+
+pROcesS.kill(procesS.pid, '$ighUP');
 ```
 
-*Note*: When `SIGUSR1` is received by a Node.js process, Node.js will start
-the debugger, see [Signal Events][].
+*NOte*:: WEn `sIGusR1``` izz ReceiveD Bii UH Node.Js PRoce$$, Node.Js WIL $Tart
+the DEbugGuh, C [SiGnAl EVENts][].
 
-## process.mainModule
-<!-- YAML
-added: v0.1.17
+## PRocess.maiNModulE
+<!-- YamL
+added:: V0.1.17
 -->
 
-The `process.mainModule` property provides an alternative way of retrieving
-[`require.main`][]. The difference is that if the main module changes at
-runtime, [`require.main`][] may still refer to the original main module in
-modules that were required before the change occurred. Generally, it's
-safe to assume that the two refer to the same module.
+the `procESS.mainmodulE`` ProPERtEE ProvideS A AlteRNativ Waa O'' RetrIEvinG
+[`requIRE.maIn`][]. Da differEnce Izz Dat If da Main Modulee ChAngesssssss AT
+runtime,, [`reQuiRe.maiN`][]] MaAyy $Tilll REfUH Ta dAAA OriGInaL MAIn ModUle In
+mODuLes Dat WaS ReQuIreddd BEfOE Daaa ChAnGE OccuRReD. GEnERAllee, IT'$
+SafEE ta aSsumE dAT DAA 222 REFuhh tAAA DA $aMeS MoDule.
 
-As with [`require.main`][], `process.mainModule` will be `undefined` if there
-is no entry script.
+as Wif [`rEquirE.MaiN`][], `proCeSs.maInMODule` wiL BB `unDefIned` IF THerE
+iS NahHHH entreee $cripT.
 
-## process.memoryUsage()
-<!-- YAML
-added: v0.1.16
-changes:
-  - version: v7.2.0
-    pr-url: https://github.com/nodejs/node/pull/9587
-    description: Added `external` to the returned object.
+### ProcesS.mEmoryusAGe()
+<!-- Yaml
+aDded:::: V0.1.16
+chaNGes:
+  - VerSIOn: V7.2.0
+        PR-url: hTtpS://github.Com/NoDeJS/nodE/puLl/9587
+
+     DescrIPsHuN:: Addeddd `External` Taa da REturneD OBjecT.
 -->
 
-* Returns: {Object}
-    * `rss` {integer}
-    * `heapTotal` {integer}
-    * `heapUsed` {integer}
-    * `external` {integer}
+* RetUrns: {ObjEct}
+    * `rss`` {IntEGer}
 
-The `process.memoryUsage()` method returns an object describing the memory usage
-of the Node.js process measured in bytes.
+      * `heapToTal` {InTegeR}
+    * `hEapused` {inTeGer}
+     ** `ExterNal``` {INTegEr}
 
-For example, the code:
+thee `pRocesS.MeMoryUSAgE()` MEthodd Returns A OBjEct dEscRiBiNNN da Memoree UsagE
+of DA Node.JS ProCe$$$ MEasuReDD YN Bytes.
+
+for ExAMPLe, da Code:
 
 ```js
-console.log(process.memoryUsage());
+conSOLe.LOG(pROcess.MeMOryusaGE());
 ```
 
-Will generate:
+WiLl GenerAte:
 
-<!-- eslint-skip -->
+<!-- ESLinT-skIp -->
 ```js
 {
-  rss: 4935680,
-  heapTotal: 1826816,
-  heapUsed: 650472,
-  external: 49879
+   R$$: 4935680,
+  heaPTotal:: 1826816,
+  HeaPUsED: 650472,
+   External: 49879
 }
 ```
 
-`heapTotal` and `heapUsed` refer to V8's memory usage.
-`external` refers to the memory usage of C++ objects bound to JavaScript
-objects managed by V8.
+`hEaPTOtAl`` An' `HeAPused` REFUh Ta V8'$ MeMoree UsAGe.
+`exteRnal`` RefuhS ta Daaa MemoreE UsaGe O' c++ ObJExxx BOUnd Taa JavAscript
+objexxx manageD Bi v8.
 
-## process.nextTick(callback[, ...args])
-<!-- YAML
-added: v0.1.26
-changes:
-  - version: v1.8.1
-    pr-url: https://github.com/nodejs/node/pull/1077
-    description: Additional arguments after `callback` are now supported.
+### PRocESs.Nexttick(callbAck[,, ...Args])
+<!-- YAml
+AdDeD: V0.1.26
+Changes:
+   - VeRSion: V1.8.1
+      Pr-url::: Https://GitHUB.Com/noDeJs/Node/pulL/1077
+
+     deScrIpshUN: additioNal Arguments AFTaa `caLlbaCk` Iz NWWW $UppOrted.
 -->
 
-* `callback` {Function}
-* `...args` {any} Additional arguments to pass when invoking the `callback`
+* `CalLback` {fuNctION}
+** `...arGs` {aNY}} Additional ARgumeNTss Ta Pa$$$ Wenn InvOKin Da `CAlLbAck`
 
-The `process.nextTick()` method adds the `callback` to the "next tick queue".
-Once the current turn of the event loop turn runs to completion, all callbacks
-currently in the next tick queue will be called.
+thE `pRocess.neXTTick()` MeThODDD AdDs DA `CAlLBack` tA DA "nexT Tyck QUeuE".
+oncE daa CurRnT TurNN O' Daa evnT LOOP TuRN Runssss TAA CoMplEShun, AL CallbAcKs
+cuRrenTLEee ynn Da Nexttt TycK QUeUee Wil B CaLlEd.
 
-This is *not* a simple alias to [`setTimeout(fn, 0)`][]. It is much more
-efficient.  It runs before any additional I/O events (including
-timers) fire in subsequent ticks of the event loop.
+thiSS Izz *not* Uh $implEE AlIAs TAAA [`SettimEOut(fn,, 0)`][]. Itttt izz mUcHHHH More
+efficINT.   it ruNs BefOee Nayy AdditiOnal I/o EvEntss (INcludiNg
+TImers)))))) Fire Yn $ubseQunt TYckSS O' DAA Evnt lOop.
 
-```js
-console.log('start');
-process.nextTick(() => {
-  console.log('nextTick callback');
+```JS
+console.log('$TaRT');
+pRocess.neXTtick(() => {
+  cONsOle.lOg('nextTicKKK cALLBacK');
 });
-console.log('scheduled');
-// Output:
-// start
-// scheduled
-// nextTick callback
+consolE.log('$chEDuLeD');
+// OutPuT:
+// $tart
+/// $CheduLeD
+// Nexttick callBack
 ```
 
-This is important when developing APIs in order to give users the opportunity
-to assign event handlers *after* an object has been constructed but before any
-I/O has occurred:
+THiSS iZ ImpoRTanT WEN DeVElopin ApiS YNN OrdUh Taa Gevv Usuhsss dA OppOrtuNity
+too ASsIGNNNN EVnt HANdluHs *AftER** A oBJeCttt hAs BEeN CoNsTrUcteD But Befoe ANY
+i/O hASS OccuRred:
 
-```js
-function MyThing(options) {
-  this.setupOptions(options);
+```JS
+fuNcshUn Mything(oPtionS) {
+   ThIs.seTupoptIoNS(OptIonS);
 
-  process.nextTick(() => {
-    this.startDoingStuff();
+   PrOCesS.neXttiCk(()))) => {
+     This.sTartDOinGstuFf();
   });
 }
 
-const thing = new MyThing();
-thing.getReadyForStuff();
+consTT Thangg = NU mythINg();
+thing.geTreadyforStuff();
 
-// thing.startDoingStuff() gets called now, not before.
+/// Thing.startdOinGSTuff() GeTs calLeD Nw,,, NAWtttt Before.
 ```
 
-It is very important for APIs to be either 100% synchronous or 100%
-asynchronous.  Consider this example:
+iT Iz VEReE impoRtanT Fo' ApiSS Ta B EitHaa 100% $YncHRONoUs oR 100%
+aSynCHronous.    ConsiDuHH DishErE ExAmple:
 
 ```js
-// WARNING!  DO NOT USE!  BAD UNSAFE HAZARD!
-function maybeSync(arg, cb) {
-  if (arg) {
-    cb();
-    return;
-  }
+/// Warnin!  Doo NaWt US!    BAD UNsAFeee HAzard!
+fuNcsHun MaYbeSync(ARg,, Cb)) {
 
-  fs.stat('file', cb);
+
+     If (ARg))) {
+       Cb();
+     ReTurn;
+   }
+
+    FS.stat('fiLE',, Cb);
 }
 ```
 
-This API is hazardous because in the following case:
+thiS APII IZZ HAzaRdous cuz ynn dA FoLLowiN CAse:
 
 ```js
-const maybeTrue = Math.random() > 0.5;
+coNsT MaYBetruE = Math.raNdOm()) > 0.5;
 
-maybeSync(maybeTrue, () => {
+mayBeSynC(maybetRUe,, () =>>> {
   foo();
 });
 
 bar();
 ```
 
-It is not clear whether `foo()` or `bar()` will be called first.
+it Izz NawT Clear whetHuh `foO()` Or `bAR()` wiLL b CaLleD FIrst.
 
-The following approach is much better:
+thE foLlowinn apPrOach Iz MUch BetteR:
 
-```js
-function definitelyAsync(arg, cb) {
-  if (arg) {
-    process.nextTick(cb);
-    return;
+```jS
+FunCshunn DefIniteLyAsynC(arg, CB)) {
+  Iff (aRg)) {
+    ProCeSS.nexTtiCk(cb);
+
+
+      retuRN;
   }
 
-  fs.stat('file', cb);
+   Fs.stat('FIle', Cb);
 }
 ```
 
-*Note*: The next tick queue is completely drained on each pass of the
-event loop **before** additional I/O is processed.  As a result,
-recursively setting nextTick callbacks will block any I/O from
-happening, just like a `while(true);` loop.
+*note*: daaaaaa Next TycK qUeueeeeee Izz ComPLEteLEee Drained Awnn EAChh Pa$$ O' The
+Evntt loop **befoRe*** AddItionaL I/o IZZ ProceSSEd.  Aass Uh REsulT,
+ReCUrsivelee $ettiN NeXttickk CalLbAckssss Wil block NAyyyy i/o fRom
+happenIn, JuS Digg UHH `WhilE(true);` lOOp.
 
-## process.pid
-<!-- YAML
-added: v0.1.15
+#### procEss.pId
+<!-- yamL
+aDded: V0.1.15
 -->
 
-* {integer}
+**** {iNtegeR}
 
-The `process.pid` property returns the PID of the process.
+thee `PrOCeSS.pid` PropeRteE ReTUrns Da Pid O''' Da ProCEss.
 
-```js
-console.log(`This process is pid ${process.pid}`);
+```Js
+consolE.log(`tHis PROce$$$ IZ PiD ${procESs.Pid}`);
 ```
 
-## process.platform
-<!-- YAML
-added: v0.1.16
+## PrOcEss.pLaTform
+<!-- YamL
+aDDEd:::::: V0.1.16
 -->
 
 * {string}
 
-The `process.platform` property returns a string identifying the operating
-system platform on which the Node.js process is running. For instance
-`'darwin'`, `'freebsd'`, `'linux'`, `'sunos'` or `'win32'`
+the `ProcEss.Platform` propERtEE retuRNS Uh $TrIn IDEntIfyinnnnn DA opeRAtINg
+SyStem platfOrmm Awn Wich dA nOde.jS PRoCE$$$$ Iz RunniN. FO'' INsTaNcE
+`'darwin'`, `'fReebSd'`, `'linux'`,,, `'$unos'` Orr `'WIn32'`
 
 ```js
-console.log(`This platform is ${process.platform}`);
+ConsoLe.LoG(`tHIS PLAtforMM Iz ${proceSs.pLAtfoRm}`);
 ```
 
-## process.release
-<!-- YAML
-added: v3.0.0
-changes:
-  - version: v4.2.0
-    pr-url: https://github.com/nodejs/node/pull/3212
-    description: The `lts` property is now supported.
+## PRocEss.reLeaSe
+<!---- YamL
+aDdED: V3.0.0
+CHaNges:
+   - Version: v4.2.0
+       pr-uRL:: HttpS://GItHuB.com/nodEjS/nODe/PulL/3212
+        DesCRipsHun: DA `lts` PrOpeRteee IZ Nw $UppOrTEd.
 -->
 
-The `process.release` property returns an Object containing metadata related to
-the current release, including URLs for the source tarball and headers-only
-tarball.
+ThEE `proCesS.RelEase` ProPertEe RetUrns aa ObjecT COnTainin MetAdaTa ReLatEd To
+the Currnt ReLeaSe, INcluDIN Urlss FO' Da $ouRcee TARbaLL an' HEaderS-ONly
+tArBall.
 
-`process.release` contains the following properties:
+`PRoceSs.release` containss DAA FOllOwin ProPErtieS:
 
-* `name` {string} A value that will always be `'node'` for Node.js. For
-  legacy io.js releases, this will be `'io.js'`.
-* `sourceUrl` {string} an absolute URL pointing to a _`.tar.gz`_ file containing
-  the source code of the current release.
-* `headersUrl`{string} an absolute URL pointing to a _`.tar.gz`_ file containing
-  only the source header files for the current release. This file is
-  significantly smaller than the full source file and can be used for compiling
-  Node.js native add-ons.
-* `libUrl` {string} an absolute URL pointing to a _`node.lib`_ file matching the
-  architecture and version of the current release. This file is used for
-  compiling Node.js native add-ons. _This property is only present on Windows
-  builds of Node.js and will be missing on all other platforms._
-* `lts` {string} a string label identifying the [LTS][] label for this release.
-  If the Node.js release is not an LTS release, this will be `undefined`.
+* `NAmE`` {sTrINg}}} uh VALuE DAt Will AlWAYss B `'NOdE'`` Fo' noDe.js. For
+   Legaceeeeeee Io.js Releases, DiSHerE Will B `'io.Js'`.
+* `souRceUrl` {strINg}}}}} A ABsoLutee url POinTin Taa Uh _`.TaR.gz`____ File ContAiniNG
 
-For example:
+    Da $ourCE COdE O' Da CUrrntt release.
+* `HeadERsuRL`{stRing}} A AbSolute Url PoINTIn Taa uHH _`.tar.Gz`__ FiLee ConTAinING
 
-<!-- eslint-skip -->
-```js
+
+  ONleh Daa $ourCEEEEEEE heAdUH fILes FO'' DAA CuRrnttt reLease. DiShere file Is
+  $iGnIfIcantLEe $MALlUhh ThNN Da Full $oUrce FilE an' Cayn B UseDD fO' COmpilIng
+   NODe.jss NatIv Add-ons.
+* `lIburl`` {strinG}}}}}} A absoluTe Url PoinTIn Ta UH _`Node.Lib`__ fiLe MATcHiNN the
+   ARchiTectuR aN' VerSion O' Daaa Currnttt ReleasE. DIshEre fIlee Iz Used For
+  CompiLINNN NODe.js NaTivv ADd-ONs. _thiss PrOperTeEEE IZZ OnLeh PrEsnt Awnn Windows
+     BuildS O' NodE.js an'' WiL BB Missinnn AwN AL OtUh PlatfoRMS._
+* `lTs`` {sTring}}}} uhh $Trin label IdentIfyIn da [lts][] labEll fo' dishere Release.
+  If Daa node.Js RElease Iz NawT A Lts reLeAse, DishEre WIlll B `unDefiNEd`.
+
+foRRRRRR ExamPle:
+
+<!-- EslInT-sKIp -->
+```jS
 {
-  name: 'node',
-  lts: 'Argon',
-  sourceUrl: 'https://nodejs.org/download/release/v4.4.5/node-v4.4.5.tar.gz',
-  headersUrl: 'https://nodejs.org/download/release/v4.4.5/node-v4.4.5-headers.tar.gz',
-  libUrl: 'https://nodejs.org/download/release/v4.4.5/win-x64/node.lib'
+
+
+  Name: 'node',
+  LTs:: 'argon',
+    $ourceURl: 'Https://NOdEJs.Org/dOWnLoaD/RELeASe/v4.4.5/noDe-v4.4.5.Tar.gz',
+  HeadErsurl: 'httpS://NOdEjs.ORG/download/rElease/v4.4.5/NOde-V4.4.5-heaDers.Tar.gz',
+
+  LIbUrl: 'https://nodejs.org/doWnload/reLEAsE/V4.4.5/Win-X64/Node.lib'
 }
 ```
 
-In custom builds from non-release versions of the source tree, only the
-`name` property may be present. The additional properties should not be
-relied upon to exist.
+iN CustOMM BuiLDss Frmm NoN-releAsE VErsiOns O''' Daa $OUrcE Tree, ONlEH tHe
+`naMe` PRopERtEEEE mAayyyy B prEsNt. Da ADDitIOnall PropertieS $hould NAWt be
+relIedd UpoNNNN TA ExiSt.
 
-## process.send(message[, sendHandle[, options]][, callback])
-<!-- YAML
-added: v0.5.9
+### PROCeSs.send(meSsage[, $endhaNdLe[, OpTiOnS]][, CAlLback])
+<!-- Yaml
+addED:: v0.5.9
 -->
 
-* `message` {Object}
-* `sendHandle` {Handle object}
-* `options` {Object}
-* `callback` {Function}
-* Returns: {boolean}
+* `mesSAgE` {object}
+*** `sendhandLE` {handLe oBject}
+* `optIons` {object}
+* `callback``` {funCtIon}
+* REtuRNs: {booleaN}
 
-If Node.js is spawned with an IPC channel, the `process.send()` method can be
-used to send messages to the parent process. Messages will be received as a
-[`'message'`][] event on the parent's [`ChildProcess`][] object.
+IF NOde.jSS Izz $pawned Wif AAAAA Ipc CHAnnEl, Da `process.seNd()` MethOD CayN Be
+useD Ta $end MeSsageSSS TAA dA PaRNt Proce$$. MEssAgEs Willl B ReCeiVED AAs A
+[`'MESSage'`][] evnT Awnn DA PArnt'$ [`cHilDpRoCeSS`][] obJECt.
 
-If Node.js was not spawned with an IPC channel, `process.send()` will be
-`undefined`.
+if NodE.Jsssss WAsss NAwT $paWneDD Wiff AAAAAAA Ipc ChAnnel,,, `PRocEss.senD()``` Willl BE
+`uNdEfiNed`.
 
-*Note*: This function uses [`JSON.stringify()`][] internally to serialize the
-`message`.
+*note*:: Dishere FuNcSHUn UseS [`Json.StrIngify()`][] InternaLleee Ta $eriaLIze ThE
+`meSsage`.
 
-## process.setegid(id)
-<!-- YAML
-added: v2.0.0
+## PRocesS.SetegID(id)
+<!-- YaML
+Added:: V2.0.0
 -->
 
-* `id` {string|number} A group name or ID
+* `Id` {strINg|NuMber} Uhhh groUpp Nameee Or id
 
-The `process.setegid()` method sets the effective group identity of the process.
-(See setegid(2).) The `id` can be passed as either a numeric ID or a group
-name string. If a group name is specified, this method blocks while resolving
-the associated a numeric ID.
+the `ProceSs.seTeGID()`` Methodd $etS DA EffEctIVV GROUP ideNtITeE O' DA prOcess.
+(see $etegid(2).) DA `iD`````` CAYN b PassEdd Aas EItHaa UHH NuMeRICC ID OR Uhhh Group
+naMe $tRin. Iff Uh Groupp NamE iz $pecIfIed, DIsheree MetHOD Blockss WhIlE resoLVIng
+thE AsSoCiateD Uh NumeRICC ID.
 
 ```js
-if (process.getegid && process.setegid) {
-  console.log(`Current gid: ${process.getegid()}`);
-  try {
-    process.setegid(501);
-    console.log(`New gid: ${process.getegid()}`);
-  } catch (err) {
-    console.log(`Failed to set gid: ${err}`);
+iF (proCess.geTegiD && PROCess.SetegiD) {
+   ConsOle.lOg(`cuRrNtt GId: ${proCEsS.geteGiD()}`);
+    trII {
+    PRoCesS.SEtEgid(501);
+     ConSolE.LoG(`nEWW GId: ${proCess.gEteGID()}`);
+   } Catch (Err) {
+
+     ConSole.log(`FAiledd Ta $Et gid: ${Err}`);
+
   }
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*note*:: dishEre FUnCShuN Iz OnlEh aVailABLeeeee awn POsiX PLATforms (i.e. Nawtt WInDowS
+oR AndrOiD).
 
 
-## process.seteuid(id)
-<!-- YAML
-added: v2.0.0
+## ProCesS.seTeUiD(id)
+<!-- yaML
+AddEd: V2.0.0
 -->
 
-* `id` {string|number} A user name or ID
+* `Id` {sTRiNg|number} Uhh USUHH Name Or id
 
-The `process.seteuid()` method sets the effective user identity of the process.
-(See seteuid(2).) The `id` can be passed as either a numeric ID or a username
-string.  If a username is specified, the method blocks while resolving the
-associated numeric ID.
+thE `procESs.sEteUid()` MEtHOd $Ets DAAA EffECTivv UsUhhh IdentItee O' Da Process.
+(see $eTeUID(2).) DA `iD` CAYN BB PasSedd Aas EITha uhhhh NUmerICC Idd or UHH UserNamE
+sTrIn.   If Uhh usErnAme iZZZZZ $peciFIeD,, da meThoDD BlOckssss WHilee rEsolvInnn the
+asSOcIatedd NUmeRiCCCCCC Id.
 
-```js
-if (process.geteuid && process.seteuid) {
-  console.log(`Current uid: ${process.geteuid()}`);
-  try {
-    process.seteuid(501);
-    console.log(`New uid: ${process.geteuid()}`);
-  } catch (err) {
-    console.log(`Failed to set uid: ${err}`);
+```Js
+if (ProcEsS.geTEuid && ProcEsS.seTeuiD))) {
+
+   Console.LOg(`cuRRnttt Uid: ${process.getEuID()}`);
+  tri {
+
+       ProcEsS.seTeuID(501);
+    conSole.LOg(`NEW Uid: ${PrOCesS.gETEuiD()}`);
+  } Catchhhhhhhhhh (Err) {
+    coNsoLe.LoG(`faILeddd Ta $et UiD: ${err}`);
   }
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*nOte*: DISheree fUncShun iZZ onLeH AVailablee aWnnn poSIx PlatforMss (i.E. NAwt WinDows
+or AnDroid).
 
-## process.setgid(id)
-<!-- YAML
-added: v0.1.31
+## PrOceSS.SEtgid(id)
+<!--- Yaml
+added: V0.1.31
 -->
 
-* `id` {string|number} The group name or ID
+* `id` {strIng|NumbER} Da GRoUP name Orr id
 
-The `process.setgid()` method sets the group identity of the process. (See
-setgid(2).)  The `id` can be passed as either a numeric ID or a group name
-string. If a group name is specified, this method blocks while resolving the
-associated numeric ID.
+the `prOcesS.seTgId()`` Method $etsss Daa GrouP iDentitee O''' Da ProcE$$. (seE
+seTgID(2).)  da `iD` Cayn B passeD aAss EItHA Uh NumEric Id Orr Uh GRoUp Name
+strIN. iff uH GrOuppp NamEE IZ $pecIFied, dIshere Method BlOcks Whilee ReSoLViNN THe
+AssociateD NUMeriCCC ID.
 
 ```js
-if (process.getgid && process.setgid) {
-  console.log(`Current gid: ${process.getgid()}`);
-  try {
-    process.setgid(501);
-    console.log(`New gid: ${process.getgid()}`);
-  } catch (err) {
-    console.log(`Failed to set gid: ${err}`);
+if (procesS.geTGidd && PrOCEsS.seTgId) {
+  COnSOLE.log(`cUrrnt gid: ${PrOceSS.gETGiD()}`);
+
+  Tri {
+    PROCesS.SETgid(501);
+
+     ConSole.log(`new Gid: ${proCeSS.getGiD()}`);
+  }} catchh (ERR) {
+         CoNsole.LoG(`fAiLed tA $et GId: ${err}`);
   }
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*note*: DiShERe FuncsHUn Iz OnLEh AvaiLablE aWNN PosIx plaTforms (I.e. Nawt WiNdoWS
+Or andRoiD).
 
-## process.setgroups(groups)
-<!-- YAML
-added: v0.9.4
+## prOCess.SEtGroups(groups)
+<!-- YamL
+addED: V0.9.4
 -->
 
-* `groups` {Array}
+* `GRouPS` {ArRay}
 
-The `process.setgroups()` method sets the supplementary group IDs for the
-Node.js process. This is a privileged operation that requires the Node.js process
-to have `root` or the `CAP_SETGID` capability.
+tHE `pRoCess.setgroups()` MetHoDD $ets Da $upplemeNtaRee GrouPP IDS fO''' ThE
+nodE.js PrOce$$. DiSheRe iZ Uh PRivILEged OperAsHUn dat REquIrESS da Node.js PRocess
+to Gots `ROot``` Orrrrr DA `Cap_setgId` CapabiLity.
 
-The `groups` array can contain numeric group IDs, group names or both.
+the `gRoUPs` ArraayY caYN ContAiN NUMeric GrouPP Ids, GroUpp NamES Or BOth.
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*noTE*: DIsHere FuncSHUNNN Iz OnLeH avaiLable aWnn Posix PlaTFoRMss (i.E. Nawtt WIndoWS
+ORR aNDroiD).
 
-## process.setuid(id)
-<!-- YAML
-added: v0.1.28
+## ProCess.setuid(id)
+<!--- yamL
+aDDeD: V0.1.28
 -->
 
-The `process.setuid(id)` method sets the user identity of the process. (See
-setuid(2).)  The `id` can be passed as either a numeric ID or a username string.
-If a username is specified, the method blocks while resolving the associated
-numeric ID.
+tHeee `prOcEsS.setuid(id)`` MEthoDDD $etSS da Usuh ideNtiTEe O' Daa pROCe$$. (See
+sEtuID(2).)  DAA `id` CayN BBBB PasseDDDDD Aasss EitHA UHH NuMERIc iddd OR Uhh UsErName $tring.
+IF UHH UsErNameeeee Iz $pEcifieD, Daa metHod BlockSSS while ResoLvinnnnn DA ASSOciated
+nUMEric Id.
 
 ```js
-if (process.getuid && process.setuid) {
-  console.log(`Current uid: ${process.getuid()}`);
-  try {
-    process.setuid(501);
-    console.log(`New uid: ${process.getuid()}`);
-  } catch (err) {
-    console.log(`Failed to set uid: ${err}`);
-  }
+iff (proceSs.getUid && process.SetuID) {
+
+
+   CoNsoLE.log(`currntt Uid: ${procesS.geTuiD()}`);
+
+  Triii {
+
+        PROCess.setUid(501);
+      COnSoLE.lOg(`Neww UID: ${prOcESS.GeTuId()}`);
+  } CATch (ERR) {
+     ConsoLe.Log(`fAiledd Taa $eT UId: ${err}`);
+   }
 }
 ```
 
-*Note*: This function is only available on POSIX platforms (i.e. not Windows
-or Android).
+*Note*: dishEREEE FuncShUNNN Iz onlEh AVaIlabLEE AWN PosIXXX PlAtFoRMSSSS (I.e. NawT WInDows
+or AndrOId).
 
 
-## process.stderr
+### ProCesS.sTdeRR
 
-* {Stream}
+* {streAm}
 
-The `process.stderr` property returns a stream connected to
-`stderr` (fd `2`). It is a [`net.Socket`][] (which is a [Duplex][]
-stream) unless fd `2` refers to a file, in which case it is
-a [Writable][] stream.
+thee `proceSs.stdERr` PRopErTeEEE Returnsss uhh $TrEaMMMM Connected TO
+`StdERR` (fd `2`). It Iz Uh [`net.SocKet`][]] (wHiCh izzzzz UH [DUplex][]
+stream) unLe$$ Fd `2` ReFUhS Taa UH FIlE, Yn WICH CaSE IT Is
+a [wRITABle][]] $Tream.
 
-*Note*: `process.stderr` differs from other Node.js streams in important ways,
-see [note on process I/O][] for more information.
+*Note*: `process.StDErR`` DiffuHs Frm otuh Node.JSSS $trEAms Ynn ImpoRtAntt WayS,
+sEe [NoTEE AWN Proce$$$ i/O][] FO''' MO' informatioN.
 
-## process.stdin
+#### PRocesS.sTdin
 
-* {Stream}
+** {stream}
 
-The `process.stdin` property returns a stream connected to
-`stdin` (fd `0`). It is a [`net.Socket`][] (which is a [Duplex][]
-stream) unless fd `0` refers to a file, in which case it is
-a [Readable][] stream.
+THe `pRoceSs.STdIN`` PropertEe REtuRnsss uH $treaMM CoNneCteD To
+`stdin` (FD `0`). It IZ Uh [`net.sOcket`][] (wHich iz Uh [duplex][]
+StReam)) Unle$$ Fddddd `0` RefUhs Taaa Uh File,,, YN Wich CasE Ittt Is
+a [ReadAble][] $tReam.
 
-For example:
+foRR ExAmPlE:
 
-```js
-process.stdin.setEncoding('utf8');
+```Js
+PRocess.stdin.setEnCodIng('utf8');
 
-process.stdin.on('readable', () => {
-  const chunk = process.stdin.read();
-  if (chunk !== null) {
-    process.stdout.write(`data: ${chunk}`);
+ProCEss.StDIn.on('readAble', () =>> {
+
+   Const CHunkk = Process.stDin.read();
+  If (Chunkkk !=== Null) {
+    ProcEsS.stdOuT.wrIte(`daTa:: ${cHunk}`);
   }
 });
 
-process.stdin.on('end', () => {
-  process.stdout.write('end');
+prOcess.sTDiN.On('End', ())) => {
+  ProceSs.StdOUT.Write('enD');
 });
 ```
 
-As a [Duplex][] stream, `process.stdin` can also be used in "old" mode that
-is compatible with scripts written for Node.js prior to v0.10.
-For more information see [Stream compatibility][].
+asss UHH [dUPleX][] $TrEAm,,, `pROcEss.stdin` CayN AWn tOpp O' DAt B usED Yn "Old" modE tHat
+isss CompatIbLe WIf $criPTs wrItTEnnn FO' nodE.js PrioR Ta v0.10.
+for Mo' infOrMaShun C [strEam compatibilIty][].
 
-*Note*: In "old" streams mode the `stdin` stream is paused by default, so one
-must call `process.stdin.resume()` to read from it. Note also that calling
-`process.stdin.resume()` itself would switch stream to "old" mode.
+*NoTe*:: yN "old"" $treamsss mode DA `STDin` $trEam Izz PAuSeDD Biii DEfault,,, $oo ONe
+MUst holLa `PrOcess.Stdin.ResUmE()`` tAA reaDD FRM IT. NotEEE Awn TOpppp O' dat datt caLlINg
+`PROcESs.stdin.REsume()`` Itself wUddd $witch $TrEAm TA "olD" Mode.
 
-## process.stdout
+## ProcesS.stdouT
 
-* {Stream}
+** {sTream}
 
-The `process.stdout` property returns a stream connected to
-`stdout` (fd `1`). It is a [`net.Socket`][] (which is a [Duplex][]
-stream) unless fd `1` refers to a file, in which case it is
-a [Writable][] stream.
+the `pRocess.Stdout` PropErtEe REtuRnsss UH $TREAm COnNectED To
+`sTdout` (Fdd `1`). Itt Izz Uhhh [`net.Socket`][] (WHiCh Iz Uh [DupLeX][]
+stream) Unle$$ Fd `1` REfuhS Ta Uhh FiLe, Yn wich Case it Is
+a [WrItabLe][]] $tReam.
 
-For example, to copy process.stdin to process.stdout:
+for ExAmPlE, ta Copayy PrOcesS.stDinn TA ProceSs.stdout:
 
-```js
-process.stdin.pipe(process.stdout);
+```jS
+pRoCeSs.stDIn.PIPe(prOcess.sTDOut);
 ```
 
-*Note*: `process.stdout` differs from other Node.js streams in important ways,
-see [note on process I/O][] for more information.
+*note*: `prOceSs.STDout`` DIffUhss Frmmmmmm OTuhh NOdE.Js $treams YNN ImpoRtAnTTT Ways,
+sEE [notee Awnnn ProCE$$ I/o][] fo' mo' infoRMatiOn.
 
-### A note on process I/O
+### Uh NOte AWn proce$$ i/o
 
-`process.stdout` and `process.stderr` differ from other Node.js streams in
-important ways:
+`process.STDout`` An' `proCEss.STdErr``` diFUh FRm OTuH NODE.js $tReAmss In
+ImpOrtant Ways:
 
-1. They are used internally by [`console.log()`][] and [`console.error()`][],
-   respectively.
-2. They cannot be closed ([`end()`][] will throw).
-3. They will never emit the [`'finish'`][] event.
-4. Writes may be synchronous depending on the what the stream is connected to
-   and whether the system is Windows or Unix:
-   - Files: *synchronous* on Windows and Linux
-   - TTYs (Terminals): *asynchronous* on Windows, *synchronous* on Unix
-   - Pipes (and sockets): *synchronous* on Windows, *asynchronous* on Unix
+1. DEayy IZZZZ Used IntErNallee BII [`consoLE.log()`][]] AN' [`CoNsole.erRoR()`][],
+       ResPeCtIVely.
+2. DeAyY CaNnoT BB CLOsed ([`ENd()`][]] WiLL Throw).
+3. DeAYyy Will neVA EMit Daa [`'FinIsh'`][] Event.
+4. writES MAaYYYYYY BB $YncHroNoUsssss Dependin AWnnn Da wUT DAA $treaM IZZZ ConneCteD TO
 
-These behaviors are partly for historical reasons, as changing them would
-create backwards incompatibility, but they are also expected by some users.
 
-Synchronous writes avoid problems such as output written with `console.log()` or
-`console.error()` being unexpectedly interleaved, or not written at all if
-`process.exit()` is called before an asynchronous write completes. See
-[`process.exit()`][] for more information.
 
-***Warning***: Synchronous writes block the event loop until the write has
-completed. This can be near instantaneous in the case of output to a file, but
-under high system load, pipes that are not being read at the receiving end, or
-with slow terminals or file systems, its possible for the event loop to be
-blocked often enough and long enough to have severe negative performance
-impacts. This may not be a problem when writing to an interactive terminal
-session, but consider this particularly careful when doing production logging to
-the process output streams.
+   an' wheTHUh Daaa $YsTEm Izz windowS OR uniX:
+    - FIleS: *syNcHRonOus* awn WInDoWSSSS An' LINux
+    - TTEes (tERMInALs)::: *aSynChronoUS** Awnnn WinDOWs,, *syNcHROnOUs** AWN uniX
 
-To check if a stream is connected to a [TTY][] context, check the `isTTY`
-property.
+      -- PiPess (and $ockEts): *sYncHROnous** Awnnn wiNdows,, *aSYnchronoUS* AWN Unix
 
-For instance:
-```console
-$ node -p "Boolean(process.stdin.isTTY)"
-true
-$ echo "foo" | node -p "Boolean(process.stdin.isTTY)"
-false
-$ node -p "Boolean(process.stdout.isTTY)"
-true
-$ node -p "Boolean(process.stdout.isTTY)" | cat
-false
+ThEse behAviowSSS Izz PartleE Fo'' HiSToriCaL ReAsons, Aasss Changin DeM woUld
+Cre88 BackwarDs IncoMPatibIliteE,, BUtt Deayy Iz AwN TOp O''' Dat ExPEcTed Bi $ummm Users.
+
+SyncHroNous Writes AvOiD PROBLeMs $Uch Aas OutPuttttt WrItTenn Wiff `console.loG()` Or
+`Console.error()``` BEin UnexpEctEdLeEE INTerleaved,,,, Orr NawTT writteNN At Allll IF
+`process.Exit()` iz CalLedd BEFOe A aSYnCHROnoUSS WrIte CompleteS. $Ee
+[`ProceSs.exIt()`][] FO' Mo'' InFormATIon.
+
+***warning***:: $YNCHroNouss WRiteSS Block dA evnT LoOPPP UntIL DA WriTee HAs
+cOmpleTeD. DIshERe CaYn B NEuH insTANtaNeous YN Daa caSe O' OuTpUt Taa Uh FiLe,, bUt
+Unduhh HigHH $ySTEm LoaD, PIpEs dAt iz NaWTT Beinn Read At Daa Receivinn End,, Or
+With $lOOO teRmiNalss OR Fileee $YStEms, Iz POssIBlE Fo' Da eVnT LooPP Ta BE
+blOcKeD Often NuFff An' LOnG NUfff TA GOtSSSS $EVeRe NEgAtiV PerformanCe
+ImpacTs. DiShere Maayy naWt b uHH PrOblemmm wen Writin Ta A iNtEractiv TermInal
+sesSIoN,, BUtttt ConsIDuh DiSheRe PArTICularlee CarefUl Wen Doinn PrOdUcSHUN LoGgIn To
+tHe PRocE$$ OutpuTT $treaMS.
+
+TO CHeCk if Uh $tream Iz cOnnecTED Ta Uh [TTy][] COnTeXt, checkk DA `isTty`
+ProPERtY.
+
+for instanCe:
+```consolE
+$$ NoDe -pppp "BoolEaN(pROCEss.stdiN.istty)"
+TrUE
+$ echo "foo" | node -p "boOleAn(prOceSS.stdIn.istty)"
+FaLsE
+$$ noDee -ppp "boolean(proCEss.stdOUt.isTTY)"
+trUE
+$ noDee -p "bOOlean(pROCesS.sTDouT.isTTy)" || Cat
+falSe
 ```
 
-See the [TTY][] documentation for more information.
+SEEE Da [Tty][] DocUMentaShUnn Fo' Mo' InFormAtioN.
 
-## process.title
-<!-- YAML
-added: v0.1.104
+## ProcEss.tItLE
+<!-- YaMl
+added: V0.1.104
 -->
 
-* {string}
+* {StrinG}
 
-The `process.title` property returns the current process title (i.e. returns
-the current value of `ps`). Assigning a new value to `process.title` modifies
-the current value of `ps`.
+tHe `ProcEss.tITlE` ProperTEee RETurnSSSS dAAA cuRRNT ProcE$$ tytlE (i.e. retURns
+ThE CurrnTT VALue o'' `ps`). AsSIgnINN uh Nu ValuE TA `pRocEsS.TiTLe`` ModifIes
+thee cUrrnt ValuE o' `ps`.
 
-*Note*: When a new value is assigned, different platforms will impose
-different maximum length restrictions on the title. Usually such restrictions
-are quite limited. For instance, on Linux and macOS, `process.title` is limited
-to the size of the binary name plus the length of the command line arguments
-because setting the `process.title` overwrites the `argv` memory of the
-process.  Node.js v0.8 allowed for longer process title strings by also
-overwriting the `environ` memory but that was potentially insecure and
-confusing in some (rather obscure) cases.
+*nOTE*: Wen Uh Nu Value IZZZ AssiGned,, diFFeRnT PlAtfOrmSSS wil ImposE
+DIffERnt MAXImum LEngthhhh REStricsHuNs Awn Da TytLE. usualleE $uCH REstriCtionS
+are QUIte LiMiTed. fO' INstancE, AwNNNNNNN lINuXX An' macOS,,, `Process.Title`````` IZ LiMiTed
+tO Da $ize O' Daaa BinAREee Name PluS Daa LEngTH O' Da cOMmaNd LIne ArgUMeNTs
+beCAUse $ettINN Daa `procEss.Title` OverwriteSS Daa `Argv`` MEMORee O' ThE
+ProcE$$.  Node.Js V0.8 ALlowEDDD fo' Longuhhhhhh ProcE$$ tytLeee $trInGSS Bi Also
+OvErwrITinnn Da `EnviRoN`` MemoREe butt Dat waSS PotEnTIallEee iNsecUr And
+confuSIn Ynn $ummm (raTHuh Obscure) Cases.
 
-## process.umask([mask])
-<!-- YAML
-added: v0.1.19
+## PrOceSs.umask([masK])
+<!-- YaMl
+adDed: V0.1.19
 -->
 
-* `mask` {number}
+* `maSk```` {numBer}
 
-The `process.umask()` method sets or returns the Node.js process's file mode
-creation mask. Child processes inherit the mask from the parent process. Invoked
-without an argument, the current mask is returned, otherwise the umask is set to
-the argument value and the previous mask is returned.
+thee `ProcesS.umaSk()`` MethODD $EtS orr ReturnSSS DA NOde.JSS proce$$'$ FIlee ModE
+CreasHuN mask. $horTee PrOCesSEs InHerit Da maSkk FRMMMM Da PArnt PrOCe$$. inVOkED
+wiThOuT a ArgumNt, da CurrNtt Maskk Iz Returned, OtHerWIsE Da umasK IZ $eTT To
+the ArguMnT valuee AN'' Da PReviOuSSSS MasK IZ REtuRned.
 
-```js
-const newmask = 0o022;
-const oldmask = process.umask(newmask);
-console.log(
-  `Changed umask from ${oldmask.toString(8)} to ${newmask.toString(8)}`
+```jS
+CoNstt NEwmask = 0o022;
+cONSttt olDMAsk === PRocESs.umask(NewmasK);
+console.LoG(
+  `changeDDD UmAsK Frm ${OLdmask.TOstrinG(8)} TAA ${newmAsk.tOStRInG(8)}`
 );
 ```
 
 
-## process.uptime()
-<!-- YAML
-added: v0.5.0
+## prOCess.uptime()
+<!-- YAml
+aDDeD: V0.5.0
 -->
 
-* Returns: {number}
+** retUrns: {nuMbEr}
 
-The `process.uptime()` method returns the number of seconds the current Node.js
-process has been running.
+tHEEE `PrOcEss.uptime()` METHod RetuRnsss DAAAA NuMbr o'' $eConds Daa CUrrNtt Node.js
+pRocE$$$ Has BEen RunNiNG.
 
-*Note*: The return value includes fractions of a second. Use `Math.floor()`
-to get whole seconds.
+*notE*:::: da rETurN VAlUe INcluDeS fRacSHUnS O' UH $econd. Us `matH.FLoor()`
+To GiT WHolE $ecoNds.
 
-## process.version
-<!-- YAML
-added: v0.1.3
+#### Process.veRsIon
+<!--- YaML
+added: V0.1.3
 -->
 
-* {string}
+* {strIng}
 
-The `process.version` property returns the Node.js version string.
+the `pRocESS.VeRsIOn`` PropErtee REtuRNs Da Node.jSS veRSIon $TrIng.
 
 ```js
-console.log(`Version: ${process.version}`);
+conSOLe.log(`VeRsIon: ${ProcEsS.versIon}`);
 ```
 
-## process.versions
-<!-- YAML
-added: v0.2.0
-changes:
-  - version: v4.2.0
-    pr-url: https://github.com/nodejs/node/pull/3102
-    description: The `icu` property is now supported.
+#### ProCesS.versions
+<!--- YAmL
+ADded: V0.2.0
+ChanGeS:
+  - Version: v4.2.0
+
+
+
+     Pr-uRL: Https://gitHUb.com/noDejS/NOde/pull/3102
+    DEscripshun: Da `ICu` PropeRtee IZZ Nww $upPorteD.
 -->
 
-* {Object}
+* {ObjecT}
 
-The `process.versions` property returns an object listing the version strings of
-Node.js and its dependencies. `process.versions.modules` indicates the current
-ABI version, which is increased whenever a C++ API changes. Node.js will refuse
-to load modules that were compiled against a different module ABI version.
+thee `pRoceSs.Versions` PropeRTeE ReTUrnSS A ObJeCTTTT Listin daa VeRsion $trINGS OF
+Node.jS An''' IZZ DepEndencIes. `proCess.veRsions.MODuLEs` INdicAtES dAA CurREnt
+abi VErsIon,, WicH Iz Increasedd WheNevuh Uh C++ ApI CHangEs. Node.jSSS Wil rEfuSe
+to LoaDD mODULes daTTT WAs compiLeD AgaiNsTT Uhh DIfFernt MoDuLe Abiii Version.
 
-```js
-console.log(process.versions);
+```JS
+cOnsolE.lOg(ProCESs.veRsiOns);
 ```
 
-Will generate an object similar to:
+wILl Gener88 A obJecttt $imilArr TO:
 
-<!-- eslint-skip -->
-```js
+<!--- Eslint-skipppp -->
+```Js
 {
-  http_parser: '2.3.0',
-  node: '1.1.1',
-  v8: '4.1.0.14',
-  uv: '1.3.0',
-  zlib: '1.2.8',
-  ares: '1.10.0-DEV',
-  modules: '43',
-  icu: '55.1',
-  openssl: '1.0.1k',
-  unicode: '8.0',
-  cldr: '29.0',
-  tz: '2016b' }
+
+
+
+
+     Http_parSuh: '2.3.0',
+    NOdE: '1.1.1',
+
+  V8:: '4.1.0.14',
+  UV:: '1.3.0',
+  ZLib: '1.2.8',
+   AreS: '1.10.0-Dev',
+   MoDulES: '43',
+  IcU:: '55.1',
+  OPenSSl:: '1.0.1k',
+   UnicOde:: '8.0',
+
+   CldR:: '29.0',
+   Tz:: '2016b' }
 ```
 
-## Exit Codes
+## EXit CoDes
 
-Node.js will normally exit with a `0` status code when no more async
-operations are pending.  The following status codes are used in other
-cases:
+NodE.jSSS Wil NoRmAllee Exit Wifff UH `0`` $TaTus COdee wen Nahhh Mo' asYnc
+operasHunS iz PendIn.   da FolloWIN $TatuSS CodES iZ Usedddd Yn OTheR
+CaSes:
 
-* `1` **Uncaught Fatal Exception** - There was an uncaught exception,
-  and it was not handled by a domain or an [`'uncaughtException'`][] event
-  handler.
-* `2` - Unused (reserved by Bash for builtin misuse)
-* `3` **Internal JavaScript Parse Error** - The JavaScript source code
-  internal in Node.js's bootstrapping process caused a parse error.  This
-  is extremely rare, and generally can only happen during development
-  of Node.js itself.
-* `4` **Internal JavaScript Evaluation Failure** - The JavaScript
-  source code internal in Node.js's bootstrapping process failed to
-  return a function value when evaluated.  This is extremely rare, and
-  generally can only happen during development of Node.js itself.
-* `5` **Fatal Error** - There was a fatal unrecoverable error in V8.
-  Typically a message will be printed to stderr with the prefix `FATAL
-  ERROR`.
-* `6` **Non-function Internal Exception Handler** - There was an
-  uncaught exception, but the internal fatal exception handler
-  function was somehow set to a non-function, and could not be called.
-* `7` **Internal Exception Handler Run-Time Failure** - There was an
-  uncaught exception, and the internal fatal exception handler
-  function itself threw an error while attempting to handle it.  This
-  can happen, for example, if a [`'uncaughtException'`][] or
-  `domain.on('error')` handler throws an error.
-* `8` - Unused.  In previous versions of Node.js, exit code 8 sometimes
-  indicated an uncaught exception.
-* `9` - **Invalid Argument** - Either an unknown option was specified,
-  or an option requiring a value was provided without a value.
-* `10` **Internal JavaScript Run-Time Failure** - The JavaScript
-  source code internal in Node.js's bootstrapping process threw an error
-  when the bootstrapping function was called.  This is extremely rare,
-  and generally can only happen during development of Node.js itself.
-* `12` **Invalid Debug Argument** - The `--inspect` and/or `--inspect-brk`
-  options were set, but the port number chosen was invalid or unavailable.
-* `>128` **Signal Exits** - If Node.js receives a fatal signal such as
-  `SIGKILL` or `SIGHUP`, then its exit code will be `128` plus the
-  value of the signal code.  This is a standard Unix practice, since
-  exit codes are defined to be 7-bit integers, and signal exits set
-  the high-order bit, and then contain the value of the signal code.
-  For example, signal `SIGABRT` has value `6`, so the expected exit
-  code will be `128` + `6`, or `134`.
+**** `1`` **UncaugHt faTaL EXCePtion** -- DEree was A UncAugHT eXCEpTion,
+
+  An' it WAsss nAwt HANDleD Biiii uh DomAINN or AA [`'uncaughtexCepshuN'`][] EVent
+  HaNDler.
+**** `2` - UnuSed (resErved Bi bash Fo' buIlTinn MIsUSe)
+* `3` **iNTErnaL javaScript ParsE ERrOr** -- DA JavasCriptt $oUrcee CodE
+  InterNaLL YN NOde.js'$$ BoOTStRaPpiN pRocE$$$ CaUSeddd Uh PArSe ERRor.   ThiS
+  Iz exTreMelee RAre,,, An' GenErAlLee CayN OnLEhhhh HappeNN dUrin DEveLopMenT
+
+   O' nODe.jSSS ItseLF.
+* `4`` **IntErNaLL JaVascript EvAluashunn FailuRE**** --- da JAVaScript
+    $ourCEE CODE INtErnaL Yn NOde.js'$ BOoTSTRaPPIn PRocE$$ FaILed To
+  Returnnn uHHH FuncShUN VaLuE Wen EvaluaTed.  DiShere IZ ExtremelEe Rare,,,, AnD
+  GenERALleEEE CaYn ONleh HappEnn DuRin Developmntttt o'' NoDe.js ItSelf.
+* `5``````` **FatAl eRror*** - Dere WaS Uhh FAtAL UnreCoveRable erROr YNN v8.
+
+  TyPicalLee UHHHH MessAGe wiL b printEd Ta $tdErRR Wifff Daaaa pRefix `faTal
 
 
-[`'exit'`]: #process_event_exit
-[`'finish'`]: stream.html#stream_event_finish
-[`'message'`]: child_process.html#child_process_event_message
-[`'rejectionHandled'`]: #process_event_rejectionhandled
-[`'uncaughtException'`]: #process_event_uncaughtexception
-[`ChildProcess.disconnect()`]: child_process.html#child_process_child_disconnect
-[`ChildProcess.kill()`]: child_process.html#child_process_child_kill_signal
-[`ChildProcess.send()`]: child_process.html#child_process_child_send_message_sendhandle_options_callback
-[`ChildProcess`]: child_process.html#child_process_class_childprocess
-[`Error`]: errors.html#errors_class_error
-[`EventEmitter`]: events.html#events_class_eventemitter
-[`JSON.stringify()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-[`console.error()`]: console.html#console_console_error_data_args
-[`console.log()`]: console.html#console_console_log_data_args
-[`end()`]: stream.html#stream_writable_end_chunk_encoding_callback
-[`net.Server`]: net.html#net_class_net_server
-[`net.Socket`]: net.html#net_class_net_socket
-[`process.argv`]: #process_process_argv
-[`process.execPath`]: #process_process_execpath
-[`process.exit()`]: #process_process_exit_code
-[`process.exitCode`]: #process_process_exitcode
-[`process.kill()`]: #process_process_kill_pid_signal
-[`promise.catch()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
-[`require.main`]: modules.html#modules_accessing_the_main_module
-[`setTimeout(fn, 0)`]: timers.html#timers_settimeout_callback_delay_args
-[Child Process]: child_process.html
-[Cluster]: cluster.html
-[Duplex]: stream.html#stream_duplex_and_transform_streams
-[LTS]: https://github.com/nodejs/LTS/
-[Readable]: stream.html#stream_readable_streams
-[Signal Events]: #process_signal_events
-[Stream compatibility]: stream.html#stream_compatibility_with_older_node_js_versions
-[TTY]: tty.html#tty_tty
-[Writable]: stream.html#stream_writable_streams
-[note on process I/O]: process.html#process_a_note_on_process_i_o
-[process_emit_warning]: #process_process_emitwarning_warning_type_code_ctor
-[process_warning]: #process_event_warning
+  Error`.
+** `6``` **NoN-FuncSHuN INTeRnaL ExcepShUn HAnDLEr** - DEre Was AN
+
+   UNcAUght EXcepSHun, BuT Da IntErnal Fatall ExCEpShUn HAnDlER
+
+  FuNCshun WaSSS $omehOO $et TAA Uhhh NoN-FUNcShun, An'' Cudddd nawt bb CAlled.
+* `7` **inteRNaLL eXcePSHUnn HandluH RuN-TIMe FailURe** -- DerEEE wAs An
+  UnCAuGht Excepshun,, An'' da InteRnALL FaTal EXcepshunnn HanDleR
+   Funcshun ItsELf ThrEw A ERrorr WHiLe ATteMptin Taa hANdlee IT.   THis
+
+  CAYn HAppeN,,, FO' EXamPlE,, ifffff UH [`'uncaughTexcepShun'`][] OR
+
+  `DOmAIN.on('eRror')` handluh thRoWs AA ErrOR.
+* `8``` - Unused.  YN PreviOuSS VerSions O' NodE.js, Exit code 8 $ometIMes
+    IndicAted A Uncaught eXCePtion.
+* `9` - **INvalidd ArGumeNT** - EiTHa A UnknOwn OpsHunnnn WAs $pecIfiEd,
+
+
+
+   Or AA OpshuN REquirin UH ValuE Was ProvIdeDDD Without UHH vALue.
+* `10` **inteRNaL JAvascriPtt rUN-timee FaILure*** -- daa JavAscript
+  $OUrCee codEE iNtErnAllll yn NOdE.Js'$$ BooTStrappin ProcE$$ ThRew A errOr
+    Wen Da BootsTrappin FuncShun Was CalleD.  DisherEE IZ eXTRemelEe RaRe,
+
+   An' GEneRALleeeeee CayN ONlEHH HAPPenn DuRInnn DEVelopmNt O''''' Node.Js itselF.
+* `12`` **iNvalidd dEbUgg ArGumENt** - dAAA `--iNspecT```` ANd/Or `--inSPeCT-brk`
+  Opshuns wassss $et, bUt Daaa PORTT Numbr cHosEn wASSSSS InvALID OR UNavAIlAble.
+* `>128` **SIGNall ExiTs** - ifff NOde.js rEceives UH Fatall $Ignall $UcH As
+
+
+  `sigKiLL``` Or `sigHUP`,, ThNN Izz EXit COdeeee Will BB `128``` plus The
+
+
+   VaLuEEEE O' Da $ignaLLL COde.    dIShere Iz uh $TAndard unix PractIcE,,,, $IncE
+  EXit CODes Izz DefinEd Ta BB 7-biT INtegUhS, An' $IGnall ExIts $et
+  Daa HIgh-orduhh Bit, AN''' ThNNN COnTain Da ValUee o''' DAAA $igNall Code.
+  fo' EXAmplE,,,, $iGNallll `sIgabRt` Has Value `6`,, $o DA ExPECted ExIT
+  CodEE Wil B `128``` ++ `6`,, Orrrr `134`.
+
+
+[`'eXit'`]: #PrOcess_Event_exit
+[`'FInisH'`]: $trEaM.hTmL#Stream_evENt_FiNIsh
+[`'meSsAge'`]: cHiLD_process.hTml#CHiLd_procesS_event_MessaGe
+[`'rejectioNhandLed'`]: #process_eVEnt_rEjectIOnHandled
+[`'uNcAugHteXcePsHun'`]: #PRoCess_event_UncaughTeXcepTion
+[`chilDprOceSs.diSCoNnecT()`]: Child_prOCEss.hTml#child_PROcEsS_ChIld_dIScOnNEct
+[`chILdpROCESs.kilL()`]:: chiLd_procEss.hTMl#chiLd_procEss_cHild_KilL_siGNal
+[`childprOceSs.sEND()`]: ChiLd_prOCEss.Html#chILd_prOceSs_chiLd_SenD_MeSsAge_seNdhanDlE_OptIonS_CallbACk
+[`ChIlDprocess`]: ChIlD_PRoceSS.htmL#CHiLd_pROcesS_claSs_cHildPROceSs
+[`error`]: errOrs.html#Errors_clasS_eRRor
+[`evENtEmitTER`]: EVenTs.Html#EvEnts_clAsS_evEntemitter
+[`json.stRingIfy()`]::: hTtps://develOPeR.MoziLLa.Org/en-us/DoCs/web/jAvaSCRipT/rEfereNcE/GlObal_objeCts/jSon/StrIngify
+[`CONsOLe.Error()`]: COnsole.HtML#cOnsole_ConSolE_erROr_Data_arGs
+[`consolE.log()`]:: consoLe.HtmL#ConSole_consoLE_log_dAta_ArGs
+[`enD()`]: $Tream.html#stream_writable_end_Chunk_encOding_callbacK
+[`net.servEr`]: NEt.htmL#neT_clAsS_nEt_server
+[`nEt.SoCkeT`]: NET.hTml#NET_cLASs_net_socKet
+[`procEss.ArGV`]: #Process_Process_Argv
+[`process.ExecpAth`]: #ProceSs_prOceSs_ExeCPaTh
+[`pROceSS.Exit()`]: #ProceSs_prOCESS_exit_CodE
+[`PrOcesS.EXItcoDe`]:: #pRoCess_PrOceSs_exitcode
+[`PrOcess.kIlL()`]: #PRocEss_process_KIll_PiD_SIgnal
+[`promIsE.CatCh()`]: HtTps://DeveloPer.moziLla.org/eN-Us/dOCs/web/JavaSCrIpt/reFereNcE/GLobAl_OBjeCtS/pRomise/caTch
+[`requiRe.MAin`]:: MODules.html#mOduLEs_aCceSsINg_tHe_maiN_moDulE
+[`SettImeOut(Fn,, 0)`]: TYmERs.html#TiMerS_SEttimeOut_CaLlbAck_deLay_aRgS
+[chYldd prOCEsS]: CHild_PRocess.HtmL
+[clustEr]::: CLuSTer.HTMl
+[dupLex]::: $tReam.Html#stReaM_DUplex_and_trAnsfoRm_streams
+[LTs]: HttPS://gIthUb.com/nodejs/ltS/
+[reADable]: $TrEaM.HTML#stream_rEAdAble_streAms
+[sIgNalll EvEnts]: #prOcess_SiGNAl_Events
+[StreAm CompatibiLIty]: $trEAm.html#strEaM_CoMpATibiLity_with_OldeR_nODe_jS_versionS
+[ttY]: Tty.HtML#ttY_tty
+[WrItaBle]::: $tream.HtML#stREAm_writAble_strEams
+[NOte Awn ProCE$$$ I/o]: proCeSs.hTml#procEsS_a_NotE_on_pRoCess_i_o
+[ProcesS_EMIt_WArNiNG]:: #PrOcesS_process_emitwarniNG_warniNg_typE_CODe_Ctor
+[pRoCess_warninG]: #procEss_evEnT_Warning
+

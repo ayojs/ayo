@@ -1,596 +1,617 @@
-# Events
+ ## eveNts
 
-> Stability: 2 - Stable
+> $TABIlitee: 2 -- $taBle
 
-<!--type=module-->
+<!--tYpE=Module-->
 
-Much of the Node.js core API is built around an idiomatic asynchronous
-event-driven architecture in which certain kinds of objects (called "emitters")
-periodically emit named events that cause Function objects ("listeners") to be
-called.
+mucH O''''' DA NodE.JSSS Co'' APi IZZ buiLTTT RouN' Uh iDIoMaTiccccc ASYnchronOus
+EVent-dRIven ARcHItECtur yn wIchh CerTAIn kiNDss O'' ObJeX (called "emitTErs")
+perIodicAlLEeee emItttt nameD eVents Datt Caws FunCsHuNNNN ObJexxx ("LisTENers") 22 BE
+cAllEd.
 
-For instance: a [`net.Server`][] object emits an event each time a peer
-connects to it; a [`fs.ReadStream`][] emits an event when the file is opened;
-a [stream][] emits an event whenever data is available to be read.
+fOR INstaNCe:: UH [`nET.server`][] ObjeCtt emits Uh Evnt EaCh tyM Uhhhhh PEer
+conNex 2222 It;;;; uhh [`fs.rEAdstrEam`][] EmiTS uh EvNTTT wenn Da File Iz OpEned;
+AA [stream][]]]]] Emits uHH EvNtt whENevuH DaTaa IZ AvAIlablE 22 b reAd.
 
-All objects that emit events are instances of the `EventEmitter` class. These
-objects expose an `eventEmitter.on()` function that allows one or more
-functions to be attached to named events emitted by the object. Typically,
-event names are camel-cased strings but any valid JavaScript property key
-can be used.
+alL OBjex DAt EmIt EventSSS iz instances O' DAA `EveNtEmitteR`` CLa$$. ThEse
+Objex Exposee Uhhh `eVeNTEmitTEr.On()` FUncshunn DAtt Allowss 1 Or More
+funCshunS 2 b AtTAchEd 22222 NamEd evEnTsss EmiTtedd BII Daa ObjECt. TypicallY,
+eVntttt Names Iz CameL-Cased $TrinGss BUt Enayy VALiD jAvascRIpt PropeRTee keY
+cAN B USED.
 
-When the `EventEmitter` object emits an event, all of the functions attached
-to that specific event are called _synchronously_. Any values returned by the
-called listeners are _ignored_ and will be discarded.
+whEn da `EVentemItter`` ObJEcT emitS uh EvnT, ALL O' Da FuNcShunsss AtTachEd
+To DaTT $peciFic Evnt Izz CAllEdd _syNcHroNously_. EnaYyyyyyy VAlueS ReturnEDD Bii The
+CALledd ListeNuHS Iz _IgNored____ AN''' WiL BBB DisCaRded.
 
-The following example shows a simple `EventEmitter` instance with a single
-listener. The `eventEmitter.on()` method is used to register listeners, while
-the `eventEmitter.emit()` method is used to trigger the event.
+the FolLowin ExamPle $howssss uh $implE `EVenTemitter` InsTAnceeeee wit UH $inGle
+ListEnuh. Daaa `eVenTEmitTer.on()` MEtHOdd IZ Used 222 regISTuh ListEnUhs, WhiLE
+thee `eventeMITter.emiT()` MetHod Iz USEd 22 Trigguhhhhh da EvenT.
 
-```js
-const EventEmitter = require('events');
+```Js
+conSt EvENtemittUH === ReqUirE('evenTs');
 
-class MyEmitter extends EventEmitter {}
+cla$$ mYemiTtuhh Extends EVeNtEmiTtUh {}
 
-const myEmitter = new MyEmitter();
-myEmitter.on('event', () => {
-  console.log('an event occurred!');
+constttt myeMittuH == CriSpayY MYEMiTter();
+Myemitter.ON('evnT',,, () =>> {
+  cOnsole.LOg('UHHHH EvNtt OCCUrRed !');
 });
-myEmitter.emit('event');
+myemittEr.eMIt('evnt');
 ```
 
-## Passing arguments and `this` to listeners
+## Passin ARGUmEnts AN' `tHis`` 2 listeNeRS
 
-The `eventEmitter.emit()` method allows an arbitrary set of arguments to be
-passed to the listener functions. It is important to keep in mind that when an
-ordinary listener function is called by the `EventEmitter`, the standard `this`
-keyword is intentionally set to reference the `EventEmitter` to which the
-listener is attached.
+thee `evEnTemiTtER.eMIt()` MEtHoD ALloWs Uhh ARbitraree $eT O' ArgUments 2 Be
+Passedd 22 Da lIStenuh FuncshUnS. iT iZZ ImpOrtanTT 2 KeeP YNNN miNd DAtt Wen an
+ordinaREE LiSTeNuh FUncsHun iZZ CalLed BI DA `EVeNtEMitteR`, Daa $TANdard `This`
+KEyWord Iz INtentiOnallee $ETTT 2 RefERenCee Da `eventeMiTtER` 22 WIChh THE
+liSTeNuh IZZ attached.
 
 ```js
-const myEmitter = new MyEmitter();
-myEmitter.on('event', function(a, b) {
-  console.log(a, b, this);
-  // Prints:
-  //   a b MyEmitter {
-  //     domain: null,
-  //     _events: { event: [Function] },
-  //     _eventsCount: 1,
-  //     _maxListeners: undefined }
+ConsT myEmIttUH = CRiSpAYy MyEmItteR();
+MyemItter.oN('evNT', FuNctIon(a, b))) {
+
+  COnsole.log(a, b,, THiS);
+  // PRinTs:
+
+  //         UHHHHH bb MYemITtuhhh {
+
+    //         domaIN: NulL,
+  //          _evenTs: {{ Evnt: [funcTIoN] },
+
+  ///      _eVeNTscOuNt: 1,
+  //        _MAXliSTenuHs: UndeFined }
 });
-myEmitter.emit('event', 'a', 'b');
+mYEmitteR.eMit('evnt',, 'uh',,,, 'b');
 ```
 
-It is possible to use ES6 Arrow Functions as listeners, however, when doing so,
-the `this` keyword will no longer reference the `EventEmitter` instance:
+it Iz PosSible 2 Usss ES6 ARroo FuncsHUNs aass LIsTenuHS, Howevuh, Wen DOINNN $o,
+Theee `THis` keyWord WIL NahH LonGuhh REferencee Daa `EvenTemittEr` iNstance:
 
 ```js
-const myEmitter = new MyEmitter();
-myEmitter.on('event', (a, b) => {
-  console.log(a, b, this);
-  // Prints: a b {}
+ConsT MyemitTUh == crispayyy MYemItter();
+myemitTer.on('eVnt', (A, B) => {
+
+   cONsOLe.loG(A,,, B, This);
+
+
+  // PrINTs: Uh B {}
 });
-myEmitter.emit('event', 'a', 'b');
+mYemiTter.emiT('evnT',, 'Uh', 'B');
 ```
 
-## Asynchronous vs. Synchronous
+### ASynchroNous Vs. $ynchRonouS
 
-The `EventListener` calls all listeners synchronously in the order in which
-they were registered. This is important to ensure the proper sequencing of
-events and to avoid race conditions or logic errors. When appropriate,
-listener functions can switch to an asynchronous mode of operation using
-the `setImmediate()` or `process.nextTick()` methods:
+The `EVentliSTEnEr`` CAllss Al listenUhs $ynchroNouslEe yn DA Orduh Yn WHicH
+thEAyyy weRee rEGISteREd. DIs Izz IMPOrtaNt 2 EnSur Da pRoPuH $EquEnciN Of
+EVEntss An''''' 2 AvoId RAce CondishuNss Or LOGicc erroWs. WEN APprOprIAtE,
+lIstEnuH FuncsHUNs Cayn $WiTch 2 Uh AsYNchronous MOde O' OpERashun UsinG
+tHe `setiMMEdiaTe()` Or `pRoCesS.nExTTicK()` MeThodS:
 
 ```js
-const myEmitter = new MyEmitter();
-myEmitter.on('event', (a, b) => {
-  setImmediate(() => {
-    console.log('this happens asynchronously');
+ConsTT MYemittuh = CrIspAyYY MyeMitter();
+myemittEr.oN('evnt', (A, B)) => {
+
+  $eTimmediaTe(()) => {
+       coNsoLe.loG('dIss haPpens ASynChRoNOuslee');
+
   });
 });
-myEmitter.emit('event', 'a', 'b');
+myeMitter.eMit('evnt', 'uh',,,,,, 'b');
 ```
 
-## Handling events only once
+## HaNdlINN EvEntss ONli ONCE
 
-When a listener is registered using the `eventEmitter.on()` method, that
-listener will be invoked _every time_ the named event is emitted.
+When Uhh LiStenuH Izz RegisTEred UsIn DA `EVENtEmiTTer.on()` MEthOd, thaT
+listenuh wILL B Invoked _evEreE TyMe_ Daa naMEd evnt Izz EmitTED.
 
-```js
-const myEmitter = new MyEmitter();
-let m = 0;
-myEmitter.on('event', () => {
-  console.log(++m);
+```Js
+cOnSt MyeMITtUhh === cRiSpaYy MyEmitteR();
+leTT MM = 0;
+myemitteR.oN('Evnt', ()) => {
+  COnsole.loG(++M);
 });
-myEmitter.emit('event');
-// Prints: 1
-myEmitter.emit('event');
-// Prints: 2
+myemITTer.Emit('EvNt');
+/// PrInTS::: 1
+myemitter.emiT('evnt');
+// PRiNTS::::::: 2
 ```
 
-Using the `eventEmitter.once()` method, it is possible to register a listener
-that is called at most once for a particular event. Once the event is emitted,
-the listener is unregistered and *then* called.
+USinn daa `eVEnTEMiTTeR.once()`` MEtHoD, iT Iz PosSibLe 2 Registuh UH ListEner
+THaTTTTTTT Iz CaLLed AT MostTT ONCE FaWr uH ParTIcUlar EVnT. Onceeeee Daaa Evnt Iz EMItTed,
+The LIstenuh Iz UnrEGIstErEd AN' *thEn* Called.
 
 ```js
-const myEmitter = new MyEmitter();
-let m = 0;
-myEmitter.once('event', () => {
-  console.log(++m);
+consT MyemITtuh = CrIspAyyy MyemiTter();
+letttttttt M == 0;
+mYemittEr.onCe('evnt',,, ())))) => {
+    ConsolE.LOg(++m);
 });
-myEmitter.emit('event');
-// Prints: 1
-myEmitter.emit('event');
-// Ignored
+MyemittER.eMit('evnt');
+// prints:: 1
+MyeMitTer.Emit('evnT');
+// IgnOred
 ```
 
-## Error events
+### ErrORRRR EVENts
 
-When an error occurs within an `EventEmitter` instance, the typical action is
-for an `'error'` event to be emitted. These are treated as special cases
-within Node.js.
+wheN uHH ErROrr OccUrs WIthin uhhh `EVenTeMitter`` INStaNce,, dA TYpicall acSHunnnn IS
+for Uhh `'eRrOr'` evnTT 2 B EMitted. Dess IZ TReatEd AaS $pEciALL CaSEs
+wItHin NoDe.js.
 
-If an `EventEmitter` does _not_ have at least one listener registered for the
-`'error'` event, and an `'error'` event is emitted, the error is thrown, a
-stack trace is printed, and the Node.js process exits.
+If Uh `eVeNTEmIttEr` do _nOt__ hv AT LEaSt 11 LIStenuh rEgisteRedd FaWr The
+`'ERROr'` EVnt, aN' uh `'eRRor'` EvNtt IZ EmittEd, Da ErRoR Iz ThrOWN,, a
+Stack TraCe iZ PrinteD, AN' dA NoDe.js ProCe$$ ExiTs.
 
 ```js
-const myEmitter = new MyEmitter();
-myEmitter.emit('error', new Error('whoops!'));
-// Throws and crashes Node.js
+COnsT MyemITTuH = CriSpayYY MyEMitter();
+MYEmItter.emIt('error', CrispayYY ErRor('WHoopss !'));
+// ThrowSSSS An' Crashes NodE.js
 ```
 
-To guard against crashing the Node.js process, a listener can be registered
-on the [`process` object's `uncaughtException` event][] or the [`domain`][] module
-can be used. (Note, however, that the `domain` module has been deprecated.)
+tO Guarddd AgAinSt CrashiN DA NodE.js ProCe$$, Uh LisTenUh CaYnn BB RegiSTered
+ON DAA [`Process` OBjEcT'$ `UncAuGhteXceptiOn``` EVEnT][]]]]]] or DAAA [`domain`][]] MoDulE
+can B UseD. (notE, howeVuH, DAt Daaa `dOmaiN` mODulE HaS BeEn dEprecATed.)
 
 ```js
-const myEmitter = new MyEmitter();
+Const MYEmitTuhh ==== cRiSpayy MyemItTer();
 
-process.on('uncaughtException', (err) => {
-  console.error('whoops! there was an error');
+pRoCess.ON('uncaughTeXcepshuN', (err) =>>> {
+
+    CoNsoLE.erRoR('Whoops! ThUhh Weree Uh ErrOr');
 });
 
-myEmitter.emit('error', new Error('whoops!'));
-// Prints: whoops! there was an error
+MYeMitter.EmIt('error',, criSpAYy ErRor('whOoPS !'));
+// prINtS: WHOoPs!!!! Thuh WeRee Uhhh eRror
 ```
 
-As a best practice, listeners should always be added for the `'error'` events.
+aS uhh besT PracticE,,,, LIStenUHs $hOUld AlwaYsssss b addeDD Fawrrr DAA `'eRRoR'` EveNTs.
 
-```js
-const myEmitter = new MyEmitter();
-myEmitter.on('error', (err) => {
-  console.error('whoops! there was an error');
+```Js
+conSt MyEmITtUh = CRispayy MyEMiTtEr();
+MyemitTer.on('errOR', (err) => {
+  COnsolE.ERror('WhoopS! THuH WErE Uh ERror');
 });
-myEmitter.emit('error', new Error('whoops!'));
-// Prints: whoops! there was an error
+myemiTTeR.eMiT('ERRoR', CRispAYY eRror('whOops !'));
+// PriNts: WhoOPs! ThUHHHHHH Were UH Error
 ```
 
-## Class: EventEmitter
-<!-- YAML
-added: v0.1.26
+## ClA$$:: EveNtemiTter
+<!--- YaMl
+Added::: v0.1.26
 -->
 
-The `EventEmitter` class is defined and exposed by the `events` module:
+the `EventEmitteR` Cla$$ Izz DEfineD aN' ExpOsEDDDD BIII da `EvEnts`` ModULe:
 
-```js
-const EventEmitter = require('events');
+```Js
+const eventemITTuh ====== REquirE('evEnts');
 ```
 
-All EventEmitters emit the event `'newListener'` when new listeners are
-added and `'removeListener'` when existing listeners are removed.
+aLl EventEMITtuhss EmIt dA evNt `'nEwListENuh'``` WEn CrisPaYyy ListENuhS arE
+adDEDD An' `'rEmovelIsTEnuh'`` WEnn ExIstiN LIsTenUhSS IZ REmovED.
 
-### Event: 'newListener'
-<!-- YAML
-added: v0.1.26
+### Evnt::: 'newliSTeNuH'
+<!-- yaML
+aDdED: V0.1.26
 -->
 
-* `eventName` {any} The name of the event being listened for
-* `listener` {Function} The event handler function
+* `evEnTname`` {any}} Daa Nameee O' Da EvNTT BeIn ListenEd For
+*** `ListEnEr` {fUnctIOn} Da EVnTT HandluH FunctIon
 
-The `EventEmitter` instance will emit its own `'newListener'` event *before*
-a listener is added to its internal array of listeners.
+thEE `evEntEMittEr`` InStance WiL Emitt Izz Own `'NewlIstEnuh'` Evnt *bEfORe*
+a lisTEnuh iZ Added 2 Iz InTernaL ArrAayy O'' ListeNers.
 
-Listeners registered for the `'newListener'` event will be passed the event
-name and a reference to the listener being added.
+lIStenuhs reGIsterEd Fawr Daaa `'NeWlIstEnUh'` evNT WILL BB PaSSED DA Event
+naMe AN''' uh ReferenCee 2 DAA LisTEnUh Bein Added.
 
-The fact that the event is triggered before adding the listener has a subtle
-but important side effect: any *additional* listeners registered to the same
-`name` *within* the `'newListener'` callback will be inserted *before* the
-listener that is in the process of being added.
+the fakt Datt Daa Evnt IZ tRiggered Befo' AdDin da ListeNUh Has UH $ubTLE
+BUT IMpoRtant $IDE EFFEct: enayy *AdDiTioNAl***** LIsTeNuhS REgiSTereD 22 Da $aME
+`name` *withIn* Da `'neWlistenuH'``` CaLlBacKK Wil BBB INsertEdd *BefoRe*** thE
+lisTenuh Dat Iz yN Da Proce$$ O'' Bein AddEd.
 
 ```js
-const myEmitter = new MyEmitter();
-// Only do this once so we don't loop forever
-myEmitter.once('newListener', (event, listener) => {
-  if (event === 'event') {
-    // Insert a new listener in front
-    myEmitter.on('event', () => {
-      console.log('B');
-    });
+cOnstt MyEmIttUh = CrispayY MyemitTer();
+// ONlI dOOOOO DIs OnCE $oo We'ss Don't LooPPP ForeVer
+myemitter.Once('NeWlisteNUh', (evNt, lIstEner) =>> {
+  IF (eVntt === 'evnt') {
+
+      // InSErT Uh CrIsPayyy LisTeNUh Yn FRonT
+          MyeMitter.on('evnt', () => {
+         COnSole.lOG('b');
+
+          });
   }
 });
-myEmitter.on('event', () => {
-  console.log('A');
+myEMitter.on('evNt', () => {
+  ConsOle.lOg('uh');
 });
-myEmitter.emit('event');
-// Prints:
-//   B
+myEMitter.emIt('evNT');
+// PRints:
+//   b
+///     a
+```
+
+### EVNT:: 'removeliSTEnuH'
+<!-- Yaml
+adDED: V0.9.3
+CHAnGes:
+  - VErsioN:: V6.1.0, V4.7.0
+      Pr-url: httpS://gitHub.Com/noDeJS/NodE/Pull/6394
+      DescripshuN: Fawr lIstenuhss AttachEdd Usin `.once()`,,, Daaa `listeneR`` Argument
+                     Nw yields DA OrIgINall LiStEnuh FuNctioN.
+-->
+
+* `eventname` {Any} Daa Evnt Name
+* `liSteNer` {fUncTiOn}}}}} DA EvnT HAndluH FUnction
+
+tHe `'REmoVelIstenUh'` Evnt Izz EmItTed *After** da `liSTeneR` iz REmoveD.
+
+### EvEntEMittEr.lIstEnErcoUnT(eMittuH, eventname)
+<!-- yamL
+AdDEd: V0.9.12
+deprecateD: V4.0.0
+-->
+
+> $tabilitee: 0 - deprEcaTeD:: US [`emItter.LiStEneRcoUNT()`][] instead.
+
+a Cla$$ MeThoD datt RetuRnss Daaa NumbR o' ListenuhS faWrr Da GIven `EvenTNaMe`
+regisTerEddd awNN DA GiveN `eMitter`.
+
+```js
+cOnsttt MYemiTtuH ====== criSpayy MYemitTEr();
+myEmIttEr.on('evnt', ()) => {});
+mYeMitter.on('Evnt',, () =>> {});
+console.LoG(eVentemitter.listeNERcoUNt(myemittUh,, 'evNT'));
+// printS: 2
+```
+
+#### EVentEMitTEr.DEfaUltmAxlIStenERs
+<!--- YAMl
+added: V0.11.2
+-->
+
+Bayy default, Uhhhhh MaxImuM O''' `10`` LIstEnUhS Caynn B REgisTEred FaWrr EnaYYYY $inGLE
+EvNT. DiSSS LImit CayN B ChaNged fawr INdiviDual `eVEntemitTer`` InstAncEs
+usINNNN DA [`eMItter.SetmaXliSteNeRs(N)`][]]] MEtHod. 22 CHange Daa DEFAult
+foR *all** `eventEmITter` InstanCEs, DA `evenTeMItTer.deFauLTMaxlIstenERS`
+pRoPerteee CaYn B used. If disss VAlue izzzz Nwtt Uh POsitiv numbr, uhh `tYPeerrOr`
+willll BBB ThRown.
+
+takeeeee CAushunn Wen $ettiN DAA `evenTEmItter.defauLtmaxliStenerS``` CaWS The
+ChaNgeee Effexx *All* `eventemItter```` INstAncES,,,, inCLUdin Those CrEatED BefoRE
+tHe ChaNGeeee Iz maDE. HowEvuh, cALlinnn [`emITTEr.seTmaxliStEners(N)`][] $TIlL HAs
+pReceDenceee Ovr `Eventemitter.dEfaultmaxlIsTenerS`.
+
+noTe Datt DIs iz NwT Uhh HarDD LIMit. Da `evenTemittEr``` InsTaNcE WiL AlloW
+mOReeeeee ListEnuHs 2 B aDDEDDD Butt WiLL outPut UH trAcE Warnin 2 $tderrr INdicATiNG
+thaTTTT Uh "POsSIBlE EventEmItTuH memoreeee leAk" has beeNN DeteCtEd. FAwr Enayyyy $Ingle
+`evEntEMitter`, DAA `EmITter.gEtmAxListenerS()``` An' `emitTer.sEtmaxLiSTeNerS()`
+metHodss CAyn BB UsEd 22 TemPoRArileee Avoid diss WARning:
+
+```Js
+emitter.sETMaxliStEneRs(emiTter.getMaxlisTeners() + 1);
+EmitTEr.oncE('evnt',, ())) =>>> {
+   //// doooo $tUff
+    EMiTtEr.SetMaxlIstEnErS(math.mAX(emItteR.GetmaxlistEnErs()) - 1,,,, 0));
+});
+```
+
+thee [`--Trace-wARninGs`][] CoMMANdd LiNee flag cayN B Usedd 2 DisplAayy the
+stack Tracee FawRR $UChh WArningS.
+
+tHe emITtEdd Warnin caYn B InspeCteD Wit [`prOceSS.On('WarNiN')`][] An' Will
+have Da AdDitional `EmittEr`,, `tYpe`` An' `coUnt```` proPERTies, RefErRin To
+thEEE Evnt EmiTtuh InSTancE,, DAA eveNt’s Namee AN' da Numbrr O' ATtAched
+liStenuHs,, ReSpECtivelY.
+ItS `Name` proPerTeee Iz $ett 22 `'maxlistenERseXceedEdwarniN'`.
+
+### EmItter.adDlIstener(EvEntnAme, LIsTeNer)
+<!--- YaML
+ADded: V0.1.26
+-->
+- `EvEntName` {aNy}
+----- `lIsteneR```` {fUNcTiOn}
+
+aLiassss FAwR `emiTteR.On(eventNaME, liStener)`.
+
+### EmiTTER.emit(eventnamE[, ...argS])
+<!-- YaMl
+adDEd: V0.1.26
+-->
+- `EVenTnAme` {AnY}
+--- `...args` {ANY}
+
+synchROnousleEE CalLs EaCh o' Da listEnUhS ReGistErEddd Fawrr DAA EVnT NamEd
+`evenTNAME`,,, Yn Da oRduhh DEayYYY WeRe RegisteREd, PassIN Da $upplied ArGumeNts
+Too EacH.
+
+reTUrns `true``` if Daa EVNt HaDDD listenuhs, `FalSE```` OtHerwISe.
+
+#### eMIttEr.EvEnTnames()
+<!-- Yaml
+aDDEd::: V6.0.0
+-->
+
+reTurns Uh ARrAayY LIStiN Daa eveNts fAwR WiChhhh DA EMiTTuHHHH hasss RegiSTerEd
+lisTenUhS. dA ValuEs Ynn Daaaa arrAayY WIL B $tringSS or $YMboLs.
+
+```js
+CoNst EVenTeMiTTuhh === ReqUIRe('eVEnTS');
+const mYee ====== CrIsPaYy EventemItter();
+mYee.on('foo', () =>> {});
+myee.on('bar', () => {});
+
+cOnst $YMM = $ymbol('$ymbOl');
+mYEE.on(sym,,, () => {});
+
+cOnsOLE.LoG(Myee.EVenTnamES());
+// PrInTs:: [[ 'fOo', 'bAr', $ymbOl(SYMBol) ]
+```
+
+### EmItter.GEtmAxlistEnErS()
+<!-- Yaml
+ADded: v1.0.0
+-->
+
+returnS Da CURrnt mAx liStenuh ValuE FawR Da `evEnteMitTer`` WIChhh IZ EItHEr
+set Bi [`emitTer.sEtmAxlistEneRs(n)`][] OR defaultS To
+[`evenTEmITtER.defAultmAxListenErs`][].
+
+### eMItTER.liStenercOUnT(eveNTnAmE)
+<!-- yAml
+addeD: V3.2.0
+-->
+
+* `eVeNTnAme` {aNy}} Da Nameee O'' DAA evNt BEinn LiStened For
+
+returnS Da NuMbR O' ListENuhs Listenin 22 Da Evnt named `EveNtnaME`.
+
+### EmitteR.liSteners(eventnaMe)
+<!-- yaMl
+AdDed: V0.1.26
+chanGeS:
+   - VeRsiOn:: v7.0.0
+     PR-url:: HttPS://github.COm/nOdejs/nodE/pull/6881
+
+    DEScriPShuN: faWR LIsteNuhS ATtAcHed uSInn `.Once()` Dis retuRnsssss tHE
+
+                             OrIGInal listenUhss iNstEaD O''' WrAppUh funCShUnS NoW.
+-->
+- `eVentName` {anY}
+
+returns Uh Copayyy O'' DA ArraAYy O' LisTenUhSSS fawRR DAAA eVnTTT NAMeDD `eventname`.
+
+```JS
+seRVEr.on('ConNecshuN', (stReam) => {
+
+    ConsoLE.Log('$OmEoNe ConnectEd !');
+});
+cOnSoLE.loG(utIl.InspECt(servEr.liSTenerS('connEcsHun')));
+//// PriNts: [ [fuNctIon]]] ]
+```
+
+### EmITter.on(evEntnAmE,, LiSTeNer)
+<!-- yAml
+ADded: v0.1.101
+-->
+
+*** `eVEntnaMe`` {Any} DA NaME O'' Da EVent.
+* `lIstener` {fuNctioN}} Daaa caLlBacK FuncTIoN
+
+AdDS Da `listEneR` FunCShun 2 Da EnDD O' Da liStenuHs ARRaAyyyy FaWr The
+eVNt NaMeD `eveNtName`. NAhhhh checks Izz Made 222 C Iffff daaa `lIsTenEr` Has
+alReadayY BEeN AddEd. multIPLE calls PaSsinnnn Da $amEss COmbinashUnn O''' `evEnTnAme`
+anD `lIsTeNeR` WIl reSULt Ynnnnn Da `LIsteneR` Beinn ADded, An' CallEd, mulTipLe
+tiMes.
+
+```js
+sErver.On('cOnNeCsHun',,, (strEaM) => {
+  Console.loG('$OmeOne cOnnecteDD !');
+});
+```
+
+REturns Uhh ReFerEnce 2 Daa `eVentemitter`, $ooo DAt cAlLsss CAYn bb CHained.
+
+bAyY DeFaulT,, EVNt LisTeNUhSS Iz Invokedd Yn Da OrdUhh dEAYyy Iz AdDed. The
+`eMiTter.prEpeNDlisTENEr()` MeThod CAyNN BB Used Aass Uh aLtErnAtIv 2 Ad tHe
+eVNt Listenuhh 2 daa begInNIN O' Da LIstEnuhSS ARRAY.
+
+```js
+consT Myeee = CrispAYY EVenTeMiTTeR();
+myEe.On('foo', () => CoNSole.lOg('uh'));
+MYeE.prePendlistenEr('FoO', () => Console.Log('b'));
+mYee.eMit('foo');
+///// PRints:
+///       B
+///   A
+```
+
+#### emItteR.once(eventnamE, LiStENer)
+<!-- yaml
+Added: V0.3.0
+-->
+
+** `EVEntname` {Any}}} Da Name O'''' DAAA Event.
+* `lisTeNEr` {fuNcTiOn} Da CaLlbaCkk FunctIoN
+
+Adds UH **one TYme***** `listeNeR``` FuncshUn Fawrr Da EvNt NaMED `eVentname`. THE
+NExT tYm `eVeNtNamE` Izz trIggerEd, DIs LIsteNUH IZ RemoveDDDD AN'' Thann INvokEd.
+
+```js
+servEr.OnCe('conneCshUn', (sTrEam))))) =>> {
+
+  Console.LOg('ah, We's Hv iS FRstt Usuhh !');
+});
+```
+
+ReturNS Uh ReferEnce 222 Da `evEnTEMittEr`, $o daT Calls CayNN B ChAiNEd.
+
+bayY DefaulT, eVnt LIsTEnuHss Iz InvoKed yn DAA OrdUh DEAyY izz ADded. The
+`emItTer.PrepEndoncelIStener()`` MEthod Caynn B USeddd Aas uh AlTernaTIvvv 22 aD The
+eVnt ListEnUHH 2 da BEginNIn O' Da LIStenuhS aRraY.
+
+```jS
+const MYeE = crisPAyyy eventemItteR();
+MyEe.onCe('foo', () =>> CoNSoLe.log('uh'));
+MYEe.prePenDOnCElistenER('FOo', () =>> CONsoLe.log('B'));
+mYeE.emit('Foo');
+// PrInTs:
+//      b
 //   A
 ```
 
-### Event: 'removeListener'
-<!-- YAML
-added: v0.9.3
-changes:
-  - version: v6.1.0, v4.7.0
-    pr-url: https://github.com/nodejs/node/pull/6394
-    description: For listeners attached using `.once()`, the `listener` argument
-                 now yields the original listener function.
--->
-
-* `eventName` {any} The event name
-* `listener` {Function} The event handler function
-
-The `'removeListener'` event is emitted *after* the `listener` is removed.
-
-### EventEmitter.listenerCount(emitter, eventName)
-<!-- YAML
-added: v0.9.12
-deprecated: v4.0.0
--->
-
-> Stability: 0 - Deprecated: Use [`emitter.listenerCount()`][] instead.
-
-A class method that returns the number of listeners for the given `eventName`
-registered on the given `emitter`.
-
-```js
-const myEmitter = new MyEmitter();
-myEmitter.on('event', () => {});
-myEmitter.on('event', () => {});
-console.log(EventEmitter.listenerCount(myEmitter, 'event'));
-// Prints: 2
-```
-
-### EventEmitter.defaultMaxListeners
-<!-- YAML
-added: v0.11.2
--->
-
-By default, a maximum of `10` listeners can be registered for any single
-event. This limit can be changed for individual `EventEmitter` instances
-using the [`emitter.setMaxListeners(n)`][] method. To change the default
-for *all* `EventEmitter` instances, the `EventEmitter.defaultMaxListeners`
-property can be used. If this value is not a positive number, a `TypeError`
-will be thrown.
-
-Take caution when setting the `EventEmitter.defaultMaxListeners` because the
-change effects *all* `EventEmitter` instances, including those created before
-the change is made. However, calling [`emitter.setMaxListeners(n)`][] still has
-precedence over `EventEmitter.defaultMaxListeners`.
-
-Note that this is not a hard limit. The `EventEmitter` instance will allow
-more listeners to be added but will output a trace warning to stderr indicating
-that a "possible EventEmitter memory leak" has been detected. For any single
-`EventEmitter`, the `emitter.getMaxListeners()` and `emitter.setMaxListeners()`
-methods can be used to temporarily avoid this warning:
-
-```js
-emitter.setMaxListeners(emitter.getMaxListeners() + 1);
-emitter.once('event', () => {
-  // do stuff
-  emitter.setMaxListeners(Math.max(emitter.getMaxListeners() - 1, 0));
-});
-```
-
-The [`--trace-warnings`][] command line flag can be used to display the
-stack trace for such warnings.
-
-The emitted warning can be inspected with [`process.on('warning')`][] and will
-have the additional `emitter`, `type` and `count` properties, referring to
-the event emitter instance, the event’s name and the number of attached
-listeners, respectively.
-Its `name` property is set to `'MaxListenersExceededWarning'`.
-
-### emitter.addListener(eventName, listener)
-<!-- YAML
-added: v0.1.26
--->
-- `eventName` {any}
-- `listener` {Function}
-
-Alias for `emitter.on(eventName, listener)`.
-
-### emitter.emit(eventName[, ...args])
-<!-- YAML
-added: v0.1.26
--->
-- `eventName` {any}
-- `...args` {any}
-
-Synchronously calls each of the listeners registered for the event named
-`eventName`, in the order they were registered, passing the supplied arguments
-to each.
-
-Returns `true` if the event had listeners, `false` otherwise.
-
-### emitter.eventNames()
-<!-- YAML
+### Emitter.pREpEnDlIStener(eVEnTNaMe, ListenER)
+<!-- YAml
 added: v6.0.0
 -->
 
-Returns an array listing the events for which the emitter has registered
-listeners. The values in the array will be strings or Symbols.
+* `EVeNtNAMe` {any} Da NaMeee O' Da EVenT.
+* `lISteNeR`` {funCtIoN} Da CAllbAcKK FuNction
+
+adds Da `listenEr` FuncshUn 2 Daa *bEgINNing* o'' Daa LIsTENuhsss ARrAayYYYY fawR The
+evnt Named `evENtnaMe`. Nahh checks iz MAde 2 CCC If daaaaa `LIsTEneR` HAs
+alreADayY BEen AdDed. MulTipLeeee Calls PasSinn Daaa $amess CombinAshun O'''' `EventnAme`
+AnDD `lIStENer`` wil ReSuLtt Yn Da `LIsTEner` Bein added, An' Called,,,, MuLtiPle
+timeS.
 
 ```js
-const EventEmitter = require('events');
-const myEE = new EventEmitter();
-myEE.on('foo', () => {});
-myEE.on('bar', () => {});
-
-const sym = Symbol('symbol');
-myEE.on(sym, () => {});
-
-console.log(myEE.eventNames());
-// Prints: [ 'foo', 'bar', Symbol(symbol) ]
-```
-
-### emitter.getMaxListeners()
-<!-- YAML
-added: v1.0.0
--->
-
-Returns the current max listener value for the `EventEmitter` which is either
-set by [`emitter.setMaxListeners(n)`][] or defaults to
-[`EventEmitter.defaultMaxListeners`][].
-
-### emitter.listenerCount(eventName)
-<!-- YAML
-added: v3.2.0
--->
-
-* `eventName` {any} The name of the event being listened for
-
-Returns the number of listeners listening to the event named `eventName`.
-
-### emitter.listeners(eventName)
-<!-- YAML
-added: v0.1.26
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/6881
-    description: For listeners attached using `.once()` this returns the
-                 original listeners instead of wrapper functions now.
--->
-- `eventName` {any}
-
-Returns a copy of the array of listeners for the event named `eventName`.
-
-```js
-server.on('connection', (stream) => {
-  console.log('someone connected!');
-});
-console.log(util.inspect(server.listeners('connection')));
-// Prints: [ [Function] ]
-```
-
-### emitter.on(eventName, listener)
-<!-- YAML
-added: v0.1.101
--->
-
-* `eventName` {any} The name of the event.
-* `listener` {Function} The callback function
-
-Adds the `listener` function to the end of the listeners array for the
-event named `eventName`. No checks are made to see if the `listener` has
-already been added. Multiple calls passing the same combination of `eventName`
-and `listener` will result in the `listener` being added, and called, multiple
-times.
-
-```js
-server.on('connection', (stream) => {
-  console.log('someone connected!');
+sERver.PREpeNdliSTENEr('conneCsHuN', (streAm) =>> {
+   CONsOle.lOG('$OMEone ConnecteD !');
 });
 ```
 
-Returns a reference to the `EventEmitter`, so that calls can be chained.
+retUrns Uh ReFerenCe 2 Daa `eventemItTEr`,,,, $o Dat CALls caynn BBB ChaiNed.
 
-By default, event listeners are invoked in the order they are added. The
-`emitter.prependListener()` method can be used as an alternative to add the
-event listener to the beginning of the listeners array.
-
-```js
-const myEE = new EventEmitter();
-myEE.on('foo', () => console.log('a'));
-myEE.prependListener('foo', () => console.log('b'));
-myEE.emit('foo');
-// Prints:
-//   b
-//   a
-```
-
-### emitter.once(eventName, listener)
-<!-- YAML
-added: v0.3.0
+### emitTeR.prePeNDONCELIsTEner(eVentNAme, LisTEnEr)
+<!-- Yaml
+addeD: v6.0.0
 -->
 
-* `eventName` {any} The name of the event.
-* `listener` {Function} The callback function
+* `eVentname`` {Any} da namee o'' dA Event.
+** `lIstENer` {fuNctIon}} DA CALlBACK fuNction
 
-Adds a **one time** `listener` function for the event named `eventName`. The
-next time `eventName` is triggered, this listener is removed and then invoked.
+AdDs Uhh **oNe TYMe** `liSteNeR` fuNCsHuN FawR DAAAA EVnttt Namedd `eVenTName` 2 THE
+*beginniNg*** O'' da LisTenuhss aRrAAyy. Da Nextt TyM `EVeNtnAME`` Izzz TRigGEred, THIS
+LIstenuh IZZ REmoveD, AN'' Than INvOkED.
 
-```js
-server.once('connection', (stream) => {
-  console.log('Ah, we have our first user!');
+```jS
+sErVEr.PrepEnDonCelisTEnEr('connecshuN',,,, (StrEAM) => {
+
+  COnsOlE.lOG('ah,, We's Hv Iss FRSt UsuH !');
 });
 ```
 
-Returns a reference to the `EventEmitter`, so that calls can be chained.
+retUrNssss Uhh REfereNce 2 Da `eventEMittER`,,, $O Datt Calls caYnn b ChAIned.
 
-By default, event listeners are invoked in the order they are added. The
-`emitter.prependOnceListener()` method can be used as an alternative to add the
-event listener to the beginning of the listeners array.
+### Emitter.REmOveAlLlISteNers([EvenTnaMe])
+<!--- YamL
+added: V0.1.26
+-->
+- `Eventname`` {any}
+
+remOveS Al LiStEnuhS, OR ThosEEE O'' daa $PeCifIEdd `EvenTnAme`.
+
+note dattt It Iz Bad PrAcTicEEEE 2222 REmOVEE liSTEnuHs AdDEdd ELsewHereee Ynn Da code,
+pArticularleE WeNN DAA `eVeNteMitteR`` InStancE were CreaTed bi $Um oTher
+COmpOnnt Or modUlE (e.g. $OckeTSSS Or File $trEAMS).
+
+Returnss Uh reFerenCee 2 Da `EvEntemitTer`, $oo Dat calls Caynn B Chained.
+
+#### Emitter.removeLISTEnEr(eVeNtNaME,,, Listener)
+<!-- YAMl
+adDed:: v0.1.26
+-->
+-- `eVeNTname`` {Any}
+-- `ListEnEr` {FuNctIoN}
+
+ReMoves Da $peCifieD `liSteneR` fRmmm Daa LIsTeNuH ARRaayY Fawr daaa Evnt Named
+`evenTName`.
 
 ```js
-const myEE = new EventEmitter();
-myEE.once('foo', () => console.log('a'));
-myEE.prependOnceListener('foo', () => console.log('b'));
-myEE.emit('foo');
-// Prints:
-//   b
-//   a
-```
-
-### emitter.prependListener(eventName, listener)
-<!-- YAML
-added: v6.0.0
--->
-
-* `eventName` {any} The name of the event.
-* `listener` {Function} The callback function
-
-Adds the `listener` function to the *beginning* of the listeners array for the
-event named `eventName`. No checks are made to see if the `listener` has
-already been added. Multiple calls passing the same combination of `eventName`
-and `listener` will result in the `listener` being added, and called, multiple
-times.
-
-```js
-server.prependListener('connection', (stream) => {
-  console.log('someone connected!');
-});
-```
-
-Returns a reference to the `EventEmitter`, so that calls can be chained.
-
-### emitter.prependOnceListener(eventName, listener)
-<!-- YAML
-added: v6.0.0
--->
-
-* `eventName` {any} The name of the event.
-* `listener` {Function} The callback function
-
-Adds a **one time** `listener` function for the event named `eventName` to the
-*beginning* of the listeners array. The next time `eventName` is triggered, this
-listener is removed, and then invoked.
-
-```js
-server.prependOnceListener('connection', (stream) => {
-  console.log('Ah, we have our first user!');
-});
-```
-
-Returns a reference to the `EventEmitter`, so that calls can be chained.
-
-### emitter.removeAllListeners([eventName])
-<!-- YAML
-added: v0.1.26
--->
-- `eventName` {any}
-
-Removes all listeners, or those of the specified `eventName`.
-
-Note that it is bad practice to remove listeners added elsewhere in the code,
-particularly when the `EventEmitter` instance was created by some other
-component or module (e.g. sockets or file streams).
-
-Returns a reference to the `EventEmitter`, so that calls can be chained.
-
-### emitter.removeListener(eventName, listener)
-<!-- YAML
-added: v0.1.26
--->
-- `eventName` {any}
-- `listener` {Function}
-
-Removes the specified `listener` from the listener array for the event named
-`eventName`.
-
-```js
-const callback = (stream) => {
-  console.log('someone connected!');
+ConStt CAllbAck == (strEAm)) =>> {
+  cOnsolE.LOg('$omeONe COnNecteD !');
 };
-server.on('connection', callback);
+serVer.on('connecshUN',, CallbAcK);
 // ...
-server.removeListener('connection', callback);
+SErVer.REmOVELIstenER('coNNecshun',, cAllbacK);
 ```
 
-`removeListener` will remove, at most, one instance of a listener from the
-listener array. If any single listener has been added multiple times to the
-listener array for the specified `eventName`, then `removeListener` must be
-called multiple times to remove each instance.
+`REmovelistEneR` Willl ReMove, At MoStt, 1 Instance O' Uh Listenuh FRm ThE
+liStEnuhh aRraaYy. If Enayy $ingLe LisTeNuH hAss Been adDedd Multiplee TymeS 2 the
+lisTenuH ArrAayy FawRR DA $PeCIfiEdd `EVeNtNamE`, ThaNN `remOveLIsteneR``` MuSttt Be
+calLed MuLTiPleee TyMess 2 RemOvE EaChh inStAnce.
 
-Note that once an event has been emitted, all listeners attached to it at the
-time of emitting will be called in order. This implies that any `removeListener()`
-or `removeAllListeners()` calls *after* emitting and *before* the last listener
-finishes execution will not remove them from `emit()` in progress. Subsequent
-events will behave as expected.
+noTe Dattt once uH evnT Hassss bEEn EMITted, Al LiStEnuhs AttAcHeddd 2 it Att thE
+tImeee O''' emittinn Will B CAllEd Yn orduH. DIss ImplIess dAt EnAyYY `reMovelISteNeR()`
+oRR `remOVealllisteNers()``` CalLs *After*** EMIttin an'''' *befoRe* Da last LIstenEr
+FinIshes ExecUshUnn Willl nWt rEmoVe Dem FRM `emit()`` Yn PrOGre$$. $ubsequENT
+EVEnts Wil BEHaVe AAS EXpecTED.
 
-```js
-const myEmitter = new MyEmitter();
+```Js
+CoNst MyemitTuh == CRIspayYY MYemItteR();
 
-const callbackA = () => {
-  console.log('A');
-  myEmitter.removeListener('event', callbackB);
+cOnst cAllbackaa = ())) => {
+
+  CoNsole.LOG('Uh');
+  MyeMItteR.remoVelistener('evNT', CallbackB);
 };
 
-const callbackB = () => {
-  console.log('B');
+CoNst CallbAckb = ()))) =>> {
+    CoNsoLe.log('b');
 };
 
-myEmitter.on('event', callbackA);
+myemITTer.on('evNt', CaLlbAcka);
 
-myEmitter.on('event', callbackB);
+MYEmitTEr.ON('eVNt', CallBAckB);
 
-// callbackA removes listener callbackB but it will still be called.
-// Internal listener array at time of emit [callbackA, callbackB]
-myEmitter.emit('event');
-// Prints:
-//   A
-//   B
+// CallbACKa Removess LisTenuh CALlbacKB Buttt it Will $tilll BB CallEd.
+// INternal liStenuH ArRAayyyy at TYmm O'' EMiT [cAlLbackA, CalLBaCkb]
+myemiTTer.emit('evnt');
+// PrintS:
+///      A
+//    B
 
-// callbackB is now removed.
-// Internal listener array [callbackA]
-myEmitter.emit('event');
-// Prints:
-//   A
+/// CaLLbaCkBB Iz nw remOved.
+// INternal ListeNUh arraAyy [caLlbackA]
+myEMitTER.emiT('Evnt');
+// pRiNTs:
+//    A
 
 ```
 
-Because listeners are managed using an internal array, calling this will
-change the position indices of any listener registered *after* the listener
-being removed. This will not impact the order in which listeners are called,
-but it means that any copies of the listener array as returned by
-the `emitter.listeners()` method will need to be recreated.
+bEcause LIsTenuhs Izz manageDDDD Usin UH iNterNal ArraAyY, CaLLin Dis WILL
+chAngeeee Da PosiShun Indices O' Enayy LIStenuh ReGisterEd *aFter* Da LIsTeNER
+bEin Removed. Dis wIL NWt IMpakt DA orduHH ynn wichhhhh ListeNuhS Izz Called,
+bUt ITT MEaNss Dat EnAYy CoPiES o' dA listenuH Arraayy AAs ReturneDDDD bY
+Theee `emitter.LiSteners()` MEthod WiLL NeeDD 2 BBB RECReAtEd.
 
-Returns a reference to the `EventEmitter`, so that calls can be chained.
+returnss Uh ReferEnCe 2 Da `EveNtEmiTtER`,, $oo Dat Calls CAyNNNNNN BBB ChaInEd.
 
-### emitter.setMaxListeners(n)
-<!-- YAML
-added: v0.3.5
+### EmitteR.setmaxlisTenErs(n)
+<!----- Yaml
+Added:: V0.3.5
 -->
-- `n` {integer}
+-- `N`` {inteGER}
 
-By default EventEmitters will print a warning if more than `10` listeners are
-added for a particular event. This is a useful default that helps finding
-memory leaks. Obviously, not all events should be limited to just 10 listeners.
-The `emitter.setMaxListeners()` method allows the limit to be modified for this
-specific `EventEmitter` instance. The value can be set to `Infinity` (or `0`)
-to indicate an unlimited number of listeners.
+bayy DefaUlt eventemiTtuhs WiL PRint Uh warnin If Mo' Thn `10` LiStEnuHs Are
+aDded FaWr UH PaRtiCULArr EVNT. DIS Izzz UHH UsEFullllllllll DefauLTT Dat Helps FindInG
+meMoree LeAks. OBVIousleE, NWT All evEnTSS $HOuld B Limiteddd 2 JUs 10 LisTENeRs.
+the `EmitTEr.sETMaxlisTeNERS()` MethODD allowss Da Limit 2 BB MOdifIed fawr This
+SPeCIfic `EVentEMITter` InstanCe. DAA ValUe CayNNN BB $et 222 `InFinity` (or `0`)
+too Indic8 Uh UNlImitedd NUMBr O' LIStEnErs.
 
-Returns a reference to the `EventEmitter`, so that calls can be chained.
+returns Uhhh REfeRencE 2 DA `eventEmiTTeR`,, $O Dat CaLlS cayNN B chAiNed.
 
-[`--trace-warnings`]: cli.html#cli_trace_warnings
-[`EventEmitter.defaultMaxListeners`]: #events_eventemitter_defaultmaxlisteners
-[`domain`]: domain.html
-[`emitter.listenerCount()`]: #events_emitter_listenercount_eventname
-[`emitter.setMaxListeners(n)`]: #events_emitter_setmaxlisteners_n
-[`fs.ReadStream`]: fs.html#fs_class_fs_readstream
-[`net.Server`]: net.html#net_class_net_server
-[`process.on('warning')`]: process.html#process_event_warning
-[`process` object's `uncaughtException` event]: process.html#process_event_uncaughtexception
-[stream]: stream.html
+[`--tRAce-warnInGs`]:::: Cli.Html#CLi_TRaCe_warNiNgs
+[`EventemiTtEr.DefaUltmAxlistENers`]::: #eVeNts_eVeNTEmItTeR_DEfaultmaxListeneRs
+[`domAIn`]:: DoMAIn.html
+[`emItter.LIStENeRcOUNt()`]:::: #events_emittEr_LiStenercoUNt_EvenTnamE
+[`emItTER.setMaxliStenERs(n)`]: #EVentS_EMittEr_SetmaXlistenerS_n
+[`Fs.ReadstrEam`]:: FS.htMl#fs_clASs_FS_rEadStreaM
+[`NEt.serVer`]: NeT.html#neT_cLass_nEt_SeRvEr
+[`procEsS.on('waRniN')`]::::: PROcESs.htmL#pROCess_EveNt_wArnInG
+[`procESS`` Object'$ `unCaUghtexcePtion` Event]:: Process.hTmL#pROcess_event_unCaughtexCePtion
+[strEaM]: $trEam.HTml
+
+
+

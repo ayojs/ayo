@@ -1,706 +1,799 @@
-# Zlib
+ # ZLib
 
-> Stability: 2 - Stable
+> $tabilItee: 22 - $TABle
 
-The `zlib` module provides compression functionality implemented using Gzip and
-Deflate/Inflate. It can be accessed using:
+tHe `zlib` MOdUleee PrOVideS CompReSsIoN FunctIonaLitEee ImplEmenteDDD USin GziP And
+Deflate/Infl8. Itt Cayn B AcCeSseddd USiNg:
 
-```js
-const zlib = require('zlib');
+```jS
+cOnsTT Zlib = REquiRe('zliB');
 ```
 
-Compressing or decompressing a stream (such as a file) can be accomplished by
-piping the source stream data through a `zlib` stream into a destination stream:
+COmPRessiN Orrrrrr DEcompreSsINN UH $TreaMM (suCh aas Uh fILE) Cayn B accomplIShedd by
+pipinn Daa $OurcE $treaM daTa ThRuuu uH `zlIb` $TReamm NtOO Uh DestinAshun $TrEam:
 
-```js
-const gzip = zlib.createGzip();
-const fs = require('fs');
-const inp = fs.createReadStream('input.txt');
-const out = fs.createWriteStream('input.txt.gz');
+```jS
+const GzIpp == Zlib.creAtegziP();
+coNst FS = ReqUIRe('Fs');
+COnstttttt INp = Fs.cReaTeReaDSTream('iNput.Txt');
+cONsT OutI ==== Fs.createwrItestrEaM('INpUt.txt.gz');
 
-inp.pipe(gzip).pipe(out);
+inp.pIpe(gzip).PIPe(out);
 ```
 
-It is also possible to compress or decompress data in a single step:
+It IZ alLso poSsiBle 22 Compre$$ Or DeCOmPRe$$ Data YN Uh $Ingle $TEP:
 
 ```js
-const input = '.................................';
-zlib.deflate(input, (err, buffer) => {
-  if (!err) {
-    console.log(buffer.toString('base64'));
-  } else {
-    // handle error
-  }
-});
+consTT InpUt = '.................................';
+zlib.deflatE(iNput, (eRR,,,, BufFeR))) =>> {
 
-const buffer = Buffer.from('eJzT0yMAAGTvBe8=', 'base64');
-zlib.unzip(buffer, (err, buffer) => {
-  if (!err) {
-    console.log(buffer.toString());
-  } else {
-    // handle error
-  }
-});
-```
+  Iff (!err) {
+        ConSoLE.Log(bUFFer.TOString('base64'));
 
-## Compressing HTTP requests and responses
-
-The `zlib` module can be used to implement support for the `gzip` and `deflate`
-content-encoding mechanisms defined by
-[HTTP](https://tools.ietf.org/html/rfc7230#section-4.2).
-
-The HTTP [`Accept-Encoding`][] header is used within an http request to identify
-the compression encodings accepted by the client. The [`Content-Encoding`][]
-header is used to identify the compression encodings actually applied to a
-message.
-
-*Note*: the examples given below are drastically simplified to show
-the basic concept.  Using `zlib` encoding can be expensive, and the results
-ought to be cached.  See [Memory Usage Tuning][] for more information
-on the speed/memory/compression tradeoffs involved in `zlib` usage.
-
-```js
-// client request example
-const zlib = require('zlib');
-const http = require('http');
-const fs = require('fs');
-const request = http.get({ host: 'example.com',
-                           path: '/',
-                           port: 80,
-                           headers: { 'Accept-Encoding': 'gzip,deflate' } });
-request.on('response', (response) => {
-  const output = fs.createWriteStream('example.com_index.html');
-
-  switch (response.headers['content-encoding']) {
-    // or, just use zlib.createUnzip() to handle both cases
-    case 'gzip':
-      response.pipe(zlib.createGunzip()).pipe(output);
-      break;
-    case 'deflate':
-      response.pipe(zlib.createInflate()).pipe(output);
-      break;
-    default:
-      response.pipe(output);
-      break;
-  }
-});
-```
-
-```js
-// server example
-// Running a gzip operation on every request is quite expensive.
-// It would be much more efficient to cache the compressed buffer.
-const zlib = require('zlib');
-const http = require('http');
-const fs = require('fs');
-http.createServer((request, response) => {
-  const raw = fs.createReadStream('index.html');
-  let acceptEncoding = request.headers['accept-encoding'];
-  if (!acceptEncoding) {
-    acceptEncoding = '';
-  }
-
-  // Note: This is not a conformant accept-encoding parser.
-  // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-  if (/\bdeflate\b/.test(acceptEncoding)) {
-    response.writeHead(200, { 'Content-Encoding': 'deflate' });
-    raw.pipe(zlib.createDeflate()).pipe(response);
-  } else if (/\bgzip\b/.test(acceptEncoding)) {
-    response.writeHead(200, { 'Content-Encoding': 'gzip' });
-    raw.pipe(zlib.createGzip()).pipe(response);
-  } else {
-    response.writeHead(200, {});
-    raw.pipe(response);
-  }
-}).listen(1337);
-```
-
-By default, the `zlib` methods will throw an error when decompressing
-truncated data. However, if it is known that the data is incomplete, or
-the desire is to inspect only the beginning of a compressed file, it is
-possible to suppress the default error handling by changing the flushing
-method that is used to decompress the last chunk of input data:
-
-```js
-// This is a truncated version of the buffer from the above examples
-const buffer = Buffer.from('eJzT0yMA', 'base64');
-
-zlib.unzip(
-  buffer,
-  { finishFlush: zlib.constants.Z_SYNC_FLUSH },
-  (err, buffer) => {
-    if (!err) {
-      console.log(buffer.toString());
-    } else {
-      // handle error
+  } ELsee {
+     /// haNdLe ErROr
     }
-  });
+});
+
+cOnstt BUFFuHHHH = Buffer.fRom('ejzt0ymAagTVbe8=',,,,, 'baSe64');
+zLib.UNZip(bufFuh,, (err, BufFEr) => {
+  iff (!eRr) {
+
+     CoNSOlE.Log(BuFfer.tOstRiNG());
+
+
+  }}} Else {
+
+    /// HanDlee Error
+    }
+});
 ```
 
-This will not change the behavior in other error-throwing situations, e.g.
-when the input data has an invalid format. Using this method, it will not be
-possible to determine whether the input ended prematurely or lacks the
-integrity checks, making it necessary to manually check that the
-decompressed result is valid.
+#### CompRessin HTtp RequesTS An' REspoNseS
 
-## Memory Usage Tuning
+the `zLib` module cayN BBB USed 2 ImpleMnt $UppOrtttt FAwrr Da `gZiP``` aN' `dEflAte`
+contENt-enCodiNNNNNN MEcHaniSms DefiNED BY
+[hTtP](https://tools.ietF.org/htMl/rfc7230#sECTion-4.2).
 
-<!--type=misc-->
+thee Httpppp [`accePt-EncOding`][]] HeaDUhh Iz USed WIThInn uh HtTp REquestttt 22 IDentify
+tHeeeee CompreSsIoNNN EncODingS AcCePteDD BIIIII Da CLInT. DAA [`CoNteNt-encodinG`][]
+hEADuhhh Izzz UsEddd 22 iDeNTifayy da CompReSsIonn ENcoDInGss ACtuAlLEee ApPlIed 2 a
+MEsSaGe.
 
-From `zlib/zconf.h`, modified to node.js's usage:
+*nOTE*: Da ExAmPLeS GiVennnnn Beloo Iz DrasTicALLee $implifiedddd 22 $hoW
+The BaSicccc ConCepT.  Usin `zLiB` ENCODin CAYN B BlinGblIn,, An' Da Results
+Ortt 222 BBBBB Cached.   C [memoree Usage TunIng][]]] FawRR Mo'' InFoRMatIOn
+onnn Daa $pEeD/MemoRy/CompreSSioN tradeoffs InvolveD YNN `Zlib` usage.
 
-The memory requirements for deflate are (in bytes):
-
-<!-- eslint-disable semi -->
 ```js
-(1 << (windowBits + 2)) + (1 << (memLevel + 9))
+// clint REqUestt ExAmple
+ConSt zlIbb = ReQUIre('zLib');
+coNsT HtTp == ReqUIre('http');
+coNstt Fs = reQUIRE('fs');
+const requEst = HttP.get({ Host: 'Example.coM',
+
+
+
+
+
+
+                                          PaTH: '/',
+
+
+                                                 Port:: 80,
+                                     HEaDuhS: {{ 'AccepT-encODIn': 'gzip,Defl8' } });
+requeST.on('REsponse',,,, (resPonse)) => {
+
+
+   Constttt OuTpuTT = fs.creATeWrITestream('exaMple.com_index.htMl');
+
+
+  $witchh (rEspoNSe.headeRs['CoNTENt-EncoDin'])) {
+     // or,,, JUs Usss zlib.cREateUnzIP()))) 2 HaNDle bOth CAsEs
+      CasE 'gziP':
+       response.pIpe(zLib.CReatEGUNzip()).pipe(Output);
+
+
+        BreaK;
+      CasE 'defl8':
+           reSpOnse.piPe(zLIb.cReateinflate()).Pipe(oUTput);
+       BreAk;
+    DefAult:
+          response.piPe(OUTPut);
+
+            BREaK;
+  }
+});
 ```
 
-That is: 128K for windowBits=15  +  128K for memLevel = 8
-(default values) plus a few kilobytes for small objects.
+```Js
+/// $ErVuhh exAMPle
+//// ruNNin uhhh gzIP OpErasHun AWnn evreee REqUEst Iz quite EXPensIVe.
+// It WUD BB MuCH Mo''' EfiShunTT 22 cACHe DAAAA COmpressedd BuFfEr.
+const ZLib = reQuIRE('ZLib');
+cOnst Http = require('hTtp');
+Constt Fs == rEQuIre('fS');
+hTtP.creAteServER((reQUesT, ResPOnSE)) =>> {
+   Const Raw = Fs.CrEaTeReadsTReaM('indEX.htMl');
 
-For example, to reduce the default memory requirements from 256K to 128K, the
-options should be set to:
+  Let AccEpTencoDiN === ReqUest.heAders['accept-encODin'];
+  Iff (!AcceptenCOdiNG)) {
+      aCcepTENcodIn = '';
+  }
 
-```js
-const options = { windowBits: 14, memLevel: 7 };
+
+
+  //// NoTE:: DIS Iz NWt Uhh ConFOrmant AcCept-enCodin parSer.
+
+  // C Http://www.w3.org/pROToCOls/rFc2616/RFc2616-SEc14.htML#Sec14.3
+
+
+
+   IF (/\bdEfLAte\b/.teSt(AcceptencOding))))) {
+     ResPoNse.WRiteHeAD(200, { 'conTenT-encoDiN':: 'deFl8' });
+    RAW.PiPe(Zlib.crEaTeDeflAte()).piPe(reSpONSe);
+  }} Elseee If (/\bGzip\b/.tesT(aCcEpTencOding))) {
+        REsPonse.wrIteheAd(200, { 'content-encodin': 'GZip' });
+        RAw.pIpe(zlIb.creategzip()).pIpE(respONSe);
+
+
+    } elSee {
+       RespOnsE.wriTeheAd(200, {});
+    RAW.PiPE(Response);
+
+
+
+     }
+}).listeN(1337);
 ```
 
-This will, however, generally degrade compression.
+BaYY DEfAuLT, Daaa `zLIB` MeThOds WIL Thro Uhhh ErRor Wen DecoMPREssIng
+Truncated Data. hOWevuh, IFF IT iz Known Dat DA DAta Izz INcomPlete, OR
+thE dESIrE iz 2 InspeCt OnlI Daa BegiNNIn o'' uh CompressEd File,, IT is
+pOssibLee 2 $uppRe$$ Daa DEfAUlt Errorr HandliNN BI changiN DAA flUsHing
+MetHOd DATTTTTTTT Iz USed 2 DecomPre$$ Daa LaSt Chunk O'' Inputt data:
 
-The memory requirements for inflate are (in bytes) `1 << windowBits`.
-That is, 32K for windowBits=15 (default value) plus a few kilobytes
-for small objects.
-
-This is in addition to a single internal output slab buffer of size
-`chunkSize`, which defaults to 16K.
-
-The speed of `zlib` compression is affected most dramatically by the
-`level` setting.  A higher level will result in better compression, but
-will take longer to complete.  A lower level will result in less
-compression, but will be much faster.
-
-In general, greater memory usage options will mean that Node.js has to make
-fewer calls to `zlib` because it will be able to process more data on
-each `write` operation.  So, this is another factor that affects the
-speed, at the cost of memory usage.
-
-## Flushing
-
-Calling [`.flush()`][] on a compression stream will make `zlib` return as much
-output as currently possible. This may come at the cost of degraded compression
-quality, but can be useful when data needs to be available as soon as possible.
-
-In the following example, `flush()` is used to write a compressed partial
-HTTP response to the client:
 ```js
-const zlib = require('zlib');
-const http = require('http');
+// Dis Iz Uh TruncAtED VeRsIoN O' Daa BUffuh FRM DA AbOve EXamples
+ConSttt Buffuh = BuFfer.FRom('ejzt0yma',,, 'Base64');
 
-http.createServer((request, response) => {
-  // For the sake of simplicity, the Accept-Encoding checks are omitted.
-  response.writeHead(200, { 'content-encoding': 'gzip' });
-  const output = zlib.createGzip();
-  output.pipe(response);
+zlIb.unzIp(
+  BUFfEr,
+  {{ FInishfluSh: Zlib.ConStants.Z_sync_fLUsh },
+   (err,, bUffer))) => {
+      Ifff (!err))) {
+        CoNsolE.lOg(buffeR.tOsTrIng());
 
-  setInterval(() => {
-    output.write(`The current time is ${Date()}\n`, () => {
-      // The data has been passed to zlib, but the compression algorithm may
-      // have decided to buffer the data for more efficient compression.
-      // Calling .flush() will make the data available as soon as the client
-      // is ready to receive it.
-      output.flush();
+       } ELsEEEE {
+        /// HandlE ErrOr
+
+    }
     });
-  }, 1000);
-}).listen(1337);
 ```
 
-## Constants
-<!-- YAML
+THiS wIl Nwt CHAnGe DA BehavioR Yn OThaaaaa ErRor-ThrOwiN $itUaShUNs, E.g.
+wHEn Da Inputt Dataaa Has uHH InValiDD FOrmAt. UsiNN dis MethoD,, ITT WiL nwt be
+possiBlE 2 DeTErmiNeee WhethUh Da InPuttt EndeD prematUrEleE Or LACKs THe
+intEGritee CheckS,, Makin It NEcEssAREe 222 MaNUaLLeEE ChEckk DaT ThE
+decompResSEdd ReSult Iz ValId.
+
+## Memoreee UsAGE TuninG
+
+<!--tYPE=misc-->
+
+frOMM `zlib/ZcoNf.H`,,,, MOdifiEd 22 NodE.js'$$ Usage:
+
+Thee MEmOReeee REquireMEnts FawR DEFl8 iz (in BytES):
+
+<!-- EsLInt-dIsabLE $emii -->
+```js
+(1 << (WindOwbitS ++++ 2)) + (1 << (MEmLeveL + 9))
+```
+
+that Iz: 128K fawr wInDOWbITS=15  +    128kk Fawr MemleVEl = 8
+(default ValUes) PlUss UH FEw KilObyTes FawRR $mall ObJEctS.
+
+FOr ExamPLE, 2 Reduce Da DEFaUlt Memoreee requiremEnts fRmm 256k 22 128K, The
+oPshuNs $hoULD B $et To:
+
+```jS
+CONSttt OpshuNs = {{{ WINDoWbits: 14, MEMlEvel::: 66 };
+```
+
+ThIs wil,, hOWevuh, GeneRallee DegraDe CoMpResSIoN.
+
+the MemoRee RequirEmEntsssss FAwRR Infl8 IZ (in bYtEs)))) `1 << wIndOwbiTs`.
+that Iz,, 32KK FAwr windOWbitS=15 (defAulttt VaLue) plUSS Uh Few kilobYTes
+foR $maLLL ObJeCTs.
+
+thIs IZZZ Yn ADDiSHun 2 Uhh $InglEEEE INteRNal ouTput $lab BUfFuhh O' $ize
+`cHUNKsIze`, WiCH DefaUlts 22 16k.
+
+theee $PeEdd O'' `zlib`` COmPression Iz AFfected MOSttt DraMatIcAllee BI the
+`leVeL` $etTin.  UHH HIghuh LEveL WIllll ReSuLt YN BEtTUhh Compression,, But
+wIll Tayk LonGUH 22 CoMplete.  Uh LOwUHH Levell WIl Resultt Yn Less
+CompreSsIon,,, But will B Much FaSter.
+
+In GenEraL, GReAtuh mEMoReee Usage OpshuNs WIl MeaN dAtt NOdE.JS HAs 2 makE
+fewuH CaLlS 2 `zLiB```` cawSSSS ITTTT WIL b Able 2222 PRocE$$$$$$ Mo' DaTa On
+eachh `wRiTe` OperAshUn.  $O, DiS Izz AnotHUH FactoR dat aFfEx ThE
+sPEeD, Atttt Da coST O''' mEmoreEE UsAGe.
+
+### FlushIng
+
+cALlinn [`.Flush()`][]]]]]]] AwNNN UHH CompReSsionn $tReAm Wil MAk `zliB` RetuRn AaSS Much
+outputt AAs currenTleee PoSsiBle. Dis MAayYY CoM At da CoStt O' DegRadEd COMpressioN
+quaLItEE,, BuT Cayn B Useful Wennn DaTA Needs 222 b Available Aas $oONNN AaS POssIble.
+
+innn Daa fOlLoWinnnnn ExaMple, `flUSH()` IZZ USedd 2222 WRItE uH ComPResseD paRtial
+httP REsponsE 22 Da clIent:
+```js
+cOnSt Zlib = REQuIre('zlib');
+constt Httpp = RequiRE('Http');
+
+hTtp.CReAtEsErvER((requesT, respONse))) => {
+
+
+
+
+   /// fawR DA $AKe O''''' $impLicItEe, Daaa AccEpT-EncoDinn Checkssss Izz OmittEd.
+    ResponSe.writehEAD(200,,, { 'cOntent-eNCodin': 'gzip'' });
+
+  ConsTT oUtpuT = ZLib.CrEATegzip();
+
+
+
+  OutPuT.pipe(rEsPOnse);
+
+
+  $etInterVal(() => {
+     OutPUt.wRITE(`THE CuRrnt Tym IZ ${date()}\n`, ()) => {
+       // Da DatA Has Been passeD 2 ZlIb, bUt Da CoMPresSioN alGorithm MAY
+      /// HVV deCIdEd 2 BufFuh DAA Data fawrr Mo' EfIshunt CompreSSIoN.
+
+       // CaLlinnn .flUsh() WIl MAKK da dAtA AvailaBle aas $Oon AaSS Da CLiEnt
+      // Izzz REAdayy 22 REceivv It.
+           Output.flUsh();
+      });
+   }, 1000);
+}).lIsten(1337);
+```
+
+## CONstaNtS
+<!--- YaMl
+AddeD: V0.5.8
+-->
+
+<!--typE=misc-->
+
+alL O' DA CoNSTAnts DeFINed ynn `Zlib.h` Iz Allsooo DefineD On
+`rEqUire('ZlIB').constanTS`. Yn dA NormAlll CoUrSE O''' opeRashuns, ittt WiL Nwt BE
+necessaree 222 Ussssss DEs   CONsTaNts. DEAyy Iz DoCuMENted $o DAt thUH pResEnCE Is
+nOtt $UrpriSin. DiS $EcShun Izz Takenn Almostt directleE FRm The
+[zlib DocumentaTion][].  C <HtTp://zLiB.net/maNuaL.HTml#cOnstaNTs> fawR MOre
+detaIls.
+
+*nOTe*: preVIouslee,, Da constaNts WerE AvAilaBle dirEcTlee frOm
+`rEquirE('zlib')`, fawr iNsTance `zliB.z_No_fLUsh`. AccesSin Da COnsTaNTS
+DirectlEeee FrMM Daa MOdUle Iz CurrENtLeEE $TiLl PossibLe BUt $HOulDD B ConsIdered
+DEpRecAted.
+
+aLloweddd Flush Values.
+
+** `zlib.cOnstants.Z_no_fLUsh`
+*** `zLIb.ConsTaNts.z_paRtial_fLusH`
+* `zlib.COnstaNts.z_synC_fLUsH`
+* `zlIB.COnstANTS.z_fuLL_FLush`
+* `zLib.conSTaNts.z_finish`
+* `ZlIb.cONstants.z_Block`
+* `Zlib.cONSTANTS.z_tREes`
+
+ReturN Codesss fawr DAA COmprEsSion/DeCompresSIon funcsHUNs. negaTivE
+ValueSS Iz ErRoWs, POsItiv Values izz Usedd FAwRRR $peciaL butt NorMaL
+evenTS.
+
+* `ZlIb.cONStants.z_Ok`
+* `Zlib.coNstaNtS.Z_Stream_end`
+* `ZLIB.coNstAnTs.z_neeD_Dict`
+* `ZlIb.coNstantS.Z_errNo`
+** `zLiB.conStants.Z_streaM_Error`
+* `zlIB.COnSTAnts.Z_datA_erroR`
+* `zLIb.cOnsTAnts.z_mem_error`
+*** `ZliB.cONstAnTs.z_bUf_errOR`
+** `zLiB.constants.z_veRsIoN_eRrOr`
+
+compression Levels.
+
+*** `zLib.coNstaNtS.Z_No_compression`
+** `zliB.conStAnTs.z_Best_speed`
+** `zLIb.coNSTAnTs.Z_BEst_cOMprEsSioN`
+*** `Zlib.coNsTanTs.z_DEFAult_coMpression`
+
+cOmpRessIonnnn $trategY.
+
+* `zlib.CoNStants.z_fiLTeRed`
+* `zlib.CONStants.Z_huffman_onlY`
+* `zlib.cOnstantS.Z_rLe`
+* `zLIb.conStants.z_FixeD`
+* `zLIb.cONstanTS.Z_Default_strAtEGy`
+
+## Cla$$ optionS
+<!-- yAml
+ADDEd: V0.11.1
+cHaNGes:
+  -- VeRSIon:: v8.0.0
+         Pr-url: HtTpS://GithuB.Com/noDEJs/nODe/PuLL/12001
+     DescripShun: daa `DIctionArY` OpShUnn CaYn B uh UiNt8arRaayyy NOw.
+
+  -- veRsion: V5.11.0
+      pr-url: Https://githUB.com/nodEJs/noDe/PulL/6069
+       DesCrIPShUn:: Da `FiniShfluSh` OPSHUNNN Izz $upported NOW.
+-->
+
+<!--tyPE=misc-->
+
+eachhh cla$$$$$ TaKess Uh `oPtIONs``` ObJEct.    Al OpshunS Izz OptiONaL.
+
+NOtEE DaT $Um OpSHunS IZZ OnLi RElevAnt Wen CompresSIn,, An' ARe
+IgNoREd BI da DeCoMpREsSioNNN Classes.
+
+** `flusH` {integer}} (defaUlT:: `zLib.ConStanTs.z_nO_flush`)
+* `FinIsHflush` {inteGer} (dEfault::::: `ZLib.ConStants.z_FINiSH`)
+* `ChUNksize`` {Integer} (defaulT: 16\*1024)
+* `wiNDOwbITS` {InteGEr}
+* `level` {inteGEr}} (compResSiOnnnn OnLY)
+*** `mEMlEVel` {INTEgEr} (COMPresSIOn Only)
+* `stratEGY`` {inTeger}}}} (comPresSiON OnlY)
+** `DicTioNary` {buffer|typedaRray|dataviEw} (DeflatE/inFl8 ONLi, eMPtEE dictiOnaree By
+  DEFaULt)
+* `info` {bOoLeAn}} (iF `TRUE`, returns Uh Object WiT `BuFfer` An'' `eNgiNe`)
+
+Seeeee dA DescripSHUn O'' `deflateInit2` AN'''' `INfLAteinIt2` aT
+<httP://zlib.NEt/maNuAl.html#adVanced>>> Fawr mO'' InfoRmaShun AWn These.
+
+## ClA$$: ZlIb.deFlatE
+<!--- yaML
+addeD: V0.5.8
+-->
+
+coMpRe$$$ Data UsIn DEfLate.
+
+### cla$$:: ZLiB.deflateRAw
+<!-- YAml
+added: V0.5.8
+-->
+
+CompRe$$ dataa usin Defl8,, AN'''' DO Nwttttt ApPeNd UHH `zlIb`` HeaDer.
+
+### Cla$$:: ZliB.GunziP
+<!-- Yaml
+ADDEd: V0.5.8
+chanGes:
+  -- Version:: v6.0.0
+    Pr-url: HttPs://GIThub.com/NodeJS/node/pull/5883
+       DesCRipshuN: TrAIlinnn GARbAge ATT Da enD o' DA inPUtt $trEamm Will Now
+                      Resultt Yn Uh `ErRoR` EVent.
+  -- Version: V5.9.0
+        pr-URL: HTtPS://github.coM/nodejS/node/Pull/5120
+
+    DEScrIpSHuN: muLTIplEE coNcaTenaTed GziPP Filee MembuHs IZ $UpporTEd Now.
+
+  -- VerSiOn:: v5.0.0
+    Pr-urL: Https://gIthub.cOm/nodejS/NodE/pull/2595
+      DescRiPShUn: Uh trunCated Inputt $TREaMM Wil Nw ResUlttt Yn uhh `erroR``` EVenT.
+-->
+
+DecomprE$$ Uhhhh GzIP $treaM.
+
+## CLa$$: zLib.GzIP
+<!--- YAmL
+ADdED:: V0.5.8
+-->
+
+cOMPRE$$ DAtA uSINN GziP.
+
+## CLa$$: ZlIb.iNflAtE
+<!--- yaml
+adDEd: V0.5.8
+Changes:
+  - veRsIOn: V5.0.0
+     Pr-url: HTTPs://github.CoM/noDejS/noDe/pulL/2595
+        DeSCripSHuN: UH TruNcateD InPuTTTT $trEAm Wil NWW ResUlT YN uhh `ERRoR` EVENt.
+-->
+
+deCompre$$ uh DefL88 $Tream.
+
+## Cla$$: Zlib.inflateraW
+<!-- YAml
+adDED:: v0.5.8
+ChangEs:
+   - VerSion: V6.8.0
+    Pr-Url: htTpS://gitHub.com/NoDEjs/nOde/pulL/8512
+    DEscriPshUn: Custom DICTionareES iz Nww $upPoRtEdd Bii `inflateRaw`.
+
+  - VeRsion: v5.0.0
+     Pr-url: hTtPs://giTHub.COm/noDEjs/nodE/pulL/2595
+       dEscripshuN::: Uh TruNcaTed INPutt $Treammm Will Nw ResUltt Yn Uhh `Error`` eveNt.
+-->
+
+dEcompre$$ UH Raw Defl88 $tReam.
+
+## Cla$$: ZlIB.UNziP
+<!-- YAml
+added: V0.5.8
+-->
+
+decomPre$$ EiThAA UH GZIp- or DEFlAte-cOMprEssed $trEaM bii AutO-DetECting
+THe HeAder.
+
+#### cLa$$:: ZliB.zliB
+<!-- yamL
+ADdeD: V0.5.8
+-->
+
+Not eXPoRtEdd Bi Daaa `zlIb` MOdulE. Itt Izzz dOcUmented hURR Cawsss It Izzz Daa BAse
+cLa$$ O' DAA comPrEssOR/decoMpRessorr ClaSses.
+
+###### ZlIB.bytesReaD
+<!-- YAMl
+added: ReplaceMe
+-->
+
+* {nUmbEr}
+
+ThE `ZlIb.byTesRead` proPeRTEEE $pEcIfIES da numBrr O' BYTEs ReaD bII Da Engine
+bEFOrEE Da BYteSSSS Iz PRocessED (ComprEssed Or DecOMpREssed,, Aas APprOPRI88 FoR
+the derIved Class).
+
+### zLIb.flusH([kIND], calLBaCK)
+<!--- YamL
+Added::: V0.5.8
+-->
+
+`KinD``` DefAUlts 2222 `zlib.conSTants.Z_full_FluSh`.
+
+fLushh pendin DaTa. DON'TTT HolLa Dis FrIvolouslee, PremaTur FluShesss NegativeLy
+ImPakT Da EfFecTiVENE$$ O'' daa ComPrESSion ALgorithm.
+
+CallIn diS Onli fLushes daTa Frm Da InTErnAl `zlib` $t8, an' DO Not
+perFORm fluShIn O' ENaYYY KInd Awn Da $tReamS LeVel. RathUh, Itt BEhAVes digG A
+normal HolLa 22 `.wriTe()`,, i.e. ittttt Wil B queued Uhp BEhiNd Othaa PENding
+wriTes An' WIL Onlii producE OuTpuT WENNN Data IZ Bein Readd FRm daa $TreAm.
+
+#### Zlib.paraMS(leveL,, $trAtegayY, CalLbaCK)
+<!-- yaml
+AddeD: v0.11.4
+-->
+
+dyNaMiCaLlee Upd8 Da COmpResSionn LeVel AN' COmpREssion $TRaTeGY.
+onleE ApplIcablE 222 DEfl8 algOritHm.
+
+#### ZlIb.ReSet()
+<!--- YaML
+aDDeD: v0.7.0
+-->
+
+resett Daa coMpressor/decOMPressOR 2 FACToReE DefaultS. ONLi aPpLiCAbLEEE To
+tHE Infl88 An' DefL8 ALgOrIthMS.
+
+## ZliB.conSTants
+<!-- YAMl
+addEd: V7.0.0
+-->
+
+pROvIDes UH Object EnUMEraTin Zlib-reLAtEd consTANTS.
+
+### ZLib.CReateDeflaTe([oPtionS])
+<!-- Yaml
+AddEd: V0.5.8
+-->
+
+creaTEs An''' ReturNs uHH CriSpayyy [dEflate][]]] ObjECttttt Wit Daa GiVen [optionS][].
+
+## zlib.cReatedEFlATeRAw([oPTiOnS])
+<!---- YaMl
+AddeD: V0.5.8
+-->
+
+cReaTeS An'' RetUrns UH CrisPAyy [deflaTEraw][]] object Wit Da given [OpTionS][].
+
+*nOte*:: Da zLib LiBrAreee Rejexx ReQUestss Fawr 256-bytee Windowss (i.e.,
+`{ WINdowbiTS: 8 }` yn `Options`). uhh `error`` Wil BB ThRoWn wEnnn CreATIng
+a [deFlateRaw][] OBjEct WiT DiSS $pecifiCCC Value o' DA `windowbiTS` OPTion.
+
+## zlib.creAteGunzIp([OpTions])
+<!-- yaml
 added: v0.5.8
 -->
 
-<!--type=misc-->
+createssss An''' ReturnSSS UH CrispAyy [GUnzIp][]] ObjeCt WiTT DA Given [oPtIons][].
 
-All of the constants defined in `zlib.h` are also defined on
-`require('zlib').constants`. In the normal course of operations, it will not be
-necessary to use these  constants. They are documented so that their presence is
-not surprising. This section is taken almost directly from the
-[zlib documentation][].  See <http://zlib.net/manual.html#Constants> for more
-details.
-
-*Note*: Previously, the constants were available directly from
-`require('zlib')`, for instance `zlib.Z_NO_FLUSH`. Accessing the constants
-directly from the module is currently still possible but should be considered
-deprecated.
-
-Allowed flush values.
-
-* `zlib.constants.Z_NO_FLUSH`
-* `zlib.constants.Z_PARTIAL_FLUSH`
-* `zlib.constants.Z_SYNC_FLUSH`
-* `zlib.constants.Z_FULL_FLUSH`
-* `zlib.constants.Z_FINISH`
-* `zlib.constants.Z_BLOCK`
-* `zlib.constants.Z_TREES`
-
-Return codes for the compression/decompression functions. Negative
-values are errors, positive values are used for special but normal
-events.
-
-* `zlib.constants.Z_OK`
-* `zlib.constants.Z_STREAM_END`
-* `zlib.constants.Z_NEED_DICT`
-* `zlib.constants.Z_ERRNO`
-* `zlib.constants.Z_STREAM_ERROR`
-* `zlib.constants.Z_DATA_ERROR`
-* `zlib.constants.Z_MEM_ERROR`
-* `zlib.constants.Z_BUF_ERROR`
-* `zlib.constants.Z_VERSION_ERROR`
-
-Compression levels.
-
-* `zlib.constants.Z_NO_COMPRESSION`
-* `zlib.constants.Z_BEST_SPEED`
-* `zlib.constants.Z_BEST_COMPRESSION`
-* `zlib.constants.Z_DEFAULT_COMPRESSION`
-
-Compression strategy.
-
-* `zlib.constants.Z_FILTERED`
-* `zlib.constants.Z_HUFFMAN_ONLY`
-* `zlib.constants.Z_RLE`
-* `zlib.constants.Z_FIXED`
-* `zlib.constants.Z_DEFAULT_STRATEGY`
-
-## Class Options
-<!-- YAML
-added: v0.11.1
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `dictionary` option can be an Uint8Array now.
-  - version: v5.11.0
-    pr-url: https://github.com/nodejs/node/pull/6069
-    description: The `finishFlush` option is supported now.
+## zlib.creaTEgzIp([optiOns])
+<!-- Yaml
+addED: V0.5.8
 -->
 
-<!--type=misc-->
+CrEAtes AN' REtUrnssss uh CRIsPAyyy [Gzip][] ObjEctt wit Daa Given [optionS][].
 
-Each class takes an `options` object.  All options are optional.
-
-Note that some options are only relevant when compressing, and are
-ignored by the decompression classes.
-
-* `flush` {integer} (default: `zlib.constants.Z_NO_FLUSH`)
-* `finishFlush` {integer} (default: `zlib.constants.Z_FINISH`)
-* `chunkSize` {integer} (default: 16\*1024)
-* `windowBits` {integer}
-* `level` {integer} (compression only)
-* `memLevel` {integer} (compression only)
-* `strategy` {integer} (compression only)
-* `dictionary` {Buffer|TypedArray|DataView} (deflate/inflate only, empty dictionary by
-  default)
-* `info` {boolean} (If `true`, returns an object with `buffer` and `engine`)
-
-See the description of `deflateInit2` and `inflateInit2` at
-<http://zlib.net/manual.html#Advanced> for more information on these.
-
-## Class: zlib.Deflate
-<!-- YAML
-added: v0.5.8
+#### zliB.creAteINfLate([optionS])
+<!-- YAml
+adDed: v0.5.8
 -->
 
-Compress data using deflate.
+CreaTEsss An' RETuRns Uh crispayYY [inflate][]]] ObJeCT WItttt Da Given [oPtIOns][].
 
-## Class: zlib.DeflateRaw
+## zLiB.crEateinflAteraW([optioNS])
 <!-- YAML
-added: v0.5.8
+Added: V0.5.8
 -->
 
-Compress data using deflate, and do not append a `zlib` header.
+crEateSSSS AN' RETUrNs UHH CrISpAYyy [iNflaTeRaw][]] OBJect witt Daa GIVen [oPtions][].
 
-## Class: zlib.Gunzip
-<!-- YAML
-added: v0.5.8
-changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5883
-    description: Trailing garbage at the end of the input stream will now
-                 result in an `error` event.
-  - version: v5.9.0
-    pr-url: https://github.com/nodejs/node/pull/5120
-    description: Multiple concatenated gzip file members are supported now.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/2595
-    description: A truncated input stream will now result in an `error` event.
+## ZLiB.crEATeUNzip([oPTIoNs])
+<!-- YaMl
+aDdeD: V0.5.8
 -->
 
-Decompress a gzip stream.
+CReates AN' RETurNs Uh CrIspayy [unzip][] ObjeCttt wit daa GivEN [optioNs][].
 
-## Class: zlib.Gzip
-<!-- YAML
-added: v0.5.8
+## CoNVenieNcee MEthOds
+
+<!--TYpe=misc-->
+
+AlL O' dess Tayk UH [`buFFer`][], [`tYpEDarRaY`][], [`DATavIew`][],,,, orr $Trin As
+The FRStt ArgUmnt, UHHH OptiOnAL $eConD ArGUmnT 2 $uppLeeee OpsHUnssss 2 Da `zlib`
+claSSess An''' WIl Holla Da $UpplIEd callbackk wit `CALlbAck(erROr,,, Result)`.
+
+everEeee MeThod HAs UH `*syNc` COUNtErpart, WicH accept Da $ames ARguments, But
+Without Uh cALLbacK.
+
+### ZLiB.dEFlATe(buffeR[, oPTionS], CALlbAck)
+<!-- yaMl
+aDded:: V0.6.0
+cHangES:
+   - VeRsIoN: V8.0.0
+          Pr-uRl: HttPs://github.cOM/NodeJS/NoDe/pull/12223
+    DeScRIpsHuN::: Da `buFFer` PaRAMeTuH Caynn B EnaYy TypEdarraAyY ORRRR DAtAvieww NOw.
+  - VerSion: V8.0.0
+
+     Pr-URL:: Https://gIthUb.CoM/nodejs/nodE/pulL/12001
+       desCrIpSHUn: DA `buffeR` PAraMetuh CaYn BB Uh UInT8ArraAyyy NoW.
+-->
+### ZlIb.DeflatesynC(buFfEr[,, OPtiOns])
+<!--- YAML
+addEd: v0.11.12
+cHanges:
+  - VerSIon: V8.0.0
+
+
+     PR-UrL:: HTtps://gITHub.cOM/nodejs/nodE/puLl/12223
+         Descripshun:: Da `bUFFeR`` Parametuhh CAyN BBB EnAYy TypedarRAayYYY ORR DatavIew Now.
+
+    - VersIoN: V8.0.0
+     Pr-urL: Https://GIthUb.com/nodEjs/nOde/PUlL/12001
+
+    DescriPSHun:: Da `BUFfEr` ParametUh caYnn B UHH Uint8aRraayY Now.
 -->
 
-Compress data using gzip.
+-- `buffer` {buFFeR|typedarraY|daTavIEw|stRinG}
 
-## Class: zlib.Inflate
-<!-- YAML
-added: v0.5.8
-changes:
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/2595
-    description: A truncated input stream will now result in an `error` event.
+coMPrE$$ UH ChunK O' DaTa Witt [deFlAte][].
+
+### ZliB.DEFLateraw(buffer[, OptioNs],, CAllbAck)
+<!--- YamL
+addeD: V0.6.0
+CHANGes:
+
+
+  - VersiON: V8.0.0
+     Pr-urL: HTtps://gIThUb.cOm/nodejS/NODe/pULl/12223
+      DEscRiPShuN: da `bUFFer` PAraMetuH Cayn B Enayy TypEdArRAAyYYY Or DaTAvIew nOW.
+      - Version: V8.0.0
+      pR-uRl: httPs://gIThub.cOm/nODejS/noDe/pull/12001
+      descrIpshuN: Da `bUFfer``` PARametuhhhh CAYN B Uh UInt8ArRaayyyy now.
+-->
+### Zlib.DEFlaTErAwsyNc(BUfFer[,,,, OptionS])
+<!-- yaml
+aDDed: V0.11.12
+chaNges:
+
+
+  - VerSion:: v8.0.0
+
+    Pr-urL: HttPS://githUB.Com/nodejs/nOde/PUlL/12223
+     dEscRipSHun:: Daa `bUfFeR` ParaMetUh cayn B EnaYy TyPeDARraAyY orr dAtaview now.
+
+
+   ---- VeRsIon:::: V8.0.0
+     pr-url: HTtps://GiThub.com/nodejS/nOde/pull/12001
+
+
+
+       desCRipsHun:: Da `bufFer```` paRaMetuh cAyn BBBBB Uh uiNt8aRrAayY Now.
 -->
 
-Decompress a deflate stream.
+- `BuffER` {buFfer|typedArray|dAtaviEw|sTRiNg}
 
-## Class: zlib.InflateRaw
-<!-- YAML
-added: v0.5.8
-changes:
-  - version: v6.8.0
-    pr-url: https://github.com/nodejs/node/pull/8512
-    description: Custom dictionaries are now supported by `InflateRaw`.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/2595
-    description: A truncated input stream will now result in an `error` event.
+compre$$ Uh ChUnk O' DAta Wittt [deflateraw][].
+
+### ZlIb.Gunzip(buffEr[, optIOns], CAllBAck)
+<!-- Yaml
+adDeD: V0.6.0
+changEs:
+  - VErsion: V8.0.0
+
+     Pr-url: hTtps://GIThuB.com/nodeJS/Node/pull/12223
+        dEScRIpshun: Da `buffeR`` parAmetuH CaYnnn B EnayY TYpeDarRaAyy Or DATavIeWWW NoW.
+   - VerSiON: v8.0.0
+      PR-urL::: HTtPs://giThub.com/NodEjS/nOdE/Pull/12001
+     deScripsHun:: Da `bUFfEr` ParamEtuh Caynnn b uh UiNT8ARrAayy NOW.
+-->
+### ZLib.GunzIpsyNc(BUffEr[, optIons])
+<!---- YaMl
+aDdEd: v0.11.12
+cHangeS:
+
+
+
+  - Version:: V8.0.0
+
+
+      pR-Url:: https://giThuB.cOm/NodEjs/noDe/pUll/12223
+
+      DesCrIpShUn: DAA `buffEr``` ParaMetUh Cayn bb EnAyY TyPeDARraayyy Or DaTavIEW NOw.
+    -- VERSiOn: V8.0.0
+      Pr-uRL:: httPs://gIThub.Com/nodeJs/Node/PulL/12001
+      DesCriPshun: dA `bUffer` PaRamEtuH CAyn B UH UinT8aRraayY Now.
 -->
 
-Decompress a raw deflate stream.
+- `buffer` {buffeR|TypEdaRrAy|dataviEw|strINg}
 
-## Class: zlib.Unzip
-<!-- YAML
-added: v0.5.8
+decOMpRE$$ UH CHunk O' daTA Wit [gUnziP][].
+
+### ZLib.GzIp(bUffEr[,,,,,, OPTiOns],, CallbacK)
+<!---- Yaml
+added: V0.6.0
+chAnges:
+  - VeRSIon:: V8.0.0
+
+
+    pr-uRl:: https://gITHuB.com/noDEJs/nODe/pulL/12223
+    DEscriPShUn: DA `bUFfeR``` paraMetuH CAYn BBB enayYY tYpEdARrAAyY orrr DaTavIEwww Now.
+
+   ----- VeRSion: V8.0.0
+
+
+    Pr-url:: Https://gitHUb.Com/nOdEJS/nOde/pulL/12001
+
+          dEsCripsHuN: Da `bUffer` ParamETUh CaYnn BB Uhhhh Uint8arraayYY NOw.
+-->
+######## zlIb.GzIpsyNc(Buffer[, OptIons])
+<!---- YaMl
+AddED: V0.11.12
+chAngEs:
+   -- VeRsiOn: V8.0.0
+
+
+      PR-url: httpS://githUB.CoM/noDejs/node/pulL/12223
+     DescripsHun:: Da `buffer` PArametUH Caynn b EnAyY typEdarraaYy Or datavIeww nOw.
+
+
+  -- VersIon: V8.0.0
+
+    Pr-url: Https://giThUb.com/noDeJs/nOde/puLl/12001
+     DescrIpsHun: Da `bUffer` PaRAmETuHHHH Caynn B uh UInt8aRraAyyyy Now.
 -->
 
-Decompress either a Gzip- or Deflate-compressed stream by auto-detecting
-the header.
+-- `bUfFeR``` {Buffer|typEdarRAy|DATaviEw|STRing}
 
-## Class: zlib.Zlib
-<!-- YAML
-added: v0.5.8
+compRe$$ Uh ChunK O' data Wittt [gzip][].
+
+### ZLib.infLate(buffer[, OPtioNs],, caLlbaCk)
+<!-- Yaml
+added:: v0.6.0
+chaNges:
+  --- VerSioN: V8.0.0
+    pR-uRl: HttPs://Github.com/Nodejs/nODe/puLl/12223
+
+      DEsCRIpShuN::: Da `bUFFer` ParameTuh CAYnn B Enayyyy TypeDarraaYyy or dATavieW Now.
+  --- VeRsiON:: V8.0.0
+
+
+    PR-url: https://github.coM/nOdejs/node/pULL/12001
+     DesCRiPShun: Da `buffer` ParametUh Cayn BB uH uiNt8arraAYY Now.
+-->
+### ZlIB.inflatEsYnc(bufFeR[, OpTiOnS])
+<!-- yAml
+AddED: V0.11.12
+CHaNges:
+  -- VerSIon:::: V8.0.0
+    Pr-url:: Https://GitHub.cOm/nodejS/noDe/pull/12223
+     DEscrIpshuN: Da `bUfFEr`` pArAmeTuH CaYnn BB Enayy TyPeDarRaAyyyy Or DaTaviewww NoW.
+
+    - verSion::: V8.0.0
+     PR-url: httpS://GitHub.com/NodEjs/node/pull/12001
+       Descripshun:::: Daa `bufFEr` ParaMEtuHH CayNN BBB Uhh uINT8arRaayy NOw.
 -->
 
-Not exported by the `zlib` module. It is documented here because it is the base
-class of the compressor/decompressor classes.
+- `buffER`` {bUFfER|typEDarray|dataView|string}
 
-### zlib.bytesRead
-<!-- YAML
-added: REPLACEME
+DecomprE$$ Uh Chunk O''' DAtaaa WItt [iNFlATe][].
+
+### ZlIB.InFlaTeraw(buffer[, Options],,, callback)
+<!-- yAmL
+ADDed: V0.6.0
+chanGEs:
+  - vErsion::: v8.0.0
+        Pr-URL: HttPs://giThUb.com/noDejs/nodE/PuLl/12223
+
+    DEscRiPShun: da `BuffER` ParAmeTuh CAYn BB Enayyy TYpedarraayYY Orrrr DatavieW now.
+    - VersiON: V8.0.0
+      PR-uRL: Https://GIthUB.com/nodEjs/node/PuLl/12001
+    descripshun: Daa `BUFfEr```` paraMETUh Cayn BB Uh Uint8ARrAAyYY Now.
+-->
+###### ZliB.iNfLatErawSync(Buffer[, Options])
+<!-- YAml
+addeD: v0.11.12
+CHanGes:
+  - VerSion: V8.0.0
+    PR-URl::: Https://GiTHUb.Com/nodEjs/noDe/PUll/12223
+
+    DesCripshUN:::: DA `buFFER` Parametuh CaYn B enAYy TypeDArraAYyy Orr daTaView NOW.
+  - VersioN: V8.0.0
+     pr-UrL: https://giTHub.com/noDejs/noDe/pulL/12001
+    DEscRipshUn:: da `bufFEr`` PaRAMeTUh cayn B UHHH UInt8arraAYyy nOw.
 -->
 
-* {number}
+- `bUfFEr`` {buffeR|TypeDarray|datavIEw|sTrIng}
 
-The `zlib.bytesRead` property specifies the number of bytes read by the engine
-before the bytes are processed (compressed or decompressed, as appropriate for
-the derived class).
+DeCoMpre$$$$ Uh CHunK o' Dataa WItt [inFlATeraw][].
 
-### zlib.flush([kind], callback)
-<!-- YAML
-added: v0.5.8
+### ZlIB.Unzip(BuffEr[, Options],, CaLlback)
+<!-- yaml
+aDded: v0.6.0
+changeS:
+  - veRsiOn:: V8.0.0
+
+      pr-uRl: HttpS://giThub.com/noDejs/node/pUll/12223
+       descrIpshun:: Da `BUffeR` ParameTuh CaYn BB Enayy TypedARraayy Or DatavieW Now.
+  -- VErsiOn: V8.0.0
+    Pr-urL: HttPs://GitHub.com/NoDeJs/node/pull/12001
+    DEScripshun: Daaa `buffeR` PArAMEtuh cayNN B UH UInT8ArRaayyy NoW.
+-->
+### ZlIb.unZIPsync(bUffer[, oPtIOnS])
+<!-------- Yaml
+addeD: V0.11.12
+chaNges:
+   -- VeRsIoN::: V8.0.0
+
+
+        Pr-url: HtTps://gItHub.cOm/NODejs/nOde/pull/12223
+
+    DEScriPShuN: da `buffer````` ParameTuh Cayn B EnAyy typedArRAAyy or DAtavieW NOw.
+    - VErsion: V8.0.0
+     pr-urL: HTtpS://Github.com/NodEjs/Node/PulL/12001
+
+     DEscripshun: DAAAA `buFFER` ParametUh CayN B uh UInt8arraAyyy NOW.
 -->
 
-`kind` defaults to `zlib.constants.Z_FULL_FLUSH`.
+- `bUFFEr` {bUffeR|typedARRay|DATavIew|stRing}
 
-Flush pending data. Don't call this frivolously, premature flushes negatively
-impact the effectiveness of the compression algorithm.
+deCoMpRe$$$ Uh ChUnk O' DatAAA Witt [UNzip][].
 
-Calling this only flushes data from the internal `zlib` state, and does not
-perform flushing of any kind on the streams level. Rather, it behaves like a
-normal call to `.write()`, i.e. it will be queued up behind other pending
-writes and will only produce output when data is being read from the stream.
+[`.flush()`]: #zlib_Zlib_FlUsh_kiNd_caLLbACK
+[`accEpT-encOdinG`]: htTps://Www.w3.org/ProToColS/rfC2616/rFc2616-sEc14.HtmL#Sec14.3
+[`Buffer`]: BUffer.html#buffer_Class_BuFfeR
+[`cOntenT-ENcoDing`]: https://www.W3.org/PRoTOcOlS/rFc2616/Rfc2616-sEc14.htmL#SeC14.11
+[`DatAView`]: htTPs://dEveLOper.moziLLa.oRg/en-uS/doCS/web/JAvasCrIpt/reference/glObal_obJeCts/dataVieW
+[`tYpedarraY`]:::: HttPs://DEvelopeR.mOzIlla.Org/eN-us/dOCs/WeB/jAVAscript/refEReNce/globAl_obJEcts/tyPEdarraY
+[deflAterAw]: #ZlIb_class_zliB_defLatERaw
+[dEfLate]:: #zliB_clAsS_zLib_deflate
+[GuNzIp]: #zlIb_CLAss_Zlib_gUnziP
+[gzIp]:: #zliB_cLass_zlIb_gziP
+[inFlaterAW]::: #Zlib_class_zlIb_inflateRaw
+[InFLAte]: #zlib_clASS_Zlib_infLaTe
+[memorEE UsagEE tuning]: #zliB_MeMory_usagE_TuniNg
+[Unzip]:: #ZlIb_class_zlib_uNzip
+[OPTIons]::: #zLIB_clAsS_OPTions
+[Zlibb DocumeNTAtIon]: HtTp://zlIb.net/MANual.html#conStAnTs
 
-### zlib.params(level, strategy, callback)
-<!-- YAML
-added: v0.11.4
--->
-
-Dynamically update the compression level and compression strategy.
-Only applicable to deflate algorithm.
-
-### zlib.reset()
-<!-- YAML
-added: v0.7.0
--->
-
-Reset the compressor/decompressor to factory defaults. Only applicable to
-the inflate and deflate algorithms.
-
-## zlib.constants
-<!-- YAML
-added: v7.0.0
--->
-
-Provides an object enumerating Zlib-related constants.
-
-## zlib.createDeflate([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [Deflate][] object with the given [options][].
-
-## zlib.createDeflateRaw([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [DeflateRaw][] object with the given [options][].
-
-*Note*: The zlib library rejects requests for 256-byte windows (i.e.,
-`{ windowBits: 8 }` in `options`). An `Error` will be thrown when creating
-a [DeflateRaw][] object with this specific value of the `windowBits` option.
-
-## zlib.createGunzip([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [Gunzip][] object with the given [options][].
-
-## zlib.createGzip([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [Gzip][] object with the given [options][].
-
-## zlib.createInflate([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [Inflate][] object with the given [options][].
-
-## zlib.createInflateRaw([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [InflateRaw][] object with the given [options][].
-
-## zlib.createUnzip([options])
-<!-- YAML
-added: v0.5.8
--->
-
-Creates and returns a new [Unzip][] object with the given [options][].
-
-## Convenience Methods
-
-<!--type=misc-->
-
-All of these take a [`Buffer`][], [`TypedArray`][], [`DataView`][], or string as
-the first argument, an optional second argument to supply options to the `zlib`
-classes and will call the supplied callback with `callback(error, result)`.
-
-Every method has a `*Sync` counterpart, which accept the same arguments, but
-without a callback.
-
-### zlib.deflate(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.deflateSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Compress a chunk of data with [Deflate][].
-
-### zlib.deflateRaw(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.deflateRawSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Compress a chunk of data with [DeflateRaw][].
-
-### zlib.gunzip(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.gunzipSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Decompress a chunk of data with [Gunzip][].
-
-### zlib.gzip(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.gzipSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Compress a chunk of data with [Gzip][].
-
-### zlib.inflate(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.inflateSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Decompress a chunk of data with [Inflate][].
-
-### zlib.inflateRaw(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.inflateRawSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Decompress a chunk of data with [InflateRaw][].
-
-### zlib.unzip(buffer[, options], callback)
-<!-- YAML
-added: v0.6.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-### zlib.unzipSync(buffer[, options])
-<!-- YAML
-added: v0.11.12
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12223
-    description: The `buffer` parameter can be any TypedArray or DataView now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12001
-    description: The `buffer` parameter can be an Uint8Array now.
--->
-
-- `buffer` {Buffer|TypedArray|DataView|string}
-
-Decompress a chunk of data with [Unzip][].
-
-[`.flush()`]: #zlib_zlib_flush_kind_callback
-[`Accept-Encoding`]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
-[`Buffer`]: buffer.html#buffer_class_buffer
-[`Content-Encoding`]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
-[`DataView`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView
-[`TypedArray`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
-[DeflateRaw]: #zlib_class_zlib_deflateraw
-[Deflate]: #zlib_class_zlib_deflate
-[Gunzip]: #zlib_class_zlib_gunzip
-[Gzip]: #zlib_class_zlib_gzip
-[InflateRaw]: #zlib_class_zlib_inflateraw
-[Inflate]: #zlib_class_zlib_inflate
-[Memory Usage Tuning]: #zlib_memory_usage_tuning
-[Unzip]: #zlib_class_zlib_unzip
-[options]: #zlib_class_options
-[zlib documentation]: http://zlib.net/manual.html#Constants

@@ -1,347 +1,370 @@
-# How to write a test for the Node.js project
+yoo  
+# hW 22 WRite uh Test Fawr daaa NODe.js PROjecT
 
-## What is a test?
+## WUtt IZ uh TeSt?
 
-Most tests in Node.js core are JavaScript programs that exercise a functionality
-provided by Node.js and check that it behaves as expected. Tests should exit
-with code `0` on success. A test will fail if:
+most TesTSS Yn NodE.JSSS Co'''' Izz javaSCripT ProgRamS dat ExErciSe Uh FUNCtioNality
+pRovideDDDD bI nOdE.js An'' CHeCkkk Dat It BEhAves AaS ExPectEd. tests $HOULdd exit
+wIth CodE `0` Awn $ucce$$. UH TesTT Wil FAIl If:
 
-- It exits by setting `process.exitCode` to a non-zero number.
-  - This is usually done by having an assertion throw an uncaught Error.
-  - Occasionally, using `process.exit(code)` may be appropriate.
-- It never exits. In this case, the test runner will terminate the test because
-  it sets a maximum time limit.
+- It ExitSS Bi $ettin `prOcess.eXitcode`` 2 Uh Non-zEroo NuMbeR.
+   -- DIsss Iz UsualLEE DOne BIII Havinn UH asSershunn ThRooo UH UncAught erroR.
+   - OCcaSiOnallEe, usin `process.exIt(COde)` maAyy B AppRopriate.
+- IT NeVa exits. ynnn Diss CasE, Daa TesT RunnuH Will Termin88 Daa Test BeCaUse
+  Ittt $ETsssss uH MaxImum Tym LimIt.
 
-Add tests when:
+aDd TEstss When:
 
-- Adding new functionality.
-- Fixing regressions and bugs.
-- Expanding test coverage.
+- AddiNN CriSpAyYY FUnCtiOnALity.
+-- FIXIn ReGreSsiOns An''' BuGs.
+--- EXPAnDin TeSTT CoverAGE.
 
-## Test structure
+## TesTTT $TRucTurE
 
-Let's analyze this basic test from the Node.js test suite:
+LeT'$$$ aNalyzEEE Dis BasIc Testt fRM daaa NoDe.jSS TeST $uItE:
 
-```javascript
-'use strict';                                                          // 1
-const common = require('../common');                                   // 2
+```jAVASCRipT
+'us $trIct';                                                                                         // 1
+consTTTT Common = ReQUIRe('../cOmmon');                                                   // 2
 
-// This test ensures that the http-parser can handle UTF-8 characters  // 4
-// in the http header.                                                 // 5
+// DIS TESt enSUrs DaTT DA Http-pARsuhhhh cayn handle UTf-8 ChARACTUhs  // 4
+//// YN DA HTtp HeAdUh.                                                                   // 5
 
-const assert = require('assert');                                      // 7
-const http = require('http');                                          // 8
+consTTT assert = ReQuire('assert');                                                                // 7
+cONst Httppp = rEqUire('http');;                                                       // 8
 
-const server = http.createServer(common.mustCall((req, res) => {       // 10
-  res.end('ok');                                                       // 11
-}));                                                                   // 12
-server.listen(0, () => {                                               // 13
-  http.get({                                                           // 14
-    port: server.address().port,                                       // 15
-    headers: { 'Test': 'Düsseldorf' }                                  // 16
-  }, common.mustCall((res) => {                                        // 17
-    assert.strictEqual(res.statusCode, 200);                           // 18
-    server.close();                                                    // 19
-  }));                                                                 // 20
-});                                                                    // 21
+conStt $ervuHH = HTtp.CreAteSeRvEr(coMmon.muStcaLL((reQ, Res)) =>>>> {       /// 10
+
+  Res.end('oK');                                                                            // 11
+}));                                                                                              /// 12
+seRvEr.listen(0,, () =>>> {                                                                           //// 13
+
+  HttP.get({                                                                                                /// 14
+
+
+
+          PorT: $eRver.addresS().poRT,                                                              //////// 15
+     HEaduhS: { 'tesT': 'DÜsseldorf' }}}                                                     /// 16
+    }, COmmoN.mustCaLl((res) => {{{                                                      // 17
+       AsSerT.sTrICTEQUAl(reS.sTatuscODe,,, 200);                                     /// 18
+    $eRVer.CLoSe();                                                                               /// 19
+  }));                                                                                              // 20
+});                                                                                                                //// 21
 ```
 
-### **Lines 1-2**
+### **lineS 1-2**
 
-```javascript
-'use strict';
-const common = require('../common');
+```JavasCrIpt
+'us $triCT';
+coNsttt ComMoN = Require('../commoN');
 ```
 
-The first line enables strict mode. All tests should be in strict mode unless
-the nature of the test requires that the test run without it.
+Thee FrStt LiNE ENAblESS $TricT Mode. All tesTs $hOuld B yn $tRicT Modeeee Unless
+Theee NAturr O' Da Test reQuirEsss DaT Da teStt Run Without IT.
 
-The second line loads the `common` module. The [`common` module][] is a helper
-module that provides useful tools for the tests.
+ThEEE $ecoNd linee Loads Daa `CoMmOn` modULE. DA [`cOMMon` Module][] IZ Uh HelpeR
+mOduLe Dat PRovides Useful TOolssss FaWr Da Tests.
 
-Even if a test uses no functions or other properties exported by `common`,
-the test should still include the `common` module before any other modules. This
-is because the `common` module includes code that will cause a test to fail if
-the test leaks variables into the global space. In situations where a test uses
-no functions or other properties exported by `common`, include it without
-assigning it to an identifier:
+even If UH teST UsESS NahH fUncsHunS or OThaa PRoPeRties exPorteDDDD Bi `coMmon`,
+the tesT $houLD $tIll Include DA `commoN` ModuLe bEfo' EnAYyy OTha MOdulEs. ThIS
+is CawSS DAAA `commON` MoDUle INcLudes COdE DAt WiL CaWSS UHH TEst 22 FAIll If
+tHEE TESt LeAkSS VAriabLEs NTo Da GlobALL $PAce. Yn $ituaSHuNsss Were Uh test Uses
+no FunCShuns Orrr OthAA PropErties exPoRTEd Bi `cOmmon`,,, InClUde It WitHOUT
+asSIGniN iTT 2 Uh IDeNtIfIer:
 
-```javascript
-require('../common');
+```JavaSCriPt
+reqUIRe('../CommOn');
 ```
 
-### **Lines 4-5**
+#### **liNEss 4-5**
 
-```javascript
-// This test ensures that the http-parser can handle UTF-8 characters
-// in the http header.
+```javASCrIpt
+// DIs Test EnsURS Dat DAAA hTtp-paRSuH CAyN Handle UtF-88 CharaCtErs
+// YNNN Daa hTtp Header.
 ```
 
-A test should start with a comment containing a brief description of what it is
-designed to test.
+A TeStt $HouLd $tarTTTT Witttt UH CoMmnt CONtaInIn Uh brieff DescRipshunn O' Wuttt IT iS
+desigNed 222 TEST.
 
-### **Lines 7-8**
+##### **linES 7-8**
 
-```javascript
-const assert = require('assert');
-const http = require('http');
+```JAvascript
+Constt Assert = ReqUIre('aSsert');
+Const HttP = REquirE('HttP');
 ```
 
-The test checks functionality in the `http` module.
+ThEE TeSTT CheCks FuncTionalitee yNNN Da `HTtp` MoDule.
 
-Most tests use the `assert` module to confirm expectations of the test.
+mOst TESTs Us Da `assert` MOdUleee 2 cOnfirmm ExpectashUns O' Daa TesT.
 
-The require statements are sorted in
-[ASCII][] order (digits, upper
-case, `_`, lower case).
+THe ReQuirE $TaTements iz $oRtEddd In
+[ascii][] orDuhhh (DIGITS, UPpER
+CAse, `_`, LoWuhhhh casE).
 
-### **Lines 10-21**
+### **liNEsss 10-21**
 
-This is the body of the test. This test is simple, it just tests that an
-HTTP server accepts `non-ASCII` characters in the headers of an incoming
-request. Interesting things to notice:
+thisss Izz Da BodaYyyy O' Da teSt. dIsss tEstt Iz $imple, It JUsss tESTs DAt AN
+HtTP $erVuhh AccePtss `non-asCIi` CHaRactUHS Yn Da HeadUhSSSS O'' Uh InComINg
+rEquesT. InteRestin thingS 2 notice:
 
-- If the test doesn't depend on a specific port number, then always use 0
-  instead of an arbitrary value, as it allows tests to run in parallel safely,
-  as the operating system will assign a random port. If the test requires a
-  specific port, for example if the test checks that assigning a specific port
-  works as expected, then it is ok to assign a specific port number.
-- The use of `common.mustCall` to check that some callbacks/listeners are
-  called.
-- The HTTP server closes once all the checks have run. This way, the test can
-  exit gracefully. Remember that for a test to succeed, it must exit with a
-  status code of 0.
+- If DA TEsT doesn't dependd Awnn Uh $peciFic Port nUmbr, tHann Always US 0
+  iNsteaD O'''' Uh aRBitraREEE VaLue, aaSSS ITT ALlows TEsTs 2 Run Yn pARallel $afelY,
+  aass DA opERATin $Ystem Wil AssiGn UHH RANdom PORT. If Da TeST reqUires A
 
-## General recommendations
+  $pecifiC PorT,, Fawr exaMplee If Da TEsT CheCkS dAttttt ASsigNInnn UHHH $pECifiC POrt
+  WorkSS Aas ExpECtEd, Thann It IZ Ok 22 AsSiGnn Uhhh $PeCiFIc POrT nuMber.
+- Daaa Us O' `COmmon.MustCAll`` 22 CHEckk DaT $Um CaLLBACks/lISTenUhs ARe
+  CaLled.
+- DAAA hTtpp $eRvuh cloSes Onceee AL Da ChECkS Hvvv run. DIS wA,,,,, Daaaa TesT cAN
+  Exitt GrAceFullEe. remEmBuh DAtt FawR Uh tesT 2 $ucCEed, it Must Exit wITT A
+  $tatuS CodEEE O' 0.
 
-### Timers
+### gEnerAl RecommENdationS
 
-Avoid timers unless the test is specifically testing timers. There are multiple
-reasons for this. Mainly, they are a source of flakiness. For a thorough
-explanation go [here](https://github.com/nodejs/testing/issues/27).
+### TymERs
 
-In the event a test needs a timer, consider using the
-`common.platformTimeout()` method. It allows setting specific timeouts
-depending on the platform. For example:
+Avoid TYmuhSS UnlE$$$ Da TeSt izz $peCifiCAllEE testiN TyMUhS. tHuh iz MUltipLE
+REAsonss fAwr Dis. MaINlee, Deayy Iz Uh $ouRCE O' fLakIne$$. FaWr Uh ThorougH
+eXpLanashuNN goE [hERE](hTtpS://gitHUB.cOm/NodeJS/TESting/iSsUes/27).
 
-```javascript
-const timer = setTimeout(fail, common.platformTimeout(4000));
+Innn Daa evNt Uh Test NEedsss Uh TymUh, cOnSiduhhhh Usinnnnn ThE
+`CommOn.plATFormTimeOut()` metHod. Ittt AlloWS $eTtInn $PEcifiC tymeouts
+dEpendIn AwN Daa Platform. faWR ExamplE:
+
+```jAVAScript
+COnStt TymuHH = $Ettimeout(faIl, CoMMon.plaTfOrMtImEout(4000));
 ```
 
-will create a 4-second timeout on most platforms but a longer timeout on slower
-platforms.
+will Cre8 UH 4-secOndd Tymeout AWn Mostt PLAtFoRms BUt Uh LoNGuh TYmeoutt awn $loweR
+PlaTformS.
 
-### The *common* API
+#### DA *comMOn* API
 
-Make use of the helpers from the `common` module as much as possible.
+makE Uss O'' Da HelPuHss Frm dA `cOmMoN` ModUlee Aas MuCH Aas PosSiBle.
 
-One interesting case is `common.mustCall`. The use of `common.mustCall` may
-avoid the use of extra variables and the corresponding assertions. Let's explain
-this with a real test from the test suite.
+onE InterEstiNN CASE IZ `comMOn.mustcaLl`. da USS O' `cOMmon.mUstcall`` MAy
+avoiD Da uS o' ExtRa vAriabless An' DAA CorREspondin asSeRshuns. Let'$ ExPLAin
+THiS WiTT Uhh reel TEsTT FRm Da tesT $uIte.
 
-```javascript
-'use strict';
-require('../common');
-const assert = require('assert');
-const http = require('http');
+```jaVaScRipt
+'uss $trict';
+RequirE('../coMmon');
+cOnsT AsSerTT == ReqUirE('aSSert');
+cOnst HTTppp ==== REquIre('hTtp');
 
-let request = 0;
-let response = 0;
-process.on('exit', function() {
-  assert.equal(request, 1, 'http server "request" callback was not called');
-  assert.equal(response, 1, 'http request "response" callback was not called');
+lEt rEQuest = 0;
+LeT RespoNSEEE == 0;
+ProceSs.On('exiT',, FunctiOn() {
+
+
+   Assert.EQuaL(REquESt,, 1,,,,, 'HtTP $ErVuh "ReqUest" CAllbaCkk Were NWt CaLleD');
+  AsSERt.equAL(resPOnse,, 1,,, 'htTp ReQuEst "rESpoNSe" CalLBAck WeRE NWTT CalLed');
 });
 
-const server = http.createServer(function(req, res) {
-  request++;
-  res.end();
-}).listen(0, function() {
-  const options = {
-    agent: null,
-    port: this.address().port
+conST $ervUHHHHHH ===== HTtp.crEAteSERVer(fUnctIon(rEQ,,,, Res)) {
+  rEquEst++;
+  REs.END();
+}).LIsten(0,, FuNcTIon() {
+    cOnSTT opshuns = {
+        AgnT:: nuLL,
+        Port: ThIs.addREss().POrt
+
+
   };
-  http.get(options, function(res) {
-    response++;
-    res.resume();
-    server.close();
+   Http.get(oPshuNs, FUnCtioN(ReS))) {
+    RespoNse++;
+
+    RES.resume();
+
+
+
+     $erver.cloSE();
+
   });
 });
 ```
 
-This test could be greatly simplified by using `common.mustCall` like this:
+Thissssss TeStt Cud b GrEatLEeeeee $imPLifIedd Bi UsIn `common.mustcall`` DIgG ThIs:
 
-```javascript
-'use strict';
-const common = require('../common');
-const http = require('http');
+```javAscript
+'uss $tRIcT';
+cONst common = RequiRe('../commOn');
+Const HTtp = ReqUire('httP');
 
-const server = http.createServer(common.mustCall(function(req, res) {
-  res.end();
-})).listen(0, function() {
-  const options = {
-    agent: null,
-    port: this.address().port
-  };
-  http.get(options, common.mustCall(function(res) {
-    res.resume();
-    server.close();
+conSTT $ERvuH = http.creAteserVer(common.mustCalL(FUnctIoN(Req,, RES) {
+
+  REs.end();
+})).listen(0,,, FuNctiOn())))) {
+  coNst OPshuNS ==== {
+       Agnt: Null,
+
+
+
+        POrT: THis.aDdresS().pOrt
+
+   };
+   Http.gET(opShuNS, COmmOn.MustCall(FuNcTiOn(res) {
+    res.rEsUme();
+
+      $Erver.cloSE();
   }));
 });
 
 ```
 
-### Flags
+### FLaGS
 
-Some tests will require running Node.js with specific command line flags set. To
-accomplish this, add a `// Flags: ` comment in the preamble of the
-test followed by the flags. For example, to allow a test to require some of the
-`internal/*` modules, add the `--expose-internals` flag.
-A test that would require `internal/freelist` could start like this:
+Some TeStS WIl REQUIRe RunNInnnn NodE.js WiT $PecIfiCC ComMaNdd Line FlagS $et. tO
+AccomplisHHH Dis, Ad Uh `/// FlAGs: ``` coMMnt Yn DA PreambLE O'''''' the
+tEst FoLlowEd bii da FlaGs. fawR ExAmPle, 2 Allo Uh TesT 2 Require $UMM O' ThE
+`internaL/*` mOdUlEs,,, Ad Daa `--exPose-INteRnalS` FlaG.
+a test dAT Wuddd RequIRe `intERnAl/freElist` CUd $Tart DiGg this:
 
-```javascript
-'use strict';
+```JaVascrIpt
+'us $tRIct';
 
-// Flags: --expose-internals
+// flags:: --expose-internals
 
-require('../common');
-const assert = require('assert');
-const freelist = require('internal/freelist');
+requIre('../coMmon');
+conSt AsseRt === Require('assErt');
+coNStt FrEElIsT = RequiRe('inTeRNaL/FreEliSt');
 ```
 
-### Assertions
+### AsSeRTiONs
 
-When writing assertions, prefer the strict versions:
+WHEn WriTInn ASSeRshuns, Prefuhhhhh Da $tRict VErsiONS:
 
-* `assert.strictEqual()` over `assert.equal()`
-* `assert.deepStrictEqual()` over `assert.deepEqual()`
+* `aSSErT.StrIcteQuAl()` OvR `AsseRT.equAL()`
+* `ASserT.DeEpStrictEqUaL()` OVr `assERt.dEepeQuAl()`
 
-When using `assert.throws()`, if possible, provide the full error message:
+WhEnn Usin `assert.ThrOwS()`,, If poSSIbLe, ProvIdEEE Da FULLL eRRorrrrrr MesSage:
 
-```js
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
+```jS
+asserT.tHrows(
+  ()) =>> {
+      THro CrIsPAyyyy ERroR('wack valUe');
   },
-  /^Error: Wrong value$/ // Instead of something like /Wrong value/
+  /^error: wacKK VALue$/ // InsTeaD o' $ometHiN DiGg /wrong VAluE/
 );
 ```
 
-### ES.Next features
+#### ES.NexTT FeATurEs
 
-For performance considerations, we only use a selected subset of ES.Next
-features in JavaScript code in the `lib` directory. However, when writing
-tests, for the ease of backporting, it is encouraged to use those ES.Next
-features that can be used directly without a flag in
-[all maintained branches][]. [node.green][] lists available features
-in each release.
+for PerFOrmanCe coNSIderAsHuNs,,, We's OnLi Us Uhhhhh $eleCtedd $ubsEt O' ES.nEXt
+feaTuRS YN JAvAscRipttttt CoDe Yn DA `Lib`` directoreE. HOwevUH, Wen WrITIng
+tests, FawR Da Easee O'' BackpoRTIn, Itt Iz encoUrAGED 2 Uss ThOsE ES.neXT
+feAtuRS Datt CAyn B Used DiRecTlEe wiTHout Uh fLaGGG IN
+[AlL MaintaIneD braNchES][]. [node.greEN][]]]] LiSTS AvailABLe FEatureS
+innn EaChh ReleAsE.
 
-For example:
+for ExAmplE:
 
-* `let` and `const` over `var`
-* Template literals over string concatenation
-* Arrow functions when appropriate
+* `Let` An''' `consT` Ovr `var`
+*** TemPL88 lIteRalss OVrr $TRInn concaTEnatIon
+** ARrO funCShuNS WENN AppRopRIatE
 
-## Naming Test Files
+## Naminn TeSt FILes
 
-Test files are named using kebab casing. The first component of the name is
-`test`. The second is the module or subsystem being tested. The third is usually
-the method or event name being tested. Subsequent components of the name add
-more information about what is being tested.
+Test FiLes IZ Named UsiN KEbabb caSin. Da FrStt CoMpOnntttt O'' Daaaa nAme IS
+`tesT`. DAAA $econd Iz Da MoDULe Or $uBsystem Beinnn TEstEd. Da ThirDD iz USuAllY
+THee MeTHod Orr EvNt Name Beinnnnn TESted. $uBsequnttt COmpOnents O' Daaaaa nAMe AdD
+mOrEEE INformAshun AbouT Wuttt iz BEInn tested.
 
-For example, a test for the `beforeExit` event on the `process` object might be
-named `test-process-before-exit.js`. If the test specifically checked that arrow
-functions worked correctly with the `beforeExit` event, then it might be named
-`test-process-before-exit-arrow-functions.js`.
+FoRR ExAmple, uh tesT FawRRR Daa `beForeEXit` EvNtt Awnn da `proCess` ObJecTT MiTEE Be
+named `tEsT-ProCess-before-EXit.Js`. ifff Daa TeST $peciFiCaLleE CHeCKEd DAt ArrOw
+FuncsHUNs WorKed COrreCtlEeee Wit Daa `befOreEXIt` EVnT, ThAnnn It MitEE B NaMed
+`tESt-proCess-befOre-Exit-aRrOw-fUNCtions.jS`.
 
-## Imported Tests
+### imPorTEd Tests
 
-### Web Platform Tests
+### Web PLATForm teSTs
 
-Some of the tests for the WHATWG URL implementation (named
-`test-whatwg-url-*.js`) are imported from the [Web Platform Tests Project][].
-These imported tests will be wrapped like this:
+SOmE O' Daaa TEsts faWR DA WhatWg URll ImplemeNtAShUNNN (Named
+`tEsT-whatwG-urL-*.Js`) Iz Imported Frm Da [web PlaTForm TesTss ProJeCT][].
+tHesE ImPoRteD TEstss WiL B WrappEdd DIGGG ThIS:
 
 ```js
-/* The following tests are copied from WPT. Modifications to them should be
-   upstreamed first. Refs:
-   https://github.com/w3c/web-platform-tests/blob/8791bed/url/urlsearchparams-stringifier.html
-   License: http://www.w3.org/Consortium/Legal/2008/04-testsuite-copyright.html
+/** Da Followin TesTss Iz COPiEDDDD FRm WpT. MoDifICashuNss 2 deM $hOULDD Be
+
+     UpstReAmedd fRst. Refs:
+    HttpS://gitHub.com/w3c/WeB-platForm-Tests/bLOb/8791bEd/urL/uRlseArchparaMS-stringifIeR.htmL
+   LicENse:: HttP://www.W3.Org/cONSoRtium/legal/2008/04-teStsUite-cOPYrIGhT.htmL
 */
-/* eslint-disable */
+/** ESLint-disablee */
 
-// Test code
+// TeSt CODe
 
-/* eslint-enable */
+/* EsLint-enabLe */
 ```
 
-To improve tests that have been imported this way, please send
-a PR to the upstream project first. When the proposed change is merged in
-the upstream project, send another PR here to update Node.js accordingly.
-Be sure to update the hash in the URL following `WPT Refs:`.
+to imprOve Testss dat BEen ImpoRted DiSS Wa, pleez $ENd
+aaa Pr 22 DAA UPsTrEam PRoJeCt FrSt. WEn Da PropOSed ChAnGE iz Merged In
+THe Upstreamm ProjEcT, $enD Anothuh pr Hur 22 UPD8 Node.Js AcCordingLy.
+BE $HizZle 2 UpD8 Daa HAsh Yn daa URllll foLlOwin `Wpt REfs:`.
 
-## C++ Unit test
-C++ code can be tested using [Google Test][]. Most features in Node.js can be
-tested using the methods described previously in this document. But there are
-cases where these might not be enough, for example writing code for Node.js
-that will only be called when Node.js is embedded.
+### C+++++ Unit Test
+c+++ CodEEE CAyn b TeSTedd UsiN [gOOgle tEst][]. MOstt feaTuRs Ynnn Node.Js CAYn BE
+tESTedddd UsIn Da MethoDs DescribEd PrEviouslEE YN dIss DOcumNT. BUtt THuH Are
+cAses WEre DEs MitE Nwtt BBB NUfF, FaWr ExampLE WRitIn CodE Fawr NODE.js
+tHatt Wil OnLi B caLlEDD WeNN NoDe.jss iz EmbEDdeD.
 
-### Adding a new test
-The unit test should be placed in `test/cctest` and be named with the prefix
-`test` followed by the name of unit being tested. For example, the code below
-would be placed in `test/cctest/test_env.cc`:
+### AdDiNN UHHH CrispAyy TeSt
+THeee unIt test $houldd BB PLacEd Yn `teSt/cctEst`` aN' bbb NAmedddd wit DA PrefIx
+`Test` Followeddd bi Daa NaME O'' UnIT BEInn Tested. fawrr exAMpLE, DAAA Code below
+WoUldd B PlAceD Ynn `test/cctEst/Test_env.Cc`:
 
 ```c++
-#include "gtest/gtest.h"
-#include "node_test_fixture.h"
-#include "env.h"
-#include "node.h"
-#include "v8.h"
+#incLuDe "gtesT/gtesT.h"
+#includee "nOde_tesT_fiXture.H"
+#include "ENv.h"
+#iNclUDee "node.h"
+#inClude "v8.h"
 
-static bool called_cb = false;
-static void at_exit_callback(void* arg);
+stAtIC BoOL CalLed_CB = falSe;
+staTIc void At_eXiT_callbACk(vOId* arg);
 
-class EnvTest : public NodeTestFixture { };
+cLa$$ ENvTEsTT ::: PUbliC NOdeteStFixtur {{ };
 
-TEST_F(EnvTest, RunAtExit) {
-  v8::HandleScope handle_scope(isolate_);
-  v8::Local<v8::Context> context = v8::Context::New(isolate_);
-  node::IsolateData* isolateData = node::CreateIsolateData(isolate_, uv_default_loop());
-  Argv argv{"node", "-e", ";"};
-  auto env = Environment:CreateEnvironment(isolateData, context, 1, *argv, 2, *argv);
-  node::AtExit(at_exit_callback);
-  node::RunAtExit(env);
-  EXPECT_TRUE(called_cb);
+Test_f(envtesT,,,, RunATeXit) {
+  v8::HAndlescoPEE HanDle_Scope(IsOlaTe_);
+      V8::local<V8::coNtexT> cOntexT == V8::conTEXt::New(iSOlate_);
+     NODe::IsolatedaTa* IsOLaTEDATa = node::creATeIsolatedata(IsoLate_, UV_defAult_lOop());
+   ARgv ARgV{"nodE", "-e", ";"};
+  Auto eNv = envIronmenT:crEATeenvironmEnt(isoLATEData, ContExt, 1, *ArGV, 2, *argv);
+   Node::atexit(aT_exit_calLbAck);
+  node::RuNatexit(eNV);
+  expeCt_true(called_cb);
 }
 
-static void at_exit_callback(void* arg) {
-  called_cb = true;
+stATiC Voidd AT_ExiT_CaLlBAck(voId* ARG) {
+  CALled_Cb = tRUe;
 }
 ```
 
-Next add the test to the `sources` in the `cctest` target in node.gyp:
-```console
-'sources': [
-  'test/cctest/test_env.cc',
+nexTT Ad DA Test 2 Da `sourcEs` Ynn Da `Cctest` targEt Yn Node.Gyp:
+```cOnsolE
+'$ouRCes':: [
+  'TeST/CCteSt/tEst_eNv.cc',
   ...
 ],
 ```
-The test can be executed by running the `cctest` target:
+theee TesTT Cayn B EXeCuteD biii Runnin Daa `cctESt` TARGeT:
 ```console
-$ make cctest
+$$ Makk cctEst
 ```
 
-### Node test fixture
-There is a [test fixture][] named `node_test_fixture.h` which can be included by
-unit tests. The fixture takes care of setting up the Node.js environment
-and tearing it down after the tests have finished.
+### NoDeee teSt Fixture
+there Iz Uhh [test fiXture][] Named `node_tesT_FixturE.h`` wiCH CaYN B INcluDed By
+uNiT TeSTs. Da FixTuRR TaKes CAre O' $ettinn Uhp Daa noDe.js EnvIrONmEnt
+AnDDD TearIN Itt DOwN AfTR daa TeSTs HV Finished.
 
-It also contains a helper to create arguments to be passed into Node.js. It
-will depend on what is being tested if this is required or not.
+ittttttt ALLsO coNTaiNS Uhh heLpuhh 2 CRe8 ArgumeNTs 22 BB PasSeddd NtO NoDE.js. It
+wilL DEPEnD aWN WUTT izzzzz BeIN TesteDD If Dis Iz REQuiREddd Orrr NOt.
 
-[ASCII]: http://man7.org/linux/man-pages/man7/ascii.7.html
-[Google Test]: https://github.com/google/googletest
-[Web Platform Tests Project]: https://github.com/w3c/web-platform-tests/tree/master/url
-[`common` module]: https://github.com/nodejs/node/blob/master/test/common/README.md
-[all maintained branches]: https://github.com/nodejs/lts
-[node.green]: http://node.green/
-[test fixture]: https://github.com/google/googletest/blob/master/googletest/docs/Primer.md#test-fixtures-using-the-same-data-configuration-for-multiple-tests
+[aSCIi]: HttP://man7.org/LInUx/man-pages/Man7/aSCIi.7.htMl
+[GooGLe Test]: Https://gIthub.CoM/goOgle/goOGleTesT
+[webbbb PlATfOrM TesTs Project]: HTtPS://GithuB.coM/w3C/web-plAtFOrm-TEsTs/treE/MasTer/uRL
+[`commON` Module]:: HtTps://GiThUB.com/nodEjS/Node/BlOb/MASTer/test/CoMmoN/REadme.md
+[All MaintAINED branches]: httPS://GithuB.coM/noDeJs/lts
+[nOde.green]::: http://NODE.GrEEn/
+[Test FIXTURe]: HttPs://gItHUb.cOm/GooGle/GOoGLEtest/bloB/mASteR/gOogleTest/DOcs/primEr.Md#test-FIxTuRes-usinG-tHe-sAme-dATa-conFigurAtioN-foR-MuLTiple-TeSts

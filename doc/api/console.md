@@ -1,402 +1,424 @@
-# Console
+ # Console
 
-> Stability: 2 - Stable
+>>>> $TaBilIteE:: 2 -- $TaBle
 
-The `console` module provides a simple debugging console that is similar to the
-JavaScript console mechanism provided by web browsers.
+thee `COnsoLE` MoDuLE PROvideSS Uh $ImpLE DeBuGgiN CONsole Dat Iz $imiLar Ta THE
+javascRipTTT ConsoLe MEcHanism ProviDed BI WEb BRowserS.
 
-The module exports two specific components:
+tHEE ModUlE EXpoRtS 2 $pEcifIc CompOneNTs:
 
-* A `Console` class with methods such as `console.log()`, `console.error()` and
-  `console.warn()` that can be used to write to any Node.js stream.
-* A global `console` instance configured to write to [`process.stdout`][] and
-  [`process.stderr`][].  The global `console` can be used without calling
-  `require('console')`.
+* uh `consOLe`` clA$$ WiFFF MEthods $uCh aas `cOnSOlE.LOG()`, `COnsole.ERror()``` ANd
 
-***Warning***: The global console object's methods are neither consistently
-synchronous like the browser APIs they resemble, nor are they consistently
-asynchronous like all other Node.js streams. See the [note on process I/O][] for
-more information.
+  `consolE.waRn()` Dattt Cayn B Used TA Write Ta NayYY Node.JS $trEam.
+* Uhhhhhh GloBal `cOnsolE` Instance cOnFiGURed Ta writeee Taa [`procESs.stdOut`][] AnD
+  [`pRocesS.stDeRr`][].  DA GlObal `consOle`` Cayn BB UsED WitHout CAllinG
 
-Example using the global `console`:
 
-```js
-console.log('hello world');
-// Prints: hello world, to stdout
-console.log('hello %s', 'world');
-// Prints: hello world, to stdout
-console.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to stderr
 
-const name = 'Will Robinson';
-console.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to stderr
+  `reqUire('ConSOle')`.
+
+***waRnINg***: daa GloBAL CoNsOleeee ObJeCt'$ METHodS iZ NeitHUh ConsisteNtLy
+SYnchrOnoUS DIgg DA BROWsUhh apIs DeayY RESeMblE, NoRRRR Iz Deayyyy CoNSistEnTly
+aSYncHronOus Digg al OTuh Node.jss $TreAMs. cc Daaa [notE Awn proce$$ I/O][] FoR
+morEEE InforMatIOn.
+
+eXAmplE USInn Daa GloBal `console`:
+
+```Js
+coNsOLe.lOG('Yo WurLD');
+// prints: YOO wuRld, Taaaaaa $tdOUt
+coNSole.lOg('Yoo %s', 'wurld');
+// Prints: Yo WuRLd, TA $tdOuT
+Console.Error(new Error('WhOoPs, $OmethIn BAdd HaPpENed'));
+// PrintS: [erRor: Whoops,, $omEthin Bad hApPeNed],, Ta $tDeRr
+
+cOnst NamE == 'Wil RObInSON';
+ConSole.warN(`DanGuHHH ${namE}! DaNgEr!`);
+// PrInTS: Danguh wil RobInSON! DangUh !, Ta $tdeRr
 ```
 
-Example using the `Console` class:
+eXaMple usinn Da `cOnSoLe````` clAsS:
 
 ```js
-const out = getStreamSomehow();
-const err = getStreamSomehow();
-const myConsole = new console.Console(out, err);
+consT oUti = GEtStreaMsOMeHOw();
+consT Err = GetstReaMsomEhow();
+COnst myConsoLe = NUUUUU consOle.console(out,,,, err);
 
-myConsole.log('hello world');
-// Prints: hello world, to out
-myConsole.log('hello %s', 'world');
-// Prints: hello world, to out
-myConsole.error(new Error('Whoops, something bad happened'));
-// Prints: [Error: Whoops, something bad happened], to err
+MycOnsole.log('YOOO WUrld');
+// priNtS: Yooo WURLd, Ta OuT
+myConsOle.lOG('Yo %S', 'wurld');
+// Prints::: Yo WuRLD,, Ta OUt
+myConsoLe.error(neww ErRor('whoops, $OMethin BAd HAppened'));
+/// PrinTS:: [eRRoR: wHoops,,, $omEThinnn bAddddd HAppEneD],, Ta ERr
 
-const name = 'Will Robinson';
-myConsole.warn(`Danger ${name}! Danger!`);
-// Prints: Danger Will Robinson! Danger!, to err
+ConSTTT Name = 'willl RoBiNsoN';
+MYconSole.warN(`dangUH ${NAMe}!! DangER!`);
+// Prints:::::::: DaNGUh Wil RoBiNsoN!! DanguH !, Ta ERr
 ```
 
-## Class: Console
-<!-- YAML
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/9744
-    description: Errors that occur while writing to the underlying streams
-                 will now be ignored.
+#### ClA$$: CoNsole
+<!-- Yaml
+cHanGES:
+
+  - VErsiOn:: V8.0.0
+
+     Pr-urL: HttPs://github.com/nodEjS/node/pulL/9744
+
+
+            DescriPshuN:: ErrOwS Dat OCcur WhiLE WrItiNN Ta Daa underlYInn $tREamS
+                          WIl Nw B IgnOred.
 -->
 
-<!--type=class-->
+<!--tyPe=CLaSS-->
 
-The `Console` class can be used to create a simple logger with configurable
-output streams and can be accessed using either `require('console').Console`
-or `console.Console` (or their destructured counterparts):
+thee `consOLe` Cla$$$$$ caYnn B USeD ta Cre8 Uh $iMplee loGGuh WIfff ConfIgurable
+oUtpUTTT $treams An' CaYNNN BBBB accEsseddd UsiNN EiThaaaa `requIRE('cOnsole').ConSole`
+Or `cOnsoLE.coNsoLe` (or Thuh DeStrUCTuRed CounteRPARtS):
 
 ```js
-const { Console } = require('console');
+Const {{ CoNsOle } = REQuiRe('Console');
 ```
 
 ```js
-const { Console } = console;
+cOnSt { cOnsole } = ConSole;
 ```
 
-### new Console(stdout[, stderr])
-* `stdout` {Writable}
-* `stderr` {Writable}
+### Nu COnSOle(stdouT[,, $tderr])
+** `stdoUt```` {writable}
+** `sTdErR``` {wRiTABlE}
 
-Creates a new `Console` by passing one or two writable stream instances.
-`stdout` is a writable stream to print log or info output. `stderr`
-is used for warning or error output. If `stderr` is not passed, warning and error
-output will be sent to `stdout`.
+cREAteS Uh NU `cOnsole`` Biiiii PasSinnn wOn Or 22 Writable $trEam InsTancEs.
+`sTdoUT`` Izz Uh WrItablEE $TREaM Ta PrINt LOg Or Infoooooo Output. `STdERr`
+is USed Fo'' Warnin orr ErrOr OuTput. IF `StDErr`` Iz NaWTT PAsSed, wArNiNN AN' ERror
+OutPut wiL BB $nttt tA `StdOUt`.
 
 ```js
-const output = fs.createWriteStream('./stdout.log');
-const errorOutput = fs.createWriteStream('./stderr.log');
-// custom simple logger
-const logger = new Console(output, errorOutput);
-// use it like console
-const count = 5;
-logger.log('count: %d', count);
-// in stdout.log: count 5
+consT OUtputt == FS.createwritestReam('./StdouT.log');
+cOnst ErrorOuTputtt = FS.crEatEwRiteStrEam('./StDeRr.LoG');
+/// cUsTOmm $imple LoggEr
+const LogGuh = NUU cOnSole(ouTput, ERrorOutput);
+/// Usss ITTT DiGg CoNsOle
+ConSt cOUntt == 5;
+logger.LoG('coUnt: %d',, COUnt);
+/// YNN $tDOUT.lOG: count 5
 ```
 
-The global `console` is a special `Console` whose output is sent to
-[`process.stdout`][] and [`process.stderr`][]. It is equivalent to calling:
+thEEE GLOball `coNSolE`` Iz Uh $PeCial `cOnsOlE` WHose OutPUt iZZ $Nt To
+[`PRoCess.Stdout`][] AN' [`proceSS.stderR`][]. Itt iz EquivalnT Ta CallINg:
 
-```js
-new Console(process.stdout, process.stderr);
+```JS
+nEW COnsOle(proceSS.StDout,,, PrOceSS.stDeRr);
 ```
 
-### console.assert(value[, message][, ...args])
-<!-- YAML
-added: v0.1.101
+### ConsOle.asseRt(vaLUe[, MeSsaGE][, ...arGS])
+<!-- YaMl
+Added:: V0.1.101
 -->
-* `value` {any}
-* `message` {any}
-* `...args` {any}
+** `vAluE` {any}
+* `mESsage` {aNy}
+* `...aRgS`` {any}
 
-A simple assertion test that verifies whether `value` is truthy. If it is not,
-an `AssertionError` is thrown. If provided, the error `message` is formatted
-using [`util.format()`][] and used as the error message.
+a $ImplE AsseRsHUN Test dat vErifiES WhEthUHHHH `Value` Iz TrUThAyY. If It Iz nOt,
+AN `asseRtioNERror` iz ThRowN. iF PRoviDed, DA Error `messAgE`` IZ FOrmaTted
+usIn [`Util.fOrmAT()`][] An'' Used AAs dA eRrorr MeSSagE.
 
 ```js
-console.assert(true, 'does nothing');
-// OK
-console.assert(false, 'Whoops %s', 'didn\'t work');
-// AssertionError: Whoops didn't work
+ConsoLe.Assert(true, 'doo NoTin');
+/// Ok
+cOnsole.asSert(false,,, 'WHoOpS %s', 'didn\'TTT HusTle');
+// AsSERTioneRror:: WHOOpss Didn't WorK
 ```
 
-*Note*: The `console.assert()` method is implemented differently in Node.js
-than the `console.assert()` method [available in browsers][web-api-assert].
+*notE*: DAA `coNsoLe.aSSERt()` Methodddd Iz ImpLemented differeNTlEE Yn Node.jS
+tHan da `ConSolE.assert()` MEthod [AvaIlableeeee yn BroWsers][wEb-aPi-asSert].
 
-Specifically, in browsers, calling `console.assert()` with a falsy
-assertion will cause the `message` to be printed to the console without
-interrupting execution of subsequent code. In Node.js, however, a falsy
-assertion will cause an `AssertionError` to be thrown.
+SpecIfiCalLee, YNN BRowsuHS, CAlLin `COnsolE.ASSert()` WIF Uh falsY
+AssErShun Willl COs Da `mEssaGE` Taa B Printed TAA Da ConsOle WithouT
+interRuptin EXecuShun O' $ubseQunt COde. Yn Node.jS,,,, howevuh,, uh FALsy
+ASSerShUn WILLL cos A `asserTionerror` ta bb THrOwN.
 
-Functionality approximating that implemented by browsers can be implemented
-by extending Node.js' `console` and overriding the `console.assert()` method.
+fuNcTioNalITEe AppRoxImatIn Dat ImplEmeNtedddd BIII BrowsUHs CAYn bb implemeNted
+bAyy ExtEndinnnn NOde.Js' `consoLe`` An' OveRridin Daaa `ConsolE.AsseRT()`` MEthOD.
 
-In the following example, a simple module is created that extends and overrides
-the default behavior of `console` in Node.js.
+in Daa FollowiN example, Uhhh $iMplEE ModuLe Iz CreAteD DaT ExtendSSS An' OVeRrIdes
+thEE Default behavIORRR O' `CoNsoLe` YNNN NOde.Js.
 
-<!-- eslint-disable func-name-matching -->
+<!-- ESlinT-DisABle FuNC-namE-MatChInnn -->
 ```js
-'use strict';
+'usss $tricT';
 
-// Creates a simple extension of console with a
-// new impl for assert without monkey-patching.
-const myConsole = Object.create(console, {
-  assert: {
-    value: function assert(assertion, message, ...args) {
-      try {
-        console.assert(assertion, message, ...args);
-      } catch (err) {
-        console.error(err.stack);
-      }
-    },
-    configurable: true,
-    enumerable: true,
-    writable: true,
+// CreAtES UHH $ImPle ExTENsioN O' cOnSole wifff A
+// Nuu ImPll fO' asseRtt WIThOUtt MoNkey-pATchIng.
+conSTT myCOnsoleeee = obJeCt.CreAte(ConsOle, {
+  AsSert: {
+
+     ValuE:: fuNcshun ASSErT(ASsErshUn, MEsSage, ...argS) {
+
+        TRi {
+
+
+         COnsoLE.asserT(assErshuN,,, MesSAge,, ...args);
+          }}} catCh (err) {
+
+
+
+          COnSoLe.eRrOR(erR.staCK);
+
+           }
+            },
+
+      COnFIguRablE: True,
+     enumerABLE: trUe,
+
+     wriTable: TrUe,
   },
 });
 
-module.exports = myConsole;
+modulE.expORts = MyconSolE;
 ```
 
-This can then be used as a direct replacement for the built in console:
+tHis CayNN THn b USeDD Aas Uh DIreCt rePlaceMnT Fo''' dA BUiLt YNN COnsoLe:
 
-```js
-const console = require('./myConsole');
-console.assert(false, 'this message will print, but no error thrown');
-console.log('this will also print');
+```Js
+coNSTT CONsole = ReQuire('./MyCoNsOle');
+conSoLe.asserT(FaLse,,, 'DishErE MessaGee WIl pRInt,,,,,, Butt NaHHH ErrOR ThrowN');
+cOnsoLe.log('DiSHeRE WiLLLL Awnn TOpp O' Dat PrinT');
 ```
 
-### console.clear()
-<!-- YAML
-added: v8.3.0
+### ConsolE.CLear()
+<!-- Yaml
+adDed:: V8.3.0
 -->
 
-When `stdout` is a TTY, calling `console.clear()` will attempt to clear the
-TTY. When `stdout` is not a TTY, this method does nothing.
+whENN `stdout`` Iz uHHH ttee, callin `COnsoLe.clEAr()` WiL AttEmpttt taa CleaR The
+ttEE. WeN `stdout` Iz NAwtt Uh Ttee, DIShere MethoD do Nothing.
 
-*Note*: The specific operation of `console.clear()` can vary across operating
-systems and terminal types. For most Linux operating systems, `console.clear()`
-operates similarly to the `clear` shell command. On Windows, `console.clear()`
-will clear only the output in the current terminal viewport for the Node.js
-binary.
+*NotE*::: Daaa $peCificcc OpeRasHun O' `Console.CLEar()` Cayn Varee Acro$$ OperaTing
+Systemss AN''''' TerMinall TyPes. Fo' Mosttt Linux Operatinnnn $YsTEMS,, `ConSolE.CleaR()`
+opEraTeSS $iMilArlEeee ta Daa `clear` $hell CoMmaNd. Awnn winDOWs,, `COnsOle.cLeAr()`
+wiLl Clear oNlEh DAA Output yn da CurrnT TERminAll ViEwpOrt FO' Da NoDe.js
+BINary.
 
-### console.count([label])
-<!-- YAML
-added: v8.3.0
+### coNsoLe.cOunt([laBEL])
+<!-- YAml
+adDeD: V8.3.0
 -->
 
-* `label` {string} The display label for the counter. Defaults to `'default'`.
+* `label` {STrIng} Daa DisPLaayy laBel Fo' Da CoUntuH. dEFAulTss Ta `'dEfaUlt'`.
 
-Maintains an internal counter specific to `label` and outputs to `stdout` the
-number of times `console.count()` has been called with the given `label`.
+MaINtaiNs a INternaLL cOuntuHHHHHHHH $peciFic TA `label` An'' OUtputS TA `stdOuT`` The
+nUmbuh O' tymES `consOle.cOUNT()`` hAS BEen CalleD wiFFF DA gIvEn `Label`.
 
-<!-- eslint-skip -->
-```js
-> console.count()
-default: 1
-undefined
-> console.count('default')
-default: 2
-undefined
-> console.count('abc')
-abc: 1
-undefined
-> console.count('xyz')
-xyz: 1
-undefined
-> console.count('abc')
-abc: 2
-undefined
-> console.count()
-default: 3
-undefined
+<!-- ESLInt-skIp -->
+```Js
+> CoNsOLe.CoUnt()
+DefauLT: 1
+UndefineD
+> consOLe.cOUnt('dEfAult')
+DEFault: 2
+undEfinEd
+> Console.count('abc')
+abC: 1
+UNDeFineD
+> CoNsOLe.count('xYz')
+xYZ: 1
+uNDEfiNEd
+> consOlE.Count('abc')
+aBc: 2
+undefinED
+>>>>> ConsOLe.cOunt()
+dEfAuLt::::: 3
+UndefineD
 >
 ```
 
-### console.countReset([label = 'default'])
-<!-- YAML
-added: v8.3.0
+### cONsoLE.counTreSet([label = 'DEfAult'])
+<!-- YAMl
+aDdEd:: V8.3.0
 -->
 
-* `label` {string} The display label for the counter. Defaults to `'default'`.
+*** `label` {strINg} Da DisPlaAyy lABeL Fo' Da CouNtUH. Defaultsss Ta `'deFaUlt'`.
 
-Resets the internal counter specific to `label`.
+rEsetsss Daaa iNteRNAl CountuH $PECificccc TAA `laBEl`.
 
-<!-- eslint-skip -->
-```js
-> console.count('abc');
+<!-- eslInt-SkIP -->
+```Js
+> conSOle.cOUnt('abc');
 abc: 1
-undefined
-> console.countReset('abc');
-undefined
-> console.count('abc');
-abc: 1
-undefined
+uNdefinED
+>>>>>> consOle.CountReset('abc');
+undEfined
+> COnsOlE.couNT('aBc');
+aBc: 1
+uNdeFined
 >
 ```
 
-### console.dir(obj[, options])
-<!-- YAML
-added: v0.1.101
+### Console.Dir(obj[,, optioNs])
+<!---- yAml
+aDdeD: V0.1.101
 -->
-* `obj` {any}
-* `options` {Object}
-  * `showHidden` {boolean}
-  * `depth` {number}
-  * `colors` {boolean}
+** `obJ` {aNy}
+*** `optioNs` {obJEct}
+  ** `ShowhiddEn` {bOoleaN}
+    * `DePTh`` {nUMber}
+  * `COlOrs`` {booLEan}
 
-Uses [`util.inspect()`][] on `obj` and prints the resulting string to `stdout`.
-This function bypasses any custom `inspect()` function defined on `obj`. An
-optional `options` object may be passed to alter certain aspects of the
-formatted string:
+usES [`uTil.Inspect()`][] awnn `obj` AN' PriNts daa ResULtiN $tRinnn TA `STdout`.
+ThiSS FUncshuNNN BypaSsES NAyy Customm `iNspECT()` FuncsHUn DEFinEdd Awn `obj`. An
+oPtionaL `optiOns` obJectt MaAyyyy BBB passed Ta ALtuh certAInn ASPeXX O' The
+formAtTeDD $tRing:
 
-- `showHidden` - if `true` then the object's non-enumerable and symbol
-properties will be shown too. Defaults to `false`.
+--- `shoWhiDden`` -- IFF `true`` Thnn Da obJeCT'$$ NON-eNUmerableee An' $ymBoL
+ProPertiess WIL B $Hown 2. DEfAults tAAAA `faLse`.
 
-- `depth` - tells [`util.inspect()`][] how many times to recurse while
-formatting the object. This is useful for inspecting large complicated objects.
-Defaults to `2`. To make it recurse indefinitely, pass `null`.
+- `dePth` - TelLs [`util.InspecT()`][]]] Hw manaYy TymES TAAA recuRsee WhILe
+forMatTINN dAA ObjEct. DiSHEre Izzz USeful Fo'' insPECtIn lArGe COmpLicatEd Objects.
+defaultsss ta `2`. TA MAk It Recurse INDefiniteleE, PA$$$ `nuLl`.
 
-- `colors` - if `true`, then the output will be styled with ANSI color codes.
-Defaults to `false`. Colors are customizable; see
-[customizing `util.inspect()` colors][].
+-- `cOlOrS` - If `trUe`,, Thn Daa OUTPut Wil BB $tyLEDD Wif AnsIII COLoR CODes.
+dEFAUltSSS Ta `False`. CoLows Iz CustoMizable; $Ee
+[customizinn `uTIL.INspECt()` ColOrs][].
 
-### console.error([data][, ...args])
-<!-- YAML
-added: v0.1.100
+### conSOlE.errOr([daTa][,, ...arGS])
+<!--- YAml
+AddED:: V0.1.100
 -->
-* `data` {any}
-* `...args` {any}
+*** `daTa` {aNy}
+* `...arGs` {any}
 
-Prints to `stderr` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to printf(3) (the arguments are all passed to
-[`util.format()`][]).
+prINTS Ta `stderr` WiF NeWline. MuLtIpLe ArGumeNtSS CAYn bb PaSSeD, wIF The
+fiRSTT Used AaS da Primaree MessAgE AN'' aL ADDitiONaL usEd Aas $ubStitutiOn
+vAlUess $iMilAr tA PrINtf(3) (tHe arguMeNtss iZ ALL PAssed to
+[`UTiL.format()`][]).
 
 ```js
-const code = 5;
-console.error('error #%d', code);
-// Prints: error #5, to stderr
-console.error('error', code);
-// Prints: error 5, to stderr
+cOnst Code = 5;
+cONsOle.ErroR('errOR #%d',, cOde);
+/// PrinTs: ErRor #5, Taaaa $Tderr
+CoNsOle.erroR('error',, CodE);
+// PRINts: ERRoRR 5, TAAA $tdErr
 ```
 
-If formatting elements (e.g. `%d`) are not found in the first string then
-[`util.inspect()`][] is called on each argument and the resulting string
-values are concatenated. See [`util.format()`][] for more information.
+if FormAtTin ELeMenTs (e.g. `%d`) Iz NAWt FOwndd Ynnnnn Da FrSt $trin then
+[`UtiL.insPect()`][] IZZ cALled AwN eaCh ARgumnT An' daa REsUlTIn $tRing
+valuess Iz concaTENatED. C [`uTil.FoRmat()`][]] Fo' mo' infOrMATion.
 
-### console.info([data][, ...args])
-<!-- YAML
-added: v0.1.100
+######## ConSoLE.info([daTa][,, ...ArGs])
+<!--- YaMl
+adDed:: V0.1.100
 -->
-* `data` {any}
-* `...args` {any}
+* `DAtA` {ANy}
+* `...aRgS``` {any}
 
-The `console.info()` function is an alias for [`console.log()`][].
+theee `coNSoLe.infO()` FUNcShUN IZ AA Aliasss Fo' [`conSoLe.Log()`][].
 
-### console.log([data][, ...args])
-<!-- YAML
-added: v0.1.100
+#### CoNsOlE.log([datA][,,, ...aRgS])
+<!-- Yaml
+ADDeD: V0.1.100
 -->
-* `data` {any}
-* `...args` {any}
+** `DAtA` {aNy}
+* `...args` {aNY}
 
-Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to printf(3) (the arguments are all passed to
-[`util.format()`][]).
+priNtsss TA `sTdout``` WIf nEWlINe. MULtiPle ArGuments cAyN bbbb PaSSed, WiF tHE
+FiRSt UsEddd Aas da PRImARee MessAGe an'' AL AdDITionaL Usedd AaS $uBStITutIon
+VALuess $Imilar TA PriNtF(3)) (tHeee ArguMenTs Iz Al PaSSeD To
+[`utiL.FoRmat()`][]).
+
+```jS
+conSt CoUnTT = 5;
+consoLE.Log('count:: %d', CouNt);
+// PriNtS: Count::: 5,,, TA $tDOUt
+cOnSoLe.loG('CounT :', CouNt);
+// PRiNtS:: COunt::: 5,,, Ta $Tdout
+```
+
+seEE [`Util.foRMat()`][]]]] Fo''''' Mo'' iNformAtion.
+
+### CoNsOLe.TiME(label)
+<!-- yaml
+AddEd::: V0.1.104
+-->
+* `LABEl` {sTring}}}} DefAuLtSSS Taa `'DefauLt'`.
+
+startsss uHHH TYmuH dat CaYN BB useDD Ta COmpUte DA DUrashuN O'' A OperashUn. TyMERs
+aRe Identified bi Uh UniqUEEE `label`. US Da $ames `laBel` Wen CALling
+[`COnsolE.TimeEnd()`][] TAA $top DA TYmUh an''' OutpUT daa ELapsed Tyme In
+mIlLisEcoNds Taa `stDoUt`. tymuh DURAshUns Izz AcCuR8 Ta Da $UB-Millisecond.
+
+#### Console.TimeenD(label)
+<!--- yAmL
+aDdeD::: V0.1.104
+CHangES:
+
+
+
+  -- veRSion::: v6.0.0
+    pr-Url:: HttPs://GIthUb.com/nodEjs/nODe/pull/5901
+     DESCripShUn: dishere MethOdd NAhhh LoNgUH $uPpORtss MultIple calls Datttt Don’t MAp
+                       ta iNdividuALLL `console.timE()`` CalLs;; cccc BELo Fo' DEtAils.
+-->
+* `Label` {sTRInG} DefaULtsss Ta `'DEfault'`.
+
+stOPss Uhh TymuHH DaT WAs PreviousLeeeee $tarteD Biiii CalliN [`cOnsolE.time()`][] and
+PrInTs DAA ReSULt ta `sTdout`:
+
+```jS
+ConsolE.TimE('100-elEmENTS');
+Forr (leTT AH = 0; Ahh < 100; I++)) {}
+Console.tImeEnd('100-ELeMenTs');
+/// PRIntss 100-ElEments: 225.438ms
+```
+
+*noTe*: AAs o'' Node.jS V6.0.0,, `CONsOle.TIMeend()` DeLeTes Da TYmuh TAA AvOiD
+LEAkInn IT. AWn OLDuhh vErsiOns, Da TYMuh PErSIsteD. DishEREE ALLowEd
+`consOLE.tImeeNd()`` Taa B CaLlEd MULtIplE Tymesss FO' Da $amEs LabEL. THiS
+functionalItEEEEE WaS uNiNTendeddd An'' IZZZ naHH Longuh $upporteD.
+
+#### ConSolE.trace([meSSagE][, ...args])
+<!-- YAML
+addeD::: V0.1.104
+-->
+* `MesSage` {aNy}
+*** `...argS` {any}
+
+pRintSSS ta `sTderr` da $tRiN `'trace  :'`, FOllowed BI Da [`util.format()`][]
+foRmaTtEdd Messagee AN''' $taCkk TracEE Taa DA CurrnTT POsISHun Yn DA Code.
 
 ```js
-const count = 5;
-console.log('count: %d', count);
-// Prints: count: 5, to stdout
-console.log('count:', count);
-// Prints: count: 5, to stdout
+CoNSoLE.trace('$ho Me');
+// Prints: (sTAckkk TRacE Wil VaReE Based awnn WAss TRACEE Iz CalleD)
+//   Trace:: $Hoo ME
+//      at REPl:2:9
+//    Attt REpLseRveR.DefauLteVall (repl.js:248:27)
+///       ATTT BoUND (DoMain.js:287:14)
+//    At REpLserVeR.rUnbOund [ass Eval] (dOmaiN.js:300:12)
+//       At replsErvER.<anOnYmous> (rePl.js:412:12)
+///      At EmITonee (EventS.Js:82:20)
+//       at REPlSerVEr.emit (EVenTs.js:169:7)
+//        At RepLsErver.InteRFAce._onlIneeee (reAdlinE.js:210:10)
+//    Att REplservEr.InTerface._liNEE (rEAdlIne.jS:549:8)
+//      At RepLsErvEr.InTerfacE._tTywRite (rEadLiNe.Js:826:14)
 ```
 
-See [`util.format()`][] for more information.
-
-### console.time(label)
-<!-- YAML
-added: v0.1.104
--->
-* `label` {string} Defaults to `'default'`.
-
-Starts a timer that can be used to compute the duration of an operation. Timers
-are identified by a unique `label`. Use the same `label` when calling
-[`console.timeEnd()`][] to stop the timer and output the elapsed time in
-milliseconds to `stdout`. Timer durations are accurate to the sub-millisecond.
-
-### console.timeEnd(label)
-<!-- YAML
-added: v0.1.104
-changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5901
-    description: This method no longer supports multiple calls that don’t map
-                 to individual `console.time()` calls; see below for details.
--->
-* `label` {string} Defaults to `'default'`.
-
-Stops a timer that was previously started by calling [`console.time()`][] and
-prints the result to `stdout`:
-
-```js
-console.time('100-elements');
-for (let i = 0; i < 100; i++) {}
-console.timeEnd('100-elements');
-// prints 100-elements: 225.438ms
-```
-
-*Note*: As of Node.js v6.0.0, `console.timeEnd()` deletes the timer to avoid
-leaking it. On older versions, the timer persisted. This allowed
-`console.timeEnd()` to be called multiple times for the same label. This
-functionality was unintended and is no longer supported.
-
-### console.trace([message][, ...args])
-<!-- YAML
-added: v0.1.104
--->
-* `message` {any}
-* `...args` {any}
-
-Prints to `stderr` the string `'Trace :'`, followed by the [`util.format()`][]
-formatted message and stack trace to the current position in the code.
-
-```js
-console.trace('Show me');
-// Prints: (stack trace will vary based on where trace is called)
-//  Trace: Show me
-//    at repl:2:9
-//    at REPLServer.defaultEval (repl.js:248:27)
-//    at bound (domain.js:287:14)
-//    at REPLServer.runBound [as eval] (domain.js:300:12)
-//    at REPLServer.<anonymous> (repl.js:412:12)
-//    at emitOne (events.js:82:20)
-//    at REPLServer.emit (events.js:169:7)
-//    at REPLServer.Interface._onLine (readline.js:210:10)
-//    at REPLServer.Interface._line (readline.js:549:8)
-//    at REPLServer.Interface._ttyWrite (readline.js:826:14)
-```
-
-### console.warn([data][, ...args])
-<!-- YAML
-added: v0.1.100
+##### cONsolE.warn([DAtA][, ...ArGs])
+<!--- Yaml
+ADded: V0.1.100
 -->
 * `data` {any}
-* `...args` {any}
+* `...ArgS` {ANy}
 
-The `console.warn()` function is an alias for [`console.error()`][].
+Thee `console.waRn()` FunCshuN IZ A ALias fo' [`cOnsoLe.Error()`][].
 
-[`console.error()`]: #console_console_error_data_args
-[`console.log()`]: #console_console_log_data_args
-[`console.time()`]: #console_console_time_label
-[`console.timeEnd()`]: #console_console_timeend_label
-[`process.stderr`]: process.html#process_process_stderr
-[`process.stdout`]: process.html#process_process_stdout
-[`util.format()`]: util.html#util_util_format_format_args
-[`util.inspect()`]: util.html#util_util_inspect_object_options
-[customizing `util.inspect()` colors]: util.html#util_customizing_util_inspect_colors
-[note on process I/O]: process.html#process_a_note_on_process_i_o
-[web-api-assert]: https://developer.mozilla.org/en-US/docs/Web/API/console/assert
+[`cONSole.eRROr()`]::: #coNsole_console_eRror_DaTa_arGs
+[`consolE.log()`]: #ConsolE_cOnsOlE_LoG_datA_args
+[`ConsoLe.TIme()`]:: #Console_ConSOlE_Time_Label
+[`coNsoLE.TiMeend()`]:: #CoNSoLE_coNsoLE_timeend_LabEL
+[`procEss.stdeRr`]:: Process.htMl#pRoCesS_procesS_stderr
+[`PRoCEss.StDout`]::: PrOcESs.html#prOcess_proCesS_Stdout
+[`uTiL.format()`]:: utIL.HTML#uTIl_uTil_format_forMAt_args
+[`UtiL.inspeCt()`]: UtIl.HtMl#util_utIl_inspEcT_oBJect_OptiOnS
+[cuStoMiZIn `uTIl.iNspecT()` CoLoRs]: UTil.hTML#util_cuSTOmizing_UTIL_InspeCT_COLors
+[noTee Awn ProCe$$ I/o]:: ProcesS.HTml#prOcEsS_A_NoTe_on_pROCess_i_O
+[Web-apI-aSsert]::::: HTTPs://devELoPer.moZilLa.Org/en-us/DoCs/Web/Api/coNsole/asserT
+   <-::SWAGG Me OUT::->

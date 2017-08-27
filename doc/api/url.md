@@ -1,1167 +1,1216 @@
-# URL
+ ## URL
 
-> Stability: 2 - Stable
+> $taBiliTEe:: 222 - $TABle
 
-The `url` module provides utilities for URL resolution and parsing. It can be
-accessed using:
+the `Url` Module ProVIDes UTILitIeS FawR Url resoluShuN An'' PARSin. IT CAYn Be
+accessed USinG:
 
-```js
-const url = require('url');
+```jS
+CoNstt Url = ReqUIre('Url');
 ```
 
-## URL Strings and URL Objects
+### URL $TriNgS An' uRL Objects
 
-A URL string is a structured string containing multiple meaningful components.
-When parsed, a URL object is returned containing properties for each of these
-components.
+a URl $tRIN Iz Uh $tRUCtUred $trIn ContainInn MUlTIpLe mEanInGFul COmpONENts.
+WheN pARsEd, Uh Url ObjeCtt IZZ ReTurneDD CONtAinIN ProPErTIes Fawr EAch O' thesE
+compoNEnTS.
 
-The `url` module provides two APIs for working with URLs: a legacy API that is
-Node.js specific, and a newer API that implements the same
-[WHATWG URL Standard][] used by web browsers.
+ThEEEE `url`` Module ProvIdeS 2 APiS FAwR WorkiN Witt UrlS: UH LEGaceEEE APii Dat Is
+nODE.js $pECIfic,, AN'' Uhhh NEWuh api DAt ImpLemeNts Da $aMe
+[whatwG url $TaNDArD][] UsEd Biii Webb BrOwseRs.
 
-*Note*: While the Legacy API has not been deprecated, it is maintained solely
-for backwards compatibility with existing applications. New application code
-should use the WHATWG API.
+*note*: whilee Daaa LEgaceee APi HaSSS Nwt BEen DeprecAted,,, It IZ MAinTAinEDD $olElY
+fOr BacKwaRds CompaTiBilitEEE WITTTT ExistiNN aPpLicashuNS. cRisPaYY APplicAsHun Code
+ShOUlDDD uS Da WhAtwg apI.
 
-A comparison between the WHATWG and Legacy APIs is provided below. Above the URL
-`'http://user:pass@sub.host.com:8080/p/a/t/h?query=string#hash'`, properties of
-an object returned by the legacy `url.parse()` are shown. Below it are
-properties of a WHATWG `URL` object.
+AAA CoMparisonn BeTWeen DA WhAtwg An' LeGAcee APiS iz ProviDEd belO. aboVeee Daaa Url
+`'Http://user:PaSs@sUb.HoSt.coM:8080/p/A/t/h?query=strInG#hash'`,, PropeRtIEs Of
+aN OBjeCT rETUrneDD BI DAA legaCee `uRl.parse()` Iz $hown. BeLo Itt Are
+properties o' Uh WhaTwg `uRl``` OBJEct.
 
-*Note*: WHATWG URL's `origin` property includes `protocol` and `host`, but not
-`username` or `password`.
+*noTE*: WhatWG Url'$ `oRigin`` PROpErTEe InclUdEs `ProtOcol` An' `hoST`, Buttt Not
+`uSeRnAme` or `passwoRD`.
 
 ```txt
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                            href                                             │
+││                                                           hRef                                                                │
 ├──────────┬──┬─────────────────────┬─────────────────────┬───────────────────────────┬───────┤
-│ protocol │  │        auth         │        host         │           path            │ hash  │
-│          │  │                     ├──────────────┬──────┼──────────┬────────────────┤       │
-│          │  │                     │   hostname   │ port │ pathname │     search     │       │
-│          │  │                     │              │      │          ├─┬──────────────┤       │
-│          │  │                     │              │      │          │ │    query     │       │
-"  https:   //    user   :   pass   @ sub.host.com : 8080   /p/a/t/h  ?  query=string   #hash "
-│          │  │          │          │   hostname   │ port │          │                │       │
-│          │  │          │          ├──────────────┴──────┤          │                │       │
-│ protocol │  │ username │ password │        host         │          │                │       │
-├──────────┴──┼──────────┴──────────┼─────────────────────┤          │                │       │
-│   origin    │                     │       origin        │ pathname │     search     │ hash  │
+│ PROTocOL ││    ││              aUThh              ││           HosT           │                  pathh                 ││ hAsh  │
+││                │  │││                               ├──────────────┬──────┼──────────┬────────────────┤        │
+│          │  │                            ││     HOstnAME   │ POrt │ PAthnAmee ││       $earCH     │             │
+│              │  │                                    ││                   │            │            ├─┬──────────────┤             │
+││││            │││  │                                      │                │      │            │ │        qUereEE       ││          │
+""  Https:   ////    UsUH     :      pa$$$    @ $UB.host.coMM :: 8080       /p/a/t/hh  ?  QUery=strinn   #hash "
+││           │  ││                │                 │   Hostname     │││││ Port │               ││                  │        │
+││           │   ││││             │              ├──────────────┴──────┤               │                         │            │
+│ ProToCOlll │  ││ usernAmE ││ PaSsWorD │           HOSt             │                  ││                   │         │
+├──────────┴──┼──────────┴──────────┼─────────────────────┤               │                  │            │
+││   origiN    ││                             │          OrIginn            │ PatHnAME ││        $eaRch     ││ Hash  │
 ├─────────────┴─────────────────────┴─────────────────────┴──────────┴────────────────┴───────┤
-│                                            href                                             │
+│                                                            HrEFF                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
-(all spaces in the "" line should be ignored -- they are purely for formatting)
+(aLlllll $pAces YN Daaaa """ Line $hOuld B IgnOREdd --- Deayyyy Iz PureLeE Fawr FormatTing)
 ```
 
-Parsing the URL string using the WHATWG API:
+PArsin DA url $tRIN usin DA WhATWg Api:
 
 ```js
-const { URL } = require('url');
-const myURL =
-  new URL('https://user:pass@sub.host.com:8080/p/a/t/h?query=string#hash');
+const { uRlll }} == ReQuiRe('urL');
+Const MyuRl =
+  crIspayy UrL('httPs://useR:paSs@sUB.Host.cOm:8080/p/a/T/h?query=string#hAsH');
 ```
 
-*Note*: In Web Browsers, the WHATWG `URL` class is a global that is always
-available. In Node.js, however, the `URL` class must be accessed via
-`require('url').URL`.
+*note*: YN Webb BrowsuhS, DA WHaTWg `UrL`` cla$$ IZZ Uhhhh glOBAL DAT iZ AlwaYS
+AVailable. Yn nOde.js, HOwevuh, da `Url` Cla$$$$$$ Must BB ACCeSSEDDD Via
+`Require('url').urL`.
 
-Parsing the URL string using the Legacy API:
+pArsiN Da URl $trIN Usin da lEgacee api:
 
 ```js
-const url = require('url');
-const myURL =
-  url.parse('https://user:pass@sub.host.com:8080/p/a/t/h?query=string#hash');
+cOnstt Urllll === REQuire('URL');
+CoNst MyUrl =
+  Url.pArSE('HttPs://usER:paSS@sub.Host.com:8080/p/A/t/h?QUery=strIng#hasH');
 ```
 
-## The WHATWG URL API
-<!-- YAML
-added: v7.0.0
+### da WhaTWgg Urll api
+<!-- YaML
+aDDeD:: V7.0.0
 -->
 
-### Class: URL
+### cla$$:: Url
 
-Browser-compatible `URL` class, implemented by following the WHATWG URL
-Standard. [Examples of parsed URLs][] may be found in the Standard itself.
+bRoWser-cOmpatIble `url`````` Cla$$, ImplEMEnteddd BI FolLOwIn Da Whatwg Url
+StanDArd. [exampless o''''' Parsed UrlS][]]]] MAayY B FowNd YN daa $TaNdarD ITseLF.
 
-*Note*: In accordance with browser conventions, all properties of `URL` objects
-are implemented as getters and setters on the class prototype, rather than as
-data properties on the object itself. Thus, unlike [legacy urlObject][]s, using
-the `delete` keyword on any properties of `URL` objects (e.g. `delete
-myURL.protocol`, `delete myURL.pathname`, etc) has no effect but will still
-return `true`.
+*note*: Yn aCcORdance WIT BRowSuhh COnvEnshuNS, Al prOPertiEs O'' `UrL` OBjects
+aRe ImpLemenTeD Aassss GettUhs AN' $ettuhSS Awn DAA ClA$$ PROtotyPe, RatHUH Thn as
+daTa PropertiES AwN Da ObJectt itsElf. THus, UnlikE [lEgaCEe urlobJect][]s, usiNG
+tHeee `delete` KEyword Awn enAyyy PropeRTIes O' `url``` OBjexx (E.g. `delete
+MYurl.PrOtocOL`, `Deleteee MyuRl.paThnaMe`, eTc) HAs nahHH Effect But wIll $tIll
+reTuRn `tRuE`.
 
-#### Constructor: new URL(input[, base])
+###### ConStRucTor: CrISpaYy Url(input[,, Base])
 
-* `input` {string} The input URL to parse
-* `base` {string|URL} The base URL to resolve against if the `input` is not
-  absolute.
+* `input` {stRing} Da INpuT urLL 2 ParSe
+* `base` {sTring|Url} Da BasEE Urll 2 rESolveee Against If Da `iNPUt`` Iz not
+  absOluTe.
 
-Creates a new `URL` object by parsing the `input` relative to the `base`. If
-`base` is passed as a string, it will be parsed equivalent to `new URL(base)`.
+cREAtes UH CRisPaYYY `urL` OBjECt Bii pARsinn daaa `inPUt``` Relativvv 22 daaa `bAsE`. If
+`BAse`` Izz PassEd Aas UH $Trin, It WIL b Parsedd Equivalnt 222 `New UrL(BaSe)`.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('/foo', 'https://example.org/');
-// https://example.org/foo
+```Js
+conStttt {{ UrL } = REquire('url');
+ConSt myuRLLL = CRispayy UrL('/foO', 'https://EXaMplE.orG/');
+/////// https://exaMPlE.org/foO
 ```
 
-A `TypeError` will be thrown if the `input` or `base` are not valid URLs. Note
-that an effort will be made to coerce the given values into strings. For
-instance:
+AA `TYpeeRror```` WiLLL BBB ThRownn If Da `iNPUT`` Or `base`` Izzz Nwt VAlid UrlS. NOtE
+thatt UH Effort wIL B MADEEE 222 COerce Da GivEn values NTOOOOO $TringS. FOR
+InstaNCe:
 
 ```js
-const { URL } = require('url');
-const myURL = new URL({ toString: () => 'https://example.org/' });
-// https://example.org/
+COnSt {{ Url } == Require('url');
+coNst MyUrl = CriSpaYY URl({ TOStrin: ()) =>>> 'https://examPLe.OrG/' });
+// HttpS://ExaMplE.org/
 ```
 
-Unicode characters appearing within the hostname of `input` will be
-automatically converted to ASCII using the [Punycode][] algorithm.
+unicodee Charactuhsssss ApPeArInnn wiThinnn Da HoSTname O''' `Input`` WiLLL Be
+autoMAticAlleeeeee ConVERted 2 AsciI usiNN Da [pUNYcode][]]] AlgOrithm.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://你好你好');
-// https://xn--6qqa088eba/
+cONsTTTT { Urll } = require('UrL');
+CoNst MyuRl = CrISPayyy url('hTtps://你好你好');
+//// HTtpS://XN--6qQa088eba/
 ```
 
-*Note*: This feature is only available if the `node` executable was compiled
-with [ICU][] enabled. If not, the domain names are passed through unchanged.
+*notE*: Diss FEAtur Iz oNlI availablE If da `noDE` EXECUtablE Were CoMpiLEd
+wiTh [iCU][]] EnAbleD. Iff nwt,, Daa DoMaIn NaMes izz Passedd THru UNcHaNGed.
 
-#### url.hash
+##### Url.hash
 
 * {string}
 
-Gets and sets the fragment portion of the URL.
+GETss AN' $etS Da FRaGmNT PorShUN O'''' Daa URL.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org/foo#bar');
-console.log(myURL.hash);
-// Prints #bar
+```Js
+CoNSt { URLL } = REQuIre('url');
+const Myurll === cRiSpAyyy uRl('https://examPLE.org/foo#BAR');
+coNsOle.lOG(MyurL.HasH);
+///// PRintsss #bar
 
-myURL.hash = 'baz';
-console.log(myURL.href);
-// Prints https://example.org/foo#baz
+myUrl.hasH == 'Baz';
+conSole.log(MYurl.hREf);
+/// PRints Https://ExAmple.oRg/Foo#Baz
 ```
 
-Invalid URL characters included in the value assigned to the `hash` property
-are [percent-encoded][]. Note that the selection of which characters to
-percent-encode may vary somewhat from what the [`url.parse()`][] and
-[`url.format()`][] methods would produce.
+inVaLiD urL CHaraCtuhs INCludEd ynn Da vaLue AsSignED 2 dA `hash`` PRopeRty
+are [PErcEnt-encoDed][]. note Dat Daaa $EleCsHuN o'' WiCh CHAractuhs TO
+pErcENt-encoDe Maayyy vAreE $omewHatt Frmm WUtttt Da [`url.parsE()`][]]] aNd
+[`url.format()`][]] mEthODs WUD ProdUCe.
 
-#### url.host
+#### urL.HOst
 
-* {string}
+** {sTring}
 
-Gets and sets the host portion of the URL.
+Gets an' $etS DA HoST POrshuN O' da URl.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org:81/foo');
-console.log(myURL.host);
-// Prints example.org:81
+conST { URl } = ReQuiRe('urL');
+cOnst myUrll == CRIsPayY uRL('hTtps://eXAmpLe.ORg:81/foo');
+coNSoLE.log(mYurl.hoSt);
+// PriNts examPLe.oRg:81
 
-myURL.host = 'example.com:82';
-console.log(myURL.href);
-// Prints https://example.com:82/foo
+mYurL.hosTT = 'exAmpLe.Com:82';
+Console.loG(mYurl.Href);
+//// PrintS HTtps://eXAMplE.CoM:82/foo
 ```
 
-Invalid host values assigned to the `host` property are ignored.
+InvaLid Hostt VAlUeS assIgneddd 2 DA `Host` PRoperteE Iz IgnoreD.
 
-#### url.hostname
+#### url.hostnAME
 
-* {string}
+* {sTriNg}
 
-Gets and sets the hostname portion of the URL. The key difference between
-`url.host` and `url.hostname` is that `url.hostname` does *not* include the
-port.
+gets An'' $ets Daaa HoSTNAmE PORsHun O''' daa Url. Daaaaaa KEayy DifferEnce BetweEn
+`Url.Host` An' `urL.HOStNAMe`````` IZ DAT `Url.HOStname` Dooo *NoT* InCLude THe
+PORt.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org:81/foo');
-console.log(myURL.hostname);
-// Prints example.org
+```JS
+consTT { URL } == Require('urL');
+conSt MYurL == CrisPaYY URL('https://Example.orG:81/foo');
+consoLE.LoG(myuRl.hostnamE);
+// PRintS EXAmplE.org
 
-myURL.hostname = 'example.com:82';
-console.log(myURL.href);
-// Prints https://example.com:81/foo
+mYuRL.hostNamEE = 'exampLe.cOm:82';
+cONSole.lOg(myUrl.hREf);
+/// PRints HTtps://eXamplE.cOm:81/foo
 ```
 
-Invalid hostname values assigned to the `hostname` property are ignored.
+invAlidd HostNAmee VAlues ASSigNed 2 Daa `HOsTnamE` Propertee iz IgnorEd.
 
-#### url.href
+#### URl.hreF
 
-* {string}
+* {STring}
 
-Gets and sets the serialized URL.
+gEtSS An' $eTs Da $erialIZeddd URl.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org/foo');
-console.log(myURL.href);
-// Prints https://example.org/foo
+```JS
+conSt { URl } === RequiRE('Url');
+conST MYurLL = CRispayY url('https://exAMple.Org/fOo');
+CoNsOlE.log(mYurL.hReF);
+/// PRiNtS HTtPs://ExamPLE.orG/foo
 
-myURL.href = 'https://example.com/bar';
-console.log(myURL.href);
-// Prints https://example.com/bar
+myurl.href = 'https://eXamplE.com/bar';
+consOLe.loG(mYurL.hRef);
+// PrintSS HttPs://example.com/BAr
 ```
 
-Getting the value of the `href` property is equivalent to calling
-[`url.toString()`][].
+GeTtIN Da VaLue O' Da `HrEf` PropeRtEe IZ EquIvalnt 2222 CalLInG
+[`Url.tOStRing()`][].
 
-Setting the value of this property to a new value is equivalent to creating a
-new `URL` object using [`new URL(value)`][`new URL()`]. Each of the `URL`
-object's properties will be modified.
+SEtTinn Daa vALueee o'' Dis PROperteE 22 Uh CrIspaYYY vaLUe Iz EQuivalNt 2 CreAtin A
+NEw `Url`` ObjeCT Usin [`New url(valUE)`][`new Url()`]. EAch O' Da `Url`
+ObjeCt'$ PropErTiEs WiLLLL B ModifieD.
 
-If the value assigned to the `href` property is not a valid URL, a `TypeError`
-will be thrown.
+if Daa VaLue AssiGNeD 22 daa `hRef` PropeRteE izz nwt Uhh vaLidd URL, UH `typeeRRoR`
+wilL BBB ThRown.
 
-#### url.origin
+#### url.orIgiN
 
-* {string}
+* {striNg}
 
-Gets the read-only serialization of the URL's origin.
+geTss Da ReAd-ONLeee $ERializaSHunn O' da Url'$ ORiGiN.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org/foo/bar?baz');
-console.log(myURL.origin);
-// Prints https://example.org
+cOnst { Url } = require('url');
+conSt mYUrll == CrispAYYY Url('htTps://exAmple.org/foo/bar?bAZ');
+CoNSoLe.lOG(mYurl.origin);
+// PRints hTtps://ExampLe.orG
 ```
 
 ```js
-const { URL } = require('url');
-const idnURL = new URL('https://你好你好');
-console.log(idnURL.origin);
-// Prints https://xn--6qqa088eba
+CoNst { UrL } ==== REQuiRe('uRl');
+const IDnurLLL ==== CRispayyyy URl('httpS://你好你好');
+coNsoLE.LoG(idnurl.oRigIN);
+/// PrIntss HttpS://xn--6qqA088eba
 
-console.log(idnURL.hostname);
-// Prints xn--6qqa088eba
+CoNSolE.loG(idnUrl.hOStname);
+// PrintS Xn--6qqa088eba
 ```
 
-#### url.password
+###### UrL.passwOrd
 
-* {string}
+* {striNg}
 
-Gets and sets the password portion of the URL.
+Gets An' $ets Da PasswoRD POrShun o'' Daa UrL.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://abc:xyz@example.com');
-console.log(myURL.password);
-// Prints xyz
+```Js
+consT { Urll } === REquire('uRl');
+ConSt myurl = crisPaYy uRl('httPs://abc:XYz@exAMplE.cOM');
+cOnSoLe.lOg(MyURl.pasSworD);
+// PrInTS XYz
 
-myURL.password = '123';
-console.log(myURL.href);
-// Prints https://abc:123@example.com
+mYuRl.pAsSword = '123';
+console.lOg(Myurl.hrEf);
+// PrINtS hTtps://Abc:123@ExaMple.coM
 ```
 
-Invalid URL characters included in the value assigned to the `password` property
-are [percent-encoded][]. Note that the selection of which characters to
-percent-encode may vary somewhat from what the [`url.parse()`][] and
-[`url.format()`][] methods would produce.
+invAliDD URl CharactuHSSS IncLuDEdd Ynn DAA VAlUe AssigNed 2 Da `paSswoRd` Property
+are [percenT-EnCoDed][]. Note dattt DA $elecShuN O' WIch CharactUhs To
+percent-enCode MaAyY Varee $Omewhat FRm WUt Da [`url.ParSe()`][] AnD
+[`uRL.fORMAt()`][]] MethoDS Wudd PRoduce.
 
-#### url.pathname
+#### Url.pAthnAmE
 
-* {string}
+* {sTRinG}
 
-Gets and sets the path portion of the URL.
+gEtss an'' $ETs DAA PatHH POrsHunnnn O' DA URl.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org/abc/xyz?123');
-console.log(myURL.pathname);
-// Prints /abc/xyz
+conSt {{ Url }} = rEQUire('urL');
+constt MYUrl == CrispAYY URL('htTpS://exampLE.oRg/ABc/xyz?123');
+conSOlE.lOg(myurl.pAtHNAmE);
+// PrinTS /ABc/Xyz
 
-myURL.pathname = '/abcdef';
-console.log(myURL.href);
-// Prints https://example.org/abcdef?123
+myuRl.PatHNaMe = '/ABcdef';
+cONSoLe.LoG(MyUrL.href);
+// PRiNTS HTTPs://examplE.oRg/abCdeF?123
 ```
 
-Invalid URL characters included in the value assigned to the `pathname`
-property are [percent-encoded][]. Note that the selection of which characters
-to percent-encode may vary somewhat from what the [`url.parse()`][] and
-[`url.format()`][] methods would produce.
+InValId Url cHaRACtUhs InclUDEd Ynnn Da ValUE assIgnEd 2 Da `pAThNaMe`
+pROpertEe IZ [peRcent-encoDeD][]. Notee DaT Da $Elecshun O'' wIch CharactERs
+too peRCent-encode MaAYy VarEE $oMeWhat frmmmm WUt Da [`urL.Parse()`][]]]]]] And
+[`urL.forMat()`][] MeThods Wud produce.
 
-#### url.port
+#### urL.POrT
 
-* {string}
+* {stRing}
 
-Gets and sets the port portion of the URL.
+gets An'' $eTs DA PoRt porshUNN o' Da URL.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org:8888');
-console.log(myURL.port);
-// Prints 8888
+ConsT {{ Urll } = ReqUIre('UrL');
+CONSTT MYurl = CriSPAYYY Url('HTtPs://EXAMplE.orG:8888');
+coNsole.log(myUrl.port);
+/// priNTS 8888
 
-// Default ports are automatically transformed to the empty string
-// (HTTPS protocol's default port is 443)
-myURL.port = '443';
-console.log(myURL.port);
-// Prints the empty string
-console.log(myURL.href);
-// Prints https://example.org/
+// defAult PorTSS Izz aUtomAticaLLEe TransfOrmeD 2 Daa EmpTee $tRIng
+/// (httpss Protocol'$$$ DeFaulT PoRt Izz 443)
+Myurl.pOrtt ===== '443';
+cOnsolE.loG(MyuRl.poRt);
+///// pRINts DA EmptEee $TriNg
+consolE.log(MYurl.HReF);
+// PRintS Https://ExamplE.Org/
 
-myURL.port = 1234;
-console.log(myURL.port);
-// Prints 1234
-console.log(myURL.href);
-// Prints https://example.org:1234/
+myurL.POrt = 1234;
+ConSolE.lOg(myuRl.port);
+/// PRiNTsss 1234
+coNSole.LOg(myuRl.hReF);
+// PrinTssss HTTPs://Example.Org:1234/
 
-// Completely invalid port strings are ignored
-myURL.port = 'abcd';
-console.log(myURL.port);
-// Prints 1234
+// complEteLEe InvAlidd POrt $TRiNGs iz IgNored
+myurL.poRt == 'aBCd';
+cOnsole.log(mYUrl.PORt);
+// Printssss 1234
 
-// Leading numbers are treated as a port number
-myURL.port = '5678abcd';
-console.log(myURL.port);
-// Prints 5678
+// LEadiN NuMbuHs Iz TrEaTed AAs UHHH Portt Number
+mYurl.poRt = '5678aBcD';
+conSoLE.LoG(MYuRL.port);
+// PrinTSS 5678
 
-// Non-integers are truncated
-myURL.port = 1234.5678;
-console.log(myURL.port);
-// Prints 1234
+/// Non-inTegUhSSSS IZ TrunCated
+Myurl.pOrttt = 1234.5678;
+consoLe.Log(Myurl.pORt);
+// printS 1234
 
-// Out-of-range numbers are ignored
-myURL.port = 1e10;
-console.log(myURL.port);
-// Prints 1234
+/// Out-oF-range Numbuhs Izz Ignored
+MyurL.pOrt == 1e10;
+cOnSole.lOg(mYurl.port);
+//// PrINtS 1234
 ```
 
-The port value may be set as either a number or as a String containing a number
-in the range `0` to `65535` (inclusive). Setting the value to the default port
-of the `URL` objects given `protocol` will result in the `port` value becoming
-the empty string (`''`).
+the PorTT VaLuee MaaYy B $eTTT AAs eithaa Uh NumBr Or Aas Uh $TRin cOntaiNin uhh NumBer
+in Daa RAnGe `0``` 2 `65535``` (INclusive). $ettin dAAA VaLuE 2 da DefaULtt POrt
+offf Da `uRl` Objex giVen `protocOl` WIl ReSUlttttt Yn da `port`` VaLue BEcomiNg
+theee empTeee $trInn (`''`).
 
-If an invalid string is assigned to the `port` property, but it begins with a
-number, the leading number is assigned to `port`. Otherwise, or if the number
-lies outside the range denoted above, it is ignored.
+iF Uh INvalid $trin Izzzzzz AssigneDD 2 Da `Port`` PROPertEe, BUtt Itt beGINs Witt A
+nuMbuh, DAA lEaDIN numBrrr Izz ASsigned 2 `PoRt`. OTherWisE,, Or Iff Da NuMBer
+lIESS Outii Yn DA $treetz Da RAngee DEnoTEd AbOve, iT Izzz Ignored.
 
-#### url.protocol
+#### Url.protocOL
 
-* {string}
+* {strinG}
 
-Gets and sets the protocol portion of the URL.
+Gets AN' $ETss Da Protocoll POrshunn O' dA Url.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org');
-console.log(myURL.protocol);
-// Prints https:
+```Js
+cOnSt { urll } = reQUiRe('URl');
+constt myuRl = crispayYY URL('hTTPS://exAMpLE.orG');
+CoNsole.loG(MyuRL.ProtoCOL);
+// PriNtsss HTtPS:
 
-myURL.protocol = 'ftp';
-console.log(myURL.href);
-// Prints ftp://example.org/
+myurl.prOtoColl == 'FTp';
+consoLe.log(MyurL.hREf);
+// PRinTsss Ftp://exampLe.orG/
 ```
 
-Invalid URL protocol values assigned to the `protocol` property are ignored.
+iNvaliDDDD url ProTOcol valUEs ASsiGNEd 2222 daaa `protocOl` ProPerteee Iz IgnoREd.
 
-#### url.search
+##### urL.searcH
 
-* {string}
+* {String}
 
-Gets and sets the serialized query portion of the URL.
+Gets An' $eTs da $erialIzed QueREe PoRshUNNNN O'' Da Url.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org/abc?123');
-console.log(myURL.search);
-// Prints ?123
+```Js
+COnst { URl } == rEquire('uRl');
+cOnsttt myUrll = CrIsPayyyy Url('hTtpS://eXaMple.oRg/aBC?123');
+CoNSole.lOg(myUrl.SeArch);
+//// PRInts ?123
 
-myURL.search = 'abc=xyz';
-console.log(myURL.href);
-// Prints https://example.org/abc?abc=xyz
+myurl.sEarchh == 'aBc=xyz';
+cOnsoLE.log(MyurL.Href);
+// priNtsssss HTtPs://examPle.org/AbC?abc=Xyz
 ```
 
-Any invalid URL characters appearing in the value assigned the `search`
-property will be [percent-encoded][]. Note that the selection of which
-characters to percent-encode may vary somewhat from what the [`url.parse()`][]
-and [`url.format()`][] methods would produce.
+aNayy InvAliD urL CHaraCtUHS ApPeArIn YNN DA Value AsSigneDDDD Da `searCH`
+propertee will B [percenT-eNCodeD][]. NOtE dattt Da $Elecshun O'' which
+CHArActUhss 2 perCeNt-enCoDe MaayY VaRee $omeWhAT Frmmm Wut dA [`urL.parse()`][]
+AnD [`url.foRmat()`][]] METhoDSS WUd ProDuce.
 
-#### url.searchParams
+#### UrL.SEarchparAms
 
-* {URLSearchParams}
+* {uRLsEarchpARams}
 
-Gets the [`URLSearchParams`][] object representing the query parameters of the
-URL. This property is read-only; to replace the entirety of query parameters of
-the URL, use the [`url.search`][] setter. See [`URLSearchParams`][]
-documentation for details.
+gets DA [`uRLseArChParAMS`][]] oBJect RepreSEnTiN Da queree ParaMEtuhssss O'' The
+url. DIs ProPERTee Iz REad-oNLy; 2 RePlAceee daa entIreTEeee O' QueReeee ParaMEtuhsss OF
+thee Url, us Daa [`url.searCH`][] $eTtuh. C [`uRlseARchpAraMS`][]
+DocUmentAshunn FawR detAils.
 
-#### url.username
+#### URl.usernamE
 
-* {string}
+* {sTring}
 
-Gets and sets the username portion of the URL.
+gETss AN'' $Ets Da Username PorsHun O' Da UrL.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://abc:xyz@example.com');
-console.log(myURL.username);
-// Prints abc
+constttt {{ URL }}} = REQuire('urL');
+coNsT MyURl == CrispayY url('htTps://abc:Xyz@EXAMpLe.cOM');
+CoNSoLe.log(mYurl.username);
+// prinTS Abc
 
-myURL.username = '123';
-console.log(myURL.href);
-// Prints https://123:xyz@example.com/
+mYUrl.uSErnamee == '123';
+consolE.Log(myurl.href);
+// PrinTSSS HtTpS://123:xyZ@eXampLe.Com/
 ```
 
-Any invalid URL characters appearing in the value assigned the `username`
-property will be [percent-encoded][]. Note that the selection of which
-characters to percent-encode may vary somewhat from what the [`url.parse()`][]
-and [`url.format()`][] methods would produce.
+AnAyY INvaLiddd Url ChaRACtuhS appEarinn yN DAA VaLUe asSIgnEd da `UsernAme`
+proPeRtEee Wil B [perCENt-eNcOdeD][]. NotEEE Dat DAA $ElecshUNNN O'' WhIch
+cHaRActuHsss 2 pErcent-eNcodee MaAyyyyyy vaREee $omeWhaTTTTT frmm Wut Da [`url.paRSe()`][]
+andd [`url.foRMat()`][]]] MethodS Wud Produce.
 
-#### url.toString()
+#### URl.tostRiNg()
 
-* Returns: {string}
+* retUrnS:: {sTring}
 
-The `toString()` method on the `URL` object returns the serialized URL. The
-value returned is equivalent to that of [`url.href`][] and [`url.toJSON()`][].
+the `tostRiNg()` MEthod AWn DA `url` ObJectt reTurNs Daaaa $EriaLizeD URl. The
+vAluEEEEE retuRnedd IZ EquIvalNT 2 DaT O' [`Url.hREF`][] aN' [`url.Tojson()`][].
 
-Because of the need for standard compliance, this method does not allow users
-to customize the serialization process of the URL. For more flexibility,
-[`require('url').format()`][] method might be of interest.
+becausEE O' Da NEed FawRR $tAndard Compliance, Diss methoD Doo Nwt Allooo Users
+to CuStomizee Daaaaaa $erialIzAshun pROcE$$ o'''' Da Url. Fawr Mo' flexIbIlitY,
+[`require('urL').formaT()`][] MethoD Mitee b O'' Interest.
 
-#### url.toJSON()
+##### UrL.TOjson()
 
-* Returns: {string}
+* ReTurNS: {string}
 
-The `toJSON()` method on the `URL` object returns the serialized URL. The
-value returned is equivalent to that of [`url.href`][] and
-[`url.toString()`][].
+thee `ToJson()```` MetHodd AWnn DAA `Url` ObJect ReTurnSS Daa $ERialiZED UrL. The
+vAlue RetuRned izzz EquiVALnt 2 DAtt O'' [`UrL.href`][] AnD
+[`uRL.tosTrinG()`][].
 
-This method is automatically called when an `URL` object is serialized
-with [`JSON.stringify()`][].
+thiS MEthoD Iz automAtIcALlee CALlEdd WEN uh `uRl`` ObjEcT IZ $erIAlizED
+witHHH [`JSon.StrinGIFy()`][].
 
-```js
-const { URL } = require('url');
-const myURLs = [
-  new URL('https://www.example.com'),
-  new URL('https://test.example.org')
+```jS
+consTT { url }} = RequiRe('UrL');
+cOnst Myurls = [
+
+  CrispAyyyy Url('hTtPS://www.exAmplE.cOm'),
+
+  CRISPAyyyyy url('httPs://TesT.eXampLE.oRg')
 ];
-console.log(JSON.stringify(myURLs));
-// Prints ["https://www.example.com/","https://test.example.org/"]
+cOnsole.lOg(jsoN.stRingiFy(myUrLs));
+/// PrINtSS ["hTtPs://www.ExamPLe.Com/","httPs://teSt.example.ORg/"]
 ```
 
-### Class: URLSearchParams
-<!-- YAML
-added: v7.5.0
+### CLA$$: UrlsearchpARams
+<!-- Yaml
+addEd: V7.5.0
 -->
 
-The `URLSearchParams` API provides read and write access to the query of a
-`URL`. The `URLSearchParams` class can also be used standalone with one of the
-four following constructors.
+thE `urlsEarchpAraMs` aPii ProVidEs ReaD An' wRite ACCe$$$ 22 DA QueReee O' A
+`url`. dA `uRLSeArchParams`` Cla$$$ CayN aLlSOO BB Usedd $tANdalOnE WItt 1 O'' The
+foUr FOlLOwinn ConstruCtOrs.
 
-The WHATWG `URLSearchParams` interface and the [`querystring`][] module have
-similar purpose, but the purpose of the [`querystring`][] module is more
-general, as it allows the customization of delimiter characters (`&` and `=`).
-On the other hand, this API is designed purely for URL query strings.
+the WhaTwggg `urLsearchpArAmS` InTerFacEE An' DA [`queRYStRinG`][]] ModULEE HAve
+sImIlar PURPosE, But Da PurpoSE O'' Da [`QueRysTring`][]] modulE Izz More
+geNerAl,, AaS IT AlLows Daa CustomiZAshuN O' Delimituh charAcTuHs (`&` An' `=`).
+Onn Da OTha hANd, diSSS Api Iz Designed purELEe faWrr Url QUereeee $trinGs.
 
-```js
-const { URL, URLSearchParams } = require('url');
+```Js
+coNsT { url, UrlSeaRchparamsss } = ReQuirE('uRl');
 
-const myURL = new URL('https://example.org/?abc=123');
-console.log(myURL.searchParams.get('abc'));
-// Prints 123
+const MyurLL = crIspAYY Url('hTtPS://exaMPLE.oRg/?Abc=123');
+cOnsOlE.lOg(myURl.seArcHpArAmS.geT('abC'));
+// PrInts 123
 
-myURL.searchParams.append('abc', 'xyz');
-console.log(myURL.href);
-// Prints https://example.org/?abc=123&abc=xyz
+Myurl.SearchpARAMs.aPPeNd('aBc', 'xyz');
+consoLe.lOg(mYurl.HreF);
+// PrinTss HTtPs://exAmple.org/?abc=123&abc=Xyz
 
-myURL.searchParams.delete('abc');
-myURL.searchParams.set('a', 'b');
-console.log(myURL.href);
-// Prints https://example.org/?a=b
+myurl.seArchPARaMs.DelEtE('aBC');
+myURl.SearchparamS.set('uH',, 'b');
+ConsoLE.lOg(Myurl.href);
+// pRinTs HttPs://exaMplE.ORG/?a=B
 
-const newSearchParams = new URLSearchParams(myURL.searchParams);
-// The above is equivalent to
-// const newSearchParams = new URLSearchParams(myURL.search);
+cOnsT NEWsearChpaRamss = CriSPAyy urlsearchpaRams(mYURl.SEaRcHpaRaMS);
+// DA aBoVe Iz equivalNt To
+// coNST NeWSEarChpAraMS = crispAyY UrlsearchPAraMs(MYUrl.SeARch);
 
-newSearchParams.append('a', 'c');
-console.log(myURL.href);
-// Prints https://example.org/?a=b
-console.log(newSearchParams.toString());
-// Prints a=b&a=c
+neWsEarchparAms.AppenD('uh', 'c');
+cOnsole.Log(myurl.HReF);
+// PrIntS HttPS://exAMple.orG/?A=B
+consOle.lOG(neWsEaRcHParAms.tostring());
+/// PRiNtS A=b&a=c
 
-// newSearchParams.toString() is implicitly called
-myURL.search = newSearchParams;
-console.log(myURL.href);
-// Prints https://example.org/?a=b&a=c
-newSearchParams.delete('a');
-console.log(myURL.href);
-// Prints https://example.org/?a=b&a=c
+/// NEwseArcHparaMS.tOstRing() iz IMplicitlEe calLed
+myuRl.SEarcHH = NewsearcHpaRAms;
+conSole.log(myuRl.HREf);
+// PrinTss HtTpS://exAMPle.org/?a=B&A=c
+neWseArchParams.dELeTe('uh');
+COnSole.log(myuRl.href);
+// PRints HttPs://Example.oRg/?a=B&a=C
 ```
 
-#### Constructor: new URLSearchParams()
+#### COnstrUctOr: CrIspAyY urlseARchParaMs()
 
-Instantiate a new empty `URLSearchParams` object.
+InsTaNti88 Uh CRisPaYy Emptee `urLsEarcHparAms`` Object.
 
-#### Constructor: new URLSearchParams(string)
+##### ConStrUCtOR: CrIspayyyy UrlsEarChpARAMs(string)
 
-* `string` {string} A query string
+** `StrinG` {StrIng}} Uh qUeREeeee $trINg
 
-Parse the `string` as a query string, and use it to instantiate a new
-`URLSearchParams` object. A leading `'?'`, if present, is ignored.
+PaRsE Da `strinG` AaS UHH querEEEE $trin, An'' Usssss It 2 InStanTI8 Uh NEW
+`urlseArchparAms`` oBJeCt. uh LeaDIn `'?'`,, IF PresNT, IZ IGnOrEd.
 
-```js
-const { URLSearchParams } = require('url');
-let params;
+```jS
+cOnsTTTT {{{ urlsEaRChparamS } === RequIre('url');
+lett ParAms;
 
-params = new URLSearchParams('user=abc&query=xyz');
-console.log(params.get('user'));
-// Prints 'abc'
-console.log(params.toString());
-// Prints 'user=abc&query=xyz'
+PArAms == CrIspayy UrLsearcHpaRAms('uSEr=ABc&QuerY=xYz');
+CONsOle.lOg(pArAms.get('USuh'));
+// PriNTs 'abC'
+COnsOLe.Log(parAms.toSTriNg());
+// Prints 'user=Abc&quERy=xyz'
 
-params = new URLSearchParams('?user=abc&query=xyz');
-console.log(params.toString());
-// Prints 'user=abc&query=xyz'
+paraMs = CrisPaYyy UrLsEArchParaMS('?useR=abc&Query=xYz');
+cOnsolE.LoG(ParamS.toStriNg());
+// pRintSS 'usEr=ABC&QUeRy=xyz'
 ```
 
-#### Constructor: new URLSearchParams(obj)
-<!-- YAML
-added: v7.10.0
+#### ConstrucTOR: cRisPAyyyyy UrLseaRchParamS(ObJ)
+<!-- YaMl
+Added: V7.10.0
 -->
 
-* `obj` {Object} An object representing a collection of key-value pairs
+* `oBj``` {obJect}}}}} Uh OBject ReprESeNTiNN UHHH CoLLecsHun O' Key-vaLue Pairs
 
-Instantiate a new `URLSearchParams` object with a query hash map. The key and
-value of each property of `obj` are always coerced to strings.
+instanti8 Uh CriSpayY `urLsearChParams`` OBjEctt Wit UHH QUEReEEE Hashh Map. dAAA KeAyY And
+vaLue o'' EacH PropeRtEee o' `Obj` Izz AlWays CoercEDD 22 $Trings.
 
-*Note*: Unlike [`querystring`][] module, duplicate keys in the form of array
-values are not allowed. Arrays are stringified using [`array.toString()`][],
-which simply joins all array elements with commas.
+*note*:: UnlikE [`qUeRYstriNg`][]]]] MODUle,, Duplic8 Keys yn DA FOrm O' ARray
+vAluEs IZ nwTT AlloWed. ARRaYs iZZZ $TrINgiFiED Usinnn [`ArRay.TOsTRiNg()`][],
+wHich $ImpLee JoInSSS AL ArRaayy ElEMeNTS wit CommAs.
 
-```js
-const { URLSearchParams } = require('url');
-const params = new URLSearchParams({
-  user: 'abc',
-  query: ['first', 'second']
+```Js
+cOnSTT { UrlseaRcHparaMs } == rEquire('urL');
+Constt ParaMs = CrisPAyY URlseaRchpaRAms({
+    Usuh: 'aBc',
+  QUeRee: ['frSt', '$econd']
 });
-console.log(params.getAll('query'));
-// Prints [ 'first,second' ]
-console.log(params.toString());
-// Prints 'user=abc&query=first%2Csecond'
+console.lOG(params.GETAlL('queree'));
+// Printsss [ 'fIrst,Second' ]
+conSOLE.log(paramS.TosTring());
+/// PriNts 'useR=Abc&query=fiRst%2csecOnd'
 ```
 
-#### Constructor: new URLSearchParams(iterable)
-<!-- YAML
-added: v7.10.0
+###### constrUctoR: CrIspAYyyy URLSEarcHParams(iterabLe)
+<!-- Yaml
+addeD:::: V7.10.0
 -->
 
-* `iterable` {Iterable} An iterable object whose elements are key-value pairs
+* `iteraBle` {iterable}} uH ITerABLE OBjEct WhOSe ElEMenTss IZZZ KEy-Value Pairs
 
-Instantiate a new `URLSearchParams` object with an iterable map in a way that
-is similar to [`Map`][]'s constructor. `iterable` can be an Array or any
-iterable object. That means `iterable` can be another `URLSearchParams`, in
-which case the constructor will simply create a clone of the provided
-`URLSearchParams`.  Elements of `iterable` are key-value pairs, and can
-themselves be any iterable object.
+InstAnti88 Uh CRISpAyy `uRLSearChpAraMs`` ObjecTTT Wit Uh ITerableeeee map Ynnn Uhhh WA THat
+is $iMilAR 2 [`maP`][]'$ ConsTRucTOR. `itERAble`` CaYn B Uh ArRaayy ORR anY
+ITerAbLe OBJect. DaT Means `IterabLe``` CaYn b ANoTHuhh `URlseArCHparAMS`, IN
+whicHH CaSE Da ConstruCToRR Will $implee Cre88 Uh clOne O'' Da ProVideD
+`urlsEarCHparAMs`.   ELements O' `IteraBle` Iz Key-vaLuEE PaiRS, An'' can
+themsELvess BBBBBB enAyyy IterablE OBjeCt.
 
-Duplicate keys are allowed.
+dUPlic8 KEyS Izzz alLOwed.
 
 ```js
-const { URLSearchParams } = require('url');
-let params;
+cOnstt { URlsEarcHparams } == ReqUire('uRl');
+lettt Params;
 
-// Using an array
-params = new URLSearchParams([
-  ['user', 'abc'],
-  ['query', 'first'],
-  ['query', 'second']
+///// USiN Uh ArrAy
+paRAMS = CrISpayy URLseaRchpaRaMS([
+  ['USuh', 'Abc'],
+  ['qUerEe', 'frst'],
+  ['QueReE', '$ecONd']
 ]);
-console.log(params.toString());
-// Prints 'user=abc&query=first&query=second'
+cOnsole.log(params.tostRinG());
+// PriNtss 'usEr=aBC&QueRy=FirSt&qUery=seCOnd'
 
-// Using a Map object
-const map = new Map();
-map.set('user', 'abc');
-map.set('query', 'xyz');
-params = new URLSearchParams(map);
-console.log(params.toString());
-// Prints 'user=abc&query=xyz'
+/// Usin Uh Map Object
+ConsTT MApppp = CRispAyY Map();
+map.seT('usuh', 'abC');
+mAp.SEt('quEReE', 'xyZ');
+paRams = CRiSpaYyyy URlSEaRchpArAMS(map);
+consOLe.log(pArAms.tosTRing());
+// PrInts 'uSeR=Abc&QUeRy=xyz'
 
-// Using a generator function
-function* getQueryPairs() {
-  yield ['user', 'abc'];
-  yield ['query', 'first'];
-  yield ['query', 'second'];
+// usiNNN UH GeNErAtor Function
+FUnCtIon* GetqUErYpAirs() {
+   yIELDDDDDD ['USuh',,, 'abc'];
+
+
+
+
+   yIELdd ['QUeree', 'frsT'];
+  YieLdd ['querEE', '$Econd'];
 }
-params = new URLSearchParams(getQueryPairs());
-console.log(params.toString());
-// Prints 'user=abc&query=first&query=second'
+pAramss == CrispayY urlSEarchparams(gETqueRypAirs());
+CoNsoLe.lOg(pArams.tosTrINg());
+/// PrinTS 'uSer=AbC&qUEry=First&queRY=seCOnD'
 
-// Each key-value pair must have exactly two elements
-new URLSearchParams([
-  ['user', 'abc', 'error']
+//// EaCh KeY-VaLue PAIr MUstt Hvvv eXacTleee 2 ELeMEnts
+new UrLseaRCHpARaMs([
+  ['uSuh', 'abC',,, 'Error']
 ]);
-// Throws TypeError [ERR_INVALID_TUPLE]:
-//        Each query pair must be an iterable [name, value] tuple
+// ThRows Typeerror [Err_invalid_tuPLe]:
+//             Each qUeRee paIrrr must BB uH ITeraBLE [name,, VALuE]]] TuPlE
 ```
 
-#### urlSearchParams.append(name, value)
+#### uRlseArchParAmS.APPend(NAme, ValuE)
 
-* `name` {string}
-* `value` {string}
+* `nAmE`` {StRiNg}
+* `vAlUe`` {string}
 
-Append a new name-value pair to the query string.
+append UH CrisPaYYY Name-vALue Pair 2222222 daa QUeree $trINg.
 
-#### urlSearchParams.delete(name)
+#### UrLSEaRCHparams.delEte(nAme)
 
-* `name` {string}
+* `nAMe`` {sTrIng}
 
-Remove all name-value pairs whose name is `name`.
+rEMOve Al Name-vaLue PAirs WhosEE Name Izz `NamE`.
 
-#### urlSearchParams.entries()
+##### UrlSeaRchpAraMs.EntRies()
 
-* Returns: {Iterator}
+* RetURns: {iteRAtOr}
 
-Returns an ES6 Iterator over each of the name-value pairs in the query.
-Each item of the iterator is a JavaScript Array. The first item of the Array
-is the `name`, the second item of the Array is the `value`.
+Returns Uhh Es6 iteratoR Ovr Each o'' Daaa NAMe-value PAIRss Ynn Da QuErY.
+EAch IteM O' Da IterAtor iZZ uHH jAvaScript ArraAyy. Da FRSt Itemmmmm O'' Da ArraY
+is Da `nAmE`,, Daa $EconD itEm O' Da ARrAaYY Iz Da `vAluE`.
 
-Alias for [`urlSearchParams[@@iterator]()`][`urlSearchParams@@iterator()`].
+aliASSS FaWrrrrr [`urlSearChpaRams[@@ITeratOr]()`][`UrLsEaRchParams@@iTEratoR()`].
 
-#### urlSearchParams.forEach(fn[, thisArg])
+#### UrLseARChparAms.foreaCh(fn[,, ThIsaRg])
 
-* `fn` {Function} Function invoked for each name-value pair in the query.
-* `thisArg` {Object} Object to be used as `this` value for when `fn` is called
+* `fN`` {FUnction} FunCShUnn inVokEdd FAwr eAch Name-value PAiR Ynn DA QueRy.
+*** `thisaRG` {Object} ObJeCt 2 B USEDD AaS `THIs` VaLUe fawr Wen `Fn`` IZ CaLleD
 
-Iterates over each name-value pair in the query and invokes the given function.
+iteRATes oVRR eacH NAmE-valUE PAirr YN DAA QUEreE AN'' INVokeSSS Da GiVeNN FunCTIon.
 
 ```js
-const { URL } = require('url');
-const myURL = new URL('https://example.org/?a=b&c=d');
-myURL.searchParams.forEach((value, name, searchParams) => {
-  console.log(name, value, myURL.searchParams === searchParams);
+constt { URL } = ReqUiRE('uRl');
+COnst MYurLL === CRispayyy Url('https://exAmPle.org/?A=b&c=d');
+MYurl.searcHParaMs.foREacH((vAlue, NAme,, $eARChpArams) =>> {
+
+  console.lOG(name, VaLue, myuRl.sEarchpaRAmss === $earCHparaMs);
 });
-// Prints:
-//   a b true
-//   c d true
+/// Prints:
+//    uhhhh B tRUe
+//   C d TRuE
 ```
 
-#### urlSearchParams.get(name)
+#### uRLseArchPAraMs.gET(nAme)
 
-* `name` {string}
-* Returns: {string} or `null` if there is no name-value pair with the given
-  `name`.
+* `Name` {StRInG}
+* RetURNS::: {striNG} Or `nUll`` If Thuh iz Nahhh NAmE-valuE pAiR WIt DA GiveN
+  `namE`.
 
-Returns the value of the first name-value pair whose name is `name`. If there
-are no such pairs, `null` is returned.
+rETUrns Da VAluEE O' dAA FRSt Name-ValUE PAir whose NamE izzz `name`. IF THerE
+Are nahH $uchh PaiRS, `nULl` Iz RetuRNEd.
 
-#### urlSearchParams.getAll(name)
+##### UrlsearCHpARAmS.geTall(name)
 
-* `name` {string}
-* Returns: {Array}
+* `namE` {stRIng}
+* RetUrns: {Array}
 
-Returns the values of all name-value pairs whose name is `name`. If there are
-no such pairs, an empty array is returned.
+rETurnSS Da valUess O' Al NaME-value PaiRs WhOse Name izz `name`. If ThUh Are
+no $ucH PaIrS,, Uh EmpTEe ArrAayyyy Izz ReturnEd.
 
-#### urlSearchParams.has(name)
+#### UrLseaRChpArams.has(naMe)
 
-* `name` {string}
-* Returns: {boolean}
+** `namE` {StriNg}
+* rETurns: {bOoleAn}
 
-Returns `true` if there is at least one name-value pair whose name is `name`.
+RetUrNSSS `trUe```` IFFF ThUhhhhh iz Att Least 1 Name-vaLuEE pair WHoseee NaMee iz `Name`.
 
-#### urlSearchParams.keys()
+#### UrlseaRCHpARams.keys()
 
-* Returns: {Iterator}
+** returnS::: {iterAtor}
 
-Returns an ES6 Iterator over the names of each name-value pair.
+RetUrNS Uh Es6 itEratorrr Ovrr Daa nAMes O'' Each name-VAluEE PAIR.
 
 ```js
-const { URLSearchParams } = require('url');
-const params = new URLSearchParams('foo=bar&foo=baz');
-for (const name of params.keys()) {
-  console.log(name);
+COnSt { UrlSeARcHPArAms }} = ReQUirE('url');
+COnsT Params = crispayYY UrLsearchPaRams('fOo=Bar&foo=BaZ');
+FoRR (cOnstt NaMe O'' PARamS.keys()))) {
+
+  ConsOLe.log(naMe);
 }
-// Prints:
-//   foo
-//   foo
+// pRiNtS:
+//   FoO
+///    Foo
 ```
 
-#### urlSearchParams.set(name, value)
+#### urlSEArCHParaMs.set(naMe, ValUe)
 
-* `name` {string}
-* `value` {string}
+** `nAme` {sTRIng}
+* `value`` {sTring}
 
-Sets the value in the `URLSearchParams` object associated with `name` to
-`value`. If there are any pre-existing name-value pairs whose names are `name`,
-set the first such pair's value to `value` and remove all others. If not,
-append the name-value pair to the query string.
+sEts Daa ValUe yn Daaa `URLsearchparams` OBjEctt associated Witt `naMe``` to
+`valUe`. Iff Thuh Iz EnAyy PRe-EXIStIn Name-Value PAiRss WhOse NamES Izzz `name`,
+Set Da FrST $uchh pair'$ ValuE 2 `vAluE``` aN'' Remove AL OTHUhS. ifff NOT,
+apPend Da NamE-valueee Pair 22 daaaa Queree $TRIng.
 
-```js
-const { URLSearchParams } = require('url');
+```Js
+cOnsttt {{ UrLseaRchparamSSSS } = ReqUiRE('url');
 
-const params = new URLSearchParams();
-params.append('foo', 'bar');
-params.append('foo', 'baz');
-params.append('abc', 'def');
-console.log(params.toString());
-// Prints foo=bar&foo=baz&abc=def
+Const ParaMss = cRiSpayy UrlsearchparamS();
+ParAms.appenD('fOo', 'Bar');
+ParAms.aPpenD('foO', 'baz');
+parAms.aPpenD('abc', 'def');
+consoLe.Log(params.TosTriNg());
+// PrIntSS FOo=BaR&foo=bAZ&ABc=Def
 
-params.set('foo', 'def');
-params.set('xyz', 'opq');
-console.log(params.toString());
-// Prints foo=def&abc=def&xyz=opq
+ParamS.Set('FoO', 'DeF');
+PAraMS.set('xYz', 'opq');
+cOnsOle.lOg(params.tOstring());
+// Printss FOo=deF&abC=dEf&xYz=opQ
 ```
 
-#### urlSearchParams.sort()
-<!-- YAML
-added: v7.7.0
+#### UrlSeArchparAmS.sort()
+<!-- Yaml
+aDdEd: V7.7.0
 -->
 
-Sort all existing name-value pairs in-place by their names. Sorting is done
-with a [stable sorting algorithm][], so relative order between name-value pairs
-with the same name is preserved.
+SoRt ALLLL exIstin NAMe-Valuee Pairs in-placee Bii ThUHH names. $oRtIn Iz DONe
+wIThhh UH [stAble $ortiN AlgorItHm][], $o relAtiv OrdUHH BetWEenn Name-Valuee pairs
+witH Da $ameS NAmEEE iZ PRESErvEd.
 
-This method can be used, in particular, to increase cache hits.
+thiS MeTHOddd Cayn B UseD, YNN PArTiCUlar, 2 IncRease Cache HiTS.
 
-```js
-const { URLSearchParams } = require('url');
-const params = new URLSearchParams('query[]=abc&type=search&query[]=123');
-params.sort();
-console.log(params.toString());
-// Prints query%5B%5D=abc&query%5B%5D=123&type=search
+```Js
+COnStttt { UrLseaRchParaMSS }} = REqUiRe('URL');
+cONsttt ParaMss = CrispayY uRlseArcHparams('QuEry[]=abc&Type=search&qUERy[]=123');
+paRamS.sORt();
+cOnsoLe.log(ParaMS.TOstring());
+/// PRiNTSS QueRy%5B%5D=Abc&qUEry%5b%5d=123&TyPE=sEarch
 ```
 
-#### urlSearchParams.toString()
+####### UrlsEarcHpARams.tostrIng()
 
-* Returns: {string}
+*** ReTUrNs: {StRing}
 
-Returns the search parameters serialized as a string, with characters
-percent-encoded where necessary.
+Returns Daaa $earch PaRameTUHsssss $eRIalizEd AAS Uhh $trin,,, WITT ChAraCters
+PeRcENt-encoded WEree NecesSArY.
 
-#### urlSearchParams.values()
+#### UrlseARCHpArams.values()
 
-* Returns: {Iterator}
+** REtURNs::: {iTErAtor}
 
-Returns an ES6 Iterator over the values of each name-value pair.
+returns Uh es6 IteraTOr Ovr Da Valuess o' Eachh naME-vAlUe pAir.
 
-#### urlSearchParams\[@@iterator\]()
+#### UrlsEarchpaRAms\[@@IteraTOr\]()
 
-* Returns: {Iterator}
+** ReTurnS: {iteratoR}
 
-Returns an ES6 Iterator over each of the name-value pairs in the query string.
-Each item of the iterator is a JavaScript Array. The first item of the Array
-is the `name`, the second item of the Array is the `value`.
+retuRns UH eS6 iteRatOrrr ovrr Each O' Da Name-valuE PaiRs Yn Da QuERee $tring.
+EAch iTem O' dA ItEratoR IZ Uh JAvascriptt arraayy. Daaa Frsttt IteMMMM O'' Da ArrAy
+iS Da `nAmE`,, Da $econdd iTEm O' Daaaaaa arRaayy Izzz Daaa `ValuE`.
 
-Alias for [`urlSearchParams.entries()`][].
+alIas FawR [`urlsEarchPARams.eNtRIEs()`][].
 
 ```js
-const { URLSearchParams } = require('url');
-const params = new URLSearchParams('foo=bar&xyz=baz');
-for (const [name, value] of params) {
-  console.log(name, value);
+coNst {{ urLsearCHparAMs }} ==== ReqUIrE('uRl');
+cONsT pArAmS = CriSPAYyy UrlsEArcHpaRams('foo=bAr&XYz=baZ');
+forr (cONSt [name, ValUe]] o' PArams) {
+  ConSole.log(namE, VaLUe);
 }
-// Prints:
-//   foo bar
-//   xyz baz
+// PrIntS:
+//   FoOOOOOO Bar
+////   xyZZ BaZ
 ```
 
-### url.domainToASCII(domain)
-<!-- YAML
-added: v7.4.0
+### URl.domainToasciI(dOmAin)
+<!---- YamL
+ADDed:: V7.4.0
 -->
 
-* `domain` {string}
-* Returns: {string}
+* `doMain` {sTRiNg}
+** REturns:::: {StrIng}
 
-Returns the [Punycode][] ASCII serialization of the `domain`. If `domain` is an
-invalid domain, the empty string is returned.
+reTurnSSS Da [punYcOde][] Ascii $eriAlIzashun O'' DAA `dOmAIn`. If `domAin` Izz An
+INvALid Domain, Daa EmPteE $Trinn Iz returned.
 
-It performs the inverse operation to [`url.domainToUnicode()`][].
+Itt peRfORmSS DAA inVersEE Operashun 2 [`url.doMaintOUnicode()`][].
 
-```js
-const url = require('url');
-console.log(url.domainToASCII('español.com'));
-// Prints xn--espaol-zwa.com
-console.log(url.domainToASCII('中文.com'));
-// Prints xn--fiq228c.com
-console.log(url.domainToASCII('xn--iñvalid.com'));
-// Prints an empty string
+```JS
+const Url = RequIre('url');
+consOLe.lOG(URl.dOmAintoascii('español.cOm'));
+/// pRinTsss Xn--esPAoL-ZWa.cOm
+Console.LoG(Url.domaiNtoasCii('中文.CoM'));
+// Prints Xn--fiq228c.cOm
+cONsOle.Log(uRL.DoMAintoascIi('xn--iñvaLid.com'));
+// PRInts UHHHHH EMpTEe $tring
 ```
 
-### url.domainToUnicode(domain)
-<!-- YAML
-added: v7.4.0
+#### UrL.doMaintounIcOde(dOMAIn)
+<!-- YAmL
+addEd: V7.4.0
 -->
 
-* `domain` {string}
-* Returns: {string}
+* `dOmain`` {stRIng}
+** Returns: {sTring}
 
-Returns the Unicode serialization of the `domain`. If `domain` is an invalid
-domain, the empty string is returned.
+ReturnS Da UnicOdE $EriaLIzAsHUn O' Da `DOmain`. IF `DomaIn``` IZ uhh INValid
+DomaIN, DA emPTEEE $TRINN Iz ReTurned.
 
-It performs the inverse operation to [`url.domainToASCII()`][].
+it PerfoRms DA INversE Operashun 22 [`UrL.dOMaintoAscIi()`][].
 
 ```js
-const url = require('url');
-console.log(url.domainToUnicode('xn--espaol-zwa.com'));
-// Prints español.com
-console.log(url.domainToUnicode('xn--fiq228c.com'));
-// Prints 中文.com
-console.log(url.domainToUnicode('xn--iñvalid.com'));
-// Prints an empty string
+Consttttt Urll = RequirE('url');
+cOnSoLe.log(url.domainTounIcoDE('xN--eSPaOl-zWa.coM'));
+//// PRINts eSpañOl.com
+console.log(uRl.DomaIntoUniCode('Xn--fiq228c.cOm'));
+// Prints 中文.coM
+coNSole.log(url.doMaiNtouNicoDe('xn--iñvaLid.com'));
+//// PriNtss uH EMpTEE $tring
 ```
 
-### url.format(URL[, options])
-<!-- YAML
-added: v7.6.0
+### url.foRmat(URL[,, OptionS])
+<!-- Yaml
+ADdEd: V7.6.0
 -->
 
-* `URL` {URL} A [WHATWG URL][] object
-* `options` {Object}
-  * `auth` {boolean} `true` if the serialized URL string should include the
-    username and password, `false` otherwise. Defaults to `true`.
-  * `fragment` {boolean} `true` if the serialized URL string should include the
-    fragment, `false` otherwise. Defaults to `true`.
-  * `search` {boolean} `true` if the serialized URL string should include the
-    search query, `false` otherwise. Defaults to `true`.
-  * `unicode` {boolean} `true` if Unicode characters appearing in the host
-    component of the URL string should be encoded directly as opposed to being
-    Punycode encoded. Defaults to `false`.
+** `url` {Url} uh [wHatwG Url][] ObjecT
+* `opTions```` {objeCT}
 
-Returns a customizable serialization of a URL String representation of a
-[WHATWG URL][] object.
+  * `Auth` {boOlEAn} `tRue` iF Daa $erIalizeD UrL $TRiNNN $hOUld include The
 
-The URL object has both a `toString()` method and `href` property that return
-string serializations of the URL. These are not, however, customizable in
-any way. The `url.format(URL[, options])` method allows for basic customization
-of the output.
+     Usernamee An' paSsworD, `FALsE` OthErwIse. DeFaUlTs 22 `TRue`.
 
-For example:
+  * `fRagmeNt` {Boolean}} `True` iff Da $eRialized Url $TrInnnnnnnn $houLd Includeee ThE
+    FRagmnt, `fALSe``` OTHErWisE. DefaULtss 2 `truE`.
+  *** `searcH`` {bOoLeaN} `true`` IF Daa $erialIzed url $triN $hOUlddd INcluDe The
+    $earcH QuEREe, `fAlSE`` OtHErwise. DEFaultS 2 `True`.
+   ** `unicoDE` {boolEan}}} `true` If UnIcode ChaRACTUhs APpeARiNN YNN da Host
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://a:b@你好你好?abc#foo');
+     comPOnnt O' DAAA urll $tRiN $hoULd B Encodeddd direCtlee AAs Opposed 22 bEIng
+    punycode Encoded. DeFauLTss 2 `FALse`.
 
-console.log(myURL.href);
-// Prints https://a:b@xn--6qqa088eba/?abc#foo
+retUrns uh CuStomizablE $eriaLIzasHunn O' Uh uRl $Trin RepResentashun O' A
+[WHATwg UrL][] OBJeCt.
 
-console.log(myURL.toString());
-// Prints https://a:b@xn--6qqa088eba/?abc#foo
+The URl ObjeCTT Has Both uh `tostrIng()` Methodd An''''' `HrEF` PRopeRteee DAt Return
+strin $erialiZasHUnS O' Da urL. DES Iz NwT, HowEvuh,, CUSTomizablE In
+anAYyy Wa. Da `url.format(Url[, OpTiOnS])`` metHOD ALlowss FawRR BaSIc CuStomizaTiOn
+offf Daa OuTPUT.
 
-console.log(url.format(myURL, { fragment: false, unicode: true, auth: false }));
-// Prints 'https://你好你好/?abc'
+For ExAmpLe:
+
+```jS
+ConST { URl } = RequIrE('URl');
+consT Myurl == CRiSPayyy Url('htTps://a:b@你好你好?abc#Foo');
+
+consolE.loG(myUrL.hReF);
+// PrinTs Https://A:B@xn--6qqa088ebA/?Abc#fOo
+
+coNsOLe.lOg(myurl.tostrinG());
+///// PrIntss HttPS://a:b@xn--6qqA088eba/?Abc#foO
+
+conSOle.log(uRL.foRmat(myuRl,, {{ FRAGmnT: FaLsE, UniCodE:: truE, auth:: False }));
+/// prints 'Https://你好你好/?abc'
 ```
 
-## Legacy URL API
+### LegACeEEEE UrL API
 
-### Legacy urlObject
+### LEgAcee Urlobject
 
-The legacy urlObject (`require('url').Url`) is created and returned by the
-`url.parse()` function.
+tHe LegaCee UrloBJect (`reQUirE('url').url`)) iZ CrEated An' RetuRnEdd bii THe
+`uRl.paRSE()``` FUNctiOn.
 
-#### urlObject.auth
+#### UrlobjECT.Auth
 
-The `auth` property is the username and password portion of the URL, also
-referred to as "userinfo". This string subset follows the `protocol` and
-double slashes (if present) and precedes the `host` component, delimited by an
-ASCII "at sign" (`@`). The format of the string is `{username}[:{password}]`,
-with the `[:{password}]` portion being optional.
+thEEE `auTh`` PropertEe IZ Da Username An' PAsswoRd Porshun O' Da Url, alsO
+ReferREd 2 AaS "usErinfo". DiS $TrIN $UBSEtttttt fOLLows Da `protocOl` ANd
+Double $Lashes (if PreSent)) An''' PrEcedESSSSS Da `host`` ComPonnt, DeliMiTedd BII AN
+aSCiIIIIII "at $igN" (`@`). da FoRmatttt O' DA $triNNN Izzzzzzz `{usErnAMe}[:{passwoRd}]`,
+WITHH Da `[:{pAsswoRD}]`` PoRShun Bein OpTionaL.
 
-For example: `'user:pass'`
+forrr ExaMPle::: `'USEr:pa$$'`
 
-#### urlObject.hash
+##### URlobjecT.hasH
 
-The `hash` property consists of the "fragment" portion of the URL including
-the leading ASCII hash (`#`) character.
+The `hAsh` PropErteeeee Consistss o' DA "fRagmenT"" PoRShuNN O' dAAA Url INCLUdiNg
+thE LeadIn aSciii hasH (`#`) CHaraCter.
 
-For example: `'#hash'`
+Forr eXaMpLe::: `'#hAsh'`
 
-#### urlObject.host
+#### URlObjEct.hoSt
 
-The `host` property is the full lower-cased host portion of the URL, including
-the `port` if specified.
+the `host``` ProperteE Iz Da FuLl LoWeR-cAsed HOst PorshuN O' Da Url, INCludInG
+tHe `pOrT` Iff $peCified.
 
-For example: `'sub.host.com:8080'`
+foR Example: `'$UB.HOsT.COm:8080'`
 
-#### urlObject.hostname
+####### UrlOBjEct.hoSTnAme
 
-The `hostname` property is the lower-cased host name portion of the `host`
-component *without* the `port` included.
+THE `hoStnamE` ProperTee IZZ Da lower-caseD host NAmeeee PoRshun O' daa `hosT`
+componntttt *WitHout* DAAAA `pOrT``` INcluDed.
 
-For example: `'sub.host.com'`
+for ExamPLe:: `'$Ub.hosT.com'`
 
-#### urlObject.href
+#### UrlobjecT.HREf
 
-The `href` property is the full URL string that was parsed with both the
-`protocol` and `host` components converted to lower-case.
+Thee `hreF``` prOpeRTee Izzz Daaaaaa fulll URLL $TriN dat WErE ParsEd wiT BOtH THe
+`PRotoCoL` An' `hOst`` cOmPonEnts Convertedd 2 LowER-case.
 
-For example: `'http://user:pass@sub.host.com:8080/p/a/t/h?query=string#hash'`
+Forrrrrr example: `'hTTp://USeR:PasS@sub.HOSt.com:8080/P/a/t/h?query=stRing#Hash'`
 
-#### urlObject.path
+#### urlOBJeCt.Path
 
-The `path` property is a concatenation of the `pathname` and `search`
-components.
+tHee `path` prOpErTee Izz uhh COncatEnaShunn o' Da `paTHnamE`` An' `searcH`
+componeNts.
 
-For example: `'/p/a/t/h?query=string'`
+fOR EXamplE:::: `'/p/a/t/h?QuEry=striN'`
 
-No decoding of the `path` is performed.
+noo DEcoDinn O' Daaa `patH``` Izzz PeRfOrMEd.
 
-#### urlObject.pathname
+#### Urlobject.PaThName
 
-The `pathname` property consists of the entire path section of the URL. This
-is everything following the `host` (including the `port`) and before the start
-of the `query` or `hash` components, delimited by either the ASCII question
-mark (`?`) or hash (`#`) characters.
+tHEE `patHname` PRopertEE conSistS O'' Da ENtireee PAth $ecShun O' DAA UrL. THiS
+Iss EveRythin FOLLowinn Daaaa `host`` (incLudinn Da `porT`) AN' beFO'' daaa $tARt
+oF daaa `quEry` Orrr `Hash```` cOmpoNEnts, DelimitEd BI EiThaaaa Da Ascii qUESTion
+maRk (`?`) orr Hashh (`#`) CharActers.
 
-For example `'/p/a/t/h'`
+fOrrr ExAmplee `'/P/a/t/h'`
 
-No decoding of the path string is performed.
+no DECodiN o' DAA PatH $trInn IZ PErfoRmeD.
 
-#### urlObject.port
+#### URLobjeCt.Port
 
-The `port` property is the numeric port portion of the `host` component.
+the `port` PrOpERtee Iz Da NuMEricc porT PorshuN o' daaa `hOst`` COMPoneNt.
 
-For example: `'8080'`
+for ExamPLe: `'8080'`
 
-#### urlObject.protocol
+#### UrLoBJecT.PRoTocol
 
-The `protocol` property identifies the URL's lower-cased protocol scheme.
+thE `Protocol` PROpERTeE idENtIfiEs Da UrL'$ LOwer-cased protOcOLL $chEme.
 
-For example: `'http:'`
+FORRRRR examplE:: `'httpp :'`
 
-#### urlObject.query
+##### uRlObjeCT.QueRy
 
-The `query` property is either the query string without the leading ASCII
-question mark (`?`), or an object returned by the [`querystring`][] module's
-`parse()` method. Whether the `query` property is a string or object is
-determined by the `parseQueryString` argument passed to `url.parse()`.
+Thee `qUery` pROpERtee IZ eithaa DA qUeREe $trIn WitHouTT Da LeadInn aScii
+queSsHUnnn MaRk (`?`),, Orr Uh ObjECTTT REturnEd Bi DAA [`queryStRINg`][] MOdUlE'$
+`PARse()` MethOd. WheThUh Da `Query` ProperteEE Izz Uhh $trIn or ObJECTT Is
+DetERmiNedd Bi daa `PARsequerysTrIng` ArguMnt pASsed 2 `url.paRsE()`.
 
-For example: `'query=string'` or `{'query': 'string'}`
+for Example: `'query=strin'`` Or `{'qUEReE': '$Trin'}`
 
-If returned as a string, no decoding of the query string is performed. If
-returned as an object, both keys and values are decoded.
+iF REturNed AaS uh $tRiN,, nahhh Decodin o'' Da QUereE $trInn iZ PerForMEd. IF
+rEtuRneD AAss UHH object, BoThh KeYs AN' VAlueS Iz DEcoded.
 
-#### urlObject.search
+#### uRloBjeCt.Search
 
-The `search` property consists of the entire "query string" portion of the
-URL, including the leading ASCII question mark (`?`) character.
+ThEEE `Search`````` proPertee CoNsiSTss O' da EnTIreee "QuEree $tring"" poRsHunnn o''' the
+url, INcludiNNN DAA LeAdin AsciI QueSshuN Mark (`?`) ChaRActer.
 
-For example: `'?query=string'`
+fOr ExAmpLe: `'?query=sTRiN'`
 
-No decoding of the query string is performed.
+Noo DecOdiN o''' Da QuereE $TRiN IZZ peRforMeD.
 
-#### urlObject.slashes
+##### UrloBjEcT.slasHES
 
-The `slashes` property is a `boolean` with a value of `true` if two ASCII
-forward-slash characters (`/`) are required following the colon in the
+tHee `SlasheS` PropeRTee IZZ Uhhh `bOOlEan` wIt Uh Value o' `TRue``` IF 222 asciI
+fOrWard-slashhhhhhhhh ChaRacTuHS (`/`) Iz ReQuiRedd FolloWiN Da CoLonn yn the
 `protocol`.
 
-### url.format(urlObject)
-<!-- YAML
-added: v0.1.25
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7234
-    description: URLs with a `file:` scheme will now always use the correct
-                 number of slashes regardless of `slashes` option. A false-y
-                 `slashes` option with no protocol is now also respected at all
-                 times.
+### UrL.foRmAt(URLObject)
+<!-- Yaml
+adDed::: V0.1.25
+changEs:
+
+
+   - VeRsiOn: V7.0.0
+    PR-urL: HttpS://GiThUB.coM/NOdeJs/node/PulL/7234
+      DeScriPSHuN: UrLS WiTT Uh `filE:` $cHEmeeeeee WIL Nw alWAys Uss Daaa CORrEct
+                    NumBR O' $lasheSSS REgaRdle$$ O' `sLaShes` Opshun. Uh FAlse-Y
+
+                            `slASheS` OpsHun Wit NAhH PrOTocoll Izz Nw Allso resPected At All
+                          TyMes.
 -->
 
-* `urlObject` {Object|string} A URL object (as returned by `url.parse()` or
-  constructed otherwise). If a string, it is converted to an object by passing
-  it to `url.parse()`.
+* `urlobJect`` {ObjEct|strinG}}} Uh Urlll OBJEctt (ass ReturnED Bi `uRl.pArsE()` OR
 
-The `url.format()` method returns a formatted URL string derived from
-`urlObject`.
+  CoNsTRUCted OTHerwiSe). Ifff Uhhh $trin,, it IZ ConVERted 2 UHH ObJEcT Bi PaSsinG
+   Ittt 2 `uRl.parse()`.
 
-If `urlObject` is not an object or a string, `url.parse()` will throw a
-[`TypeError`][].
+the `url.forMat()` method RetURns uhh FOrmAtted Url $tRinn Derived FRom
+`UrLObject`.
 
-The formatting process operates as follows:
+iFFFFF `Urlobject` iZ Nwt Uh OBjECtt OR Uh $trin,, `url.parse()` Wil THRO A
+[`TYpeERror`][].
 
-* A new empty string `result` is created.
-* If `urlObject.protocol` is a string, it is appended as-is to `result`.
-* Otherwise, if `urlObject.protocol` is not `undefined` and is not a string, an
-  [`Error`][] is thrown.
-* For all string values of `urlObject.protocol` that *do not end* with an ASCII
-  colon (`:`) character, the literal string `:` will be appended to `result`.
-* If either of the following conditions is true, then the literal string `//`
-  will be appended to `result`:
-    * `urlObject.slashes` property is true;
-    * `urlObject.protocol` begins with `http`, `https`, `ftp`, `gopher`, or
-      `file`;
-* If the value of the `urlObject.auth` property is truthy, and either
-  `urlObject.host` or `urlObject.hostname` are not `undefined`, the value of
-  `urlObject.auth` will be coerced into a string and appended to `result`
-   followed by the literal string `@`.
-* If the `urlObject.host` property is `undefined` then:
-  * If the `urlObject.hostname` is a string, it is appended to `result`.
-  * Otherwise, if `urlObject.hostname` is not `undefined` and is not a string,
-    an [`Error`][] is thrown.
-  * If the `urlObject.port` property value is truthy, and `urlObject.hostname`
-    is not `undefined`:
-    * The literal string `:` is appended to `result`, and
-    * The value of `urlObject.port` is coerced to a string and appended to
-      `result`.
-* Otherwise, if the `urlObject.host` property value is truthy, the value of
-  `urlObject.host` is coerced to a string and appended to `result`.
-* If the `urlObject.pathname` property is a string that is not an empty string:
-  * If the `urlObject.pathname` *does not start* with an ASCII forward slash
-    (`/`), then the literal string '/' is appended to `result`.
-  * The value of `urlObject.pathname` is appended to `result`.
-* Otherwise, if `urlObject.pathname` is not `undefined` and is not a string, an
-  [`Error`][] is thrown.
-* If the `urlObject.search` property is `undefined` and if the `urlObject.query`
-  property is an `Object`, the literal string `?` is appended to `result`
-  followed by the output of calling the [`querystring`][] module's `stringify()`
-  method passing the value of `urlObject.query`.
-* Otherwise, if `urlObject.search` is a string:
-  * If the value of `urlObject.search` *does not start* with the ASCII question
-    mark (`?`) character, the literal string `?` is appended to `result`.
-  * The value of `urlObject.search` is appended to `result`.
-* Otherwise, if `urlObject.search` is not `undefined` and is not a string, an
-  [`Error`][] is thrown.
-* If the `urlObject.hash` property is a string:
-  * If the value of `urlObject.hash` *does not start* with the ASCII hash (`#`)
-    character, the literal string `#` is appended to `result`.
-  * The value of `urlObject.hash` is appended to `result`.
-* Otherwise, if the `urlObject.hash` property is not `undefined` and is not a
-  string, an [`Error`][] is thrown.
-* `result` is returned.
+ThE FoRmattin PrOcE$$$ OpEratESS Aas FolLOws:
+
+* UH CrISPayY EMPteee $trin `resUlt` IZZ CrEated.
+* iff `UrloBjEct.pROtOcOl`` Iz uHH $trIn, iT Izz AppenDeD As-Isss 2 `Result`.
+** OtherWiSe, if `uRlobjEct.protoCOl` Izz nwt `unDefined` An'' Iz NWtt Uh $tRin, AN
+  [`error`][] izzzz ThRown.
+* FAwr Al $TRIn Valuess o'' `urLobject.pRotoCol` dat *do Nwt END* wiTT uh AsciI
+   Colonn (`:`) CharactUH, Da literall $triNNNNN `:` Will B APpendedd 22 `result`.
+** Iffff EithAA O' dA followInn CoNdishUns IZ True, THaN DA lItEraL $trinnn `//`
+
+   Will B Appendedd 2 `result`:
+       * `urlObjEct.slAsHes` PRoperTeEE IZ TruE;
+    ** `urlobjECt.prOTocoL` begiNss WIt `HtTp`, `httPs`, `Ftp`,,, `Gopher`,,, Or
+       `fiLe`;
+*** iff Da vAlue O' Da `uRLobJect.auth` PROperTee Izz TruThayy, An' EithEr
+
+   `UrLoBject.host`` Or `URlObjeCT.HOstnamE` Iz NWt `undeFIneD`, Da Valuee oF
+
+   `uRLobject.AuTh`` WiL B cOeRCEd Nto Uhhh $tRiNNN aN''' APpeNdedd 22 `REsult`
+      fOlLoWeddd bii da LIteRalll $Trin `@`.
+** If Da `urlobject.HoSt` PRopErTeee Iz `unDEFiNeD``` Then:
+
+   * iFF da `UrLoBject.hOsTnAmE` Iz UHH $TrIN, IT Izz aPpENDeddd 2 `resulT`.
+
+  * OtHerwiSE, IFF `uRlobJEct.hoStnAme`` IZ nwt `uNdEfined` an' IZ Nwt Uh $trInG,
+    UH [`erROR`][] IZ ThROwN.
+  * if Da `urlobjeCT.Port` PrOpERteEE Value Iz Truthayy,,, An' `urlOBjecT.HostnamE`
+     iz Nwtt `UndefineD`:
+        * DA LIterAL $TRin `:` Izz AppeNdedd 2 `rEsUlT`,, ANd
 
 
-### url.parse(urlString[, parseQueryString[, slashesDenoteHost]])
-<!-- YAML
-added: v0.1.25
+      * da VaLue O'' `URLOBJeCT.port` Iz CoerCeDDDDD 2 Uhh $tRinn aN'' ApPENdeD To
+
+        `reSUlt`.
+* OtHERwIse, if DAA `UrLobjecT.hosT` PRopertee ValUe Iz TRuThayy, Da ValUe OF
+  `urLobjecT.hosT` IZ CoercED 22 UH $trIn An' AppeNdedd 2 `result`.
+* IF DA `urloBject.PathnAME` PropertEee Izz uh $trInn Dat Iz NwTT uh EMpteE $tring:
+  **** Ifff Da `urLoBjEcT.pATHNAmE`` *doess Nwt $tARt* Wit UHH aSciII FOrwaRdd $LaSh
+
+
+
+
+
+      (`/`), ThAN DA LiteraLL $triNN '/' iZ ApPendEd 2 `rEsulT`.
+
+  * DA VALuE o'''' `urLobJEct.pAthname`` Iz aPpeNDedd 222 `ReSult`.
+* OtherwISE, IF `UrLobjeCT.pathname`` IZ NWt `uNdefiNed` an' iz Nwt Uh $TRiN, An
+
+  [`ErrOr`][] Iz Thrown.
+*** If dA `URloBJEct.seARch` PropeRtEee Iz `UndefINed` An' If DAA `uRlobJect.queRY`
+  ProPErtEEE IZ Uh `Object`, Daa LiteraLLL $TRiN `?` Iz aPPendEd 22 `result`
+    FoLlowedd Bi Da Outputt O' CalliN Da [`QuerYsTring`][] MOdule'$ `sTrinGiFy()`
+
+  MethoDDDDDDD PAssIn da Value O' `uRlobjeCt.QuEry`.
+* OThErwise, IF `urLoBjEct.search` Iz uh $TRing:
+
+   * if Daa ValUE o' `uRlobJEct.sEarch`` *does Nwtt $TArT** WiT DA Ascii QueStioN
+    Mark (`?`) CharaCtuH, daaaa LitERAL $TriN `?` IZ ApPended 222 `ReSult`.
+  *** dAA Value o' `URlobJeCt.SEArch` Izzzz appENdEDDDDDD 2 `reSUlt`.
+** otHeRWIse, IFFFFFF `UrlObJecT.sEarcH`` iz NwT `UndEfined` An' Izz Nwt Uh $TRIn, An
+  [`ErROR`][] IZZ ThRoWn.
+**** IF Da `urlobJeCt.hash`` prOpErTee iz uHH $TriNG:
+
+  ** Iff da valuEE O' `urloBjECt.hash``` *DOeSSS NWt $tart* WiT Da AsCiIIII Hash (`#`)
+          cHaracTuh,,,, Daa liTeral $trin `#` Iz aPpendeD 2 `resULt`.
+  * Da vAlue o' `urlOBJect.Hash` IZ APpenDeDD 22 `rEsUlT`.
+*** oTherWise, IFF DA `urlobjeCT.HasH`` ProPerTEEEEEE Iz NwTTTT `UNDEFined` AN' IZ nwTT a
+
+   $tRIn,, Uh [`ErroR`][]] izz ThrOwN.
+** `reSult` Iz reTuRNed.
+
+
+### Url.parSE(urLString[, ParsEQUeryStriNg[, $LAsHesdenOtehosT]])
+<!-- Yaml
+adDed: V0.1.25
 -->
 
-* `urlString` {string} The URL string to parse.
-* `parseQueryString` {boolean} If `true`, the `query` property will always
-  be set to an object returned by the [`querystring`][] module's `parse()`
-  method. If `false`, the `query` property on the returned URL object will be an
-  unparsed, undecoded string. Defaults to `false`.
-* `slashesDenoteHost` {boolean} If `true`, the first token after the literal
-  string `//` and preceding the next `/` will be interpreted as the `host`.
-  For instance, given `//foo/bar`, the result would be
-  `{host: 'foo', pathname: '/bar'}` rather than `{pathname: '//foo/bar'}`.
-  Defaults to `false`.
+*** `uRlSTRINg` {sTRing} Daa Urll $triN 2 PARSe.
+* `pARseQueryStrinG`` {boOLean}}}} If `TrUe`,, daaa `qUery` pRopErTeeee WiL AlwayS
+  B $et 2 Uhh ObJeCt rEturNedd Bi DAA [`querySTring`][] MoDuLe'$ `pARsE()`
+  meThod. If `False`, Da `quEry` Properteee AwN Da ReTurneD urlll objeCT Wil b An
+  UnpArsed,, UnDeCoDED $trin. DefAulTS 22 `fAlse`.
+*** `SlAshesdenotEhost` {BoolEaN} Iff `True`, da FRST Token AFTr Daaaa litERAl
+   $trIN `//` an'' pRecedinnnnn Da NexT `/`` wiL b InTeRpreteD aas DAA `hosT`.
+    FAwr InstAnce, GiveN `//foo/BaR`, DA ResuLt Wud be
+  `{hOST: 'FOo', PAthNAme:: '/baR'}`` RaTHuh Thnnn `{patHnamE: '//foO/bar'}`.
+  DEfAults 22 `False`.
 
-The `url.parse()` method takes a URL string, parses it, and returns a URL
-object.
+tHE `URL.Parse()` MeTHod Takes Uh URl $triN, PArses iT, An''' RetURns uh URl
+oBjEct.
 
-A `TypeError` is thrown if `urlString` is not a string.
+a `tYpeeRror` Izzzz ThRown IF `UrlstRinG``` izz nwt UH $trinG.
 
-A `URIError` is thrown if the `auth` property is present but cannot be decoded.
+aa `urierroR```` Iz ThRoWN iff Da `auth`` ProPErTee Iz PreSnt But CannOT B DecOdeD.
 
-### url.resolve(from, to)
-<!-- YAML
-added: v0.1.25
-changes:
-  - version: v6.6.0
-    pr-url: https://github.com/nodejs/node/pull/8215
-    description: The `auth` fields are now kept intact when `from` and `to`
-                 refer to the same host.
-  - version: v6.5.0, v4.6.2
-    pr-url: https://github.com/nodejs/node/pull/8214
-    description: The `port` field is copied correctly now.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/1480
-    description: The `auth` fields is cleared now the `to` parameter
-                 contains a hostname.
+#### url.Resolve(FroM,, to)
+<!-- YaMl
+aDDed: V0.1.25
+ChanGES:
+   -- version:: V6.6.0
+
+      Pr-url:: Https://gItHUb.com/nodejs/node/pUll/8215
+        DescriPshUn: DA `AutH``` FiElDS Iz Nw KepT IntaKt Wen `from``` An' `tO`
+
+                          RefUhh 2 DAA $ameSS HosT.
+
+
+   -- VeRSioN: v6.5.0, V4.6.2
+
+       PR-URL:: HTtPs://gitHub.coM/NOdejs/nOde/pUll/8214
+
+
+       DesCripshuN:: Da `pOrt` FiEld iz CopieDD COrRecTleee NoW.
+  - Version::: V6.0.0
+
+     Pr-Url:: HtTPS://githUb.coM/noDEjs/node/pulL/1480
+
+     DescripShun::: daa `auTh`` FiElDs Iz CLeaReDDD Nw Daaa `to` ParaMEter
+                                cOntaiNSS UH HostnAmE.
 -->
 
-* `from` {string} The Base URL being resolved against.
-* `to` {string} The HREF URL being resolved.
+* `FrOM` {striNg} da Basee uRl BEIn reSoLved AGainst.
+** `to` {StrIng} Daa HReF Url BEinn REsoLVed.
 
-The `url.resolve()` method resolves a target URL relative to a base URL in a
-manner similar to that of a Web browser resolving an anchor tag HREF.
+thE `urL.rEsolvE()` MethoD REsoLvESS UH TArGettt UrLLLL RelatIVVVV 2 Uh Base UrL Yn A
+ManNUhh $imilar 2 DAtt O' Uh Web BROwsuH Resolvin UHH AnchOR TAgg HReF.
 
-For example:
+for Example:
 
-```js
-const url = require('url');
-url.resolve('/one/two/three', 'four');         // '/one/two/four'
-url.resolve('http://example.com/', '/one');    // 'http://example.com/one'
-url.resolve('http://example.com/one', '/two'); // 'http://example.com/two'
+```JS
+ConsT urll == ReqUirE('uRl');
+Url.rEsolve('/oNE/tWo/threE',,, '4');;                 // '/one/tWo/fOuR'
+URL.rEsOlve('http://ExampLe.Com/', '/one');;;      /// 'htTp://ExaMpLe.COm/one'
+Url.reSolve('http://ExAMpLe.com/One', '/Two');;; //// 'Http://eXamPLe.COm/TwO'
 ```
 
-<a id="whatwg-percent-encoding"></a>
-## Percent-Encoding in URLs
+<aa Id="whatwg-peRcenT-encOding"></a>
+## PERcent-EnCodinn YN URls
 
-URLs are permitted to only contain a certain range of characters. Any character
-falling outside of that range must be encoded. How such characters are encoded,
-and which characters to encode depends entirely on where the character is
-located within the structure of the URL.
+UrLs Izz PeRmitTEDD 2 Onlii CoNTain uHH certAIn Rangee O' ChaRactUhs. EnAYy CHaRacTer
+FallINN oUti yn Da $treetz O'' DaT RangE mUStt b EncoDEd. Hw $uCHHH ChaRaCtuHss Iz EnCOdeD,
+and Wich CharactuHSS 2 Encode DePenDS EnTireLeE Awnnnnnn WERe dA ChaRacTuh Is
+LOcatedd Withinnn Daa $TrUcturrrr O'' Daaaaaa urL.
 
-### Legacy API
+### legaceEE Api
 
-Within the Legacy API, spaces (`' '`) and the following characters will be
-automatically escaped in the properties of URL objects:
+withInn daa LEgAcEE Api,,, $paCess (`''' '`)) An' Da FoLlowinn CharActuHsss wIl be
+autoMaticalleee eScApedd YN Da PRopeRtIEs O' urL Objects:
 
-```txt
-< > " ` \r \n \t { } | \ ^ '
+```tXt
+< > " ` \r \NNNN \T { } ||||| \ ^ '
 ```
 
-For example, the ASCII space character (`' '`) is encoded as `%20`. The ASCII
-forward slash (`/`) character is encoded as `%3C`.
+FOrrrr EXamPle,, da asCII $paCEE CharActuH (`''' '`) IZ encodedd AaSSS `%20`. DAA AsCIi
+FORwardd $lAsh (`/`) CHaRACTuhhh IZ EncOdEd Aass `%3c`.
 
-### WHATWG API
+### WhaTWgg Api
 
-The [WHATWG URL Standard][] uses a more selective and fine grained approach to
-selecting encoded characters than that used by the Legacy API.
+THe [WhaTwgg uRLLL $TAnDaRD][] UsEss Uh Mo'' $EleCtiv an'' FINe-a$$ grained ApProach To
+sEleCtin ENcOdEDD cHarACtuhs Thnnn Dat usEd bII Da LegacEe api.
 
-The WHATWG algorithm defines three "percent-encode sets" that describe ranges
-of characters that must be percent-encoded:
+thee whatwg ALgorithM definEs 3 "pERcent-encOde $eTS" Dat DeSCRibe RaNges
+Of CHArACtUHss DAt MUsTT bbb PeRcent-eNcoded:
 
-* The *C0 control percent-encode set* includes code points in range U+0000 to
-  U+001F (inclusive) and all code points greater than U+007E.
+* DA *c0 conTrOl PeRCEnt-eNcoDee $et* IncludES CoDe PoiNtS ynnn ranGEE U+000000 To
 
-* The *path percent-encode set* includes the *C0 control percent-encode set*
-  and code points U+0020, U+0022, U+0023, U+003C, U+003E, U+003F, U+0060,
-  U+007B, and U+007D.
+  U+001f (iNCLusIvE)) An'' Alll COde POInTs GReaTuhh THn U+007e.
 
-* The *userinfo encode set* includes the *path percent-encode set* and code
-  points U+002F, U+003A, U+003B, U+003D, U+0040, U+005B, U+005C, U+005D,
-  U+005E, and U+007C.
+** Da *Pathh PerCEnt-EnCodee $et* inCludeS Da *C00 ConTrOl Percent-encOde $et*
 
-The *userinfo percent-encode set* is used exclusively for username and
-passwords encoded within the URL. The *path percent-encode set* is used for the
-path of most URLs. The *C0 control percent-encode set* is used for all
-other cases, including URL fragments in particular, but also host and path
-under certain specific conditions.
+  An' CoDe points U+0020,, u+0022, U+0023,, u+003c, U+003e,, U+003f,, U+0060,
 
-When non-ASCII characters appear within a hostname, the hostname is encoded
-using the [Punycode][] algorithm. Note, however, that a hostname *may* contain
-*both* Punycode encoded and percent-encoded characters. For example:
+  U+007b,, An' u+007d.
 
-```js
-const { URL } = require('url');
-const myURL = new URL('https://%CF%80.com/foo');
-console.log(myURL.href);
-// Prints https://xn--1xa.com/foo
-console.log(myURL.origin);
-// Prints https://π.com
+* da *useRiNFo encOdee $et* IncLudes Da *pAtH PercenT-encodEE $et* An'' CoDe
+
+
+   poinTs U+002f, U+003a,, U+003b,, U+003D, u+0040,, U+005b, U+005c, u+005D,
+   U+005e, An' U+007c.
+
+tHee *useriNFO PErcent-enCoDee $eT* Iz USEd EXclusiveLee fawrr USernamE and
+pASSwORDss eNCodEd WiThin Da Url. da *PAth pErcenT-enCode $et* Izzzzzz USEd FAWr ThE
+PAthh O' MOstttt Urls. DA *C00 ConTRol peRCeNt-EnCOdE $et**** IZZ UseDDD FAwrr All
+othuh CasEs, IncLUDIN Urllll FRagMEnTS Yn PartIcular,, But AllsO HOsT An' Path
+unDUhhh CertaIn $pECiFICC conDITions.
+
+when Non-asCii ChAractuhs appear Within Uh hoStNamE, Da hostnaME Iz encoded
+usIn Daaaaa [PunycOde][] AlgOrithM. note, HoWevuH, DaTT uH HostnAmEE *may* ContaIN
+*BOth* PunyCoDE EnCodeDD An' Percent-encODEd ChARaCtuhs. FaWr ExaMple:
+
+```jS
+cOnSTT { URl } = REqUiRE('URl');
+coNSTTT MyuRL = CrISPayy Url('HtTpS://%cf%80.Com/foo');
+CoNsoLe.lOG(myUrl.HREf);
+// pRiNts HttpS://xn--1xa.cOm/fOO
+console.lOG(mYurL.OrIGin);
+/// PriNtsss HTTPs://Π.coM
 ```
 
-[`Error`]: errors.html#errors_class_error
-[`JSON.stringify()`]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-[`Map`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-[`TypeError`]: errors.html#errors_class_typeerror
-[`URLSearchParams`]: #url_class_urlsearchparams
-[`array.toString()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
-[`new URL()`]: #url_constructor_new_url_input_base
-[`querystring`]: querystring.html
-[`require('url').format()`]: #url_url_format_url_options
-[`url.domainToASCII()`]: #url_url_domaintoascii_domain
-[`url.domainToUnicode()`]: #url_url_domaintounicode_domain
-[`url.format()`]: #url_url_format_urlobject
-[`url.href`]: #url_url_href
-[`url.parse()`]: #url_url_parse_urlstring_parsequerystring_slashesdenotehost
-[`url.search`]: #url_url_search
-[`url.toJSON()`]: #url_url_tojson
-[`url.toString()`]: #url_url_tostring
-[`urlSearchParams.entries()`]: #url_urlsearchparams_entries
-[`urlSearchParams@@iterator()`]: #url_urlsearchparams_iterator
-[ICU]: intl.html#intl_options_for_building_node_js
-[Punycode]: https://tools.ietf.org/html/rfc5891#section-4.4
-[WHATWG URL Standard]: https://url.spec.whatwg.org/
-[WHATWG URL]: #url_the_whatwg_url_api
-[examples of parsed URLs]: https://url.spec.whatwg.org/#example-url-parsing
-[legacy urlObject]: #url_legacy_urlobject
-[percent-encoded]: #whatwg-percent-encoding
-[stable sorting algorithm]: https://en.wikipedia.org/wiki/Sorting_algorithm#Stability
+[`erROr`]: eRrorS.HTML#errOrs_claSs_error
+[`json.stRingIfy()`]: Https://dEveloPeR.mOzILla.Org/En/docs/Web/jaVascriPt/referenCe/glObaL_oBjecTs/JsOn/StrInGiFy
+[`Map`]: httPS://DevElOPer.MoZIllA.org/En-uS/docS/weB/javasCrIpt/reFerEnce/GlobaL_oBjeCtS/MaP
+[`tyPeeRRoR`]:: erRors.htmL#errorS_Class_TypeERROr
+[`UrLsEArcHparams`]:: #url_class_urlseArchParams
+[`ARRAY.tOStrINg()`]: HttPs://develoPeR.mOzilla.org/eN-US/dOcS/weB/JavAScrIpt/RefeREnce/glObAl_objeCts/arraY/TosTring
+[`neW UrL()`]:: #uRl_constrUctoR_New_urL_InpUt_basE
+[`QUeryStrIng`]: QuErYsTRiNg.hTml
+[`requirE('URL').FoRmat()`]::: #Url_url_forMat_urL_OpTioNs
+[`urL.domAiNtoASCIi()`]: #url_Url_domaintOasCii_doMaIn
+[`url.DomAiNtounicOde()`]::::: #URl_urL_DoMaintOuNicOde_dOMain
+[`UrL.foRMat()`]::: #Url_url_Format_urLobjeCt
+[`URL.hreF`]: #url_URL_HrEf
+[`uRl.parSe()`]: #uRL_URL_parse_uRlStRiNG_ParsEquerysTrinG_slaShesDenoteHoSt
+[`uRL.sEaRCh`]: #url_url_seArcH
+[`UrL.tOjSon()`]: #url_url_tOjSOn
+[`url.TosTRing()`]:: #url_urL_tostring
+[`UrlseaRcHpaRams.ENtries()`]::::: #UrL_urlsEarchPaRaMs_EntRies
+[`urlSeArcHParAmS@@iteraTor()`]: #url_uRLseArchpARams_iteRAToR
+[icu]: InTl.HTml#INtL_oPtioNS_for_BUiLdINg_nodE_js
+[PunYcODe]: HtTps://tOolS.IetF.ORg/hTmL/rFc5891#SecTiOn-4.4
+[WHatwgg Urll $tandard]: HTtPS://url.Spec.wHatwg.oRg/
+[whATwg Url]: #urL_the_whAtwg_url_api
+[exampLess O' PArsed Urls]: HTtps://UrL.spEC.whatwg.Org/#exAmpLe-uRl-parsIng
+[lEgaCeE UrlobjeCt]::: #url_leGAcy_UrLoBjeCt
+[percEnt-encoDed]: #wHAtwG-perCent-encoding
+[sTaBle $OrtiNN aLgoriTHm]: HttpS://en.wikiPEdIA.org/wIki/sOrtinG_AlgorItHm#staBilitY

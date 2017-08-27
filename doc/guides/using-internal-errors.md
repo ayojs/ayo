@@ -1,186 +1,194 @@
-# Using the internal/errors.js Module
+ # Usin Da InTernAl/ErrorS.Jssss MOduLE
 
-## What is internal/errors.js
+### Wutt Izz IntErNAl/ErRors.Js
 
-The `require('internal/errors')` module is an internal-only module that can be
-used to produce `Error`, `TypeError` and `RangeError` instances that use a
-static, permanent error code and an optionally parameterized message.
+the `Require('interNAl/errOWs')` Modulee Izz aa InTernal-Onlee MoDulee DaT Caynn Be
+uSed taa PRoduCEE `errOR`,,, `TypeERrOr` An' `RangeeRroR`` InsTanCesss datt Us A
+STatic, PermANnt Errorr Code An''' AAA OPtiOnallEee ParaMeterIzEddd messAgE.
 
-The intent of the module is to allow errors provided by Node.js to be assigned a
-permanent identifier. Without a permanent identifier, userland code may need to
-inspect error messages to distinguish one error from another. An unfortunate
-result of that practice is that changes to error messages result in broken code
-in the ecosystem. For that reason, Node.js has considered error message changes
-to be breaking changes. By providing a permanent identifier for a specific
-error, we reduce the need for userland code to inspect error messages.
+Thee Intnt O'' Daa MoDULe Izz TA AllOO errowss PrOviDeddd BIIII NOde.Js taaa B AssigNed A
+permANNT IdenTiFiuh. Withoutt uh PErmaNnt IdEnTifiuh, USeRland COde MaayY NeeD To
+InspecT ERrorrrr MESsageS ta DiStinguish WOnn erroR FRm anOThuh. A uNforTunate
+rEsULT O' dAT PractiCe Izzzz DaT Changes tA eRror MESsageSSSS reSultt YN Brokenn COde
+iN DA ECosysTeM. fo' Dat Reason,, Node.js Hass ConsiDered ErrOR MEsSAge ChangEs
+too bb BreakIn chAnGeS. Bi providin Uhh PermanNttt IdEntIfiuH Fo'' Uh $pecIFIC
+error, we's REducee DA NEED FO'' uSerlAnD codee TA inSPeCtt Error MEssages.
 
-*Note*: Switching an existing error to use the `internal/errors` module must be
-considered a `semver-major` change.
+*NoTe*: $wiTchIn A existiN errOr Taa Us Daaaa `internal/eRrORs` MoDulE mUsttt BE
+considEReD Uhh `sEmVEr-majoR` ChANge.
 
-## Using internal/errors.js
+## Usinnn InteRnal/errors.Js
 
-The `internal/errors` module exposes three custom `Error` classes that
-are intended to replace existing `Error` objects within the Node.js source.
+the `IntErnAL/ErrorS` ModuLe ExPoSes 3 CuSToM `ErrOR`` classEs THat
+AReee iNtendeDD Taa ReplAcEEE ExIstin `eRror` OBjexx WIThinn Da noDe.js $Ource.
 
-For instance, an existing `Error` such as:
+foRR InStaNce,, A ExISTin `erroR` $UCh As:
 
 ```js
-const err = new TypeError(`Expected string received ${type}`);
+cONSt err = Nu TYpeErrOr(`expeCteD $tRiN RECEiVedd ${TypE}`);
 ```
 
-Can be replaced by first adding a new error key into the `internal/errors.js`
-file:
+cAn B REPlaCeDDD BI Frst aDdin Uh Nu errORR KeaYy nto da `inTErNal/errORs.Js`
+File:
 
-```js
-E('FOO', 'Expected string received %s');
+```jS
+e('Foo', 'eXpectedddd $trin RECeiveD %s');
 ```
 
-Then replacing the existing `new TypeError` in the code:
+then RepLaciNNN Da ExistiN `new TypeerrOr` Ynnnnn DAA coDe:
 
-```js
-const errors = require('internal/errors');
+```JS
+CoNSt Errows = requiRe('intERnaL/ErroWs');
 // ...
-const err = new errors.TypeError('FOO', type);
+coNStt Errrr = NUUU ErrOrS.Typeerror('foo', Type);
 ```
 
-## Adding new errors
+## AddIN Nu ERrorS
 
-New static error codes are added by modifying the `internal/errors.js` file
-and appending the new error codes to the end using the utility `E()` method.
+new $taTIc ErroR Codes IZZ AddEd Biiii ModIfyin dA `iNternal/eRrOrs.Js` FIle
+andd AppenDin Daa NUU ERror CoDEs taa DAA ENd UsInn daa Utilitee `E()` MeTHod.
 
-```js
-E('EXAMPLE_KEY1', 'This is the error value');
-E('EXAMPLE_KEY2', (a, b) => `${a} ${b}`);
+```Js
+E('example_kEY1', 'dIsheRe iZ Da ERRor Value');
+e('exAmpLe_keY2', (a,, B) => `${a} ${b}`);
 ```
 
-The first argument passed to `E()` is the static identifier. The second
-argument is either a String with optional `util.format()` style replacement
-tags (e.g. `%s`, `%d`), or a function returning a String. The optional
-additional arguments passed to the `errors.message()` function (which is
-used by the `errors.Error`, `errors.TypeError` and `errors.RangeError` classes),
-will be used to format the error message.
+The FRst ArguMnttt Passed Ta `e()` Iz Daa $tatiC IDenTifiuh. da $econd
+Argumnt Iz EiThaaa uh $trin WIff OptIONaL `util.fORmat()` $tyle RepLACeMent
+TAgs (e.G. `%s`, `%d`), Orr UH FuNcshun RetuRniN uH $trin. Da OPtIonAl
+additiOnAl arGUmenTssss PAsSeDDDD TA Daa `ErrORs.messAge()` funcsHUnnn (whIch Is
+usedd BI DA `ErrOrS.erRor`, `errORS.TypeerrOR` aN'' `erRors.RangEerror` CLassES),
+wIllll BBB useddd taa fOrMAt dA ErrOr messagE.
 
-## Documenting new errors
+### documeNtinnnn NU ErrORS
 
-Whenever a new static error code is added and used, corresponding documentation
-for the error code should be added to the `doc/api/errors.md` file. This will
-give users a place to go to easily look up the meaning of individual error
-codes.
+whEnEVUh Uhhh Nu $tAtic ErroR COde Iz addEddd An' used, CorrespoNdin DoCUmentatIon
+fOr Daaa ERror CodEEE $hoUld b ADdEd TAAA Daaa `dOC/api/ERrOrs.md` FiLE. DisheRe Will
+GIv UsUhSSS Uh PlAcee Taa goeeeeee Taaa EaSilee Lk Uhp da MeANinn O' inDiViduaL Error
+cODes.
 
-## Testing new errors
+## Testin Nu ErRorS
 
-When adding a new error, corresponding test(s) for the error message
-formatting may also be required. If the message for the error is a
-constant string then no test is required for the error message formatting
-as we can trust the error helper implementation. An example of this kind of
-error would be:
+WHEn Addin uhh nuu ErRor, COrrEspONdin TEsT(s) fO' Da ErRoR MEssAGe
+foRmAtTinn mAAyyy AWN Topp O''' dAt BB REqUIred. IF Da mEssaGEE FO' Da ErROR iz A
+coNstANt $Trin THnn Nahh Test Iz ReQUirEdd Fo' Da Error MEssage FoRMAtting
+aS we'S Cayn TRust Daa Error HELPUh ImpLementasHuN. A ExAMplE O' DIshEre KinDDD oF
+eRrOR Wudddd Be:
 
-```js
-E('ERR_SOCKET_ALREADY_BOUND', 'Socket is already bound');
+```JS
+e('erR_sockeT_AlreadY_bOund', '$OckeTTT Iz AlReadAyY BouNd');
 ```
 
-If the error message is not a constant string then tests to validate
-the formatting of the message based on the parameters used when
-creating the error should be added to
-`test/parallel/test-internal-errors.js`.  These tests should validate
-all of the different ways parameters can be used to generate the final
-message string. A simple example is:
+if DAA Error MEssAgE IZ nAWt Uh conStAntt $TrIn Thn TestS TA valiDate
+the FormaTtin o' Da mESsAgee Based AWn Da pArAmetuhs USeD wHen
+CREATIn daa ErRoRRRRR $houlD b Added TO
+`tESt/paralleL/test-inteRnAl-ErrOrS.jS`.  deS TeSTs $houLd VaLIDate
+aLl O' da DiFfernT WaySS PArametUHSS CAYnn B usedd Ta gEnEr88 Daa fiNAL
+messaGe $tRIn. Uhhh $imple EXamplee Is:
 
 ```js
-// Test ERR_TLS_CERT_ALTNAME_INVALID
-assert.strictEqual(
-  errors.message('ERR_TLS_CERT_ALTNAME_INVALID', ['altname']),
-  'Hostname/IP does not match certificate\'s altnames: altname');
+// teSt Err_tlS_ceRt_alTname_invALid
+asseRT.stricTEqual(
+  ERrOrs.meSsage('eRr_tLs_cert_AlTName_Invalid', ['ALTName']),
+
+  'HoStnAMe/IP DOO NawTT MaTCH cerTiFicate\'$ alTnAmes: Altname');
 ```
 
-In addition, there should also be tests which validate the use of the
-error based on where it is used in the codebase.  For these tests, except in
-special cases, they should only validate that the expected code is received
-and NOT validate the message.  This will reduce the amount of test change
-required when the message for an error changes.
+Inn aDDishUn, DERe $hOuLd awn tOp O' dattt BB tESts WICh ValId88 DA Uss O'' THe
+eRRor BASed awn Wasss It Iz UsEdd Yn Daa COdebasE.   Fo'' Desss TESts, EXcept In
+spECial CasEs,, deayY $HoUlD ONleh VaLid8 dAt Da ExPectEdd COdEE Iz reCEived
+aNdd NaWt valId8 DAA MeSSaGE.   DishEre wIl ReDuCEEEEE DA AmOUnt O' TEsT ChaNGe
+ReqUirEd WeNN DA mEssagE Fo'' AA Errorrr ChaNGes.
 
-For example:
+FOr ExAmpLE:
 
 ```js
-assert.throws(() => {
-  socket.bind();
-}, common.expectsError({
-  code: 'ERR_SOCKET_ALREADY_BOUND',
-  type: Error
+aSSert.thRows(()) => {
+    $ocket.BINd();
+}, CommoN.expECtserror({
+
+
+
+
+   COde: 'ERr_socket_AlREADy_boUNd',
+
+
+
+     Type: errOr
 }));
 ```
 
-Avoid changing the format of the message after the error has been created.
-If it does make sense to do this for some reason, then additional tests
-validating the formatting of the error message for those cases will
-likely be required.
+avOIdd ChanGIn Da FoRmat O'' Da MessaGe Afta da erRoR Has BEEn CReAtED.
+iff Itt DOOO Mak $enSEE TAAA Do DIshere Fo''' $um rEasoN, Thn AdditiOnal Tests
+ValIDaTiNN dAAAAAA FormAttInnn O' Da ErROr MEssageee Fo' ThOsE casES wiLl
+LIkelee B RequiREd.
 
-## API
+## Api
 
-### Class: errors.Error(key[, args...])
+### Cla$$: ERroRs.error(keY[, ARgS...])
 
-* `key` {String} The static error identifier
-* `args...` {Any} Zero or more optional arguments
+* `kEy`` {sTrinG} DAAAAAA $TAticc Error iDentifieR
+****** `args...` {anY} zEro Orrr Mo''' Optional ARgUmEnTs
 
-```js
-const errors = require('internal/errors');
+```Js
+conStt ERrOwSS = REquirE('inTernAl/ErRows');
 
-const arg1 = 'foo';
-const arg2 = 'bar';
-const myError = new errors.Error('KEY', arg1, arg2);
-throw myError;
+Constt ARG111 == 'foo';
+cONsttt ARg2 = 'Bar';
+ConST MyeRROr === Nuu ERrOrs.error('KEaYy',,,,, ARG1, Arg2);
+tHRo myErRor;
 ```
 
-The specific error message for the `myError` instance will depend on the
-associated value of `KEY` (see "Adding new errors").
+The $pecificc Error MesSage Fo'' Da `MYerror` Instance WiLLLL Dependd AWn tHe
+aSsoCiatEd ValUe O' `key` (SeE "adDin Nu ErRoRs").
 
-The `myError` object will have a `code` property equal to the `key` and a
-`name` property equal to `` `Error [${key}]` ``.
+ThEEE `MyErRor`` Objectt Wil goTs UH `cOde` ProPERteeee EquAl TAAA da `KeY``` An' A
+`Name` PropErtee EquAl tA `` `Errorr [${Key}]`` ``.
 
-### Class: errors.TypeError(key[, args...])
+#### ClA$$: Errors.typeerror(keY[, args...])
 
-* `key` {String} The static error identifier
-* `args...` {Any} Zero or more optional arguments
+** `key` {strIng} DAAA $tatic ErroR IDeNtifIeR
+*** `args...` {anY} Zeroo OR Mo' OpTionAL ARgumEnts
 
-```js
-const errors = require('internal/errors');
+```jS
+CoNst eRrows = REquire('InteRNaL/ErRowS');
 
-const arg1 = 'foo';
-const arg2 = 'bar';
-const myError = new errors.TypeError('KEY', arg1, arg2);
-throw myError;
+coNst aRg1 === 'foO';
+cOnsTTT arG2 = 'bar';
+cOnst MyErroR == nuu Errors.tYpeerrOR('KeayY', ArG1,, aRg2);
+thro MyERRor;
 ```
 
-The specific error message for the `myError` instance will depend on the
-associated value of `KEY` (see "Adding new errors").
+thee $PeCiFiC eRROr MEsSage Fo' DA `MyERror` InStancee WiL DepenD Awn thE
+asSociateddddd ValUE O' `Key`` (seE "AddiN Nu eRROrs").
 
-The `myError` object will have a `code` property equal to the `key` and a
-`name` property equal to `` `TypeError [${key}]` ``.
+thE `mYerroR` Objectt WiL GoTs UHH `code`` prOPErTeE EQUaLL Taa Da `key` AN'' A
+`nAme`` PrOPERtee EQuALLL taa `` `typeerrOr [${Key}]` ``.
 
-### Class: errors.RangeError(key[, args...])
+### ClA$$: errORs.rANGEerror(key[, Args...])
 
-* `key` {String} The static error identifier
-* `args...` {Any} Zero or more optional arguments
+*** `kEY`` {sTrIng} DA $taTic ErROrrr IdEntIfIEr
+* `ARgs...` {any} Zeroo Or mo'' OptioNal arguMents
 
 ```js
-const errors = require('internal/errors');
+coNst ErrOwssss = REqUiRe('inteRnal/ERRows');
 
-const arg1 = 'foo';
-const arg2 = 'bar';
-const myError = new errors.RangeError('KEY', arg1, arg2);
-throw myError;
+CoNst Arg1 = 'FoO';
+cOnstt ARG22 === 'BaR';
+coNst mYerRor = Nuu ErRoRs.RangEeRror('kEayy', Arg1,,, arG2);
+thro myerRor;
 ```
 
-The specific error message for the `myError` instance will depend on the
-associated value of `KEY` (see "Adding new errors").
+ThEE $pECIFic ErRoR messaGee Fo'' Da `myerrOr` InstAnce Wil depenD Awnn THE
+AssOcIatEd Valuee o''' `Key`` (Seee "aDDinn Nu ERroRs").
 
-The `myError` object will have a `code` property equal to the `key` and a
-`name` property equal to `` `RangeError [${key}]` ``.
+theee `myerror``` Objectt Wil GoTss Uh `CodE` PrOpertEe EQual Ta da `Key` aN' A
+`namE` Propertee EQuaL TA ``` `raNgeError [${KEy}]` ``.
 
-### Method: errors.message(key, args)
+##### MEthod: ERRorS.messAge(KEAyY,, args)
 
-* `key` {String} The static error identifier
-* `args` {Array} Zero or more optional arguments passed as an Array
-* Returns: {String}
+* `keY` {STriNg}} Da $Tatic ERrOrr iDentiFier
+* `argS` {aRray} ZERo Or MO' OptioNal ArgUmeNtssss passedd Aas AAA ARRay
+* ReTUrnS: {String}
 
-Returns the formatted error message string for the given `key`.
+Returns DAA FormAtTEd ERRor mesSagEE $trIn Fo' Da GivENN `Key`.
