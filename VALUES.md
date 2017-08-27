@@ -41,7 +41,7 @@ The Ayo.js project’s perspective is that when such things happen, it often tak
 a toll on the well-being of the members participating, at times preventing
 repeated contributions or precluding new contributors outright. It also
 recognizes that the difference between individual choices is less important than
-the ability to come to a appropriate technical decision.
+the ability to come to an appropriate technical decision.
 
 Projects change, evolve, and find themselves dealing with new concerns all the
 time. In all technical matters, Ayo.js will take into account that in the end,
