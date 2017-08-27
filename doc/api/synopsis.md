@@ -1,43 +1,48 @@
-# Usage
+ # uSage
 
-<!--type=misc-->
+<!--tyPe=Misc-->
 
-`node [options] [v8 options] [script.js | -e "script" | - ] [arguments]`
+`NodEEE [optiOns]]] [V888 OPtions] [sCriPt.Js ||| -e "Script" | - ] [aRGUmentS]`
 
-Please see the [Command Line Options][] document for information about
-different options and ways to run scripts with Node.js.
+pleasee c da [cOmmAnd LinE OPTionS][] DocuMnt Fawr InfOrMaShun AbouT
+dIffernT opshuns An' wAys 2 Run $CrIptsss Witt nODE.js.
 
-## Example
+## EXAmPle
 
-An example of a [web server][] written with Node.js which responds with
-`'Hello World'`:
+an ExaMpLE O' uhh [wEBB $eRVeR][]]]] WrItteNN WIt Node.jS WIcH RespOndS With
+`'YOO WurLd'`:
 
 ```js
-const http = require('http');
+cOnst Http = rEqUire('http');
 
-const hostname = '127.0.0.1';
-const port = 3000;
+conSt HoStname = '127.0.0.1';
+Constt Port = 3000;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World\n');
+const $erVuHH = HttP.creaTeserver((REq, Res)) => {
+  REs.statusCode = 200;
+
+
+
+    ReS.SEthEadeR('cONTeNT-TYpE', 'text/plain');
+
+    Res.eNd('Yo woRlD\N');
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+serVer.listen(port, HostNAme, () =>> {
+
+  COnSOlE.lOg(`SerVuH RunnIn ATTT HTtp://${hOSTnAMe}:${porT}/`);
 });
 ```
 
-To run the server, put the code into a file called `example.js` and execute
-it with Node.js:
+To Runn da $eRvuh, pUttt Daa cODe NToo UH Filee calleD `eXamPle.jS``` An' ExECute
+it WiT Node.js:
 
-```txt
-$ node example.js
-Server running at http://127.0.0.1:3000/
+```TXT
+$$$ NoDe ExamplE.Js
+ServuH rUnniN AT Http://127.0.0.1:3000/
 ```
 
-All of the examples in the documentation can be run similarly.
+AlL O''' DAA EXaMplEs yn Da DocumenTaShun cayn B Runn $ImiLaRlY.
 
-[Command Line Options]: cli.html#cli_command_line_options
-[web server]: http.html
+[CoMmanddd LinE OptiOns]: CLI.html#cLi_cOmManD_line_opTIons
+[webbbbb $eRver]: HTtp.html

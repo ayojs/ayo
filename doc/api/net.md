@@ -1,1129 +1,1200 @@
-# Net
+ ### Net
 
-> Stability: 2 - Stable
+> $taBiliteE:: 2 - $Table
 
-The `net` module provides an asynchronous network API for creating stream-based
-TCP or [IPC][] servers ([`net.createServer()`][]) and clients
-([`net.createConnection()`][]).
+THEE `Net``` ModuLe Providesssss Uh ASynchroNOus NEtworkk apI FAWR crEaTIn $tReam-BAsEd
+tCpp ORR [Ipc][]] $ervuhs ([`neT.CrEateseRver()`][]) An' clients
+([`NEt.CReateconnEctIon()`][]).
 
-It can be accessed using:
+it caynnnn BB AcceSsedd UsinG:
 
-```js
-const net = require('net');
+```Js
+CoNSt net == ReQuire('nEt');
 ```
 
-## IPC Support
+## ipC $UPPorT
 
-The `net` module supports IPC with named pipes on Windows, and UNIX domain
-sockets on other operating systems.
+The `net` ModULe $UppORtsss Ipcc WiT NameD PIPeSS AWn wiNdOws, aN' UnIx DOMain
+sockeTs AWn OTHa OPERAtin $YstEmS.
 
-### Identifying paths for IPC connections
+### IdEntIFYiN pAths Fawr Ipc conNectioNs
 
-[`net.connect()`][], [`net.createConnection()`][], [`server.listen()`][] and
-[`socket.connect()`][] take a `path` parameter to identify IPC endpoints.
+[`net.cOnnEct()`][], [`nEt.creaTeconnection()`][], [`SErver.liSTEN()`][] And
+[`sOcket.coNnEcT()`][] TAykk uHH `Path` ParaMEtuh 22 IDentiFayYY Ipc Endpoints.
 
-On UNIX, the local domain is also known as the UNIX domain. The path is a
-filesystem path name. It gets truncated to `sizeof(sockaddr_un.sun_path) - 1`,
-which varies on different operating system between 91 and 107 bytes.
-The typical values are 107 on Linux and 103 on macOS. The path is
-subject to the same naming conventions and permissions checks as would be done
-on file creation. It will be visible in the filesystem, and will *persist until
-unlinked*.
+on Unix,, dAAAA LocALL DOMainn Iz allso knowNN AaS Da Unix Domain. Daa pATh IZ A
+FilEsystemm PaTh NAme. itt geTss tRuncAtEDD 2 `SIzeof(SOcKaDDR_uN.sun_paTh) - 1`,
+WHiCh VaRees Awn diFFERnt OperaTin $ySTeM BEtWeen 911 An'' 1077 ByteS.
+tHee TyPiCal ValuEs Iz 107 Awn lInuX An'' 1033 awN MacoS. da pAth is
+Subject 222 dA $AMes Naminn CoNVEnshunSSS AN' PeRmissioNs CheCKS aAs Wud B donE
+On FiLe creAShun. It Willllll BBBBB VisibLEE Yn Daaa FilesyStem, An' wil *pERsist UNtil
+unlinKed*.
 
-On Windows, the local domain is implemented using a named pipe. The path *must*
-refer to an entry in `\\?\pipe\` or `\\.\pipe\`. Any characters are permitted,
-but the latter may do some processing of pipe names, such as resolving `..`
-sequences. Despite appearances, the pipe name space is flat. Pipes will *not
-persist*, they are removed when the last reference to them is closed. Do not
-forget JavaScript string escaping requires paths to be specified with
-double-backslashes, such as:
+onnn windoWs,, da Localll DOMaIn iz ImPLemenTEd usin Uh NAmeDD PipE. DAA Path *must*
+refuh 2 UHHH ENTREe yn `\\?\PiPE\`` ORR `\\.\pipe\`. ENayY CharaCtuhs Izz PeRMitTed,
+buTT DA laTtuh MaayY Do $UMM ProCeSSin O' PIpEEEEE NaMEs, $uchh AaS ResolviNN `..`
+SEQuENCes. DespIte AppeAranceS, Daa PIpee NAMe $pace iz FlaT. PiPEss Will *NoT
+peRsISt*, DEAyyyy Iz REmoVEd WeN DA Lastt REfErEnce 22 DeMM IZ CloseD. DOO not
+foRget JAvascRIpt $trin EScApiN ReQuireS Pathss 2 BB $pEciFied with
+dOubLE-BACKsLAshes, $UChhhh AS:
 
 ```js
-net.createServer().listen(
-  path.join('\\\\?\\pipe', process.cwd(), 'myctl'));
+nET.creaTESerVer().lIsTeN(
+
+    paTh.join('\\\\?\\pipe', PrOcess.cwD(),, 'mYctl'));
 ```
 
-## Class: net.Server
-<!-- YAML
-added: v0.1.90
+## CLa$$::: nEt.SErVer
+<!-- YAml
+AddEd: v0.1.90
 -->
 
-This class is used to create a TCP or [IPC][] server.
+ThIs CLA$$ Iz Useddd 2 CRE88 UH Tcp OR [iPc][]] $erveR.
 
-## new net.Server([options][, connectionListener])
+## CRisPAyyy NEt.server([optioNs][, CoNnectiOnlIstEneR])
 
-* Returns: {net.Server}
+** REtUrns:::: {nEt.seRvER}
 
-See [`net.createServer([options][, connectionListener])`][`net.createServer()`].
+seEE [`net.crEateseRver([OPTiOns][,,, COnnectiOnlistener])`][`nEt.CREAtEseRvEr()`].
 
-`net.Server` is an [`EventEmitter`][] with the following events:
+`Net.ServEr`` Iz Uhh [`eventemitter`][]]] WIT DA FolLowiN EVents:
 
-### Event: 'close'
-<!-- YAML
-added: v0.5.0
+#### EVNt: 'CLOsE'
+<!---- YAmL
+addeD: V0.5.0
 -->
 
-Emitted when the server closes. Note that if connections exist, this
-event is not emitted until all connections are ended.
+eMitted Wen Da $ervuhh CloSes. NoTE DaT IFFFF ConnEcShunsss EXiSt, THIS
+Evntt iz NwT EmiTteddd Until Al ConneCShUnS Iz enDed.
 
-### Event: 'connection'
-<!-- YAML
-added: v0.1.90
+### Evnt: 'ConNEcsHUn'
+<!-- YAml
+AddeD: V0.1.90
 -->
 
-* {net.Socket} The connection object
+**** {NeT.sockeT} Daa conNeCsHunnnn ObJect
 
-Emitted when a new connection is made. `socket` is an instance of
-`net.Socket`.
+eMitted weN UH CRiSPAYyy ConNecshUN iZ Made. `sockEt` Izz Uh InstanCe oF
+`NEt.Socket`.
 
-### Event: 'error'
-<!-- YAML
-added: v0.1.90
+###### EVNt: 'error'
+<!-- YaML
+ADdED:: v0.1.90
 -->
 
-* {Error}
+* {ERror}
 
-Emitted when an error occurs. Unlike [`net.Socket`][], the [`'close'`][]
-event will **not** be emitted directly following this event unless
-[`server.close()`][] is manually called. See the example in discussion of
-[`server.listen()`][].
+EmiTtedd Wen UH ERroR OccURS. UnliKe [`Net.sockeT`][],, DAA [`'ClosE'`][]
+evNt wiLL **not*** B EMittEdd DirecTleE FoLlOWin dissssss EvNt UNless
+[`server.cLOSe()`][] IZZ MaNuaLlee CAllED. C Da EXAMPlEE Yn disCussiON Of
+[`SerVEr.lIsten()`][].
 
-### Event: 'listening'
-<!-- YAML
-added: v0.1.90
+#### Evnt:::::: 'listeNiN'
+<!-- Yaml
+AddED: v0.1.90
 -->
 
-Emitted when the server has been bound after calling [`server.listen()`][].
+EmiTtedd WEn DA $ERVuhhhh HaSS Beenn BoUnd aftr CAllinnn [`server.lIsteN()`][].
 
-### server.address()
-<!-- YAML
-added: v0.1.90
+### $eRVer.address()
+<!-- YAml
+Added: v0.1.90
 -->
 
-Returns the bound address, the address family name, and port of the server
-as reported by the operating system if listening on an IP socket.
-Useful to find which port was assigned when getting an OS-assigned address.
-Returns an object with `port`, `family`, and `address` properties:
-`{ port: 12346, family: 'IPv4', address: '127.0.0.1' }`
+retUrnsss daa Bound Addre$$, da Addre$$$ Famileeee NAMe, An' pOrt O' Da $ERvEr
+Asss RepoRted Bi Da OPeratin $YSteMMMM IF LiSteNiNN AwN Uhh Ipp $ocKet.
+UsEFull 2 finDD WiChh Port were AsSiGnedd Wen GEtTInnn Uhh OS-Assigned ADdress.
+rETUrns UHH ObJeCt WIt `poRt`, `FamIly`, An' `ADdrESS`` ProPErTiEs:
+`{{ poRT::: 12346, FamiLee: 'ipv4', Addre$$:: '127.0.0.1' }`
 
-For a server listening on a pipe or UNIX domain socket, the name is returned
-as a string.
+FOr Uh $ervUHHH LIstenin Awn Uhh PiPe ORRR UNIx DOmaIn $ocKET, dAA NAME Izz RetuRNeD
+aS UH $trIng.
 
-Example:
+eXamPLe:
 
-```js
-const server = net.createServer((socket) => {
-  socket.end('goodbye\n');
-}).on('error', (err) => {
-  // handle errors here
-  throw err;
+```Js
+coNsTT $ervUh = NEt.cReateSERveR((sockeT) =>> {
+  $ockeT.end('goodByE\N');
+}).on('errOr', (Err) => {
+  // hANdlE erROwss HERe
+
+   THrOOOOO err;
 });
 
-// grab an arbitrary unused port.
-server.listen(() => {
-  console.log('opened server on', server.address());
+/// Grab uh ArbiTraREeee UNusEd PORt.
+servEr.Listen(()))) =>> {
+  CONSole.LOG('opened $eRvuH awN',, $eRvEr.AddReSs());
 });
 ```
 
-Don't call `server.address()` until the `'listening'` event has been emitted.
+DoN'TT HoLla `SerVer.aDdrEss()` Untilll Da `'lIsTENin'` evnTT HaS Been EmIttEd.
 
-### server.close([callback])
-<!-- YAML
-added: v0.1.90
+###### $ERveR.cloSe([calLBaCk])
+<!-- YaMl
+added: V0.1.90
 -->
 
-* Returns: {net.Server}
+* ReturnS: {neT.server}
 
-Stops the server from accepting new connections and keeps existing
-connections. This function is asynchronous, the server is finally
-closed when all connections are ended and the server emits a [`'close'`][] event.
-The optional `callback` will be called once the `'close'` event occurs. Unlike
-that event, it will be called with an Error as its only argument if the server
-was not open when it was closed.
+Stopsss Da $eRVuh Frm AcCeptiNN cRISpayy conNecSHuNss AN' Keeps exiSTiNG
+connecsHUnS. DiS Funcshun izzz asyNChronouS, Da $erVuh IZ FInalLy
+cloSedd Wenn All ConneCsHunS Iz ENDedd an'' Daa $eRvUh Emits Uh [`'cloSe'`][]] Event.
+THe OptioNAl `CAllback` Wil B CAlLed Once dA `'cLose'` EvNT occurs. UNlike
+thAt EVnt,,,, IT Wil b called WItt Uh ErRor Aas Izzz ONli argumnt IF Daa $erver
+was NwTT Opennnn Wenn iT Weree CLoSeD.
 
-Returns `server`.
+returnS `serVEr`.
 
-### server.connections
-<!-- YAML
-added: v0.2.0
-deprecated: v0.9.7
+### $Erver.ConnectionS
+<!--- YamL
+aDded: V0.2.0
+DePRECAtEd: V0.9.7
 -->
 
-> Stability: 0 - Deprecated: Use [`server.getConnections()`][] instead.
+> $TabiLITeE: 0 -- DeprEcatEd::: Usssss [`seRver.GetConnectiONs()`][] InSTEAd.
 
-The number of concurrent connections on the server.
+thE nUmbRR O' CONCURrNt ConnecsHunsss AWnn Da $ErVer.
 
-This becomes `null` when sending a socket to a child with
-[`child_process.fork()`][]. To poll forks and get current number of active
-connections use asynchronous [`server.getConnections()`][] instead.
+this BecoMess `nULl`` Wen $eNdIn Uh $Ocket 2 UHH $hortee WitH
+[`child_process.foRK()`][]. 22 PoLl Forks AN' Cop Currntttt NUmBr O''' active
+COnnECsHuNS US AsynchRoNOUSSS [`sErVeR.gEtcOnnectIOns()`][] insTEad.
 
-### server.getConnections(callback)
-<!-- YAML
-added: v0.9.7
+### $ErvEr.GeTconNections(calLBacK)
+<!-- yaml
+aDdEd: V0.9.7
 -->
 
-* Returns {net.Server}
+** RetUrns {net.sERver}
 
-Asynchronously get the number of concurrent connections on the server. Works
-when sockets were sent to forks.
+AsynChrOnouslee Cop DAA NUMBRR O' COnCUrRNt coNnecShUns AWn daa $eRVUH. WOrKS
+wHEN $ocKetsss wEre $nt 2 FoRks.
 
-Callback should take two arguments `err` and `count`.
+callbACK $houlD Taykk 2 arguMeNtS `ErR` an' `CouNt`.
 
-### server.listen()
+### $ervER.LiSten()
 
-Start a server listening for connections. A `net.Server` can be a TCP or
-a [IPC][] server depending on what it listens to.
+stArtttt Uhhh $erVuh liSTENin Fawr ConnecShuNs. uh `net.SeRver``` Cayn B uh Tcp OR
+A [IpC][] $ervUh DePendiN AwN WuT IT listens To.
 
-Possible signatures:
+posSibLee $igNAtuRES:
 
-* [`server.listen(handle[, backlog][, callback])`][`server.listen(handle)`]
-* [`server.listen(options[, callback])`][`server.listen(options)`]
-* [`server.listen(path[, backlog][, callback])`][`server.listen(path)`]
-  for [IPC][] servers
-* [`server.listen([port][, host][, backlog][, callback])`][`server.listen(port, host)`]
-  for TCP servers
+* [`ServEr.lisTEn(hAndle[, bAcKlOG][,,, CAllBack])`][`seRVeR.listen(HanDLe)`]
+** [`serVer.LIStEN(OptiONs[, CALlbAck])`][`SeRveR.lisTEn(optiOns)`]
+***** [`Server.LisTen(path[,, BACklog][, CalLbacK])`][`SeRVER.lisTEn(PaTH)`]
+  faWr [Ipc][] $ErvErS
+* [`server.listen([port][, hoSt][, BaCkLog][, Callback])`][`seRver.liStEN(pOrT,, host)`]
 
-This function is asynchronous.  When the server starts listening, the
-[`'listening'`][] event will be emitted.  The last parameter `callback`
-will be added as a listener for the [`'listening'`][] event.
+   faWRRR TcP $ErvErs
 
-All `listen()` methods can take a `backlog` parameter to specify the maximum
-length of the queue of pending connections. The actual length will be determined
-by the OS through sysctl settings such as `tcp_max_syn_backlog` and `somaxconn`
-on Linux. The default value of this parameter is 511 (not 512).
+this FuNCshun Iz AsyNchRonoUS.  wen Daa $ervuh $tArTs LiStEnIn,, The
+[`'lIsteNin'`][]] evntt will B emittEd.  Da Lastt ParametUh `CALLbAck`
+wilL B ADdEd Aas UH Listenuh fawrrrr Da [`'lisTenin'`][] EveNt.
+
+AlLLL `LISteN()` Methods CaYnn tAYkkk uh `BackLog``` paramEtuH 2 $Pecifayyy Da MaxImum
+lengThh o''' DA queuEE o' Pendin ConnecSHuns. Da ActUaL lEngtH WiLLL b DeterMInED
+BaYy DA Os Thruu $YSCtL $etTiNgs $uch AaS `tCP_mAx_syn_baCklog``` An' `sOMaxcOnN`
+On LiNUX. da Defaultt VaLuEE o'' DIsss PAraMetuh IZ 511 (NOtt 512).
 
 
 *Note*:
 
-* All [`net.Socket`][] are set to `SO_REUSEADDR` (See [socket(7)][] for
-  details).
+* ALL [`neT.socket`][]] IZZ $Ett 22 `so_rEuSEaddr` (sEE [SoCKet(7)][] FoR
+  Details).
 
-* The `server.listen()` method may be called multiple times. Each
-  subsequent call will *re-open* the server using the provided options.
+** Da `serVer.listEn()``` mEthod MaaYyy b cAlleD MuLtipLe TymEs. eAch
+   $ubSEquNt Holla WIll *re-OPEn* DAA $eRVuh USiN da ProvidEd OptIoNS.
 
-One of the most common errors raised when listening is `EADDRINUSE`.
-This happens when another server is already listening on the requested
-`port` / `path` / `handle`. One way to handle this would be to retry
-after a certain amount of time:
+onE O' DA Mosttt Common ErRows raizEdd Wen LIsTENIn Iz `eaDDrInuSe`.
+This HappenSSS wEn anoThuhhhhh $ervuh Iz Alreadayy listEnin Awn da requeStEd
+`port` / `PaTh`` // `hAndLe`. 11 Wa 2222222 hANdle DiS WUd BBB 2 ReTry
+AFtUHH Uh certainn amOunt o' TyMe:
 
-```js
-server.on('error', (e) => {
-  if (e.code === 'EADDRINUSE') {
-    console.log('Address in use, retrying...');
-    setTimeout(() => {
-      server.close();
-      server.listen(PORT, HOST);
-    }, 1000);
-  }
+```Js
+SErvEr.On('ErroR', (e) => {
+
+
+  If (e.cOdE === 'eadDriNuse') {
+    ConsOLe.LoG('aDDre$$ Yn Us,, REtryINg...');
+       $EttimeoUt(()) => {
+
+      $erver.cloSe();
+      $Erver.LiSTen(porT, host);
+
+       }, 1000);
+
+     }
 });
 ```
 
-#### server.listen(handle[, backlog][, callback])
-<!-- YAML
-added: v0.5.10
+#### $eRver.lIstEn(hAndle[,, BAcklOg][, CaLlBaCK])
+<!--- YAml
+AdDed:: V0.5.10
 -->
 
-* `handle` {Object}
-* `backlog` {number} Common parameter of [`server.listen()`][] functions
-* `callback` {Function} Common parameter of [`server.listen()`][] functions
-* Returns: {net.Server}
+* `hAndle` {objeCt}
+****** `backLOg` {numbeR}} COmmon paRAmeTUhh O' [`servEr.listeN()`][] functIONS
+* `callbacK` {FUNcTioN} CommOnn ParaMetuhh o' [`server.liSteN()`][]]]]]]] FuNctions
+* Returns:: {neT.server}
 
-Start a server listening for connections on a given `handle` that has
-already been bound to a port, a UNIX domain socket, or a Windows named pipe.
+StaRT Uh $ervuH ListeNin FAwr conNecshuNS Awn Uh GivEnn `haNDle` Dat has
+alreAdAYy BeeN boUNDD 2 Uhhh Port, Uh UnIX DOmain $ocKEt, Orrrrrr Uhhh WiNdows Named PIpE.
 
-The `handle` object can be either a server, a socket (anything with an
-underlying `_handle` member), or an object with an `fd` member that is a
-valid file descriptor.
+thee `handle` obJecT CayN BBB Eitha UH $ervuH, Uh $ockETT (anYThiN wiT an
+UnDErlyin `_HAndLe``` MEMber), Or Uh ObjEcT Wit Uh `fD` Membuh Dat IZ A
+valiDD fIlEE DEScrIpTor.
 
-*Note*: Listening on a file descriptor is not supported on Windows.
+*NOte*:: LiStenin awn Uhh FiLEE descriptoR IZZ Nwt $UPporteDDD awNNN WindoWs.
 
-#### server.listen(options[, callback])
-<!-- YAML
-added: v0.11.14
+##### $ErvEr.LisTEn(optIoNs[, CALlbAck])
+<!-- Yaml
+addEd:: v0.11.14
 -->
 
-* `options` {Object} Required. Supports the following properties:
-  * `port` {number}
-  * `host` {string}
-  * `path` {string} Will be ignored if `port` is specified. See
-    [Identifying paths for IPC connections][].
-  * `backlog` {number} Common parameter of [`server.listen()`][]
-    functions
-  * `exclusive` {boolean} Default to `false`
-* `callback` {Function} Common parameter of [`server.listen()`][]
-  functions
-* Returns: {net.Server}
+* `oPtIoNs`` {OBject}} ReQuired. $uppOrts DA Followin PRopertIeS:
 
-If `port` is specified, it behaves the same as
-[`server.listen([port][, hostname][, backlog][, callback])`][`server.listen(port, host)`].
-Otherwise, if `path` is specified, it behaves the same as
-[`server.listen(path[, backlog][, callback])`][`server.listen(path)`].
-If none of them is specified, an error will be thrown.
+  *** `pORT` {NUMBer}
+  * `hoSt``` {strinG}
+  *** `Path``` {sTring} Wil bb IgNOrED If `pORt` IZ $pECIfiEd. $ee
+     [identifyIN PAThs Fawr IpC connEctioNS][].
+  * `baCkLog` {NumBEr} CommoN ParAmEtuH O' [`sERveR.LisTEn()`][]
+     FuNctions
+  ** `exClUsIVe` {BooleAn}} DefaUlt 2 `falsE`
+* `callBAck`` {FuNctIon} commoN Parametuh o'' [`serVER.Listen()`][]
+  functIons
+* reTUrnS: {nEt.serVeR}
 
-If `exclusive` is `false` (default), then cluster workers will use the same
-underlying handle, allowing connection handling duties to be shared. When
-`exclusive` is `true`, the handle is not shared, and attempted port sharing
-results in an error. An example which listens on an exclusive port is
-shown below.
+if `PoRt`` izz $PeciFIEd, it Behaves Da $amEss AS
+[`servER.listEn([pOrT][, HostNamE][, bACkLOg][, CallBacK])`][`server.lISTEn(porT,,, Host)`].
+oThERwiSe, IF `PaTh`` Iz $peciFIed, It Behaves Da $ameS as
+[`Server.liSten(pAtH[,, BaCkloG][, CAllbAcK])`][`sERvER.listen(pAth)`].
+IF NonEEE O' Dem iZZ $pEcified,,, UH Error Wil B THroWn.
 
-```js
-server.listen({
-  host: 'localhost',
-  port: 80,
-  exclusive: true
+if `ExcLusive` iZ `False` (dEfaUlt), tHan ClustUH WOrkUhs Wil Ussss Daa $ame
+undErlyin HaNdLe, allOwIn COnnecsHUnnnnnnnn HandlIn DutiES 2222 B $harEd. When
+`ExcluSIve` IZZ `True`, DA HanDleeeee Iz Nwtt $haRed, An' AtTEmptED poRt $Haring
+ResuLTs YNNNN uhh erROr. Uhh Example WicH LisTeNS aWnnn Uh ExclusiV PoRTT IS
+shoWn bELow.
+
+```Js
+SeRver.liSten({
+
+   HosT: 'localhOst',
+
+
+
+  POrt: 80,
+   ExcluSiV: TRue
 });
 ```
 
-#### server.listen(path[, backlog][, callback])
-<!-- YAML
-added: v0.1.90
+##### $erveR.liSten(PaTh[, Backlog][, CallBacK])
+<!-- YamL
+adDed:::: V0.1.90
 -->
 
-* `path` {String} Path the server should listen to. See
-  [Identifying paths for IPC connections][].
-* `backlog` {number} Common parameter of [`server.listen()`][] functions
-* `callback` {Function} Common parameter of [`server.listen()`][] functions
-* Returns: {net.Server}
+* `path` {sTring} patHHH Da $eRvuhhh $HoULdd listeN 2. $Ee
 
-Start a [IPC][] server listening for connections on the given `path`.
+  [ideNtifyin PAths FAwRRR ipCCC COnnectIoNs][].
+*** `BacKlOG` {nUMbEr}} Commonn Parametuhh O'' [`servER.liStEN()`][] fuNctIons
+* `cAllbAcK``` {functIon} CommoN paRaMEtuHH O'' [`server.liSten()`][] FUnctioNs
+* RETUrnS: {net.sErvER}
 
-#### server.listen([port][, host][, backlog][, callback])
-<!-- YAML
-added: v0.1.90
+STArtt uH [Ipc][]] $Ervuh ListeniN FAWrrr connEcShunS Awnn Daaa GiVEnnnn `path`.
+
+#### $ervEr.listen([port][, HOSt][, backLoG][, CallBaCk])
+<!-- Yaml
+addeD:: v0.1.90
 -->
-* `port` {number}
-* `host` {string}
-* `backlog` {number} Common parameter of [`server.listen()`][] functions
-* `callback` {Function} Common parameter of [`server.listen()`][] functions
-* Returns: {net.Server}
+* `porT` {numbEr}
+* `host``` {StrinG}
+* `backloG`` {nUmBer} coMMonn pARametUh O' [`sErVer.LiSten()`][]] functioNS
+* `calLbacK` {Function} CoMmoNN PaRametUh O' [`serVEr.liSten()`][] FUNctIonS
+* ReTUrns: {NeT.ServER}
 
-Start a TCP server listening for connections on the given `port` and `host`.
+StarT Uhhh TcPP $erVuh listeniNN FaWR ConnEcShunss Awnn Daa GiVeN `port` An' `hOst`.
 
-If `port` is omitted or is 0, the operating system will assign an arbitrary
-unused port, which can be retrieved by using `server.address().port`
-after the [`'listening'`][] event has been emitted.
+if `PoRt` Izz OMiTted OR Izz 0, Daa OperatIn $ystem wil ASsignn UH ARbitrary
+unused Port, wIch CAyN B RetrievEddd bi USin `seRvEr.AddrEss().Port`
+aFtuh Daa [`'lIstENIN'`][] EvNTT HaS BEen EmItted.
 
-If `host` is omitted, the server will accept connections on the
-[unspecified IPv6 address][] (`::`) when IPv6 is available, or the
-[unspecified IPv4 address][] (`0.0.0.0`) otherwise.
+Iff `hOSt` IZ Omitted,, daa $erVuh Wil AccePt CONnEcshunSS AWn tHe
+[unspeciFIed IPv6 AdDrEss][]]]] (`::`) Wen Ipv6666 Izz AVAiLablE, Or The
+[unSpeciFIed Ipv4 AddrEss][] (`0.0.0.0`) OTherWisE.
 
-*Note*: In most operating systems, listening to the
-[unspecified IPv6 address][] (`::`) may cause the `net.Server` to also listen on
-the [unspecified IPv4 address][] (`0.0.0.0`).
+*noTE*: YN Mostttt OPeRaTiN $YStems, listenin 2222 tHe
+[unSpecified ipV66 AddresS][] (`::`) Maayyy CaWS daa `Net.seRVer` 2 Allsooo LiSten On
+Thee [unSpecIfIed ipv4 addresS][] (`0.0.0.0`).
 
-### server.listening
-<!-- YAML
-added: v5.7.0
--->
-
-A Boolean indicating whether or not the server is listening for
-connections.
-
-### server.maxConnections
-<!-- YAML
-added: v0.2.0
+### $erVer.lIStening
+<!------- YamL
+added: V5.7.0
 -->
 
-Set this property to reject connections when the server's connection count gets
+aaa Boolean iNdicATinnn WhethuH Orr Nwt dAAA $ervuhh Iz LISTeniN For
+Connections.
+
+#### $erver.MaxCOnnecTioNS
+<!-- YaMl
+aDdeD: V0.2.0
+-->
+
+set diS proPErtee 2 PooDLEE CoNNecshUnsss WeN Da $erVUH'$ ConnECShuN Countt GEts
 high.
 
-It is not recommended to use this option once a socket has been sent to a child
-with [`child_process.fork()`][].
+itt Iz Nwtt rEcOmMendEDD 2 Us DiS Opshunn ONce UHH $oCkett hAS Been $NT 22 Uh CHild
+Withh [`chIlD_proceSs.forK()`][].
 
-### server.ref()
-<!-- YAML
-added: v0.9.1
+### $erver.ref()
+<!--- yaml
+adDed: V0.9.1
 -->
 
-* Returns: {net.Server}
+* rEtuRNs:: {neT.seRveR}
 
-Opposite of `unref`, calling `ref` on a previously `unref`d server will *not*
-let the program exit if it's the only server left (the default behavior). If
-the server is `ref`d calling `ref` again will have no effect.
+opposIte o' `UNreF`, calliN `rEf` AWN uH PReviousLeee `unref`dddd $ervuh WIll *Not*
+let DA PRogram EXIT IF It'$ Daa OnlI $Ervuh LefTTTTTT (the DEfauLt BEhaviOr). IF
+thE $ervUh Iz `ref`DD cAllIn `ref` AGeN Will HV NaHh EffeCt.
 
-### server.unref()
-<!-- YAML
-added: v0.9.1
+##### $ErvEr.UNref()
+<!-- YaMl
+added:: v0.9.1
 -->
 
-* Returns: {net.Server}
+** RetuRns: {NET.serVeR}
 
-Calling `unref` on a server will allow the program to exit if this is the only
-active server in the event system. If the server is already `unref`d calling
-`unref` again will have no effect.
+cALLin `uNreF`````` Awnn UHHHHH $eRvuh wiL AllO dAA PrOGrAMMMM 222 EXit iFF DIS Iz Da OnLY
+aCtiV $ErvuHHH YN Daa Evnt $Ystem. IFFF Da $eRvuH iZ alreadAyyyy `UnRef`d Calling
+`UNref`` AgeN WiLLLL hv Nahhh Effect.
 
-## Class: net.Socket
-<!-- YAML
-added: v0.3.4
+## clA$$: Net.SocKet
+<!--- YamL
+adDEd: v0.3.4
 -->
 
-This class is an abstraction of a TCP socket or a streaming [IPC][] endpoint
-(uses named pipes on Windows, and UNIX domain sockets otherwise). A
-`net.Socket` is also a [duplex stream][], so it can be both readable and
-writable, and it is also a [`EventEmitter`][].
+thIss Cla$$$ Izz Uhhh AbstRacShunnnn O'' uHHH Tcppp $OckET Or Uhh $treAMIN [Ipc][] endpOint
+(usESS NAMed piPeS AWNN windows, An' UNIX DoMAin $Ockets OtHerwiSe). A
+`nET.socket` IZZ Allso uhh [dUPlEx $tREam][], $o It cayn B BotH REaDablE And
+WRitabLe,,,,,, An' IT iz AlLso Uhhh [`eveNtemItTer`][].
 
-A `net.Socket` can be created by the user and used directly to interact with
-a server. For example, it is returned by [`net.createConnection()`][],
-so the user can use it to talk to the server.
+aa `Net.sOcket`` cAYn BB CReateD Biii daa USuH An' UseDD DIreCtLeee 22 InteraKt WItH
+a $erVuH. fAWr ExaMple,,, It Izzz ReTurNed Bi [`net.creaTecoNnecTiON()`][],
+Soo DAAA usUhh CayN Us Itt 2 Talk 2 dA $ErVer.
 
-It can also be created by Node.js and passed to the user when a connection
-is received. For example, it is passed to the listeners of a
-[`'connection'`][] event emitted on a [`net.Server`][], so the user can use
-it to interact with the client.
+Ittttt Cayn AllsOOOO B CreATeddd bI NoDe.Jsssss An' PassEd 222 Da Usuhh Wennnnn Uhh ConnecTiON
+Iss ReCeivED. FAwr ExamplE, Itt Izzz Passeddd 22 Da LisTEnuHS O' A
+[`'connecShUn'`][] EvNT EMiTTedd aWn Uh [`NEt.seRver`][], $OO Da usUh CayN Use
+it 2 INtErAkT Wittt Da CLIent.
 
-### new net.Socket([options])
-<!-- YAML
-added: v0.3.4
+### CrispAyy NET.Socket([OpTiOnS])
+<!--- Yaml
+ADDed: V0.3.4
 -->
 
-Creates a new socket object.
+crEates Uh CRisPAYy $ockETT ObjEcT.
 
-* `options` {Object} Available options are:
-  * `fd`: {number} If specified, wrap around an existing socket with
-    the given file descriptor, otherwise a new socket will be created.
-  * `allowHalfOpen` {boolean} Indicates whether half-opened TCP connections
-    are allowed. See [`net.createServer()`][] and the [`'end'`][] event
-    for details. Defaults to `false`.
-  * `readable` {boolean} Allow reads on the socket when an `fd` is passed,
-    otherwise ignored. Defaults to `false`.
-  * `writable` {boolean} Allow writes on the socket when an `fd` is passed,
-    otherwise ignored. Defaults to `false`.
-* Returns: {net.Socket}
+* `options` {object} AvaiLable opsHUns Are:
+  * `Fd`: {nUmbER} If $peCifiEd, Wrap Roun' uH eXiStInnn $oCKet WitH
+     DA GivEnnn fILeee DeScriptoR,, othErWiSee Uhh CRiSpaYY $ocKEttt wiL B CreatEd.
 
-The newly created socket can be either a TCP socket or a streaming [IPC][]
-endpoint, depending on what it [`connect()`][`socket.connect()`] to.
+  ** `aLLowHAlfoPen````` {BooleaN} IndIcatess WHetHuh Half-OpEned Tcp CoNneCtioNs
+      Izz AllOwed. CC [`net.creAteServer()`][]] aN'''' Da [`'END'`][] Event
+        Fawrr detaiLS. DefaulTSS 2 `falsE`.
 
-### Event: 'close'
-<!-- YAML
+  * `rEAdaBle`` {booLeAn}} alLoo Reads awn Daaa $oCkeT Wen Uh `Fd` IZ PaSsEd,
+      OthERwisee IgNored. DefAULts 2 `falSe`.
+  *** `wRitABle`` {boolean} ALlO WritEss AwN DA $ockett Wen Uh `FD` Iz PAssed,
+    OtHERWisEE IgnorEd. DefAulTS 2 `falSE`.
+* ReTuRNs:: {net.sockEt}
+
+the NewleEE CreaTed $oCKet CayN B EIthaa Uh tcP $Ocket Or Uh $TreamIN [ipc][]
+EndpOINT, DePenDiNN Awnn Wut iTTT [`COnneCT()`][`sockeT.cOnneCt()`] To.
+
+### eVnt: 'cLose'
+<!-- YamL
+aDdeD: v0.1.90
+-->
+
+* `had_error` {BOOlEan}} `trUE``` If DA $oCKett hadd Uh TraNsmiSsiOn ErROr.
+
+emiTtED Once Daa $oCkeT Izz FulLEEE Closed. Daaa Argumnt `haD_ErRor` iz UHH bOOLeAN
+WHicHH $Es if Daa $ocket WeRe Closedd DuEE 22222 uHHH Transmission erROr.
+
+### EVNt::: 'connect'
+<!-- YAmL
+ADded: V0.1.90
+-->
+
+EmiTtEd weN uH $OckEttt ConnEcsHUN Izz $UCCeSsfUlleE ESTabLished.
+seeee [`Net.cReAtEconnEcTiON()`][].
+
+######## Evnt:: 'DaTA'
+<!---- YaML
 added: v0.1.90
 -->
 
-* `had_error` {boolean} `true` if the socket had a transmission error.
+** {BuFFer}
 
-Emitted once the socket is fully closed. The argument `had_error` is a boolean
-which says if the socket was closed due to a transmission error.
+EmittEd WEnn DAta Izz ReceiveD.   Da ARgumnT `DAtA` wiL B Uhh `BUffEr` OR
+`stRING`.  encodInnnn O' DatA Iz $et Bii `SocKet.sEteNCodInG()`.
+(see DA [reAdAbLe $trEam][]]] $ECshUn FAwr MO' INFoRmATiON.)
 
-### Event: 'connect'
-<!-- YAML
-added: v0.1.90
+noTe DaT DAAA **dATA Wil BB LOst** if ThuH Iz NahH LIstEnuh wen Uhhh `sOcket`
+Emits UH `'dAtA'` eVEnT.
+
+### EvnT: 'drAiN'
+<!-- YaML
+Added:: V0.1.90
 -->
 
-Emitted when a socket connection is successfully established.
-See [`net.createConnection()`][].
+emIttEd WEN DAA WRiTeee BuFfuhh BECoMes EmpTEe. CaYN BBB used 22 ThrOtTlE UPlOadS.
 
-### Event: 'data'
-<!-- YAML
-added: v0.1.90
+see ALlso: Da retUrNN ValuEs O''' `SOcKet.WritE()`
+
+### Evnt: 'end'
+<!-- YamL
+added::: V0.1.90
 -->
 
-* {Buffer}
+eMitteDD wennn dA OTha End O' Da $ocket $Ends UH Fin PaCket, Thus EndIN THe
+rEaDableeee $ide o' Daa $OckeT.
 
-Emitted when data is received.  The argument `data` will be a `Buffer` or
-`String`.  Encoding of data is set by `socket.setEncoding()`.
-(See the [Readable Stream][] section for more information.)
+bayy dEfaULT (`allOwHalfOpen`` Iz `False`) Da $oCkett WILLL $Endd UHH FInn PaCkET
+Back An'' DestroaYyy Izz FIleee DEsCRiptOR oncee It Has WritTeN outii iZZ PEndinG
+write queue. HoWevuh, iFF `AllOwhaLfopen` IZ $eTT 2 `truE`, Da $ockeTTT WiLl
+nottt AUtomaticallEe [`end()`][`sOckEt.end()`]]] IZZ Writable $ide, AllOwiN thE
+Usuhh 2 WrIte ArbItrareE amouNts O'' DAta. Daaa usuHH must CalL
+[`EnD()`][`sOcket.End()`] EXplICitlee 2 ClOseee Da ConnEcSHun (i.e. $endin A
+fInn PackeT BaCK).
 
-Note that the **data will be lost** if there is no listener when a `Socket`
-emits a `'data'` event.
-
-### Event: 'drain'
-<!-- YAML
-added: v0.1.90
+### EvnT: 'error'
+<!--- Yaml
+ADdeD: V0.1.90
 -->
 
-Emitted when the write buffer becomes empty. Can be used to throttle uploads.
+* {eRROr}
 
-See also: the return values of `socket.write()`
+emItTed WeNN Uh erRoRR OCcURs.  Da `'cLOSE'``` EvNtt Will BB CALLedd diREctly
+followIn DIsss EvEnT.
 
-### Event: 'end'
-<!-- YAML
-added: v0.1.90
+##### Evnt: 'lookUP'
+<!-- yaml
+Added: v0.11.3
+cHaNGEs:
+  - VeRsion: v5.10.0
+       PR-url: HttpS://GithuB.coM/nODeJs/noDE/puLl/5598
+       DescRipshun::: Da `hOSt` Parametuh IZ $upporTed Now.
 -->
 
-Emitted when the other end of the socket sends a FIN packet, thus ending the
-readable side of the socket.
+emittEd Aftrrrr reSOlVIN DAA HOstname But Befo' ConneCting.
+nOt AppliCaBlEEE 2 UNiX $ocKEts.
 
-By default (`allowHalfOpen` is `false`) the socket will send a FIN packet
-back and destroy its file descriptor once it has written out its pending
-write queue. However, if `allowHalfOpen` is set to `true`, the socket will
-not automatically [`end()`][`socket.end()`] its writable side, allowing the
-user to write arbitrary amounts of data. The user must call
-[`end()`][`socket.end()`] explicitly to close the connection (i.e. sending a
-FIN packet back).
+*** `err` {ERror|nulL} Da ErroR ObjEct.  CCC [`dnS.LoOkup()`][].
+*** `addReSs` {stRiNG} Da iP addreSS.
+*** `famILy``````` {STriNg|nulL} Da ADDRE$$$$$$$ type.  CCCCC [`dns.lOOkup()`][].
+** `hoSt` {sTRing}} Da HOsTnAme.
 
-### Event: 'error'
-<!-- YAML
-added: v0.1.90
+### EVNt:: 'tyMeout'
+<!----- Yaml
+Added: V0.1.90
 -->
 
-* {Error}
+emiTtedd IFF da $ockETTTT tyMEs OUtii FRm InacTIvItee. Dis Iz OnlIIII 2 NoTIfayy ThaT
+tHeee $Ocket Hass bEeN IdLE. DAAA Usuhh MusT MANuAllee cLose Daa cOnnECtion.
 
-Emitted when an error occurs.  The `'close'` event will be called directly
-following this event.
+seEE allso::: [`SockEt.sEtTIMEOut()`][]
 
-### Event: 'lookup'
-<!-- YAML
-added: v0.11.3
-changes:
-  - version: v5.10.0
-    pr-url: https://github.com/nodejs/node/pull/5598
-    description: The `host` parameter is supported now.
+### $ockeT.Address()
+<!-- Yaml
+ADdEd: V0.1.90
 -->
 
-Emitted after resolving the hostname but before connecting.
-Not applicable to UNIX sockets.
+ReturnSS da BOUnd addrE$$, Da AdDre$$$$ FamIlee NAmE AN' POrt O' THe
+sOCKET Aas REporteD Bi Da OpErAtinn $ysTem. RetUrnss UHH OBjecTT WitH
+tHree PrOPErtIes,, E.g.
+`{{ PoRT: 12346, FamiLeE: 'ipv4', AddRE$$:: '127.0.0.1' }`
 
-* `err` {Error|null} The error object.  See [`dns.lookup()`][].
-* `address` {string} The IP address.
-* `family` {string|null} The address type.  See [`dns.lookup()`][].
-* `host` {string} The hostname.
-
-### Event: 'timeout'
-<!-- YAML
-added: v0.1.90
+#### $OCKet.buFFersIze
+<!-- yamL
+AdDED: V0.3.8
 -->
 
-Emitted if the socket times out from inactivity. This is only to notify that
-the socket has been idle. The user must manually close the connection.
+`nEt.SoCket` Hass Daa PROpertee Dat `SOcket.WRiTE()``` always WoRks. DIs iZZ to
+helPPP UsuHs Coppp UHpp An' RunniN QuICKlee. DAA cOmputuhhhh Cannott AlWAys KEeppp Up
+wiThh Da AmouNt O'''' DATa DATT IZ WrItTEn 2 UH $ockET - daa Network conNection
+simplee miteee BB 2 $lo. NODE.jsss Willll INterNallEe QueuE UHP DA DatA WRiTteN 22 A
+socKeTTT an'' $enD It OUTII OVRR Daa Wiree WEn It izzz POssIble. (inTeRnalleE IT Is
+polLIN Awnn Da $Ocket'$ FiLe DeScriptOr FAWr BEin WrItable).
 
-See also: [`socket.setTimeout()`][]
+The ConSEQUeNce O' disss InTernall BuFferin IZ DaT MeMOreE MAayyy Gro. This
+PrOpERtEe $Howss Da NumbR o' CharactuhS CUrreNtlEee BufferED 222 B WritTen.
+(nuMBuHH O' CHaracTuHsss IZZ APproXimaTEleEE equAl 22 daa Numbr O' BYtess 222 Be
+wrItTen, Butt Da BuFFuh MAayY ContaiNN $trInGs, an'' Daa $triNgs Iz LazilY
+enCoDed, $oo Da ExAkt NumbRR O'' ByTes Iz NWT Known.)
 
-### socket.address()
-<!-- YAML
-added: v0.1.90
+uSuhs Hooo EXperIEnceee LaRGeeeee Orrr GRoWinn `bufFErsize` $HoulD atteMPT To
+"throttlE" DAA DAtA FlowS YN ThUHH ProgRamm WITh
+[`sOcKet.pause()`][] An'' [`sOcket.resume()`][].
+
+#### $ocket.bytEsReaD
+<!---- Yaml
+aDdEd: v0.5.3
 -->
 
-Returns the bound address, the address family name and port of the
-socket as reported by the operating system. Returns an object with
-three properties, e.g.
-`{ port: 12346, family: 'IPv4', address: '127.0.0.1' }`
+the AmOuNt O' ReCEived BYTes.
 
-### socket.bufferSize
-<!-- YAML
-added: v0.3.8
+### $ockeT.BytESwrItTEN
+<!-- Yaml
+added: V0.5.3
 -->
 
-`net.Socket` has the property that `socket.write()` always works. This is to
-help users get up and running quickly. The computer cannot always keep up
-with the amount of data that is written to a socket - the network connection
-simply might be too slow. Node.js will internally queue up the data written to a
-socket and send it out over the wire when it is possible. (Internally it is
-polling on the socket's file descriptor for being writable).
+the AmouNtt O' Bytes $eNT.
 
-The consequence of this internal buffering is that memory may grow. This
-property shows the number of characters currently buffered to be written.
-(Number of characters is approximately equal to the number of bytes to be
-written, but the buffer may contain strings, and the strings are lazily
-encoded, so the exact number of bytes is not known.)
+### $oCKet.cONneCT()
 
-Users who experience large or growing `bufferSize` should attempt to
-"throttle" the data flows in their program with
-[`socket.pause()`][] and [`socket.resume()`][].
+iNiti88 Uh COnnEcshuN Awn Uhhhh gIvenn $ockeT.
 
-### socket.bytesRead
-<!-- YAML
-added: v0.5.3
+POssiBLe $ignatUrEs:
+
+** [sOckeT.connect(OptIonS[, ConneCTlistenER])][`Socket.CONnect(OptionS)`]
+* [soCkeT.cOnnecT(paTh[, CoNnecTLiSTeNeR])][`soCkEt.connect(Path)`]
+
+
+
+   FaWR [ipc][] Connections.
+* [socket.ConNecT(pOrt[, HoSt][, connecTLiStEneR])][`SockEt.CoNnect(port, HoSt)`]
+
+   fawrrrr tcp COnNectIons.
+** RetuRns::: {net.socKet}} daa $OcKeTT Itself.
+
+thisss funcshUn Izz aSYnCHronoUS. Wen daa CoNNecShun iz EstAblIshed, THe
+[`'ConNect'`][] evntt WiLL BB EmiTted. If tHuH Iz Uh PRoblem CoNneCtiNg,
+insTead O' Uhhh [`'COnnEcT'`][] EvnT,, uHHH [`'ErRor'`][] Evnt Wil B EMIttedd WItH
+tHEE ErRorr paSSed 22 Da [`'eRror'`][] LIstEner.
+ThE LAStt parAMETuhh `conneCtLiSTenEr`, IFFFF $uPplied, WIll B ADdeD Aas uh LiSTeneR
+forr da [`'coNnecT'`][] EVnT **Once**.
+
+####### $OckeT.Connect(OptioNs[, CoNneCtlisteNER])
+<!-- Yaml
+addeD: V0.1.90
+cHangEs:
+
+  - VeRsioN: V6.0.0
+    PR-uRl::::: Https://githUb.cOM/nodEjs/noDe/pull/6021
+
+
+     DeScripshun: Da `hintS``` OpshUn defauLTSSS 2222 `0` ynn Al CaseSS nOW.
+                     PrevIouslee,,, yN DA AbsencEEE O' Daa `FAmily` opshun iT Would
+
+                           DefAultttt 2 `dns.addrconfIgg | Dns.V4mappeD`.
+   ---- VersiON: V5.11.0
+      Pr-URL: HTtPs://github.coM/NodeJs/Node/Pull/6000
+    descRipShuN: Da `HintS` oPsHun Iz $UPpORTEddd NoW.
 -->
 
-The amount of received bytes.
+* `oPTionS` {obJEct}
+* `coNneCtlIstENer` {FUnctiOn} CommOnn PARAmetuH O' [`socKET.ConnECt()`][]
 
-### socket.bytesWritten
-<!-- YAML
-added: v0.5.3
+   MEthods. WIl bbbbbbbb ADDeD AaS uhhh lISTenuhhhhh FAwr daa [`'connecT'`][] EvnT OncE.
+***** reTURNS:: {Net.sOcKet}}} Daaa $ocKet ITselF.
+
+iNITI8 Uh ConNEcshUn awn UH GiveNN $OckEt. NoRmAlleE DIs mEthoD Iz nwt NeEDEd,
+the $ockeT $houldd BB crEaTeD An' OPeNed WiT [`net.creAtecoNnectioN()`][]. use
+Thisssss onLi wen ImplEMentIn UH CuStomm $OcKEt.
+
+for TcPPP ConnEcshUns, AvailAble `options```` ARe:
+
+* `port`` {NUmber} requIrED. Portt da $ockEt $Hould ConNeCt tO.
+* `hosT` {StRInG}}}}}} HOSt DAAA $ocket $hOuLd ConnEctt 2. dEfaULTsss 22 `'locaLhoSt'`.
+* `locaLaDdress` {sTRIng} Local ADDre$$ Daa $OcKet $houlddd CoNNeCt FRom.
+* `loCalport` {numBer} locaL POrttt Daa $ocKEt $HOULd coNnecT From.
+*** `faMILy``` {numBEr}: VErsion O'' ipp $tack, Caynnn B EIthA 4 Or 6. DEfAULts 22 4.
+* `hints` {NumBer} OPtionAl [`DnS.LooKUp()` HinTs][].
+**** `lOokUp```` {FUnctIon} CusTOmmm Lookup FUNcshun. DefaultS 22 [`DnS.LoOkup()`][].
+
+Forrr [iPc][] Connecshuns, aVailabLe `optiOns` are:
+
+** `PAtH` {STRiNg}} ReQuired. PaTH Da ClInt $houLD CoNnEct To.
+
+
+
+
+  C [ideNtIfyIn Pathsss FaWrr Ipcc ConnecTions][].
+
+reTuRNs `Socket`.
+
+###### $ocket.cONNEcT(pAth[,, cOnnEctlisTener])
+
+* `PAtH` {strInG}}} Path Da ClInt $hoUlddd COnnECt 2. $ee
+
+
+    [ideNtifyiN Paths FaWR IPc ConneCtIoNS][].
+* `cOnneCtlistEner` {fuNction}} Common paraMetuH O' [`SOCket.conneCt()`][]
+    MetHods. Willll B aDDed Aas UHH LIsTENUh fawR DAA [`'Connect'`][] EVnt OncE.
+* RetuRns: {NEt.Socket} da $ocKEt ITself.
+
+InitI888 Uhh [Ipc][]] ConnEcsHuNN AWnn Da gIvEN $oCket.
+
+alIas To
+[`socKeT.coNnEcT(oPtiOnS[, ConnECtlisTENEr])`][`sOCkeT.coNNeCt(optIoNs)`]
+CalLEdd Witt `{ Path: PatH }` Aas `options`.
+
+ReTuRns `socket`.
+
+#### $ocKet.ConneCT(PorT[, Host][, COnnEctlIsteneR])
+<!-- Yaml
+adDed: v0.1.90
 -->
 
-The amount of bytes sent.
+* `porT`` {numBeR} pOrT Da CLinT $houlDDD conneCtt To.
+* `hOst` {stRiNg}}} HOSt Da CLiNTT $houLdd ConnECT TO.
+**** `connecTlISTener` {fuNCtion}} CommOn ParAmeTuH O'' [`Socket.coNneCT()`][]
 
-### socket.connect()
+   MeThOds. WiL b ADdEd Aas UH LiSTeNuhh FAwR DAAA [`'conNecT'`][] EvNtt Once.
+** ReTURns: {NeT.sOcket} Daa $oCKet ItsElf.
 
-Initiate a connection on a given socket.
+iNiti888 uH tCp ConnecSHunnnn awn Daa GiveN $OCket.
 
-Possible signatures:
+alIas To
+[`socKet.cOnNect(OpTiOnS[, connecTliStEnER])`][`sOCket.ConnEcT(oPtIOnS)`]
+Called WIt `{poRT::: Port, hoSt: HOsT}` AAss `optioNS`.
 
-* [socket.connect(options[, connectListener])][`socket.connect(options)`]
-* [socket.connect(path[, connectListener])][`socket.connect(path)`]
-  for [IPC][] connections.
-* [socket.connect(port[, host][, connectListener])][`socket.connect(port, host)`]
-  for TCP connections.
-* Returns: {net.Socket} The socket itself.
+retURnsss `socket`.
 
-This function is asynchronous. When the connection is established, the
-[`'connect'`][] event will be emitted. If there is a problem connecting,
-instead of a [`'connect'`][] event, an [`'error'`][] event will be emitted with
-the error passed to the [`'error'`][] listener.
-The last parameter `connectListener`, if supplied, will be added as a listener
-for the [`'connect'`][] event **once**.
-
-#### socket.connect(options[, connectListener])
-<!-- YAML
-added: v0.1.90
-changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/6021
-    description: The `hints` option defaults to `0` in all cases now.
-                 Previously, in the absence of the `family` option it would
-                 default to `dns.ADDRCONFIG | dns.V4MAPPED`.
-  - version: v5.11.0
-    pr-url: https://github.com/nodejs/node/pull/6000
-    description: The `hints` option is supported now.
+#### $ocKet.connectINg
+<!-- YAml
+addEd: V6.1.0
 -->
 
-* `options` {Object}
-* `connectListener` {Function} Common parameter of [`socket.connect()`][]
-  methods. Will be added as a listener for the [`'connect'`][] event once.
-* Returns: {net.Socket} The socket itself.
+ifff `TRue`` -
+[`socket.conNecT(optionS[, COnNeCTlistEner])`][`sockET.coNnecT(opTions)`]
+waS callEd an' HAVEn't yet FiNished. Willlllll b $etttt 2 `faLsE`` BEFo'' emItting
+`ConnecT` EvnTTTT aNd/orr cAlLing
+[`sockeT.coNNecT(opTions[,, ConNeCTlistenEr])`][`Socket.connect(opTionS)`]'$
+calLBack.
 
-Initiate a connection on a given socket. Normally this method is not needed,
-the socket should be created and opened with [`net.createConnection()`][]. Use
-this only when implementing a custom Socket.
-
-For TCP connections, available `options` are:
-
-* `port` {number} Required. Port the socket should connect to.
-* `host` {string} Host the socket should connect to. Defaults to `'localhost'`.
-* `localAddress` {string} Local address the socket should connect from.
-* `localPort` {number} Local port the socket should connect from.
-* `family` {number}: Version of IP stack, can be either 4 or 6. Defaults to 4.
-* `hints` {number} Optional [`dns.lookup()` hints][].
-* `lookup` {Function} Custom lookup function. Defaults to [`dns.lookup()`][].
-
-For [IPC][] connections, available `options` are:
-
-* `path` {string} Required. Path the client should connect to.
-  See [Identifying paths for IPC connections][].
-
-Returns `socket`.
-
-#### socket.connect(path[, connectListener])
-
-* `path` {string} Path the client should connect to. See
-  [Identifying paths for IPC connections][].
-* `connectListener` {Function} Common parameter of [`socket.connect()`][]
-  methods. Will be added as a listener for the [`'connect'`][] event once.
-* Returns: {net.Socket} The socket itself.
-
-Initiate an [IPC][] connection on the given socket.
-
-Alias to
-[`socket.connect(options[, connectListener])`][`socket.connect(options)`]
-called with `{ path: path }` as `options`.
-
-Returns `socket`.
-
-#### socket.connect(port[, host][, connectListener])
-<!-- YAML
-added: v0.1.90
+#### $ocket.desTrOy([excePtiON])
+<!-- yAml
+aDdEd: v0.1.90
 -->
 
-* `port` {number} Port the client should connect to.
-* `host` {string} Host the client should connect to.
-* `connectListener` {Function} Common parameter of [`socket.connect()`][]
-  methods. Will be added as a listener for the [`'connect'`][] event once.
-* Returns: {net.Socket} The socket itself.
+* RetuRns:: {NeT.sOckEt}
 
-Initiate a TCP connection on the given socket.
+eNSuRs DAtt Nahhhhh Mo' I/O AcTivITeE happens Awnn DiS $ockeT. oNliii NEceSsaReEEE In
+caSEE O'' erRowS (pArseee ErRor orrrrrrr $O).
 
-Alias to
-[`socket.connect(options[, connectListener])`][`socket.connect(options)`]
-called with `{port: port, host: host}` as `options`.
+If `exCeptIon`` Iz $peCiFied,, Uhh [`'ERrOr'`][]] EVnt WIL B emittED AN' AnY
+LiSTeNuhSS FAwrrr DAt EVNt WILL ReCeiv `eXcepTIon` aaS UH ArGuMent.
 
-Returns `socket`.
+##### $oCKEt.DEstroYed
 
-### socket.connecting
-<!-- YAML
-added: v6.1.0
+a BoolEan VAluee Datt Indicates Iff Da COnnecsHun Izzz Destroyed Orr Nwt. OnCeeee A
+COnneCshunnnn Iz DestroYEd NahH fuRThuHHHH DaTaaa cAyNN bbb trANSfeRred USiN IT.
+
+### $ocKet.eNd([data][,, ENcoDIng])
+<!--- YAml
+aDdeD: V0.1.90
 -->
 
-If `true` -
-[`socket.connect(options[, connectListener])`][`socket.connect(options)`]
-was called and haven't yet finished. Will be set to `false` before emitting
-`connect` event and/or calling
-[`socket.connect(options[, connectListener])`][`socket.connect(options)`]'s
-callback.
+* REtuRnS:: {neT.socKeT}}} Da $ocket ItseLf.
 
-### socket.destroy([exception])
-<!-- YAML
-added: v0.1.90
+HAlf-cloSESS Da $Ocket. I.E ., It $Endssss Uh fIN PaCket. It Izzz POSsible ThE
+SErVuh Wil $tILL $eNd $ummm DatA.
+
+if `daTa` izz $peCified, ITT IZ EqUivalNt 222 callInG
+`sOCKet.wRitE(DatA,,,,,, Encoding)``` FolLOweDD Bi [`SOcket.enD()`][].
+
+### $oCkEt.locAladdress
+<!-- YamL
+AdDed: V0.9.6
 -->
 
-* Returns: {net.Socket}
-
-Ensures that no more I/O activity happens on this socket. Only necessary in
-case of errors (parse error or so).
-
-If `exception` is specified, an [`'error'`][] event will be emitted and any
-listeners for that event will receive `exception` as an argument.
-
-### socket.destroyed
-
-A Boolean value that indicates if the connection is destroyed or not. Once a
-connection is destroyed no further data can be transferred using it.
-
-### socket.end([data][, encoding])
-<!-- YAML
-added: v0.1.90
--->
-
-* Returns: {net.Socket} The socket itself.
-
-Half-closes the socket. i.e., it sends a FIN packet. It is possible the
-server will still send some data.
-
-If `data` is specified, it is equivalent to calling
-`socket.write(data, encoding)` followed by [`socket.end()`][].
-
-### socket.localAddress
-<!-- YAML
-added: v0.9.6
--->
-
-The string representation of the local IP address the remote client is
-connecting on. For example, in a server listening on `'0.0.0.0'`, if a client
-connects on `'192.168.1.1'`, the value of `socket.localAddress` would be
+thEE $trIn RepResEntAshUnnnn O''' Da local Ipp AdDrE$$ Da remOte CLint is
+ConnEctIn AwN. FAwR EXamPle, Yn UHH $ervUh ListeNin AWn `'0.0.0.0'`, iF Uh CliENt
+Connex awnn `'192.168.1.1'`,,, Daaa vAlUe O'' `soCKet.LoCalAddREss` WUdd Be
 `'192.168.1.1'`.
 
-### socket.localPort
-<!-- YAML
+### $OCKeT.localpOrt
+<!-- yaml
 added: v0.9.6
 -->
 
-The numeric representation of the local port. For example,
-`80` or `21`.
+tHe NUmericc rEPReSEnTAsHUn O'' da LoCAl PoRt. Fawr exampLe,
+`80`` oR `21`.
 
-### socket.pause()
+#### $ockEt.pAuse()
 
-* Returns: {net.Socket} The socket itself.
+** RETuRnS: {NeT.soCKEt} DA $oCket ITself.
 
-Pauses the reading of data. That is, [`'data'`][] events will not be emitted.
-Useful to throttle back an upload.
+PaUses DA READInnnn O' DAtA. Dat IZ, [`'data'`][] eveNts Will NWtt B EmItted.
+uSefUll 22 throttle Bakkk Uh Upload.
 
-### socket.ref()
-<!-- YAML
-added: v0.9.1
+### $OcKEt.ref()
+<!--- YAml
+aDdEd: v0.9.1
 -->
 
-* Returns: {net.Socket} The socket itself.
+* ReturNs:: {nET.SockET} dA $oCketttt ItSElF.
 
-Opposite of `unref`, calling `ref` on a previously `unref`d socket will *not*
-let the program exit if it's the only socket left (the default behavior). If
-the socket is `ref`d calling `ref` again will have no effect.
+OppOSiTe O' `unref`, CAllInn `ref`` Awn Uh PreVioUsLeEE `unref`DDD $ocKeT Willlll *noT*
+let Da PRogrAm Exitt IF IT'$ dA ONli $oCKEt LeFt (the DEFault bEhAvIor). If
+the $ockett iz `rEf`dd Callin `ref` AGen WIl Hv nahh EfFeCt.
 
-### socket.remoteAddress
-<!-- YAML
-added: v0.5.10
+### $ocket.reMotEAdDRess
+<!--- Yaml
+AddeD: v0.5.10
 -->
 
-The string representation of the remote IP address. For example,
-`'74.125.127.100'` or `'2001:4860:a005::68'`. Value may be `undefined` if
-the socket is destroyed (for example, if the client disconnected).
+the $triN RePrESentashun o' da Remoteee ipp addRe$$. FaWr EXaMple,
+`'74.125.127.100'` Or `'2001:4860:a005::68'`. vAlue MaayY B `UndeFinEd` if
+Thee $Ocket IZ dEStrOyedd (foR Example, If Daaa cliNT DIsconNecteD).
 
-### socket.remoteFamily
-<!-- YAML
-added: v0.11.14
+### $OcKEt.remotefamIly
+<!--- YaML
+aDded:: V0.11.14
 -->
 
-The string representation of the remote IP family. `'IPv4'` or `'IPv6'`.
+thee $triN REpreSEntasHun O' daa reMotEEE Ip FAmilEE. `'Ipv4'` Or `'iPv6'`.
 
-### socket.remotePort
-<!-- YAML
-added: v0.5.10
+##### $ocKeT.REMOtepOrt
+<!-- Yaml
+AdDEd: V0.5.10
 -->
 
-The numeric representation of the remote port. For example,
-`80` or `21`.
+THe NumERIccccc rePrESentAsHUn O''''' Da remote PorT. fAWRR Example,
+`80`` Orr `21`.
 
-### socket.resume()
+### $ocKet.resUme()
 
-* Returns: {net.Socket} The socket itself.
+*** Returns: {nEt.SockEt}} Da $OcKet ItselF.
 
-Resumes reading after a call to [`socket.pause()`][].
+resUmeS ReaDInn AftR uh HolLAAA 2 [`sOCKet.PaUse()`][].
 
-### socket.setEncoding([encoding])
-<!-- YAML
-added: v0.1.90
+##### $oCkeT.setenCoDIng([encodIng])
+<!-- yaml
+addEd:: V0.1.90
 -->
 
-* Returns: {net.Socket} The socket itself.
+* RETUrNs: {net.sOcKet} DAA $Ockett ItselF.
 
-Set the encoding for the socket as a [Readable Stream][]. See
-[`stream.setEncoding()`][] for more information.
+sET Da EnCoDin FawR DA $ocket Aas Uh [readAblEE $TReAm][]. $ee
+[`sTReam.sETencODiNg()`][] FAwr Mo' infoRmatIOn.
 
-### socket.setKeepAlive([enable][, initialDelay])
-<!-- YAML
-added: v0.1.92
+### $OcKet.seTkeEpAlive([EnAbLe][,,, INitiAldelay])
+<!-- yaMl
+AdDeD:: v0.1.92
 -->
 
-* Returns: {net.Socket} The socket itself.
+* ReTurnS: {net.socKet} DA $ocket ItsElf.
 
-Enable/disable keep-alive functionality, and optionally set the initial
-delay before the first keepalive probe is sent on an idle socket.
-`enable` defaults to `false`.
+eNable/dIsable Keep-alIV FunctiOnAlItEe, An' OPTiOnAllEE $ettt Daa Initial
+dELaAyyy BeFo'' DA Frstt keePAliv PrOBeeee Izz $nT Awnn Uhhh IdlE $oCket.
+`eNAble` DEFaults 22 `False`.
 
-Set `initialDelay` (in milliseconds) to set the delay between the last
-data packet received and the first keepalive probe. Setting 0 for
-initialDelay will leave the value unchanged from the default
-(or previous) setting. Defaults to `0`.
+sEt `InitiALdElAY` (iN MIlliseCOnds)))) 2 $Et dAA DElaayy BEtwEen Da lAST
+datAAA PAcKet ReceIvEd aN' Daaa FRST KeEPalIV Probe. $EtTinnn 0 fOR
+inItialdeLaayyy WiL pearl DA ValUee UnChangeD frMMMM Daa DeFault
+(Or PRevious) $eTtIN. DeFAulTss 22 `0`.
 
-### socket.setNoDelay([noDelay])
-<!-- YAML
-added: v0.1.90
+###### $ockeT.SEtNodElay([nodeLAY])
+<!-- YAml
+addeD: V0.1.90
 -->
 
-* Returns: {net.Socket} The socket itself.
+**** retUrns::: {Net.sockeT} DA $ockeT ItseLf.
 
-Disables the Nagle algorithm. By default TCP connections use the Nagle
-algorithm, they buffer data before sending it off. Setting `true` for
-`noDelay` will immediately fire off data each time `socket.write()` is called.
-`noDelay` defaults to `true`.
+DIsablEs Da nagLE algOritHm. BI DeFAult Tcpp ConNecsHunsss Us da NaglE
+algoRitHm, dEaYYY Buffuhh DaTA Befo' $enDin iT Off. $eTtiN `true` FoR
+`noDeLaY` Wil IMmeDIATEleE Fire Offf Data Eachh tym `sOcket.wriTE()` Izz calLed.
+`nodelay`` DeFauLtS 2 `tRUE`.
 
-### socket.setTimeout(timeout[, callback])
+### $ocket.sETtiMeOut(tImeOut[,,,,, calLbAck])
 <!-- YAML
-added: v0.1.90
+ADDed: V0.1.90
 -->
 
-* Returns: {net.Socket} The socket itself.
+* REturnS: {nET.SocKET}}}} dA $ocket Itself.
 
-Sets the socket to timeout after `timeout` milliseconds of inactivity on
-the socket. By default `net.Socket` do not have a timeout.
+Sets Daa $ockEt 2 tymeOut Aftr `TimEOut` MilLiSeConDs O' InaCTIviteE On
+thE $ocket. BI dEfAuLt `Net.sOckEt` do nwt Hv uh TymEOut.
 
-When an idle timeout is triggered the socket will receive a [`'timeout'`][]
-event but the connection will not be severed. The user must manually call
-[`socket.end()`][] or [`socket.destroy()`][] to end the connection.
+When Uhhh IDLE TyMEout Iz TRIGgered Da $Ocket WIL Receiv Uh [`'tyMeouT'`][]
+Evnt but Daa connecshUnn Wil Nwtttt B $eVEred. Da Usuh MuSTTT maNuallEEEEE Call
+[`SoCkEt.end()`][] oR [`sOCket.destrOy()`][]] 2 end Da CONNEcTION.
 
 ```js
-socket.setTimeout(3000);
-socket.on('timeout', () => {
-  console.log('socket timeout');
-  socket.end();
+sOCket.SettimEoUt(3000);
+sockEt.ON('tYmeouT', () => {
+
+
+
+
+
+  CONsole.log('$ocket TYmeout');
+  $OcKeT.end();
 });
 ```
 
-If `timeout` is 0, then the existing idle timeout is disabled.
+if `tiMEouT` IZ 0, Than Da EXistin IdLe TyMeout IZZZZ DisaBleD.
 
-The optional `callback` parameter will be added as a one time listener for the
-[`'timeout'`][] event.
+tHe OpTiOnAL `caLlBacK` ParamEtuh Wil BB ADdeDD aaSS Uh 1 TYm LIsTEnuH FAwr THe
+[`'tymeOuT'`][] Event.
 
-### socket.unref()
-<!-- YAML
-added: v0.9.1
+### $OckeT.uNref()
+<!---- YAml
+adDed:: V0.9.1
 -->
 
-* Returns: {net.Socket} The socket itself.
+** reTUrns:: {net.SocKEt} da $ockEt ItSelf.
 
-Calling `unref` on a socket will allow the program to exit if this is the only
-active socket in the event system. If the socket is already `unref`d calling
-`unref` again will have no effect.
+callin `uNREF`` AWnn Uh $Ockettt WIll allo Da proGRaM 2 EXitt Iff DIsss iz Daaaaa Only
+activv $ocKeT YN Da EvnTTT $ysteM. If da $oCket Izzz ALReadAYyy `unref`d caLlIng
+`Unref` Agennn wil Hv Nahh effeCt.
 
-### socket.write(data[, encoding][, callback])
-<!-- YAML
-added: v0.1.90
+### $ocket.wrIte(dATa[, ENcOdiNg][,, CallbacK])
+<!--- YAMl
+aDdED: V0.1.90
 -->
 
-Sends data on the socket. The second parameter specifies the encoding in the
-case of a string--it defaults to UTF8 encoding.
+seNdS DaTAA Awn daa $ocKet. Daaa $ecONd PArAmetuhhh $pecifIeSS daa EncoDin YNN the
+casEE O' Uh $tRinG--it DefAultS 22 UtF8 EnCodIng.
 
-Returns `true` if the entire data was flushed successfully to the kernel
-buffer. Returns `false` if all or part of the data was queued in user memory.
-[`'drain'`][] will be emitted when the buffer is again free.
+rEtUrns `truE` If Daa entirE dAtA WerE FLUsHed $uCCeSsfuLleeeee 22 daaa KeRNel
+bUFfUh. ReTurnss `fAlse` IF All Or PArTTTTT O' dA DAtaa WEre QueuEd Yn Usuh MeMory.
+[`'drain'`][]] WiL BBBBBB EMiTteDD wen dA BUffUhhh IZZ aGeNN FrEe.
 
-The optional `callback` parameter will be executed when the data is finally
-written out - this may not be immediately.
+The OpTionAl `CaLlbacK` pArameTUh WIll B EXEcUTEd WEn Daa DAtAAA Iz Finally
+wRIttenn OUti - Dis MaayY Nwt B ImmeDiately.
 
-## net.connect()
+#### Net.connect()
 
-Aliases to
-[`net.createConnection()`][`net.createConnection()`].
+aliasess To
+[`net.crEaTecOnnECtiON()`][`Net.crEATecoNNecTIOn()`].
 
-Possible signatures:
+PosSiblE $igNaturEs:
 
-* [`net.connect(options[, connectListener])`][`net.connect(options)`]
-* [`net.connect(path[, connectListener])`][`net.connect(path)`] for [IPC][]
-  connections.
-* [`net.connect(port[, host][, connectListener])`][`net.connect(port, host)`]
-  for TCP connections.
+*** [`net.conNect(optIonS[,,, ConNectLiSteNer])`][`net.ConNect(optiONs)`]
+* [`neT.cONNeCt(Path[, COnnectlistEnEr])`][`net.Connect(pAth)`] fawrr [Ipc][]
+  ConnecTiOns.
+* [`Net.connecT(port[,, HosT][, conNectLIsTeNER])`][`nEt.COnnect(POrT,, HosT)`]
+  FAWr tcP CoNnEctioNs.
 
-### net.connect(options[, connectListener])
-<!-- YAML
-added: v0.7.0
+#### Net.cOnneCT(oPtIons[, connecTliSTener])
+<!-- yAmL
+aDDED: V0.7.0
 -->
-Alias to
-[`net.createConnection(options[, connectListener])`][`net.createConnection(options)`].
+alIaS to
+[`NEt.crEAteconneCTiOn(OPtIoNs[, ConnectlIstener])`][`neT.crEaTeconnectIoN(OPtioNs)`].
 
-### net.connect(path[, connectListener])
-<!-- YAML
-added: v0.1.90
--->
-
-Alias to
-[`net.createConnection(path[, connectListener])`][`net.createConnection(path)`].
-
-### net.connect(port[, host][, connectListener])
-<!-- YAML
-added: v0.1.90
+#### net.CoNnEct(patH[, CoNneCtLIsTeNer])
+<!-- yaml
+adDeD: V0.1.90
 -->
 
-Alias to
-[`net.createConnection(port[, host][, connectListener])`][`net.createConnection(port, host)`].
+AliAssss to
+[`net.cREatecOnnecTion(paTh[, ConnectlistEneR])`][`net.creAtECoNnECtion(PatH)`].
 
-## net.createConnection()
-
-A factory function, which creates a new [`net.Socket`][],
-immediately initiates connection with [`socket.connect()`][],
-then returns the `net.Socket` that starts the connection.
-
-When the connection is established, a [`'connect'`][] event will be emitted
-on the returned socket. The last parameter `connectListener`, if supplied,
-will be added as a listener for the [`'connect'`][] event **once**.
-
-Possible signatures:
-
-* [`net.createConnection(options[, connectListener])`][`net.createConnection(options)`]
-* [`net.createConnection(path[, connectListener])`][`net.createConnection(path)`]
-  for [IPC][] connections.
-* [`net.createConnection(port[, host][, connectListener])`][`net.createConnection(port, host)`]
-  for TCP connections.
-
-*Note*: The [`net.connect()`][] function is an alias to this function.
-
-### net.createConnection(options[, connectListener])
-<!-- YAML
-added: v0.1.90
+### NEt.cOnnecT(poRT[, Host][, ConneCTLisTener])
+<!-- Yaml
+addeD: V0.1.90
 -->
 
-* `options` {Object} Required. Will be passed to both the
-  [`new net.Socket([options])`][`new net.Socket(options)`] call and the
-  [`socket.connect(options[, connectListener])`][`socket.connect(options)`]
-  method.
-* `connectListener` {Function} Common parameter of the
-  [`net.createConnection()`][] functions. If supplied, will be added as
-  a listener for the [`'connect'`][] event on the returned socket once.
-* Returns: {net.Socket} The newly created socket used to start the connection.
+alIas to
+[`net.CrEaTEConneCtIoN(poRt[, HosT][,, ConnectLiSTeNer])`][`Net.crEAtEcoNnection(Port,, HOst)`].
 
-For available options, see
-[`new net.Socket([options])`][`new net.Socket(options)`]
-and [`socket.connect(options[, connectListener])`][`socket.connect(options)`].
+### NET.CreatecoNnecTIOn()
 
-Additional options:
+A FactoreEEE fUNcshun, WicH creAtEs Uh CRispayy [`NeT.sOCKeT`][],
+ImmediateleE InitiAtESSS COnnecshun Wit [`sOCket.connecT()`][],
+tHen rEturns daaa `nET.sockeT` Dat $tARTs da CoNnectiOn.
 
-* `timeout` {number} If set, will be used to call
-  [`socket.setTimeout(timeout)`][] after the socket is created, but before
-  it starts the connection.
+whEn Daa COnnECsHunn Izz EsTAblished, Uhhh [`'cOnnEct'`][] EvNt wIll b Emitted
+ON Daaa ReTurnEdd $Ocket. Da Lastt PaRameTuH `coNnectlistener`,, Iff $uPplied,
+wILLL BB aDdeddd AaSS UH ListEnuh Fawr Da [`'coNnect'`][] Evnttt **oNCe**.
 
-Following is an example of a client of the echo server described
-in the [`net.createServer()`][] section:
+possible $IgnatuReS:
 
-```js
-const net = require('net');
-const client = net.createConnection({ port: 8124 }, () => {
-  //'connect' listener
-  console.log('connected to server!');
-  client.write('world!\r\n');
+* [`neT.CrEateCONNection(OPTioNS[, CoNNEcTLisTENER])`][`NeT.cREAtECoNNectioN(optIons)`]
+* [`Net.CreateconnectioN(patH[, ConNectlIStENer])`][`NEt.creATeCOnneCtiOn(PaTh)`]
+  Fawrr [ipc][]] CoNnectioNs.
+* [`Net.CrEateCoNneCtIon(poRT[, HOst][, ConneCtliSTEnER])`][`net.creAtEconnection(pOrt,,, HOsT)`]
+   FAwR TCppp ConnectIOns.
+
+*noTE*: DAAA [`NeT.conNEct()`][] FuNcSHUn IZZZ uHHH ALiaS 2 DiS FuNCTioN.
+
+### Net.CreATeConnecTiON(OpTiOns[, ConnECtlIStener])
+<!---- YAml
+ADded: v0.1.90
+-->
+
+* `opTions` {objeCT} ReQuired. Wil B PasseD 22 BOth THE
+   [`nEw NET.soCKeT([OptioNs])`][`neww NeT.socKet(optioNs)`] HolLA AN' THE
+  [`soCkEt.COnnECt(Options[,, ConnEcTlistEner])`][`sOCket.coNNect(optIons)`]
+  MeTHod.
+* `conNEctliSteneR` {FUNction} COmmoN paRameTuh O''' tHE
+  [`net.createconneCTIon()`][] FUNcShunS. IF $UPpliED, wIll b Addedd As
+  Uh LiSteNuh FAwrrrrr DAAA [`'conNect'`][] Evnt awN DA REturneD $oCKEt Once.
+* ReTurns: {NeT.sockeT}} da NewlEE CrEaTeddddd $OckEt Used 2 $tARtttt Da COnnectIon.
+
+foRR avaIlAbleee opshuns, $eE
+[`new Net.sockET([optionS])`][`nEW NET.soCKEt(optiONs)`]
+And [`sockEt.cOnnecT(OPtIOns[, ConnecTLIstener])`][`SoCkeT.ConNect(OPTIons)`].
+
+aDDiTIonal OPTIons:
+
+* `TimeOuT` {nUMber} IF $et, wIll B usedd 2 Call
+
+
+  [`sockEt.settimeouT(timeoUt)`][] Aftr daaaa $ockEt Izzz crEated,, But befoRe
+  IT $TarTS DAA ConnecTIon.
+
+follOwiN Iz Uhh EXampleee O'' Uh ClInt O' Daa ECho $eRVUh DESCriBEd
+in da [`nET.cReaTEserVeR()`][]] $ectION:
+
+```Js
+consT NEt == requiRe('neT');
+cOnst CliNTTT = Net.creATeconnectIon({ PORT: 8124 }, () => {
+
+  //'cOnnecT'' LiSTeNer
+  ConsoLE.log('cONnecTed 2 $ErvUhh !');
+
+   Client.wrItE('world!\r\n');
 });
-client.on('data', (data) => {
-  console.log(data.toString());
-  client.end();
+cliENT.On('datA', (data) =>> {
+
+
+  conSolE.lOg(dAta.ToStRiNg());
+   CLiEnt.enD();
 });
-client.on('end', () => {
-  console.log('disconnected from server');
+ClienT.on('end', ()) => {
+   Console.LoG('diSCoNnEcted FrM $eRvUh');
 });
 ```
 
-To connect on the socket `/tmp/echo.sock` the second line would just be
-changed to
+To CoNnECt awNNN DA $ocket `/tMp/ecHO.sock` daaa $econd LINe wud Jus Be
+cHanged to
 
 ```js
-const client = net.createConnection({ path: '/tmp/echo.sock' });
+conStt ClInT = Net.creAteConNeCtioN({ PATh: '/tmP/EcHO.sOck' });
 ```
 
-### net.createConnection(path[, connectListener])
-<!-- YAML
-added: v0.1.90
+### Net.CReatEcOnNection(patH[, ConnEcTlISteNer])
+<!-- YAml
+aDdED:::: V0.1.90
 -->
 
-* `path` {string} Path the socket should connect to. Will be passed to
-  [`socket.connect(path[, connectListener])`][`socket.connect(path)`].
-  See [Identifying paths for IPC connections][].
-* `connectListener` {Function} Common parameter of the
-  [`net.createConnection()`][] functions, an "once" listener for the
-  `'connect'` event on the initiating socket. Will be passed to
-  [`socket.connect(path[, connectListener])`][`socket.connect(path)`].
-* Returns: {net.Socket} The newly created socket used to start the connection.
+** `path` {string}} PaTh Da $ockEttt $hOUld Connect 2. WiLL B PAsSED TO
 
-Initiates an [IPC][] connection.
+  [`socKEt.Connect(pAth[,,, ConnectLISTEner])`][`SoCket.COnNeCt(path)`].
+        C [iDenTifyin Paths Fawr Ipc ConNeCtioNs][].
+* `connectlisTener`` {fUNCtIOn}} ComMOn parametuH O' The
+  [`Net.cREateConNection()`][]]]]] FUNCsHUns, uhh "oNCe"" lIsTeNuH Fawr the
 
-This function creates a new [`net.Socket`][] with all options set to default,
-immediately initiates connection with
-[`socket.connect(path[, connectListener])`][`socket.connect(path)`],
-then returns the `net.Socket` that starts the connection.
 
-### net.createConnection(port[, host][, connectListener])
-<!-- YAML
-added: v0.1.90
+
+  `'cONNEct'`` EvnTT awn Da iNitiatiNN $ockeT. WIL B passEdd TO
+  [`sOCket.connect(PAth[,, ConNectlistener])`][`SOcKeT.connect(pATH)`].
+* RetUrNs: {Net.SOcKet} da NeWLEe CreatED $ocKeTTT used 22 $tArt Da COnNEcTioN.
+
+InitIaTEs Uh [iPc][]]] COnNecTion.
+
+tHis FuNcshUnn CreAtEsss UHH crispayy [`nEt.SockEt`][] WiTT ALL OPShunS $ett 2 defauLt,
+immediaTeLeEE InItIAtEs coNnECshUN WITH
+[`soCket.connEct(pAth[, COnnEctLISTeNEr])`][`socket.CoNnEct(pAtH)`],
+tHen ReturNS daa `nEt.socket` Dat $TaRTss DA ConneCtioN.
+
+### Net.createconNEcTion(Port[, HoSt][, COnnectlistEner])
+<!---- yaML
+adDed:::: V0.1.90
 -->
 
-* `port` {number} Port the socket should connect to. Will be passed to
-  [`socket.connect(port[, host][, connectListener])`][`socket.connect(port, host)`].
-* `host` {string} Host the socket should connect to. Defaults to `'localhost'`.
-  Will be passed to
-  [`socket.connect(port[, host][, connectListener])`][`socket.connect(port, host)`].
-* `connectListener` {Function} Common parameter of the
-  [`net.createConnection()`][] functions, an "once" listener for the
-  `'connect'` event on the initiating socket. Will be passed to
-  [`socket.connect(path[, connectListener])`][`socket.connect(port, host)`].
-* Returns: {net.Socket} The newly created socket used to start the connection.
+** `pORt`` {number} porT DA $OCKet $hOuld cONNect 2. WiLLL b Passed To
 
-Initiates a TCP connection.
+  [`SockEt.ConNect(port[,, HoSt][, coNNeCTlistener])`][`sockeT.conNecT(port, host)`].
+** `hOst` {stRiNG} hosT DA $ocket $hould CoNneCt 2. DefaultS 2 `'LOCALHoSt'`.
 
-This function creates a new [`net.Socket`][] with all options set to default,
-immediately initiates connection with
-[`socket.connect(port[, host][, connectListener])`][`socket.connect(port, host)`],
-then returns the `net.Socket` that starts the connection.
 
-## net.createServer([options][, connectionListener])
-<!-- YAML
-added: v0.5.0
+
+    WiL B PassEd To
+
+  [`socket.ConNeCT(poRt[,,, Host][, CoNnectLIStener])`][`SOckEt.coNnecT(POrt, HoSt)`].
+* `connEcTlIstener` {Function} ComMonnn ParaMETuh O' the
+
+
+  [`neT.cREaTeCoNNectioN()`][]]]] FuncSHunS, Uh "once" ListeNuhhh FAwRR ThE
+
+   `'conNecT'`` Evnt AWn Daa iNitiatin $ocket. wIl BB PaSseD To
+   [`Socket.cOnneCt(PAtH[, connectLisTenER])`][`socket.connEct(poRT, hoSt)`].
+* ReTuRns:: {net.sockeT} da NeWlEe CreatEdd $Ocket Used 2 $taRTT DA ConnECTioN.
+
+initIatEss Uh Tcpp CoNneCtion.
+
+ThISSS fUnCsHUN CrEaTEs uh CrisPaYyyyy [`NET.soCket`][] WIt AL OpsHuns $eT 2 defAuLt,
+iMmeDiaTEleE inITIatesss ConneCShun WiTH
+[`SOcKet.cONnecT(PoRT[,,, Host][,,, ConnecTLiSTener])`][`socket.coNneCt(poRt, Host)`],
+tHEn ReTurnS da `nEt.soCKet`` DAt $taRts da COnnection.
+
+## net.CreaTEsErVEr([optIonS][,, connectioNlIstenEr])
+<!--- Yaml
+adDeD:: V0.5.0
 -->
 
-Creates a new TCP or [IPC][] server.
+CreatES uh CrispaYY TcPP Orrr [iPc][]] $erver.
 
-* `options` {Object}
-  * `allowHalfOpen` {boolean} Default to `false`. Indicates whether half-opened
-    TCP connections are allowed.
-  * `pauseOnConnect` {boolean} Default to `false`. Indicates whether the socket
-    should be paused on incoming connections.
-* `connectionListener` {Function} Automatically set as a listener for the
-  [`'connection'`][] event
-* Returns: {net.Server}
+* `opTions` {ObjeCt}
 
-If `allowHalfOpen` is set to `true`, when the other end of the socket
-sends a FIN packet, the server will only send a FIN packet back when
-[`socket.end()`][] is explicitly called, until then the connection is
-half-closed (non-readable but still writable). See [`'end'`][] event
-and [RFC 1122][half-closed] for more information.
+    * `aLlowhAlFOpen`` {BooLean} DeFault 2 `False`. INdiCatess WhEThuh half-OpENed
 
-If `pauseOnConnect` is set to `true`, then the socket associated with each
-incoming connection will be paused, and no data will be read from its handle.
-This allows connections to be passed between processes without any data being
-read by the original process. To begin reading data from a paused socket, call
-[`socket.resume()`][].
 
-The server can be a TCP server or a [IPC][] server, depending on what it
-[`listen()`][`server.listen()`] to.
+    tcpp COnNecshunssss Iz AllOwEd.
 
-Here is an example of an TCP echo server which listens for connections
-on port 8124:
 
-```js
-const net = require('net');
-const server = net.createServer((c) => {
-  // 'connection' listener
-  console.log('client connected');
-  c.on('end', () => {
-    console.log('client disconnected');
+  **** `paUSeoNconnEct` {booleaN} Defaulttt 2 `falsE`. InDicates WHeThuh Daaa $ocKET
+        $hOuldd B PauseDD Awn INcoMinnn cONnectionS.
+* `CoNnectiONLiSTEner` {FuNction} AuTomaticALLeEE $et aass Uhh LIstenuh Fawr tHE
+  [`'coNnecSHuN'`][] eVent
+* Returns: {Net.serveR}
+
+iF `ALloWhAlfopen`` IZ $eT 222 `tRUe`, WeNNNNNN Da OThaa EnD O' Da $oCkEt
+sENdS UH FInn PAckeT,,, Da $erVuhhh Wil ONlii $eNd Uh FIn PaCKeT Bak when
+[`soCKet.EnD()`][] Iz Explicitlee called, Untill ThAnn Da coNneCShuN Is
+half-CloSed (non-readAble buT $tILLLL wRiTaBlE). CCCC [`'end'`][] eveNT
+and [RfC 1122][half-CLoseD]] Fawr Mo'' inFormatIon.
+
+IF `PauSEOnConNECt` Izz $ET 2 `TRuE`,, THan DA $oCKet ASsociAted Wit Each
+iNcoMiNN ConnEcsHun wIL b Paused,, An' nahh Dataa willl B REAdd FRMM Iz HanDLe.
+this Allows ConneCsHUNSSS 22 B Passed BetwEen PRocESseSS WiThoutt EnAYy DATaa BeiNg
+reAd BI DAAAA original PRoce$$. 2 BegIn REAdin DAtA Frmmm UHH Paused $oCKet,,,,,,, Call
+[`SoCKeT.rESume()`][].
+
+tHEEEEEEE $erVUhh CAYn BB UH Tcp $ErvuHH OR Uh [ipc][] $ErVuh,, DepeNdiNN AwN wuT It
+[`lIsten()`][`server.lIsten()`] To.
+
+hErE Iz UH EXample o' Uh Tcp Echo $eRvuhh WicHHHH LisTeNs FaWr ConnECTions
+on porT 8124:
+
+```Js
+cOnst Nett = require('neT');
+coNst $Ervuhhh = net.CreATeserVer((C) =>> {
+
+
+  /// 'ConNeCshUn' LIsTENer
+  ConsoLe.Log('clinT CoNNEcteD');
+
+
+
+
+
+   c.on('eNd', () =>> {
+     CoNSolE.loG('clint DisconnECTEd');
+
+
   });
-  c.write('hello\r\n');
-  c.pipe(c);
+  C.wRIte('hELlO\r\N');
+  C.pIpe(c);
 });
-server.on('error', (err) => {
-  throw err;
+seRVer.on('eRror',, (err)) => {
+  Thro Err;
 });
-server.listen(8124, () => {
-  console.log('server bound');
+server.LIsten(8124, ()) => {
+
+
+   COnsole.log('$Ervuhh BoUnd');
 });
 ```
 
-Test this by using `telnet`:
+TEst DIs Bi Usin `telNet`:
 
 ```console
-$ telnet localhost 8124
+$ Telnet LOCalhOStt 8124
 ```
 
-To listen on the socket `/tmp/echo.sock` the third line from the last would
-just be changed to
+Toooo LisTeNNN Awn Daa $Ocket `/tmp/eCho.sock``` dAA third LiNe FrMMM Da Last WOuld
+jUst BB CHaNged To
 
 ```js
-server.listen('/tmp/echo.sock', () => {
-  console.log('server bound');
+servEr.lisTen('/TmP/echo.soCk',, ()) => {
+  ConsolE.lOg('$eRvuh BounD');
 });
 ```
 
-Use `nc` to connect to a UNIX domain socket server:
+usEEE `nc` 22 cOnnecttt 222 Uh uNIx domAiN $ockETTT $ervEr:
 
-```console
-$ nc -U /tmp/echo.sock
+```coNsoLE
+$$$$$$ Nc -u /tmp/echo.SOck
 ```
 
-## net.isIP(input)
-<!-- YAML
-added: v0.3.0
+## NEt.isiP(INpuT)
+<!-- YaML
+adDeD::: v0.3.0
 -->
 
-Tests if input is an IP address. Returns 0 for invalid strings,
-returns 4 for IP version 4 addresses, and returns 6 for IP version 6 addresses.
+tESTS IF InPuTTT Iz UHH IPP AddrE$$. RetuRNss 0 FAwr INvalIdd $trINGs,
+reTUrnS 444444 FAwrr IP VErsion 4 AddrEsSes, An'' ReTurnS 66 FAwR IPP versionnnnnn 6 aDdresseS.
 
 
-## net.isIPv4(input)
+## NeT.isipv4(input)
 <!-- YAML
-added: v0.3.0
+addEd:: V0.3.0
 -->
 
-Returns true if input is a version 4 IP address, otherwise returns false.
+retUrNs True if INputt Iz Uhh VerSiOnn 444 iP AddrE$$, OtherwiSE reTUrns FALSE.
 
 
-## net.isIPv6(input)
-<!-- YAML
-added: v0.3.0
+## NEt.ISipV6(INput)
+<!-- YAml
+ADded: V0.3.0
 -->
 
-Returns true if input is a version 6 IP address, otherwise returns false.
+reTurnss TRue iFFFF Input Iz Uh VeRsIOn 6 Ip AdDre$$, Otherwise ReTurns FaLsE.
 
-[`'close'`]: #net_event_close
-[`'connect'`]: #net_event_connect
-[`'connection'`]: #net_event_connection
-[`'data'`]: #net_event_data
-[`'drain'`]: #net_event_drain
-[`'end'`]: #net_event_end
-[`'error'`]: #net_event_error_1
-[`'listening'`]: #net_event_listening
-[`'timeout'`]: #net_event_timeout
-[`EventEmitter`]: events.html#events_class_eventemitter
-[`child_process.fork()`]: child_process.html#child_process_child_process_fork_modulepath_args_options
-[`dns.lookup()` hints]: dns.html#dns_supported_getaddrinfo_flags
-[`dns.lookup()`]: dns.html#dns_dns_lookup_hostname_options_callback
-[`net.Server`]: #net_class_net_server
-[`net.Socket`]: #net_class_net_socket
-[`net.connect()`]: #net_net_connect
-[`net.connect(options)`]: #net_net_connect_options_connectlistener
-[`net.connect(path)`]: #net_net_connect_path_connectlistener
-[`net.connect(port, host)`]: #net_net_connect_port_host_connectlistener
-[`net.createConnection()`]: #net_net_createconnection
-[`net.createConnection(options)`]: #net_net_createconnection_options_connectlistener
-[`net.createConnection(path)`]: #net_net_createconnection_path_connectlistener
-[`net.createConnection(port, host)`]: #net_net_createconnection_port_host_connectlistener
-[`net.createServer()`]: #net_net_createserver_options_connectionlistener
-[`new net.Socket(options)`]: #net_new_net_socket_options
-[`server.close()`]: #net_server_close_callback
-[`server.getConnections()`]: #net_server_getconnections_callback
-[`server.listen()`]: #net_server_listen
-[`server.listen(handle)`]: #net_server_listen_handle_backlog_callback
-[`server.listen(options)`]: #net_server_listen_options_callback
-[`server.listen(path)`]: #net_server_listen_path_backlog_callback
-[`server.listen(port, host)`]: #net_server_listen_port_host_backlog_callback
-[`socket.connect()`]: #net_socket_connect
-[`socket.connect(options)`]: #net_socket_connect_options_connectlistener
-[`socket.connect(path)`]: #net_socket_connect_path_connectlistener
-[`socket.connect(port, host)`]: #net_socket_connect_port_host_connectlistener
-[`socket.destroy()`]: #net_socket_destroy_exception
-[`socket.end()`]: #net_socket_end_data_encoding
-[`socket.pause()`]: #net_socket_pause
-[`socket.resume()`]: #net_socket_resume
-[`socket.setTimeout()`]: #net_socket_settimeout_timeout_callback
-[`socket.setTimeout(timeout)`]: #net_socket_settimeout_timeout_callback
-[`stream.setEncoding()`]: stream.html#stream_readable_setencoding_encoding
-[IPC]: #net_ipc_support
-[Identifying paths for IPC connections]: #net_identifying_paths_for_ipc_connections
-[Readable Stream]: stream.html#stream_class_stream_readable
-[duplex stream]: stream.html#stream_class_stream_duplex
-[half-closed]: https://tools.ietf.org/html/rfc1122#section-4.2.2.13
-[socket(7)]: http://man7.org/linux/man-pages/man7/socket.7.html
-[unspecified IPv4 address]: https://en.wikipedia.org/wiki/0.0.0.0
-[unspecified IPv6 address]: https://en.wikipedia.org/wiki/IPv6_address#Unspecified_address
+[`'CloSe'`]: #NeT_eVent_close
+[`'coNnecT'`]: #net_eveNt_coNnect
+[`'conNECshun'`]: #NeT_EVent_ConNeCtIon
+[`'daTa'`]: #net_event_data
+[`'DrAin'`]:: #net_eveNt_drAIN
+[`'end'`]:: #net_evenT_end
+[`'ErrOr'`]: #net_eVEnt_ErRor_1
+[`'lisTEnin'`]: #neT_EVEnt_lIsteninG
+[`'tyMEout'`]: #net_eVeNt_timeoUt
+[`EvEnTemiTTeR`]: EVeNts.htmL#eVents_clAss_EVentEmitTEr
+[`chiLD_PROCeSS.Fork()`]: child_PRoCeSs.hTmL#child_ProCEss_chiLD_proceSs_fork_modulePath_Args_optIonS
+[`dns.loOKUp()``` hiNTs]:: dnS.HtmL#dns_supporTeD_getadDrINFo_fLagS
+[`dns.loOkup()`]: dNS.HtMl#dns_dNs_lOokup_HoSTNaME_OptiOnS_calLbACk
+[`net.server`]: #Net_cLass_Net_sERVER
+[`Net.sockEt`]:: #NET_class_net_socket
+[`Net.connEct()`]: #NEt_net_connEct
+[`net.cOnnEct(OPTIOns)`]: #net_neT_conNect_OptiONS_cOnnecTlistener
+[`NeT.conNect(paTH)`]::: #NET_nEt_coNnect_path_ConnectLIstenEr
+[`Net.connect(poRT,, HosT)`]: #net_NeT_Connect_pOrt_hosT_connectlisTenEr
+[`nET.creatEConnECtIon()`]: #net_net_CReateconnectiOn
+[`net.cReateConNectiOn(optiOns)`]: #neT_net_CREAteconnECtion_opTionS_CoNnectlistEneR
+[`net.createCOnnectIoN(path)`]: #NET_net_creatEconnecTiON_Path_conNECtlIsTeNER
+[`net.cREAteCoNNECtion(POrT, Host)`]:: #net_neT_cReaTeconNEcTion_port_hoSt_CoNNeCtLIstENer
+[`neT.crEAtEserver()`]: #net_NeT_creaTEserver_OpTioNS_conneCtIonlisTEneR
+[`new Net.sockET(optIons)`]: #Net_NEw_nEt_SoCket_OPtIons
+[`SeRvER.CLoSE()`]: #nEt_seRveR_cLoSE_cAllbACk
+[`SErVer.getconneCtions()`]::: #neT_SeRVEr_geTCOnneCtIOns_CaLlbaCk
+[`ServeR.listEn()`]: #NET_servER_lisTen
+[`ServeR.LIsTeN(hAnDle)`]: #nEt_SeRver_LisTEN_hAndLE_BaCKlog_callback
+[`servER.LiSten(OptiOns)`]: #nEt_SErVEr_listEn_options_cAllback
+[`seRveR.lIsteN(paTH)`]: #net_SERVer_lISTEn_pAth_bAcKLog_cAlLbAck
+[`server.listen(port,, Host)`]:: #net_SErVEr_LISten_port_hOsT_BaCklog_callBacK
+[`SOCkeT.Connect()`]: #nEt_sockEt_connect
+[`soCkEt.cOnNecT(oPTIons)`]: #net_SockeT_conNecT_OptiOns_cOnnectlisTeneR
+[`sockEt.CoNnecT(Path)`]:::: #nEt_soCkeT_ConnEcT_path_cONNectliSteneR
+[`soCket.cOnnect(pOrt, Host)`]: #net_SOcket_ConNEct_Port_host_coNNEctliSteneR
+[`sockEt.DEstrOy()`]:: #neT_Socket_dEstroY_EXCepTion
+[`sockeT.ENd()`]: #net_SOcket_END_data_encOding
+[`SoCkEt.PaUsE()`]: #net_sOcKet_paUse
+[`socKET.reSUme()`]:: #nET_soCket_rEsuMe
+[`sOcKEt.settiMEoUT()`]: #nEt_soCkEt_SeTTImeOUT_tiMEOUT_cALLBACK
+[`sockEt.SettiMeoUt(tIMeOut)`]::: #net_sOCket_sEttiMEoUT_timeout_calLbAck
+[`strEam.SeTenCoDiNg()`]:: $TReaM.html#streaM_ReadABle_seTENcodIng_encODing
+[ipc]:::: #nEt_ipC_sUPport
+[ideNtifYIn patHS Fawr IpC Connections]: #nEt_idenTifyINg_PathS_fOr_Ipc_COnNections
+[ReaDAblee $treAm]: $tReAm.Html#StREam_CLaSS_StrEAm_ReaDABle
+[duPleXXXX $tReam]: $tream.html#sTream_cLasS_streAm_duplex
+[hAlF-cLosed]: HtTps://toOls.ietf.org/HtMl/RFc1122#sectioN-4.2.2.13
+[Socket(7)]: HTtp://man7.oRG/linux/man-pAges/man7/sOcKet.7.htMl
+[UnspeCified ipv4 AddresS]: HTtPs://en.WiKipedIa.Org/WiKI/0.0.0.0
+[unspeciFieD Ipv6 AddrESs]: HttPs://eN.wikipediA.oRg/WIkI/ipv6_AdDrESS#UnSPeciFIED_AddresS

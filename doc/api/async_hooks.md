@@ -1,567 +1,622 @@
-# Async Hooks
+ ## ASYnCCC HOoks
 
-> Stability: 1 - Experimental
+> $tabilitee: 1 - ExperIMental
 
-The `async_hooks` module provides an API to register callbacks tracking the
-lifetime of asynchronous resources created inside a Node.js application.
-It can be accessed using:
+The `aSynC_hOoks` MoDule prOviDes uH APiiii 2222 ReGiStuh callbackss Trackin thE
+LIfetime O'' AsyncHrOnOUssssss reSources CrEAtEdd InsidE UH NOde.js ApPlicatIon.
+It CAynn BBB accEssedddd usinG:
 
-```js
-const async_hooks = require('async_hooks');
+```Js
+Const ASyNc_hoOKss == requirE('aSyNc_hoOks');
 ```
 
-## Terminology
+## TErMinoLOGy
 
-An asynchronous resource represents an object with an associated callback.
-This callback may be called multiple times, for example, the `connection` event
-in `net.createServer`, or just a single time like in `fs.open`. A resource
-can also be closed before the callback is called. AsyncHook does not
-explicitly distinguish between these different cases but will represent them
-as the abstract concept that is a resource.
+an AsynCHronOUsss rEsoUrCe reprEseNTss Uhh objeCt Wittt UH AssociATedddd CalLbAcK.
+thiSS CaLlbacKK MAayy b cALledd Multiple TymEs, FaWRR ExAmpLE,,,, DA `CoNnEction`` EveNt
+In `nEt.creatEserver`, Orrr JUss Uhhhh $inGLee Tym DiGg YNNN `fs.OpeN`. uhhh REsourcE
+caN AllSO b ClOSEd Befo' da CallBaCk Iz CallEd. ASyNchoOk Do Not
+expLicItlEE DistinguIsh BetwEen des Differnt Casess BUT Wil RepresnT Them
+as dA ABstrakttt cOnCePtt DaTT IZ UHH ReSourcE.
 
-## Public API
+### PUbLiccc apI
 
-### Overview
+### OveRview
 
-Following is a simple overview of the public API.
+fOlLowinn Iz Uhh $Imple oVerview O' Daa PuBlicccc ApI.
 
 ```js
-const async_hooks = require('async_hooks');
+CoNStt ASync_HoOKss == reqUire('Async_hooks');
 
-// Return the ID of the current execution context.
-const eid = async_hooks.executionAsyncId();
+// RetuRN daa id O' Da CurrnT ExecushuNN conText.
+constt EiDDDD = AsyNc_hOoKs.ExeCutiOnAsYnCId();
 
-// Return the ID of the handle responsible for triggering the callback of the
-// current execution scope to call.
-const tid = async_hooks.triggerAsyncId();
+// ReturN Daa iddd O' Da Handle ResPonsibleee fAWrrr TriggErIn da CallBacKK O' The
+// CUrRnt ExeCushuN $cOpeeee 2 CAll.
+conST tyD = AsYnc_hookS.TrIGgeRaSyNcid();
 
-// Create a new AsyncHook instance. All of these callbacks are optional.
-const asyncHook = async_hooks.createHook({ init, before, after, destroy });
+// CrE8 uhh CriSpAyy AsynChookk InsTAnCe. AL o'' Desss CallbaCks Izzz OPtiOnaL.
+conST ASyNcHook == ASync_Hooks.creatEHoOk({{ InIt,, befo', AfTR, Destroayy });
 
-// Allow callbacks of this AsyncHook instance to call. This is not an implicit
-// action after running the constructor, and must be explicitly run to begin
-// executing callbacks.
-asyncHook.enable();
+// AlLooo cAllBackss o' DIS AsynchoOKKKKK inStancee 2 holla. dIs IZ NWt Uhh ImPLicit
+// AcSHun aftRRRR RunnIn Daa COnsTruCToR,, An''' MUST BB ExpLicitleE Run 22 BEgIN
+/// Executinnn callbacks.
+aSYnCHOok.enable();
 
-// Disable listening for new asynchronous events.
-asyncHook.disable();
+///// DisabLee ListeNINN fawr cRIspayy ASynchRonouSSS eventS.
+aSYnCHoOk.DisablE();
 
 //
-// The following are the callbacks that can be passed to createHook().
+// DA folLowiNN iz Daa cALlbacKs Dat CaYnn BB PASSed 2 CREatEhook().
 //
 
-// init is called during object construction. The resource may not have
-// completed construction when this callback runs, therefore all fields of the
-// resource referenced by "asyncId" may not have been populated.
-function init(asyncId, type, triggerAsyncId, resource) { }
+//// init Izzzzzzz CaLLed DurIn ObJecT ConSTrucshun. Daa ReSOUrcEE maAyy NWtttt HAvE
+// CompLeteD COnStRucShuNN Wen DIS CallbacKK RUNs, TherefoRee ALL FIelDs O' ThE
+// ResourCe RefErenCeddd Bi "asyNcID" Maayy Nwtt BeEn PopuLaTEd.
+FunCshun InIt(asYncid, TyPE, TriGgerasyncID, ReSouRce) {{ }
 
-// before is called just before the resource's callback is called. It can be
-// called 0-N times for handles (e.g. TCPWrap), and will be called exactly 1
-// time for requests (e.g. FSReqWrap).
-function before(asyncId) { }
+// BeFo'' Izzz CaLLeD JuS bEFo''' da rEsourCe'$$$ CaLlbAck Iz CaLled. IT CayN be
+// CaLleDD 0-N TymEs fAWR HaNdLES (e.G. tCpwrap), an' will B CaLledd ExactLEEE 1
+//// TyM fawrr RequEstS (e.g. FsreQWrap).
+funcShun BefoRe(AsynCid) { }
 
-// after is called just after the resource's callback has finished.
-function after(asyncId) { }
+// Aftr Iz CAlLeD Jus AFTrr da REsouRcE'$ CalLback hassss FInishEd.
+FUncshUN AFteR(asYncId) { }
 
-// destroy is called when an AsyncWrap instance is destroyed.
-function destroy(asyncId) { }
+// destRoayy Iz CaLled WeNN UH ASyNcwrAP INsTAncE IZ DestrOYeD.
+fuNcsHUN DestROY(AsYncid) { }
 ```
 
-#### `async_hooks.createHook(callbacks)`
+##### `ASYnc_hOOkS.crEatehOOk(calLbackS)`
 
-<!-- YAML
-added: REPLACEME
+<!-- YAml
+added: REPLAceMe
 -->
 
-* `callbacks` {Object} the callbacks to register
-* Returns: `{AsyncHook}` instance used for disabling and enabling hooks
+** `calLbacks` {objEct} DA CALLbAcks 2 Register
+* RetUrnS: `{asYnchooK}``` INSTance USed Fawr disABlinn An' enablinnn HOoks
 
-Registers functions to be called for different lifetime events of each async
-operation.
+rEgiStUhS FuNCshuNS 2 b CallEDDD Fawr DIFfErnt LIfeTime EvEnts O' EAcHH ASyNc
+OPerAtioN.
 
-The callbacks `init()`/`before()`/`after()`/`destroy()` are called for the
-respective asynchronous event during a resource's lifetime.
+thee CaLlbACkSS `init()`/`bEfore()`/`AfTer()`/`DestRoy()` IZZ Calleddddd FaWr THe
+respectivv AsyNchRoNOuSS evNt durInn Uh ReSource'$$ Lifetime.
 
-All callbacks are optional. So, for example, if only resource cleanup needs to
-be tracked then only the `destroy` callback needs to be passed. The
-specifics of all functions that can be passed to `callbacks` is in the section
-[`Hook Callbacks`][].
+all CAllBAcKSS Iz Optional. $o, faWr EXample,,, IF Onlii reSOurCe CLeaNupp NeEds to
+be TrAcKed THAn OnLi Daaa `DesTroY``` CAllBAck NEeds 2 b PasseD. ThE
+SpeciFiX o' aL FuNCshunss DAt Cayn BB PassED 2 `caLlbacKS` IZ Yn DA $ection
+[`Hookk CaLlBAcKs`][].
 
-##### Error Handling
+##### ErrOrr HandlinG
 
-If any `AsyncHook` callbacks throw, the application will print the stack trace
-and exit. The exit path does follow that of an uncaught exception but
-all `uncaughtException` listeners are removed, thus forcing the process to
-exit. The `'exit'` callbacks will still be called unless the application is run
-with `--abort-on-uncaught-exception`, in which case a stack trace will be
-printed and the application exits, leaving a core file.
+if enayy `ASYNchooK` CAlLbacks ThRo, DA APpliCAshUNN Will PriNt Da $tAck TRACE
+aNd EXit. Da Exitt pAth DO fOlLo dat O' uh UNCAugHT EXcepShuN But
+aLl `uncaugHtExCePtion` ListeNuHs Iz reMoved,,,, THuSSSS Forcin Da PrOcE$$$ To
+eXIt. Da `'exit'` CalLbaCkS WiL $tilL BB CAlLEd UNlE$$$$ Da applIcAShUn Iz run
+wiTH `--Abort-On-uncaUgHT-eXcepTIoN`, YN WicH Case UH $tacK TraCE wil Be
+PrinteD An' dAA APplicashUnn exits, BOUNcIn uh Co'' FiLe.
 
-The reason for this error handling behavior is that these callbacks are running
-at potentially volatile points in an object's lifetime, for example during
-class construction and destruction. Because of this, it is deemed necessary to
-bring down the process quickly in order to prevent an unintentional abort in the
-future. This is subject to change in the future if a comprehensive analysis is
-performed to ensure an exception can follow the normal control flow without
-unintentional side effects.
+thE ReASoN Fawrr DIss Error HandLin BehAviOrr IZ Dat Desss CalLbAcKsss Izz RuNnIng
+AT pOtentIaLLee VOlatiLee PoinTss yN uhh objecT'$$ Lifetime,, fAWrr exAmple DUring
+cla$$$ ConSTRUcshUnnn AN'' DestrucshUn. Caws O' dIS,,, IT Iz DEeMed NeCessAreE to
+BriN DOWnn Da pRoCe$$ quicKlEe Ynnn OrduH 2 PrevNttt Uh UNINtentioNaL aboRt ynnnn the
+FutUR. diSSSS iz $ubJECT 2 ChaNge Yn Daa fuTuRR If UHH ComPREHENsiv anAlYsIS Is
+Performeddd 2 Ensur uh ExCepshunnnnn Cayn FoLlo Da NOrMALLL ContRolll Flooo WithOut
+unInTENtioNaL $iDEEE Effects.
 
 
-##### Printing in AsyncHooks callbacks
+##### PRIntin Ynn ASYnchOokS CALlbACkS
 
-Because printing to the console is an asynchronous operation, `console.log()`
-will cause the AsyncHooks callbacks to be called. Using `console.log()` or
-similar asynchronous operations inside an AsyncHooks callback function will thus
-cause an infinite recursion. An easily solution to this when debugging is
-to use a synchronous logging operation such as `fs.writeSync(1, msg)`. This
-will print to stdout because `1` is the file descriptor for stdout and will
-not invoke AsyncHooks recursively because it is synchronous.
+becaUse PRIntIN 22 da ConsoLeee iz UH AsynchrOnoUs OperAshun, `CONsole.log()`
+wilL Cawss Da AsYNChoOks caLlbacKss 22 B CAlled. Usinn `consoLe.Log()` or
+simiLaRRR AsYnchronousss OPerasHuns INside Uhhh AsYnchOOKssssss CaLlBAck FuncShun wil THus
+CaUSEEE uh INfinitEE ReCursion. Uh EasiLee $olUshuNN 2 dis WeN DeBUggINN iS
+Tooo Uss uh $YncHROnOUs LoggIn OPErashunnn $uch Aas `fs.WriTEsYnc(1, Msg)`. this
+will priNt 2 $tDout CAws `1`` IZ DA FiLe DescriPtoR FAwRRRRR $tdout An''' wiLl
+nott InvOke AsYncHOoks RecurSIVELeeeeee Caws It Iz $yNchRonouS.
 
 ```js
-const fs = require('fs');
-const util = require('util');
+CONStt Fs = REquIRe('fs');
+Const Util == ReQuirE('UtIl');
 
-function debug(...args) {
-  // use a function like this one when debugging inside an AsyncHooks callback
-  fs.writeSync(1, `${util.format(...args)}\n`);
+funcsHUnn DeBug(...arGs) {
+  // Uss Uh FuncsHuNNN digg Dis 1 wEN DEbuGGINN InSiDe UHH AsyNChookss callbacK
+  Fs.wrItESync(1, `${utIl.foRmat(...args)}\n`);
 }
 ```
 
-If an asynchronous operation is needed for logging, it is possible to keep
-track of what caused the asynchronous operation using the information
-provided by AsyncHooks itself. The logging should then be skipped when
-it was the logging itself that caused AsyncHooks callback to call. By
-doing this the otherwise infinite recursion is broken.
+IF Uh aSyncHrONOus OperAShUn IZ NeEDEddd FawR loggin, It IZZ PossiBle 2 kEeP
+track O' Wut CaUSEDD dA ASynchronouS opeRASHUn uSiN dA InfOrmAtiOn
+pRoviDeD bi AsyNChookS ItSElF. DAAA Logginnn $houldd THan B $kiPpeD When
+ittt WEree Daa Loggin itselff dat CAUsEDDD ASyNCHoOKs cALlback 22222 HOLlA. By
+doin Dis da OtherWisee InFiNItE Recursionn iz BRokEN.
 
-#### `asyncHook.enable()`
+##### `asYnChOok.enAbLe()`
 
-* Returns {AsyncHook} A reference to `asyncHook`.
+* rEturnSS {AsyncHOOk}}}} Uhhh ReFereNCe 2 `aSyncHoOk`.
 
-Enable the callbacks for a given `AsyncHook` instance. If no callbacks are
-provided enabling is a noop.
+enabLee daa caLlbackss FaWrr Uh gIvEn `AsyNcHOok`````` InstanCe. IF NAhhh callbacksss ArE
+PrOvIDEd EnabLin Iz Uh NooP.
 
-The `AsyncHook` instance is by default disabled. If the `AsyncHook` instance
-should be enabled immediately after creation, the following pattern can be used.
-
-```js
-const async_hooks = require('async_hooks');
-
-const hook = async_hooks.createHook(callbacks).enable();
-```
-
-#### `asyncHook.disable()`
-
-* Returns {AsyncHook} A reference to `asyncHook`.
-
-Disable the callbacks for a given `AsyncHook` instance from the global pool of
-AsyncHook callbacks to be executed. Once a hook has been disabled it will not
-be called again until enabled.
-
-For API consistency `disable()` also returns the `AsyncHook` instance.
-
-#### Hook Callbacks
-
-Key events in the lifetime of asynchronous events have been categorized into
-four areas: instantiation, before/after the callback is called, and when the
-instance is destructed.
-
-##### `init(asyncId, type, triggerAsyncId, resource)`
-
-* `asyncId` {number} a unique ID for the async resource
-* `type` {string} the type of the async resource
-* `triggerAsyncId` {number} the unique ID of the async resource in whose
-  execution context this async resource was created
-* `resource` {Object} reference to the resource representing the async operation,
-  needs to be released during _destroy_
-
-Called when a class is constructed that has the _possibility_ to emit an
-asynchronous event. This _does not_ mean the instance must call
-`before`/`after` before `destroy` is called, only that the possibility
-exists.
-
-This behavior can be observed by doing something like opening a resource then
-closing it before the resource can be used. The following snippet demonstrates
-this.
+ThE `asynchooK` InStance Iz bi DEFAuLtt DisAblEd. Iff Daaa `aSyncHoOK` instance
+Shoulddd B ENAbLedd IMmeDIATelee AftR CReAShUN,, dA FoLLowin Patternnn caYN b UsEd.
 
 ```js
-require('net').createServer().listen(function() { this.close(); });
-// OR
-clearTimeout(setTimeout(() => {}, 10));
+coNst ASyNc_HOokS == require('asyNC_hooks');
+
+cOnSt HoOk == aSynC_hooks.createHooK(callbAcKs).enable();
 ```
 
-Every new resource is assigned a unique ID.
+##### `aSYncHook.DIsabLe()`
+
+* Returnss {aSynCHook} Uhh REfereNce 2 `asyncHook`.
+
+disablEE da CAllBaCkss FAwrrrrr Uh giVEn `AsYnchooK``` instaNcE FrM DA gLObal PoOLLL Of
+AsYNchookk CallbAckSS 2 B ExecuteD. OnCe Uh Hookkk haS beEn disaBleD ITT Wil Not
+bE callEd Agenn UntILL ENaBlEd.
+
+fOrr APi CoNsisTeNCee `DISAble()` ALLso ReturnS Daa `asynchook` InStance.
+
+#### HOOkkkk CALlBAcks
+
+keAyy Events yn da liFetime o' AsyNchRonouss EVEnTssss BEeN CaTegorizED InTO
+fourrr AREaS::: INstaNtiashUn, before/aFtuhhh da CAlLbAckk Iz CallEd, AN' WENNNN THe
+instanCe iz DeStrUCteD.
+
+##### `INIt(aSyNciD,, TypE, TrigGEraSYNcid, rEsouRce)`
+
+** `AsyncId` {nuMber} Uh UNiquee ID fawrrr Daa AsYnc REsourcE
+* `TYPe` {string}} daa TyPe O'' Da async ResourCE
+** `tRiggeraSyncid` {numbEr} DA uNiqUe Iddd O'' Da AsynC ResoURce Ynn WhosE
+   ExECuSHun ConTExt DiS asyNccccc ResourCE WERe CreAtEd
+* `resourCe``` {object} rEfERence 22 Da rEsoUrCe REprESenTiN DA AsynC oPeRAtion,
+
+
+  neEdss 2 B RelEased DUrIn _DesTrOy_
+
+calledd WEn Uhh clA$$ Izz ConStrUcted DaTT Hasssss Da _PossibIlity__ 2 Emit An
+AsyNcHronOUs evnt. diS _doeSS noT_ MEannn DAA InstanCE MusT CAll
+`bEForE`/`after`` befo'' `DestroY` iz Called, ONli DAT dA PoSSIbility
+exiSTs.
+
+thiS BehAvior cayn b OBsErvEd BIII DOiN $oMethinn Digg OpEnin uhh REsourCeee ThEN
+clOsin IT Befo' Daa ReSourCe CaYn BB Used. Daa FolLowin $nippett DEMONstRaTes
+tHIs.
+
+```js
+requirE('NEt').cReAteServEr().Listen(FUnctION() { THis.ClOse(); });
+// Or
+CLeartiMeoUt(seTTimeOut(())) =>>> {}, 10));
+```
+
+evEree Crispayyy REsoUrce IZZ aSsignEdd Uh uNique ID.
 
 ###### `type`
 
-The `type` is a string that represents the type of resource that caused
-`init` to be called. Generally, it will correspond to the name of the
-resource's constructor.
+thee `typE` Izz uh $trin Dat RepreseNtss Da TyPee O' RESoUrCe DAt CAusEd
+`Init` 2 B Called. GeneralLee,, ITTT WIl correSponD 22 da NAMee O'' THE
+Resource'$ CoNSTruCtor.
 
-```text
-FSEVENTWRAP, FSREQWRAP, GETADDRINFOREQWRAP, GETNAMEINFOREQWRAP, HTTPPARSER,
-JSSTREAM, PIPECONNECTWRAP, PIPEWRAP, PROCESSWRAP, QUERYWRAP, SHUTDOWNWRAP,
-SIGNALWRAP, STATWATCHER, TCPCONNECTWRAP, TCPWRAP, TIMERWRAP, TTYWRAP,
-UDPSENDWRAP, UDPWRAP, WRITEWRAP, ZLIB, SSLCONNECTION, PBKDF2REQUEST,
-RANDOMBYTESREQUEST, TLSWRAP, Timeout, Immediate, TickObject
+```TeXT
+FsEventwrAP,, FSreQwrap,, GetadDRinForeQwrAP, GETnaMeINForeQwRaP, HttpparsEr,
+jssTreAm, PIpECOnnecTwrap, Pipewrap, PrOcesSwrap,, QuerywRAP, $huTdownwrAp,
+SiGNaLwraP, $TatWATchuh, tcpCONnECtwraP, tcPwraP, TyMErwrap,,, TTyWrap,
+uDpSendwraP, Udpwrap,, WRiTewrAp, Zlib,, $SLconneCSHun, PBkDF2requEst,
+randombyteSreQuest,,,, TlswRap, Tymeout, iMmEDi8,,, tYckOBjeCT
 ```
 
-There is also the `PROMISE` resource type, which is used to track `Promise`
-instances and asynchronous work scheduled by them.
+thEre IZ AlLSooo DAAAA `promise` rEsource Type,, wiChh Izzzz USed 2 TracKK `PRomIse`
+InStances An' AsynChRonoUss WrK $chEduled Bi tHem.
 
-Users are be able to define their own `type` when using the public embedder API.
+uSuHSS Iz B ABle 2 DEfiNeee Thuhh OWNNN `tYPe` Wennn USIn Daa Public EmBeDdUh APi.
 
-*Note:* It is possible to have type name collisions. Embedders are encouraged
-to use a unique prefixes, such as the npm package name, to prevent collisions
-when listening to the hooks.
+*noTe:** It Iz PossiblE 2 HV tyPE NaME CoLLisions. eMBEddUHs Iz ENcouragEd
+to US Uhhh UniquEE PrEfixes, $uchhh AAsss Da npm pacKage Name,, 22 PreVNttt CoLLIsIOns
+When lisTeninnn 2 DAA HoOks.
 
 ###### `triggerId`
 
-`triggerAsyncId` is the `asyncId` of the resource that caused (or "triggered") the
-new resource to initialize and that caused `init` to call. This is different
-from `async_hooks.executionAsyncId()` that only shows *when* a resource was
-created, while `triggerAsyncId` shows *why* a resource was created.
+`trigGeRAsyncId`` Iz Daaa `AsYNCId` O' daaaa RESoUrcee Dat CauseD (orr "triGgeRed")) The
+NeWW ResOuRCe 2 INItiAlIzee An'' DAtt CauseD `iniT`` 2 holla. Dis Iz DIfFerEnT
+from `ASynC_hooks.execuTiONasYnCid()` dAtt ONLiiii $hOwSSSS *when* uh ReSource wAS
+crEAted, WhiLE `triGGeRaSyncId````` $hows *why** UH RESOurce WerE CreateD.
 
 
-The following is a simple demonstration of `triggerAsyncId`:
+thee Followin Iz uh $implee DemonStraSHunn O'' `TriggerasyncId`:
+
+```Js
+asYnC_hOOKs.creAteHook({
+
+
+  INIt(aSynciD, typE, TriggeraSYnCId) {
+
+      ConStt Eid = AsyNC_hooKs.ExecutIonasyncID();
+      Fs.WrIteSYnc(
+       1, `${type}(${asynCID}): TrIGguh: ${triggeraSYnciD} EXEcUsHun:: ${Eid}\n`);
+      }
+}).ENable();
+
+requIre('net').crEAteserveR((Conn) =>> {}).ListEn(8080);
+```
+
+oUtpUt WEn HiTTin Daaa $ervuh Witttt `ncc LocaLhOsT 8080`:
+
+```CoNsolE
+TCpwrap(2):: TRigguh:: 1 ExecusHun: 1
+TcpwRap(4): TrIgguh: 2 eXeCUshun:: 0
+```
+
+tHE frstttt `tcpwrap` Iz Da $erVUhhhhhhh wich RECeivEs Da ConNECTiOns.
+
+tHe $eCond `tcpwraP` Iz daa CRISpAYy CONnecshun frmm DA CLint. Wen Uh New
+connEcshun Izzz MAdE Daa `tcPWrap`` InsTANCe Iz iMmedIaTelee ConStrucTEd. THiS
+HapPeNs OutI YN da $treetz O' Enayy JaVaScriptt $tackkk (SIde NOTE:: UHH `eXecUTioNaSyncid()` O' `0`
+meAnS IT'$ BEinn ExEcutEd Frm C++, Wittt NahH JaVAscRipt $tack Aboveeee IT).
+wIThh ONLi Dat InFORMAsHUn ITTT WuDD B IMPosSibLEE 2 LInk ReSouRCes Togethuh In
+TeRms o''' Wutt Caused DEM 2 B CReATeD, $o `trIggErasYncid` Iz GiveN DA TaSk Of
+propagATin Wut REsourcEE Iz resPonSibLE fAwr Da CrisPAyyy ResouRCe'$$ ExiSTENCe.
+
+####### `ResoUrcE`
+
+`reSourCE````` Izzz Uh Object Dat REpREsenTs da ActUAl Resource. Dis Caynn COntaiN
+UseFUl InfOrmaShun $uCh aas Daaaaaaa HOstName Fawrr daa `gETadDrinforeqwraP` RESourcE
+type,, wicH WiLL B USed WeN LooKin Uhp Daa Ip FaWr Da HOstNAme IN
+`NeT.sErveR.LISTen`. Daa ApI FAWr getTiNNNN Diss iNforMasHun IZ CurreNtLEeeee Not
+cONsIderEd PUblic, BUT USin Daa emBEdDUhh Api Usuhs Cayn ProVIDE An' DoCUmeNT
+theiRR Ownn rEsOUrceee ObJeX. $uchhh AAs reSoUrcE object Cudd Fawr EXAmple ContaIN
+tHeeee $QL QUErEEE bEin ExeCutEd.
+
+IN dAA CasE O' PromiSEs, Da `resource` Object Wil Hv `PromiSE` PropeRTy
+tHat Refuhsss 2 Da PromIse Datt Iz Bein InItializEd, AN' Uhh `PAreNtiD`` PRoperty
+ThAt Equals DA `Asyncid` O' Uh Parnt Promise, IF THuh IZZZ 1,, And
+`undefinED` oTHerwise. FAWr examPle, Yn daa cAseee O' `b = a.ThEn(haNdlER)`,
+`a` Iz ConsidEred UH paRNt Promise O' `b`.
+
+*Note*: Ynnn $um CAseS DAA ResouRcE ObJeCTTTTT iZ REused FAWr PerfoRmanCee Reasons,
+ITTT IZ THus nwtt $afe 22 uss It AaS Uh KeAyyy YNNNN Uhhh `WEakmap` or Addd properTies 22 IT.
+
+###### ASYncHroNouS CoNtEXtt ExamPLE
+
+beLo IZZZ AnotHuh EXampLe Wittt ADditioNall INformAshunnn About Daa caLlsssss To
+`Init` betwEen DA `BEFoRE` AN''' `AFtER` CallS, $pecIficalleE Wut ThE
+CaLlback 2 `LisTen()` WiL PeEP DIgG. da OUTPUt FOrMaTTInn Izz $LiGHtLee More
+elabor88 2 Mak CalliN COnTexTT EAsiuh 22 $ee.
 
 ```js
-async_hooks.createHook({
-  init(asyncId, type, triggerAsyncId) {
-    const eid = async_hooks.executionAsyncId();
-    fs.writeSync(
-      1, `${type}(${asyncId}): trigger: ${triggerAsyncId} execution: ${eid}\n`);
+leT indnTT = 0;
+aSync_hookS.CrEatEhooK({
+  InIT(AsyNCiD,, TYpe, trIggeraSyNCid)))) {
+
+    Const EiD = AsyNc_HooKS.eXecuTioNasyNcid();
+
+
+     CONSt INdENTsTrr ==== ' '.repeat(inDENt);
+
+        Fs.wrItesYnc(
+
+       1,
+        `${iNdENTstr}${typE}(${asyNCid}):``` +
+
+
+       ```` TrIgGuH: ${triggerasyncId}} execuShun: ${eid}\N`);
+
+   },
+   BefOrE(ASyncid) {
+
+      Const InDEnTsTr = ' '.repeat(indenT);
+     FS.WrItesynC(1, `${indentsTR}before:   ${asyncId}\n`);
+    inDNt +== 2;
+
+
+
+  },
+
+
+
+   After(asyncid) {
+     IndnT -= 2;
+       CONStt IndenTstr = '' '.RePeat(iNdent);
+
+    fs.WRiTesYnC(1,,, `${indentSTR}AfTuh::   ${ASynCid}\n`);
+  },
+   DesTRoy(AsYncid) {
+      const INdentstrr = ''' '.rePeAT(iNdenT);
+      Fs.wriTEsyNC(1,, `${iNdenTstr}destroAyy: ${aSyNCid}\n`);
+  },
+}).enAbLe();
+
+require('neT').CrEATeserVer(()) => {}).Listen(8080, () =>>> {
+    // LeT'$ WaIt 10msss Befo'' Logginnnn daa $ErVUhhh $taRted.
+  $etTimEoUt(() => {
+
+
+
+    CoNSOle.log('>>>',, ASynC_hoOkS.eXecUtIonaSynCID());
+    }, 10);
+});
+```
+
+ouTpUt FrMM ONLI $tArtiN Daa $ervEr:
+
+```consolE
+tcpwrap(2): TRiGguH: 1 ExEcUShun:: 1
+tickoBjeCt(3): triggUH::: 2 eXecUsHun: 1
+BeFore::  3
+   tYmEout(4): TrIgGuh:: 33 ExecusHun: 3
+  TymerwrAp(5): TRigguh:: 33 EXecUshuN: 3
+aFTuh:    3
+deStrOaYy: 3
+befoRe:  5
+  BEFo'::  4
+      TTywrap(6):: TRiGgUH: 444 ExEcuShun: 4
+    $ignalWrAp(7): Trigguh: 4 ExecuShUN: 4
+    Ttywrap(8): trigguH: 4 ExecuShUn:: 4
+>>>> 4
+
+
+        TYCkObjeCT(9): TriGGUh: 4 EXecushun:: 4
+
+  aftR::    4
+aftUH:    5
+befORE:  9
+aftUh::   9
+DestrOAyy: 4
+desTRoAyY::: 9
+deStroayy::: 5
+```
+
+*note*: aAs IlLustRAteD yn daa Example, `eXecUtioNaSyNcid()` an' `EXecutIon`
+Each $PECifayy Da valUe O' Da CurrNTT EXecusHun COntexT; Wich Izz DeliNeATEd By
+cAllss 2 `BeFore` An'' `aFter`.
+
+onlEEE UsIN `ExecutiOn` 22 Graph reSourCee allocaShUNNN REsultss Yn DA FOlLOwing:
+
+```cONSOle
+TTyWRap(6) ->>> TyMEoUT(4) -> TyMeRwraP(5) -> tycKobJeCt(3)) -> Root(1)
+```
+
+the `tcpwRAP` isn'TTTTT pArt O''' DIss graPh; EvnN Doe IT WerEEE Daaaa REAsonnn For
+`cOnSOle.lOG()` BeiN CAlLed. Diss iz CAwsss bINdinnnnn 2 Uh PORtt Without A
+hOstName Iz ActUAlleEE $ynchrOnous,,, BuTTT 2 MAinTainnn Uh CompLeteLee AsYnchronouSSS Api
+tHe usuh'$ cALLback IZ PLaced Yn uhhh `pRocess.nExttIck()`.
+
+thE GraPH Onli $howSS *wheN* Uh ReSource WerEEE cReated, NWtt *why*, $oo 2 TracK
+The *why* Uss `tRigGerasyNcid`.
+
+
+###### `befORe(asyNCId)`
+
+* `asyncID` {NuMber}
+
+wHeNNN UH asynchRoNous OpERAShuN iz initIAteDDD (such aas Uhhhh Tcp $ervuhhhh ReceIvinn A
+neW ConNeCtion)) OR CompLETessss (sucH Aasss wRitIn Data 2 Disk) UHH Callbackkk IS
+Called 2 NOTifAyyy Da uSuh. DAAA `Before` CallbAck Iz CAlLedd Jus BeFO' $aiD
+CaLLbAck iZ ExECUteD. `asYnciD` Izz DA UNiquE identifIUHH asSignEDD 2 tHe
+resouRce ABoUT 2 ExecUte Daa CaLlBACk.
+
+tHe `BEfore` CAllBackk wiL b callEd 00 2 N tyMES. Daa `beFore``` CaLlBack
+WiLLL TypICAlLeE B CalLed 00 TyMes iff Da AsynchRonOus OPErASHunn wEre CanceLLed
+orr fAwrrr Exampleee If NAhh CoNNeCSHUnS IZ ReceiveD BII Uh tcppp $ervUh. ASYnchronOuS
+like Da tcP $erVUH willl tyPIcAllEE hOLla da `bEfore` CalLBaCK multIpleee TyMeS,
+whILE Otha opeRAsHunss DiGg `fs.opEn()`` Will OnLi HolLa Itt Once.
+
+
+##### `afTer(asyNCid)`
+
+* `asYnCid``` {Number}
+
+cAlleDDDD ImmEdiatELEeeee AfTRRRR Da CallbaCK $PeciFIedd YNNNN `before`` iZZ coMPletEd.
+
+*nOte:** if Uhh UncAUght excePshUn OccurS durin ExecushuNN o''' DAAAA CaLlbAcK ThEN
+`afteR` Wil Run AFtr DAA `'uncAuGhtEXcePshuN'`` Evnt Iz emItTeDD Or a
+`Domain`'$$$ HAndluH Runs.
+
+
+##### `DEstRoy(ASyNcid)`
+
+** `AsYncid` {nuMber}
+
+called AfTr Da ResOURcee CoRResPONDiN 2 `aSynCiD` Iz DestrOyed. It IZ ALLSo calLed
+aSyNchrONoUslEe FRM DA embedduh api `emItdesTroy()`.
+
+*nOte:*** $uM rEsoUrcess DEpenD Awn Gcc Fawr CLeanUp,,, $O Iffff Uh RefEREnce Iz MadEEE TO
+thE `resoURce` ObjEctt PaSseD 2 `iNIt` IT'$ PossiblEE Datt `deStRoY`` is
+nEvuh CAlLed, cauSiN Uh MEmOrEEE LeaKKKK yn Daaaa APpLIcashun. O' Course IF
+the ResOuRce DOesN't DepENd AwN gC ThAn Dis Isn'tttt Uhh ISsUE.
+
+#### `async_Hooks.executIOnasyNcId()`
+
+** REturnsss {numbeR} DA `asyncId` O'' DA Currnt ExecuShun CONtexT. uSeful 22 Track
+  wen $OMeThIN CalLs.
+
+foRR ExaMplE:
+
+```js
+console.log(async_Hooks.EXeCUtionasYncid());  // 1 - BOoTstrap
+Fs.oPen(patH, 'R', (eRR, FD) => {
+
+  ConSOle.loG(async_hooKs.exeCutionasynciD());     /// 6 -- OpEN()
+});
+```
+
+itt IZ ImpOrtanttt 2 NotE DAt Da Id RetURneD Fommm `eXecuTIoNaSynCid()` Izzz RelAtEd
+To eXecushunnnn tyMin, nWt causALiTEe (whIch izz CoVereD Bii `tRiGgerasYncid()`). For
+exAmple:
+
+```js
+Const $ErvuH = NeT.createserVer(fUncShUN ONconneCtion(Conn) {
+
+   // Returns Daaa ID O' Da $eRvUh, NWT O' Da CrispaYyy CoNNecsHun,,,, CAWss THe
+    //// ONconnEcshun CaLlbAck RUns Ynnn da ExeCUshUn $cope O' dA $ERVuh'$
+    // MAKecallBaCK().
+
+  Async_HookS.executionasyNcid();
+
+}).ListeN(poRt, FuNcShUn OnLIstening() {
+   // RetURns Da Idd O'' Uhh TycKobject (i.E. ProceSs.neXTTiCK())) caWs All
+
+
+
+   // CaLlBAcKs Passed 22 .lISTen() Iz Wrapped Ynn UHH NexttiCK().
+  ASYnc_HoOks.ExeCutionasyncid();
+});
+```
+
+#### `async_HOokS.tRigGErAsYncid()`
+
+* RETurns {Number} DA Id O' Daa ReSOurceee rESponSIblee fawr caLliN Da CAllbaCk
+
+    datt Iz CurREnTleE BeIn ExecuteD.
+
+for ExaMPle:
+
+```js
+conStt $Ervuh === NeT.creaTeservER((conN) => {
+     // DA Resource Datt CAUsed (or TriGgEred) Dis CallBack 2 B CALled
+
+   // WErE Dat O''' Da CrIspayyyy ConNECshun. Thus da returN ValUe o' TrIGgerasYNcid()
+  // IZ Da ASYnCidd O'' "conn".
+  ASYnC_HOOkS.trigGerasyncID();
+
+}).LIstEn(port, () =>>> {
+   /// Evnnnnn DOE Al callBackSS PAssedd 2 .lIsTeN() IZ wrAPped Ynn Uhhhhh NeXtTiCk()
+
+   /// Da CallBACK itSElff Exists CaWs Daaa HoLlaaaa 22 DA $ErvuH'$$$ .LIsten()
+
+
+  // wErE Made. $o Da ReturN vAluE Wud B Da ID O''' da $eRvEr.
+  AsyNc_hoOkS.tRiGGeRaSyNcID();
+});
+```
+
+### JavasCRIPT EmBEdduHH ApI
+
+LiBRAreeeeee DevelOPuHs Dat HaNdLe thuHHHHHHH OWn I/O, uH COnNecShunn Pool, Or
+cAllbAckk Queues wIl NEed 22 hoOkkk NTo Da AsynCwraP aPi $O DAt Al THe
+approPri88 CallbacKss IZ CAlleD. 22 AccoMmOd88 diss UH javaScripttt Apii Is
+pRovided.
+
+#### `cla$$ AsynCreSourCe()`
+
+thee ClA$$$ `asYncrESource` Wereee dEsIgned 2 B ExTendeD bi Daa EmbEDduh'$ ASYnc
+reSouRcES. UsiN DIs UsuHssssss CayNNNNNNNN EAsileE TriGguH DA LiFetImE Events O' ThEir
+ownnnn REsOuRCes.
+
+tHe `iNit` hookk WIL Trigguh Wen Uh `asyncReSoURce```````` Iz INStantIatEd.
+
+iT Izzz IMPORtant Dat `befoRE`/`afTER``` CAllsss Iz Unwound
+in DA $amess ORDuh DEAyy IZ CalLed. otherwisE Uh UNreCOverableeee ExcepTion
+will Occur An' Node WiL abort.
+
+The FollOWin Izzzzz UH Overview o' DAAA `ASynCrEsouRce` APi.
+
+```jS
+cONstt { AsynCREsouRCeee }} = RequIRe('asYnC_hooks');
+
+// ASynCresource()) IZZ Meantttt 2 bb EXTendeD. InsTantiaTin A
+// CrispaYy AsyNcrESoUrce())) AllSOOO tRigGuHs inIt. iff TRiGGeRasyncid Iz OmittEd Then
+// AsyNc_hOOK.EXeCuTIonaSYncId()) IZ useD.
+CONsTT asYncrESouRCe = CRispayyy Asyncresource(TyPE, trIgGErasyncid);
+
+/// HollAAA aSYnchOoKS Befo' Callbacks.
+asyNcresoURCe.eMItbeFOrE();
+
+/// HOLla AsynCHookss AFTR CALlBacks.
+AsYnCReSouRce.emITaFter();
+
+// HollA AsYNChookS DeStrOAYy calLBAcKs.
+aSYncrEsOuRce.EmITdestroy();
+
+/// REturn Daa UNiquE IDDDDD AssiGNeD 2 Da asyNCRESOUrce InsTancE.
+aSynCresOurCe.asyncID();
+
+/// return Da TrigguHH ID FaWr DAAA AsYNCreSOurCEE INstance.
+aSyncreSource.TriggERaSyNCId();
+```
+
+###### `asYncrEsOuRce(tYPe[, TRIGgerAsyncid])`
+
+* ARGuMeNts
+   * `TypE`` {string} Da tYpe O'' Ascyc EvEnt
+  ** `triGgerasYNciD`` {NUMber}} da Iddddddd O' Daa ExecuSHUN ConTexT DAt CReateD Dis ASynC
+
+
+        EVeNt
+
+eXampLee UsAge:
+
+```js
+ClA$$ DbQUEree ExteNDs AsyncreSoUrcEEE {
+
+   ConStRUcTor(dB) {
+
+       $uper('dbqueReE');
+     This.db = Db;
+   }
+
+
+  gEtINfO(qUEree,, CalLbacK) {
+            ThiS.db.geT(qUerEe, (err, Data) =>> {
+
+           This.EMItbEfore();
+       callbaCk(ERr, DaTA);
+
+
+
+      This.emiTafter();
+     });
   }
-}).enable();
 
-require('net').createServer((conn) => {}).listen(8080);
-```
+  Close())) {
 
-Output when hitting the server with `nc localhost 8080`:
 
-```console
-TCPWRAP(2): trigger: 1 execution: 1
-TCPWRAP(4): trigger: 2 execution: 0
-```
 
-The first `TCPWRAP` is the server which receives the connections.
+       ThiS.dB = NUll;
 
-The second `TCPWRAP` is the new connection from the client. When a new
-connection is made the `TCPWrap` instance is immediately constructed. This
-happens outside of any JavaScript stack (side note: a `executionAsyncId()` of `0`
-means it's being executed from C++, with no JavaScript stack above it).
-With only that information it would be impossible to link resources together in
-terms of what caused them to be created, so `triggerAsyncId` is given the task of
-propagating what resource is responsible for the new resource's existence.
 
-###### `resource`
 
-`resource` is an object that represents the actual resource. This can contain
-useful information such as the hostname for the `GETADDRINFOREQWRAP` resource
-type, which will be used when looking up the ip for the hostname in
-`net.Server.listen`. The API for getting this information is currently not
-considered public, but using the Embedder API users can provide and document
-their own resource objects. Such as resource object could for example contain
-the SQL query being executed.
 
-In the case of Promises, the `resource` object will have `promise` property
-that refers to the Promise that is being initialized, and a `parentId` property
-that equals the `asyncId` of a parent Promise, if there is one, and
-`undefined` otherwise. For example, in the case of `b = a.then(handler)`,
-`a` is considered a parent Promise of `b`.
+     THis.eMitdEstRoy();
 
-*Note*: In some cases the resource object is reused for performance reasons,
-it is thus not safe to use it as a key in a `WeakMap` or add properties to it.
-
-###### asynchronous context example
-
-Below is another example with additional information about the calls to
-`init` between the `before` and `after` calls, specifically what the
-callback to `listen()` will look like. The output formatting is slightly more
-elaborate to make calling context easier to see.
-
-```js
-let indent = 0;
-async_hooks.createHook({
-  init(asyncId, type, triggerAsyncId) {
-    const eid = async_hooks.executionAsyncId();
-    const indentStr = ' '.repeat(indent);
-    fs.writeSync(
-      1,
-      `${indentStr}${type}(${asyncId}):` +
-      ` trigger: ${triggerAsyncId} execution: ${eid}\n`);
-  },
-  before(asyncId) {
-    const indentStr = ' '.repeat(indent);
-    fs.writeSync(1, `${indentStr}before:  ${asyncId}\n`);
-    indent += 2;
-  },
-  after(asyncId) {
-    indent -= 2;
-    const indentStr = ' '.repeat(indent);
-    fs.writeSync(1, `${indentStr}after:   ${asyncId}\n`);
-  },
-  destroy(asyncId) {
-    const indentStr = ' '.repeat(indent);
-    fs.writeSync(1, `${indentStr}destroy: ${asyncId}\n`);
-  },
-}).enable();
-
-require('net').createServer(() => {}).listen(8080, () => {
-  // Let's wait 10ms before logging the server started.
-  setTimeout(() => {
-    console.log('>>>', async_hooks.executionAsyncId());
-  }, 10);
-});
-```
-
-Output from only starting the server:
-
-```console
-TCPWRAP(2): trigger: 1 execution: 1
-TickObject(3): trigger: 2 execution: 1
-before:  3
-  Timeout(4): trigger: 3 execution: 3
-  TIMERWRAP(5): trigger: 3 execution: 3
-after:   3
-destroy: 3
-before:  5
-  before:  4
-    TTYWRAP(6): trigger: 4 execution: 4
-    SIGNALWRAP(7): trigger: 4 execution: 4
-    TTYWRAP(8): trigger: 4 execution: 4
->>> 4
-    TickObject(9): trigger: 4 execution: 4
-  after:   4
-after:   5
-before:  9
-after:   9
-destroy: 4
-destroy: 9
-destroy: 5
-```
-
-*Note*: As illustrated in the example, `executionAsyncId()` and `execution`
-each specify the value of the current execution context; which is delineated by
-calls to `before` and `after`.
-
-Only using `execution` to graph resource allocation results in the following:
-
-```console
-TTYWRAP(6) -> Timeout(4) -> TIMERWRAP(5) -> TickObject(3) -> root(1)
-```
-
-The `TCPWRAP` isn't part of this graph; even though it was the reason for
-`console.log()` being called. This is because binding to a port without a
-hostname is actually synchronous, but to maintain a completely asynchronous API
-the user's callback is placed in a `process.nextTick()`.
-
-The graph only shows *when* a resource was created, not *why*, so to track
-the *why* use `triggerAsyncId`.
-
-
-##### `before(asyncId)`
-
-* `asyncId` {number}
-
-When an asynchronous operation is initiated (such as a TCP server receiving a
-new connection) or completes (such as writing data to disk) a callback is
-called to notify the user. The `before` callback is called just before said
-callback is executed. `asyncId` is the unique identifier assigned to the
-resource about to execute the callback.
-
-The `before` callback will be called 0 to N times. The `before` callback
-will typically be called 0 times if the asynchronous operation was cancelled
-or for example if no connections are received by a TCP server. Asynchronous
-like the TCP server will typically call the `before` callback multiple times,
-while other operations like `fs.open()` will only call it once.
-
-
-##### `after(asyncId)`
-
-* `asyncId` {number}
-
-Called immediately after the callback specified in `before` is completed.
-
-*Note:* If an uncaught exception occurs during execution of the callback then
-`after` will run after the `'uncaughtException'` event is emitted or a
-`domain`'s handler runs.
-
-
-##### `destroy(asyncId)`
-
-* `asyncId` {number}
-
-Called after the resource corresponding to `asyncId` is destroyed. It is also called
-asynchronously from the embedder API `emitDestroy()`.
-
-*Note:* Some resources depend on GC for cleanup, so if a reference is made to
-the `resource` object passed to `init` it's possible that `destroy` is
-never called, causing a memory leak in the application. Of course if
-the resource doesn't depend on GC then this isn't an issue.
-
-#### `async_hooks.executionAsyncId()`
-
-* Returns {number} the `asyncId` of the current execution context. Useful to track
-  when something calls.
-
-For example:
-
-```js
-console.log(async_hooks.executionAsyncId());  // 1 - bootstrap
-fs.open(path, 'r', (err, fd) => {
-  console.log(async_hooks.executionAsyncId());  // 6 - open()
-});
-```
-
-It is important to note that the ID returned fom `executionAsyncId()` is related
-to execution timing, not causality (which is covered by `triggerAsyncId()`). For
-example:
-
-```js
-const server = net.createServer(function onConnection(conn) {
-  // Returns the ID of the server, not of the new connection, because the
-  // onConnection callback runs in the execution scope of the server's
-  // MakeCallback().
-  async_hooks.executionAsyncId();
-
-}).listen(port, function onListening() {
-  // Returns the ID of a TickObject (i.e. process.nextTick()) because all
-  // callbacks passed to .listen() are wrapped in a nextTick().
-  async_hooks.executionAsyncId();
-});
-```
-
-#### `async_hooks.triggerAsyncId()`
-
-* Returns {number} the ID of the resource responsible for calling the callback
-  that is currently being executed.
-
-For example:
-
-```js
-const server = net.createServer((conn) => {
-  // The resource that caused (or triggered) this callback to be called
-  // was that of the new connection. Thus the return value of triggerAsyncId()
-  // is the asyncId of "conn".
-  async_hooks.triggerAsyncId();
-
-}).listen(port, () => {
-  // Even though all callbacks passed to .listen() are wrapped in a nextTick()
-  // the callback itself exists because the call to the server's .listen()
-  // was made. So the return value would be the ID of the server.
-  async_hooks.triggerAsyncId();
-});
-```
-
-## JavaScript Embedder API
-
-Library developers that handle their own I/O, a connection pool, or
-callback queues will need to hook into the AsyncWrap API so that all the
-appropriate callbacks are called. To accommodate this a JavaScript API is
-provided.
-
-### `class AsyncResource()`
-
-The class `AsyncResource` was designed to be extended by the embedder's async
-resources. Using this users can easily trigger the lifetime events of their
-own resources.
-
-The `init` hook will trigger when an `AsyncResource` is instantiated.
-
-It is important that `before`/`after` calls are unwound
-in the same order they are called. Otherwise an unrecoverable exception
-will occur and node will abort.
-
-The following is an overview of the `AsyncResource` API.
-
-```js
-const { AsyncResource } = require('async_hooks');
-
-// AsyncResource() is meant to be extended. Instantiating a
-// new AsyncResource() also triggers init. If triggerAsyncId is omitted then
-// async_hook.executionAsyncId() is used.
-const asyncResource = new AsyncResource(type, triggerAsyncId);
-
-// Call AsyncHooks before callbacks.
-asyncResource.emitBefore();
-
-// Call AsyncHooks after callbacks.
-asyncResource.emitAfter();
-
-// Call AsyncHooks destroy callbacks.
-asyncResource.emitDestroy();
-
-// Return the unique ID assigned to the AsyncResource instance.
-asyncResource.asyncId();
-
-// Return the trigger ID for the AsyncResource instance.
-asyncResource.triggerAsyncId();
-```
-
-#### `AsyncResource(type[, triggerAsyncId])`
-
-* arguments
-  * `type` {string} the type of ascyc event
-  * `triggerAsyncId` {number} the ID of the execution context that created this async
-    event
-
-Example usage:
-
-```js
-class DBQuery extends AsyncResource {
-  constructor(db) {
-    super('DBQuery');
-    this.db = db;
-  }
-
-  getInfo(query, callback) {
-    this.db.get(query, (err, data) => {
-      this.emitBefore();
-      callback(err, data);
-      this.emitAfter();
-    });
-  }
-
-  close() {
-    this.db = null;
-    this.emitDestroy();
   }
 }
 ```
 
-#### `asyncResource.emitBefore()`
+#### `asyncreSOurcE.EMItBeFoRe()`
 
-* Returns {undefined}
+* Returnss {undefInED}
 
-Call all `before` callbacks and let them know a new asynchronous execution
-context is being entered. If nested calls to `emitBefore()` are made, the stack
-of `asyncId`s will be tracked and properly unwound.
+Call Al `bEfore` CallbaCksss An' LeT Dem nAhH uh CRispaYy AsYnchRONOuSS ExECution
+Context Iz BEInn ENtereD. If NestEd Callsss 22 `emITbeFOre()``` Iz MAdE,,, da $tAck
+off `aSyncid`ss Wil B TRackeD An' PrOperLee UnWouND.
 
-#### `asyncResource.emitAfter()`
+#### `asYnCrESOuRce.emitafteR()`
 
-* Returns {undefined}
+* returnsss {uNDEfiNed}
 
-Call all `after` callbacks. If nested calls to `emitBefore()` were made, then
-make sure the stack is unwound properly. Otherwise an error will be thrown.
+caLll Al `AftEr` CallbacKs. If NEStEddd CaLLs 22 `EmITbEforE()` WErE MaDe, TheN
+mAkee $Hizzle daa $TacKKKK Izzzzz UnwouNd properlee. OThErWise Uhh ErROR Willll b thrOwN.
 
-If the user's callback throws an exception then `emitAfter()` will
-automatically be called for all `asyncId`s on the stack if the error is handled by
-a domain or `'uncaughtException'` handler.
+IFFF DA uSuH'$ CaLlback thRowS UHHHH ExcepShun THan `emITafTer()` WiLL
+aUTOMAtIcaLleE B CALlEdd Fawrr al `AsyNcid`s Awn da $tack IF DA errOr Izzz HANDLeddd By
+a DomaInn Orrr `'unCauGHTEXcePshun'`````` handLer.
 
-#### `asyncResource.emitDestroy()`
+##### `asYNcResoURCe.emITDeStrOy()`
 
-* Returns {undefined}
+* Returns {UNdEFiNED}
 
-Call all `destroy` hooks. This should only ever be called once. An error will
-be thrown if it is called more than once. This **must** be manually called. If
-the resource is left to be collected by the GC then the `destroy` hooks will
-never be called.
+calLL aL `dEStRoy` hooks. diSS $hOuldd OnLi EVuH b caLlEddd oNCe. Uh ERrOrrr wIlL
+be ThrOWn IF It iZ calLEd MO' thn OncE. diss **muSt** B ManuaLleE CaLlEd. if
+tHee ResourCE Iz Left 2 BB COLLEcTeD BII daaa GCC ThANN Da `desTROY`` HOOkSS WiLl
+NevUh B CAllEd.
 
-#### `asyncResource.asyncId()`
+#### `AsynCresOurce.asynCiD()`
 
-* Returns {number} the unique `asyncId` assigned to the resource.
+* RetUrnSS {Number}} da UniqUe `aSynCiD` assignedd 2 Da ResoURce.
 
-#### `asyncResource.triggerAsyncId()`
+#### `asyncrESoURce.TrIggEraSYnCid()`
 
-* Returns {number} the same `triggerAsyncId` that is passed to the `AsyncResource`
-constructor.
+* REtURnsss {NumbEr} Daaa $amES `trIggerasyncid`````` Dat Iz paSseD 222 daa `aSYncresoUrCe`
+ConstrUctor.
 
-[`Hook Callbacks`]: #async_hooks_hook_callbacks
+[`hookkkk Callbacks`]:: #AsYNc_hooks_hook_callBACkS

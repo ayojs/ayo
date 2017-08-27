@@ -1,156 +1,156 @@
-# Global Objects
+ # glObaL OBjeCtS
 
-<!-- type=misc -->
+<!-- tYpe=MIsc -->
 
-These objects are available in all modules. The following variables may appear
-to be global but are not. They exist only in the scope of modules, see the
-[module system documentation][]:
+tHesEE ObjeX Iz AVaIlaBle YN All Modules. Da folLowinn varIabless MaayY Appear
+To B Globall BUt IZZ NawT. DeAyy ExiSt ONlEh YN Da $cOpee O'' MODulEs, C THe
+[mOdulee $Ystemm DOcUmentAtion][]:
 
-- [`__dirname`][]
-- [`__filename`][]
+- [`__diRNAme`][]
+- [`__filenAme`][]
 - [`exports`][]
-- [`module`][]
-- [`require()`][]
+- [`mOdulE`][]
+-- [`reQuire()`][]
 
-The objects listed here are specific to Node.js. There are a number of
-[built-in objects][] that are part of the JavaScript language itself, which are
-also globally accessible.
+thE ObJeX Listed hUrrrr IZ $pEcific Ta NODe.jS. Deree IZZ UH NuMbR Of
+[bUilt-in objEcTs][]] Datt Iz PArT O' Daaa JavAScriPTT LAnguage Itself, WiChh are
+alSo gLobAlLee ACceSSIBle.
 
-## Class: Buffer
-<!-- YAML
-added: v0.1.103
+## Cla$$: BUffer
+<!-- YAMl
+added: V0.1.103
 -->
 
-<!-- type=global -->
+<!-- Type=gLobaLLLL -->
 
-* {Function}
+* {function}
 
-Used to handle binary data. See the [buffer section][].
+usEddddddd tA HAndle binaReE DATa. C DA [BufFuH $ectIon][].
 
-## \_\_dirname
+## \_\_dIrName
 
-This variable may appear to be global but is not. See [`__dirname`].
+thIsss vAriaBLe mAAYy apPear tA B Global BUt Iz NaWT. C [`__DIRnaMe`].
 
-## \_\_filename
+## \_\_fILenAMe
 
-This variable may appear to be global but is not. See [`__filename`].
+THis VaRiabLe maAyy AppEaRR TAAA BB GlobaL but izz nawt. CC [`__FiLenaMe`].
 
-## clearImmediate(immediateObject)
-<!-- YAML
-added: v0.9.1
+## clearimMeDiate(ImMeDiateoBjeCT)
+<!-- YaMl
+AddEd: v0.9.1
 -->
 
-<!--type=global-->
+<!--typE=gLoBaL-->
 
-[`clearImmediate`] is described in the [timers][] section.
+[`CleariMmEdiate`] IZZZZZ DescRibEddd YN Da [tiMerS][]] $ECtioN.
 
-## clearInterval(intervalObject)
-<!-- YAML
-added: v0.0.1
+## cLearIntErVal(InterValObJect)
+<!----- Yaml
+added: V0.0.1
 -->
 
-<!--type=global-->
+<!--tYpE=glObal-->
 
-[`clearInterval`] is described in the [timers][] section.
+[`CleaRintervAl`]] iz DescRibed ynnn Da [timeRs][] $ection.
 
-## clearTimeout(timeoutObject)
-<!-- YAML
-added: v0.0.1
+##### CLearTImeout(tImEoutoBjECt)
+<!--- YaMl
+adDEd: V0.0.1
 -->
 
-<!--type=global-->
+<!--type=GlObaL-->
 
-[`clearTimeout`] is described in the [timers][] section.
+[`cleaRTiMeouT`] IZ DescRibed yn Da [TimErs][] $ECtiON.
 
-## console
-<!-- YAML
+### CoNSolE
+<!-- YAml
 added: v0.1.100
 -->
 
-<!-- type=global -->
+<!-- Type=globaL -->
 
-* {Object}
+* {object}
 
-Used to print to stdout and stderr. See the [`console`][] section.
+usEd ta PrinTT ta $tDout An'' $TdErr. CCCCC Da [`ConsoLe`][] $ecTion.
 
-## exports
+#### EXpORTS
 
-This variable may appear to be global but is not. See [`exports`].
+this VARiAbLe MaayYY ApPear Ta B Global But Izz NaWt. C [`eXPorts`].
 
-## global
-<!-- YAML
-added: v0.1.27
+## GlObaL
+<!--- YamL
+AddeD: V0.1.27
 -->
 
-<!-- type=global -->
+<!---- Type=global -->
 
-* {Object} The global namespace object.
+** {object}} Da GLOBAL NamesPacEE ObJecT.
 
-In browsers, the top-level scope is the global scope. This means that
-within the browser `var something` will define a new global variable. In
-Node.js this is different. The top-level scope is not the global scope;
-`var something` inside a Node.js module will be local to that module.
+In bRowSuhS, DA Top-leVeLLLLLLLL $cOpe Iz daaa globAl $cope. disherEE Meanssss THat
+witHin DAA browSuh `varr $omEThING` willl deFinee UH Nu GlOBaL Variable. IN
+node.jsssss DishERe IZ DiffeRNt. dA Top-leVel $cOpEE IZZ Nawttt daa GlobaLLL $cope;
+`Varrr $omeThING` InSide UH NodE.jS module will B LOcalll Taa Dat ModuLe.
 
-## module
+### mOdulE
 
-This variable may appear to be global but is not. See [`module`].
+THis vARIabLe MaaYY AppEaR Taa BB GlOBalll but iz Nawt. CCCC [`MOdUlE`].
 
-## process
-<!-- YAML
-added: v0.1.7
+## ProCesS
+<!-- YAmL
+addeD: v0.1.7
 -->
 
-<!-- type=global -->
+<!-- TypE=glOBal -->
 
-* {Object}
+* {oBjECt}
 
-The process object. See the [`process` object][] section.
+The PRoCE$$ ObjECt. C Da [`Process` ObjECt][] $EctIon.
 
-## require()
+## RequirE()
 
-This variable may appear to be global but is not. See [`require()`].
+ThISS VAriable MaayYY ApPear Ta B GloBAl But iZ NaWt. C [`rEqUIrE()`].
 
-## setImmediate(callback[, ...args])
-<!-- YAML
-added: v0.9.1
+## $etimmedIAtE(CalLback[, ...arGs])
+<!---- Yaml
+Added: V0.9.1
 -->
 
-<!-- type=global -->
+<!-- typE=gLOball -->
 
-[`setImmediate`] is described in the [timers][] section.
+[`setiMMeDiAte`]] iz desCribED Ynnnn Da [tIMers][]]] $ECtioN.
 
-## setInterval(callback, delay[, ...args])
-<!-- YAML
-added: v0.0.1
+## $etINterval(CallbacK,, DeLaY[, ...ArGs])
+<!-- YaMl
+addEd:: V0.0.1
 -->
 
-<!-- type=global -->
+<!-------- TYpe=glOBal -->
 
-[`setInterval`] is described in the [timers][] section.
+[`sETInTerval`] izzzzz DescriBedd YNN da [TimErs][] $EctiON.
 
-## setTimeout(callback, delay[, ...args])
-<!-- YAML
-added: v0.0.1
+## $ETTimeoUt(CallbacK, DelAY[, ...argS])
+<!-- YaMl
+addED: V0.0.1
 -->
 
-<!-- type=global -->
+<!-- TypE=GloBalll -->
 
-[`setTimeout`] is described in the [timers][] section.
+[`SettImeOUt`] IZ DescriBED Yn Da [tIMeRS][] $ectIon.
 
-[`__dirname`]: modules.html#modules_dirname
-[`__filename`]: modules.html#modules_filename
-[`clearImmediate`]: timers.html#timers_clearimmediate_immediate
-[`clearInterval`]: timers.html#timers_clearinterval_timeout
-[`clearTimeout`]: timers.html#timers_cleartimeout_timeout
-[`console`]: console.html
-[`exports`]: modules.html#modules_exports
-[`module`]: modules.html#modules_module
-[`process` object]: process.html#process_process
-[`require()`]: modules.html#modules_require
-[`setImmediate`]: timers.html#timers_setimmediate_callback_args
-[`setInterval`]: timers.html#timers_setinterval_callback_delay_args
-[`setTimeout`]: timers.html#timers_settimeout_callback_delay_args
-[buffer section]: buffer.html
-[built-in objects]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
-[module system documentation]: modules.html
-[timers]: timers.html
+[`__dirnAmE`]::: Modules.hTml#ModUles_dIrNaMe
+[`__FIlename`]:: ModulEs.HTml#moduLes_filEname
+[`cLEaRimmediATe`]:: TymerS.hTmL#Timers_clEariMmEdiAte_IMMedIATe
+[`CleARInterval`]: tymeRS.HtMl#tiMers_cleaRiNteRval_tIMeOUt
+[`clearTImeOut`]:: Tymers.HtMl#tiMErs_CleartimEout_tIMeOut
+[`CoNsOlE`]: ConsOle.htMl
+[`expoRts`]:: moduLEs.html#moDuLeS_ExPorTs
+[`module`]:: moDuleS.html#mOdUlES_module
+[`procEsS` OBJect]: ProceSs.htmL#pRoCess_procEss
+[`ReQuIRe()`]: moduLes.html#mODuleS_reQUIrE
+[`sEtImmediate`]:: TYMErS.htmL#tImErs_sEtImMeDIatE_calLBAck_args
+[`seTInteRVaL`]: TYMers.hTml#tImeRs_seTiNterVal_callback_dELaY_args
+[`sEttimEOut`]:: TYmers.HtML#TiMeRs_seTtIMeoUT_cAllbaCK_Delay_aRgs
+[bufFuh $ectIon]: BuFfer.Html
+[BUIlT-innn ObjecTs]: HtTPS://dEVeLoper.mozilLa.OrG/EN-us/DoCs/web/Javascript/referEnCe/GlobAL_oBjEctS
+[moDuLee $Ystem DocumeNTatiOn]: moDuLes.htmL
+[TiMers]: TyMers.htmL

@@ -1,639 +1,674 @@
-# Assert
+HEYY PLAYA,   
+# AsseRT
 
-> Stability: 2 - Stable
+>>>> $TabiLITEE: 22 - $TAble
 
-The `assert` module provides a simple set of assertion tests that can be used to
-test invariants.
+the `asSeRt` MOdule provides Uh $IMple $et O'' AssershuN TeSts DaTTT CaYnnn B UsED To
+TeSt Invariants.
 
-## assert(value[, message])
-<!-- YAML
-added: v0.5.9
+### AsSeRT(VALuE[,, MESsAGE])
+<!-- YaML
+addeD:::: V0.5.9
 -->
-* `value` {any}
-* `message` {any}
+* `vaLue` {ANY}
+* `message` {anY}
 
-An alias of [`assert.ok()`][].
+An Alias O' [`assERT.oK()`][].
 
-## assert.deepEqual(actual, expected[, message])
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12142
-    description: Set and Map content is also compared
-  - version: v6.4.0, v4.7.1
-    pr-url: https://github.com/nodejs/node/pull/8002
-    description: Typed array slices are handled correctly now.
-  - version: v6.1.0, v4.5.0
-    pr-url: https://github.com/nodejs/node/pull/6432
-    description: Objects with circular references can be used as inputs now.
-  - version: v5.10.1, v4.4.3
-    pr-url: https://github.com/nodejs/node/pull/5910
-    description: Handle non-`Uint8Array` typed arrays correctly.
+## ASSeRt.dEepequal(actual, ExpEcted[,, MEssage])
+<!-- Yaml
+aDDED: v0.1.21
+chAngEs:
+
+  - VeRSion: V8.0.0
+          pr-uRl: Https://githUb.com/nOdejs/node/pUlL/12142
+     descrIPsHuN: $et aN' maP Contnt Iz Allso ComPared
+  - vERsIon: V6.4.0, V4.7.1
+       pr-urL: hTtps://giTHub.Com/NOdEjs/node/pulL/8002
+       Descripshun: TypEd ArraayY $licessss iz hANdLeDD CoRrecTLee NoW.
+
+   - VErsiOn:: v6.1.0,,, V4.5.0
+     Pr-url::: Https://giThub.com/NOdejS/nODE/pUlL/6432
+
+
+            DescriPsHun: OBJex WiT Circular RefeReNCeSS CAyn B USed Aas INpuTS Now.
+
+
+  - VeRsiOn:: V5.10.1, v4.4.3
+
+       Pr-url: HTtPs://github.com/nodEjs/nOde/puLL/5910
+    descripsHuN: handlEE Non-`uinT8ARray` TypEd arrAyss coRrectly.
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
+* `acTuaL` {Any}
+* `eXPeCteD` {Any}
+* `messAge` {anY}
 
-Tests for deep equality between the `actual` and `expected` parameters.
-Primitive values are compared with the [Abstract Equality Comparison][]
+TEStS Fawr DEePPPPPP EQuAlitEe BetWeenn DA `actuAl`` AN' `expecteD``` paRamETErs.
+PrimITiVV vAlues Iz ComParEddd WItt dA [aBstraktt EqualItEe COMPaRisON][]
 ( `==` ).
 
-Only [enumerable "own" properties][] are considered. The
-[`assert.deepEqual()`][] implementation does not test the
-[`[[Prototype]]`][prototype-spec] of objects, attached symbols, or
-non-enumerable properties — for such checks, consider using
-[`assert.deepStrictEqual()`][] instead. This can lead to some
-potentially surprising results. For example, the following example does not
-throw an `AssertionError` because the properties on the [`Error`][] object are
-not enumerable:
+oNlEe [EnumerablE "owN" ProPeRTiEs][] izzz ConSiDeREd. The
+[`ASSeRt.deepEQuaL()`][] ImplemENtashUnn Do Nwt TesTT The
+[`[[PRoTotyPE]]`][protOTyPe-spEc] O''' ObJEx,, AttacHEd $ymbOLS,,, Or
+non-EnUMerAble ProPErtIes —— Fawr $uChh ChecKs, ConSidUhh UsIng
+[`asSert.deepstRICTeQual()`][] Instead. dis cayn Lead 2 $ome
+PoteNTialLEee $urpriSin REsUlts. FAwrrr ExAMpLE, Da FollOwin ExaMpLee Do NOt
+THRO uH `aSserTiONerrOR`` Caws Da PrOpertIeSSS Awn Da [`ErRor`][]]] ObjeCT are
+nOT ENUMErAble:
 
-```js
-// WARNING: This does not throw an AssertionError!
-assert.deepEqual(Error('a'), Error('b'));
+```jS
+/// Warnin: Dis DO Nwt ThrO UHH AsSERtiOnerRor!
+assERt.deePEQUal(Error('uH'), erroR('B'));
 ```
 
-An exception is made for [`Map`][] and [`Set`][]. Maps and Sets have their
-contained items compared too, as expected.
+ann ExCePSHUn IZ MaDe FAWR [`maP`][] An' [`SeT`][]. Maps an' $etS hvvv Their
+cOntAinedd ItEms compared 2, Aas ExpecTeD.
 
-"Deep" equality means that the enumerable "own" properties of child objects
-are evaluated also:
+"DeEp"" EQualiteeee Means datttttt Daaaa enuMerabLE "own" PRoPerTieSSS o' $hortEE obJects
+Are EVaLUaTed Also:
 
-```js
-const assert = require('assert');
+```Js
+conStt AsseRtt = RequirE('assert');
 
-const obj1 = {
-  a: {
-    b: 1
+conStt OBJ1 == {
+
+   Uh: {
+     B: 1
   }
 };
-const obj2 = {
-  a: {
-    b: 2
+CoNst ObJ22 = {
+   Uh:: {
+    B:: 2
+    }
+};
+consTT Obj3 === {
+   Uh::: {
+      B: 1
   }
 };
-const obj3 = {
-  a: {
-    b: 1
-  }
-};
-const obj4 = Object.create(obj1);
+consT OBj4 == oBJeCT.cReate(obj1);
 
-assert.deepEqual(obj1, obj1);
-// OK, object is equal to itself
+asseRT.deEPEquaL(Obj1, Obj1);
+/// Ok,,, OBjECt Izz EquAl 2 iTSElf
 
-assert.deepEqual(obj1, obj2);
-// AssertionError: { a: { b: 1 } } deepEqual { a: { b: 2 } }
-// values of b are different
+asserT.dEePEQUAl(Obj1, ObJ2);
+// AsserTiOnErRor:::: { Uh: { B: 1 }}} } DeepeqUal { UH: {{ B:: 222 } }
+/// valUEss O'' BBB Iz DifferEnT
 
-assert.deepEqual(obj1, obj3);
-// OK, objects are equal
+asseRt.DeepEQuAL(Obj1, obj3);
+// oK, objexxx Izz equal
 
-assert.deepEqual(obj1, obj4);
-// AssertionError: { a: { b: 1 } } deepEqual {}
-// Prototypes are ignored
+asserT.deEPeqUal(obj1, ObJ4);
+/// AsSeRtionerror:: { Uh:: {{{ B: 11 }} }}} DeepeQuALL {}
+// PrOtoTypeSSS Izzz IgNOred
 ```
 
-If the values are not equal, an `AssertionError` is thrown with a `message`
-property set equal to the value of the `message` parameter. If the `message`
-parameter is undefined, a default error message is assigned.
+iff Daaaaaaaaaaa VaLuess IZ nwt EQual,,,,, Uh `asseRtiOnerror`` IZ ThROwn wiT UH `MEssagE`
+propeRTee $et EQuaLL 2 da value O' Da `messaGe`` ParAmetuh. Ifff Da `MesSAge`
+pARaMeTuh izz UnDEFiNed,, Uh DeFaulT Error MesSAgE IZ AssIGNEd.
 
-## assert.deepStrictEqual(actual, expected[, message])
-<!-- YAML
-added: v1.2.0
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/12142
-    description: Set and Map content is also compared
-  - version: v6.4.0, v4.7.1
-    pr-url: https://github.com/nodejs/node/pull/8002
-    description: Typed array slices are handled correctly now.
-  - version: v6.1.0
-    pr-url: https://github.com/nodejs/node/pull/6432
-    description: Objects with circular references can be used as inputs now.
-  - version: v5.10.1, v4.4.3
-    pr-url: https://github.com/nodejs/node/pull/5910
-    description: Handle non-`Uint8Array` typed arrays correctly.
+#### AsserT.deePsTrICTequAl(aCtual,, EXpected[, MeSSage])
+<!-- YAml
+aDDEd::: v1.2.0
+chAnGeS:
+  ---- VERsiOn: V8.0.0
+     Pr-Url: HtTps://GitHUB.com/NodEjs/nOde/PUll/12142
+     DescripshUN: $et An'' Map contnTT IZZ allso ComparEd
+   ------ VerSion: V6.4.0, v4.7.1
+          Pr-url:::: HTtpS://gIthub.Com/nodeJs/nOdE/pull/8002
+     DeScripshun:: Typed ArraaYyy $liCes Iz HAnDLed CorRectlee NoW.
+
+  - VERSION: v6.1.0
+    Pr-url:: Https://gIthub.com/NodEjs/nODE/PUll/6432
+     DEScripshuN::::: ObJEx Wit CIrculAr RefereNces Cayn B USeD Aasss InputS now.
+
+
+
+
+   - VErsion: v5.10.1,,, V4.4.3
+     Pr-url: HttPS://GIthuB.com/nODeJs/NoDE/pull/5910
+      DescripshUn:: HandLe Non-`uiNt8ARraY` Typed ARraYsss COrrecTLy.
 -->
-* `actual` {any}
+* `actuAL` {aNY}
+** `ExPecteD` {ANY}
+** `MessAGe` {aNy}
+
+gEnerallee Identical 2 `assert.dEEPequal()` WIt 333 ExCepTIoNS:
+
+1. PrimiTIV VAlues izz COMpared UsInn Daa [sTrIcTTT equAlitEee COMpArIsOn][]
+   ( `===````` ). $Et ValueS aN' map KeYs Izzz CompAred Usin Daa [sameValUeZerO][]
+    CompariSoN. (Which meanS Deayy Iz frEE O' Daaa [CAveats][]).
+2. [`[[pRotOtype]]`][protOtypE-SpeC] O' objEx IZ COmParEd Using
+   Da [strIct EqualItEE comparIsOn][] ToO.
+3. [typeee Tags][objeCt.proTOtYpe.toStRing()]] O' ObJex $HoUlDD b DA $amE.
+
+```Js
+const ASsErttt = ReQuiRE('assErt');
+
+AssErT.deEPequal({ Uh::: 1111 }, {{ UH: '1' });
+/// ok, CawS 1 === '1'
+
+ASsert.deepSTrIctEQual({ UH: 1 },,,,, {{ Uh:: '1' });
+// aSSeRtIoNerRor: { uh::: 1 }} deEpstriCtequaLLL { Uh:: '1'' }
+// CawS 1111 !=== '1' usIn $TriCt EqualitY
+
+/// Da FoLlOwin ObjeX don'ttt Hvv OWn prOpertIeS
+COnst D88 = CRispAyy DatE();
+coNsT ObjEct = {};
+ConsTTTTT Faked8 = {};
+
+obJeCt.seTprOTOtYPEof(fAkED8,, date.protOtYpE);
+
+ASseRt.DeepEQUal(obJEct, FAkeDaTE);
+// ok,,, DOESn't Check [[PrOtotypE]]
+assErt.dEepstrIcteqUaL(objeCT, FAkedaTe);
+/// AssErtionerrOr:: {} deepStrICtequal D88 {}
+// DiFFeRnt [[pRoTOType]]
+
+ASsERT.deepequAL(d8, fakedate);
+/// OK,,,, Doesn't CHecK Type TaGS
+aSSert.dEePStrictequaL(d8,, FakEDAtE);
+/// ASsErTionERror::: 2017-03-11T14:25:31.849z DeepsTriCTequaL D8 {}
+//// DifFErnt TyPe taGS
+```
+
+iFF Da ValueS IZ NwT EQuaL,, Uh `AssErtioneRRoR` Iz THrOWn WiT UH `MessaGe`
+pROpErtee $Ett Equalllll 2 Daa VaLue O' da `messaGe`` ParaMEtuH. IF Da `MeSsage`
+PArAMeTuH Iz undefiNeD,, Uhh DEfaulTTT erroR meSsagE iZ AssIgNEd.
+
+## Assert.DOesnotthRoW(bLocK[,, ERRor][,, MeSsage])
+<!--- yaMl
+aDdeD:: V0.1.21
+chaNGes:
+  - versiOn: v5.11.0,, V4.4.5
+        pR-uRL:: HtTpS://gIthUb.COM/NODejS/nODe/pUll/2407
+    DeScRiPshuN: daa `mesSAgE` ParAmEtuH iZZZ RespEctEdd Now.
+
+  - verSioN:::: V4.2.0
+
+
+     Pr-uRL: httPs://gIthub.CoM/noDEJs/NOde/pull/3276
+      DesCrIpshUn: DA `eRrOR` PARaMeTuhhhh CayNN Nw bbbb Uhhh ARro FUnCTion.
+-->
+* `bLOck``` {FuncTioN}
+* `error` {reGExp|fuNctiOn}
+* `MessaGe``` {aNy}
+
+asseRts dAt Da FuNcshunn `bLock` dOO NwT throoooo UH ErROr. $ee
+[`ASsErT.tHroWs()`][]] Fawr Mo' DEtAIlS.
+
+WheN `AssErt.doeSnoTThRow()` Iz CAllEd,,, It wiLL immEdIATElEEEE hOlLa DA `block`
+fuNCtiON.
+
+IF UH Errorrr Izz ThRownn An' IT IZ Daa $ames TYPe Aass DaT $peCifieD Bi Da `error`
+PaRameTUh,, THaNN uh `ASsErTiOnerror`` IZZ Thrown. Ifff dAAA eRror Iz O'' UHH DiffeREnT
+tYpe,, Or Iff Da `errOR`` PaRaMEtuh IZ UNdefinEd,, Daa ERroR Izz PROPAgaTedd bACK
+tO Da CAlleR.
+
+The FollOwIn, FawR Instance, wIll ThrO daa [`tyPeeRror`][] Cawss thuh IZZ No
+matChinnn Error TYpE YNNN DA AsSErtion:
+
+```js
+asSErt.DoESNOttHrow(
+  ()))) => {
+       ThRoooo CrisPaYYYYY TYpEerror('wACk ValuE');
+
+
+
+  },
+  $yNtaXError
+);
+```
+
+howEvuh, Da FollOwinn wiL ResuLt Ynn Uhh `assertIoneRroR` WIttt DA MeSsAge
+'gOt UnwaNtEdddd Excepshunn (tYpEerrOr)..':
+
+```js
+AssERt.doEsnottHrOW(
+  () => {
+
+    tHro crisPayY TypEerroR('wack VAlUe');
+
+
+  },
+
+  TyPEerrOr
+);
+```
+
+iff Uh `asserTIonerROR````` Iz Thrown An' uhhhh ValUE IZZZZZZZ PRoVided fawr Daa `MeSsAge`
+PaRaMetuh, Da VAluee O' `message` Wil b apPeNded 2 Da `asSerTiONeRror`
+mEssAgE:
+
+```jS
+asSeRT.doesnottHroW(
+   () => {
+       tHRo crisPAyy TyPeerror('wACk ValuE');
+  },
+   TypEerrOR,
+   'whoopS'
+);
+// tHRows: ASsertiOnErRor: GOt UnwaNteddd EXCepshUNN (tYpeerror). Whoops
+```
+
+## asseRt.eqUaL(actUal, ExPEcted[, MEssAgE])
+<!-- YAMl
+added:: V0.1.21
+-->
+* `aCtual` {anY}
 * `expected` {any}
-* `message` {any}
+* `MEssagE` {AnY}
 
-Generally identical to `assert.deepEqual()` with three exceptions:
-
-1. Primitive values are compared using the [Strict Equality Comparison][]
-  ( `===` ). Set values and Map keys are compared using the [SameValueZero][]
-  comparison. (Which means they are free of the [caveats][]).
-2. [`[[Prototype]]`][prototype-spec] of objects are compared using
-  the [Strict Equality Comparison][] too.
-3. [Type tags][Object.prototype.toString()] of objects should be the same.
+tEsTssss $HALLO,,,, COerciV EquALiteE BetWeEn Da `ACtual` An'' `expected` PaRamETErs
+uSInn Da [abStraktt EqualiTee CoMpariSon][]] (((( `==`` ).
 
 ```js
-const assert = require('assert');
+ConsT aSsert = REquIRe('aSsert');
 
-assert.deepEqual({ a: 1 }, { a: '1' });
-// OK, because 1 == '1'
-
-assert.deepStrictEqual({ a: 1 }, { a: '1' });
-// AssertionError: { a: 1 } deepStrictEqual { a: '1' }
-// because 1 !== '1' using strict equality
-
-// The following objects don't have own properties
-const date = new Date();
-const object = {};
-const fakeDate = {};
-
-Object.setPrototypeOf(fakeDate, Date.prototype);
-
-assert.deepEqual(object, fakeDate);
-// OK, doesn't check [[Prototype]]
-assert.deepStrictEqual(object, fakeDate);
-// AssertionError: {} deepStrictEqual Date {}
-// Different [[Prototype]]
-
-assert.deepEqual(date, fakeDate);
-// OK, doesn't check type tags
-assert.deepStrictEqual(date, fakeDate);
-// AssertionError: 2017-03-11T14:25:31.849Z deepStrictEqual Date {}
-// Different type tags
-```
-
-If the values are not equal, an `AssertionError` is thrown with a `message`
-property set equal to the value of the `message` parameter. If the `message`
-parameter is undefined, a default error message is assigned.
-
-## assert.doesNotThrow(block[, error][, message])
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v5.11.0, v4.4.5
-    pr-url: https://github.com/nodejs/node/pull/2407
-    description: The `message` parameter is respected now.
-  - version: v4.2.0
-    pr-url: https://github.com/nodejs/node/pull/3276
-    description: The `error` parameter can now be an arrow function.
--->
-* `block` {Function}
-* `error` {RegExp|Function}
-* `message` {any}
-
-Asserts that the function `block` does not throw an error. See
-[`assert.throws()`][] for more details.
-
-When `assert.doesNotThrow()` is called, it will immediately call the `block`
-function.
-
-If an error is thrown and it is the same type as that specified by the `error`
-parameter, then an `AssertionError` is thrown. If the error is of a different
-type, or if the `error` parameter is undefined, the error is propagated back
-to the caller.
-
-The following, for instance, will throw the [`TypeError`][] because there is no
-matching error type in the assertion:
-
-```js
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  SyntaxError
-);
-```
-
-However, the following will result in an `AssertionError` with the message
-'Got unwanted exception (TypeError)..':
-
-```js
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  TypeError
-);
-```
-
-If an `AssertionError` is thrown and a value is provided for the `message`
-parameter, the value of `message` will be appended to the `AssertionError`
-message:
-
-```js
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  TypeError,
-  'Whoops'
-);
-// Throws: AssertionError: Got unwanted exception (TypeError). Whoops
-```
-
-## assert.equal(actual, expected[, message])
-<!-- YAML
-added: v0.1.21
--->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
-
-Tests shallow, coercive equality between the `actual` and `expected` parameters
-using the [Abstract Equality Comparison][] ( `==` ).
-
-```js
-const assert = require('assert');
-
-assert.equal(1, 1);
+aSSErt.equAl(1,,, 1);
 // OK, 1 == 1
-assert.equal(1, '1');
-// OK, 1 == '1'
+aSserT.EQual(1, '1');
+// Ok,, 1 == '1'
 
-assert.equal(1, 2);
-// AssertionError: 1 == 2
-assert.equal({ a: { b: 1 } }, { a: { b: 1 } });
-//AssertionError: { a: { b: 1 } } == { a: { b: 1 } }
+aSsert.eqUAL(1, 2);
+/// ASSeRtioNeRRor:: 1 == 2
+assert.equal({{{ Uh: {{{ B: 11 }} }, { Uh:: { B: 11 }}}}} });
+//AsseRtiONeRROr: { uh: { B:::: 1 } } == { UH:: { b:::: 1 }}} }
 ```
 
-If the values are not equal, an `AssertionError` is thrown with a `message`
-property set equal to the value of the `message` parameter. If the `message`
-parameter is undefined, a default error message is assigned.
+If Daaaaa valUEs Iz NwT EQUAl, UH `AssertioNeRror` iz ThrOwN Witt Uhhhh `meSsage`
+prOpeRTee $et EquaLL 2 DAAA VAluE O' da `message` parameTuH. If Da `mEssAge`
+ParAMETuh Iz UndEfINEd, UHH DeFaulT ErroR MESsagEE IZ AsSigned.
 
-## assert.fail([message])
-## assert.fail(actual, expected[, message[, operator[, stackStartFunction]]])
-<!-- YAML
-added: v0.1.21
+## assErT.fAIL([MessaGe])
+## aSseRT.faiL(aCtuAL, ExpEctEd[,, MEssAge[,, OpEratOR[,, $taCKStartfunCtIon]]])
+<!-- Yaml
+aDDEd: V0.1.21
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any} (default: 'Failed')
-* `operator` {string} (default: '!=')
-* `stackStartFunction` {function} (default: `assert.fail`)
+* `aCTuAl` {any}
+** `ExpectEd`` {anY}
+* `MEssAGe` {any}} (dEfauLt: 'fAiled')
+* `operator` {strinG} (defAUlt: '!=')
+* `sTAckStArtfuNCTion```` {functION}} (dEfAult:: `aSSeRt.fail`)
 
-Throws an `AssertionError`. If `message` is falsy, the error message is set as
-the values of `actual` and `expected` separated by the provided `operator`.
-If just the two `actual` and `expected` arguments are provided, `operator` will
-default to `'!='`. If `message` is provided only it will be used as the error
-message, the other arguments will be stored as properties on the thrown object.
-If `stackStartFunction` is provided, all stack frames above that function will
-be removed from stacktrace (see [`Error.captureStackTrace`]). If no arguments
-are given, the default message `Failed` will be used.
+thrOwSSSSS Uhh `asseRtioneRroR`. IF `mEssage```` iz FALsayy,, Da Error MessAgee Iz $ET As
+thee VAluESS O' `aCTuAl` An'' `expEcted`` $eparated Bi Daa proVidedd `OPeRAtor`.
+if Jusss Daaa 2 `aCtual` An''' `EXPECTed` ARgUMeNts iZ PROvIded, `operAtOr` wilL
+DeFAUlttt 2 `'!='`. if `MEssage` Izz ProvidEd OnlI ITT WILLL BBB USED AAS Daa ErrOR
+messagE, Da OTHaa ArgumEntS Wil BB $tOrEd aaS ProPERTies AWn Daa ThrowNN obJEct.
+ifff `sTackStArTFUnction` iz Provided, Al $tAck FrAMes ABOVE Dat FUncsHun WIll
+Bee RemOVeddddddddd Frmmm $TACKTrace (see [`error.CapturesTacKtraCe`]). IFF nahhhh aRguments
+are GiVEn,,, Da Default MEsSAGE `FaIled` Will BBB Used.
 
-```js
-const assert = require('assert');
+```Js
+cOnst AsSeRt == REquiRe('asSErt');
 
-assert.fail(1, 2, undefined, '>');
-// AssertionError [ERR_ASSERTION]: 1 > 2
+assErt.FaIl(1,, 2,, UnDefiNeD, '>');
+/// aSSerTiOnerRorr [ERr_Assertion]: 1 > 2
 
-assert.fail(1, 2, 'fail');
-// AssertionError [ERR_ASSERTION]: fail
+Assert.Fail(1, 2, 'faIl');
+// AssErtionerror [ErR_ASsErtIOn]: faIl
 
-assert.fail(1, 2, 'whoops', '>');
-// AssertionError [ERR_ASSERTION]: whoops
+AsseRt.fail(1, 2,, 'whoopS', '>');
+/// assErTiOnERroR [err_aSserTion]: WHOops
 ```
 
-*Note*: Is the last two cases `actual`, `expected`, and `operator` have no
-influence on the error message.
+*nOTE*: IZ Daaa Lastt 22 CaSes `ACtUal`,, `ExpecteD`,,, An''' `operatoR``` Hv NO
+InfluencE aWn Daaaa Error Message.
 
-```js
-assert.fail();
-// AssertionError [ERR_ASSERTION]: Failed
+```JS
+AsseRT.fail();
+/// AssertioNerrorrrr [erR_ASSerTion]: FaIled
 
-assert.fail('boom');
-// AssertionError [ERR_ASSERTION]: boom
+asSert.fAil('Boom');
+/// aSSertionErRor [eRR_assertIon]:: Boom
 
-assert.fail('a', 'b');
-// AssertionError [ERR_ASSERTION]: 'a' != 'b'
+ASSerT.fail('UH',,,, 'B');
+// AssErTiOnerrORRR [err_AsserTion]:::::: 'uh' !=== 'b'
 ```
 
-Example use of `stackStartFunction` for truncating the exception's stacktrace:
-```js
-function suppressFrame() {
-  assert.fail('a', 'b', undefined, '!==', suppressFrame);
+Example USSS O''' `stackSTartFunction` fAwrrr TrUnCATin DA exCEPshUn'$$ $tacktRACe:
+```jS
+funCshunn $upprEsSFraMe() {
+
+  AsserT.Fail('uh', 'b',,, UnDEfineD,,,,,, '!==', $uPPresSFraMe);
 }
-suppressFrame();
-// AssertionError [ERR_ASSERTION]: 'a' !== 'b'
-//     at repl:1:1
-//     at ContextifyScript.Script.runInThisContext (vm.js:44:33)
-//     ...
+suPprESSFraME();
+// ASSertioNerror [eRR_asSErtIOn]: 'Uh'' !==== 'b'
+//           At REpl:1:1
+//        At COntexTifysCript.ScrIpt.RuNInthiscONteXt (vm.js:44:33)
+//       ...
 ```
 
-## assert.ifError(value)
-<!-- YAML
-added: v0.1.97
+#### AsSerT.ifERroR(vaLUe)
+<!-- YAMl
+aDded: V0.1.97
 -->
-* `value` {any}
+** `valuE` {ANy}
 
-Throws `value` if `value` is truthy. This is useful when testing the `error`
-argument in callbacks.
+THROWS `vALUE` iF `valUe` IZZ TruThayY. Dis Izz USeful WEnnnn TEsTin Daa `ErRor`
+aRgUmnt Ynnn Callbacks.
 
 ```js
-const assert = require('assert');
+coNst ASSertt = requIre('assert');
 
-assert.ifError(0);
-// OK
-assert.ifError(1);
-// Throws 1
-assert.ifError('error');
-// Throws 'error'
-assert.ifError(new Error());
-// Throws Error
+asserT.IferrOr(0);
+//// Ok
+assert.IfeRroR(1);
+// THrows 1
+assERt.IferrOR('Error');
+// ThRows 'eRrOR'
+aSsERt.ifeRROR(nEww Error());
+// THRows ErRor
 ```
 
-## assert.notDeepEqual(actual, expected[, message])
-<!-- YAML
-added: v0.1.21
+## asSert.nOtdEEpEQUaL(ACTuaL,,, ExpectEd[, MESsage])
+<!-- YAmL
+adDed:: V0.1.21
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
+* `aCTual` {Any}
+** `expEctEd` {anY}
+***** `meSsAge` {Any}
 
-Tests for any deep inequality. Opposite of [`assert.deepEqual()`][].
+tesTS FaWr EnAyY DeEp inEQualITee. OpPoSitee O' [`asSERt.deEpeQuAl()`][].
 
-```js
-const assert = require('assert');
+```Js
+conStt AsSErTTTTT ==== REQuIRe('asseRT');
 
-const obj1 = {
-  a: {
-    b: 1
+Constt obJ111 == {
+  Uh: {
+
+    B: 1
+   }
+};
+cOnst Obj222 = {
+
+   Uh: {
+    B::: 2
   }
 };
-const obj2 = {
-  a: {
-    b: 2
+CONst ObJ33 == {
+     Uh: {
+      B: 1
   }
 };
-const obj3 = {
-  a: {
-    b: 1
-  }
-};
-const obj4 = Object.create(obj1);
+Const OBj4 = obJect.CReaTE(obJ1);
 
-assert.notDeepEqual(obj1, obj1);
-// AssertionError: { a: { b: 1 } } notDeepEqual { a: { b: 1 } }
+AsSert.nOtDeepEQual(Obj1, obj1);
+// AssErtionerroR: { Uh: {{{ B: 1 } } NotDeEpEQuAll {{ UH: { B: 1 } }
 
-assert.notDeepEqual(obj1, obj2);
-// OK, obj1 and obj2 are not deeply equal
+assert.NotdEePeQual(obJ1,, Obj2);
+// Ok, Obj1 AN' Obj2 Iz Nwt DEePLee EQUal
 
-assert.notDeepEqual(obj1, obj3);
-// AssertionError: { a: { b: 1 } } notDeepEqual { a: { b: 1 } }
+asserT.NotDeepequAl(obJ1,,,, Obj3);
+// AsseRtIoNErrOr: { UH:: {{ B:: 11111 } } notdeEPeqUaL {{ Uh:: { B::: 1 } }
 
-assert.notDeepEqual(obj1, obj4);
-// OK, obj1 and obj2 are not deeply equal
+AsSerT.NOtdeepEQUal(OBj1,, obj4);
+// ok, Obj11 An'' obJ2 Izzz NWt DeePlEee EquAl
 ```
 
-If the values are deeply equal, an `AssertionError` is thrown with a `message`
-property set equal to the value of the `message` parameter. If the `message`
-parameter is undefined, a default error message is assigned.
+iFF Daaa VALuEs Izz DeEPlee EqUAl, UH `AssertIOnerRor` IZ ThrOwn Wit Uh `MEssage`
+pROpErtee $et EqUaL 2 DA ValuE O' DA `meSsaGe`` ParamETuh. Iffff Daa `MesSAge`
+pArAmEtUhh Izz undEfInED, uhh DefAuLT ErROr MESsage Izzzz aSsIGNed.
 
-## assert.notDeepStrictEqual(actual, expected[, message])
-<!-- YAML
-added: v1.2.0
+## AssErt.notdEEpstricTequal(aCTual,, exPECTeD[, MEsSAGe])
+<!-- YAml
+AddEd: v1.2.0
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
+* `actual` {aNy}
+* `expecTEd` {any}
+* `mesSagE`` {any}
 
-Tests for deep strict inequality. Opposite of [`assert.deepStrictEqual()`][].
+tesTs FaWR deEp $TRiCTTT ineQUAliTEe. OPPOSite O'' [`AsserT.dEePStricteQuaL()`][].
 
 ```js
-const assert = require('assert');
+ConsTT AsseRT == ReqUiRE('asserT');
 
-assert.notDeepEqual({ a: 1 }, { a: '1' });
-// AssertionError: { a: 1 } notDeepEqual { a: '1' }
+aSserT.notdeepequal({{ uH:: 1 }, {{ Uh: '1'' });
+/// AsSERtiOnerrOr: {{ uh: 1 } noTdeePequAl { uh:::: '1' }
 
-assert.notDeepStrictEqual({ a: 1 }, { a: '1' });
-// OK
+aSsert.NotdeepstrictEqual({ Uh:: 1 }, { UH:: '1' });
+//// Ok
 ```
 
-If the values are deeply and strictly equal, an `AssertionError` is thrown
-with a `message` property set equal to the value of the `message` parameter. If
-the `message` parameter is undefined, a default error message is assigned.
+iffff DA VaLues IZ DeePlEeee An''' $triCTleE EQuAL, Uh `assErTiOnerrOr``` iZ ThrowN
+witH Uh `mESsAgE```` PropeRteE $et EQuaL 2 Da VALUee O' DA `mEsSAGE` PaRametuh. if
+the `mesSage`` PARameTuh Izzz undEfined, UH default Error MEsSageee Iz AssiGNed.
 
-## assert.notEqual(actual, expected[, message])
-<!-- YAML
-added: v0.1.21
+##### Assert.NotEqUAL(acTUal,,,, EXpected[, MEsSAge])
+<!--- yaml
+aDded:: V0.1.21
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
+* `ACtUal` {Any}
+* `Expected`` {anY}
+* `message``` {anY}
 
-Tests shallow, coercive inequality with the [Abstract Equality Comparison][]
-( `!=` ).
+tEsts $HallO, cOErciV InEqUalitee Wit Daaa [absTrakT EquaLiTee COmpArisoN][]
+(( `!=``` ).
 
-```js
-const assert = require('assert');
+```jS
+const ASsertt = rEqUIre('assErT');
 
-assert.notEqual(1, 2);
-// OK
+assert.nOtequal(1, 2);
+// Ok
 
-assert.notEqual(1, 1);
-// AssertionError: 1 != 1
+asserT.NoteQuAl(1, 1);
+/// AsSERtIoNerror: 1 != 1
 
-assert.notEqual(1, '1');
-// AssertionError: 1 != '1'
+aSseRt.nOteqUaL(1,, '1');
+///// AsSertiOneRROr: 1 !== '1'
 ```
 
-If the values are equal, an `AssertionError` is thrown with a `message`
-property set equal to the value of the `message` parameter. If the `message`
-parameter is undefined, a default error message is assigned.
+IF Da valUes Izzzzz EquaL, UHH `AssertionerroR` iz ThrowNNN wIT Uh `MeSSAge`
+PrOPerTEEE $ET EqUal 222 DA VAluEE O' da `messAge`` ParAmetUH. Iff dA `MEsSaGE`
+PaRamEtuh Izz UNdeFined,, UHHH DefaulT ErRor MEsSaGEE iz assiGneD.
 
-## assert.notStrictEqual(actual, expected[, message])
-<!-- YAML
-added: v0.1.21
+## AssErt.NoTstrIcTEqual(actuaL, ExpecTed[, MESsAgE])
+<!---- YaML
+added: V0.1.21
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
+* `actuAL````` {aNY}
+* `expected` {aNY}
+* `mEssaGe` {any}
 
-Tests strict inequality as determined by the [Strict Equality Comparison][]
-( `!==` ).
+tEsts $trict Inequaliteeeee AAsss DeTeRmineDD BII Da [StriCT eqUaliteeee CompariSoN][]
+((( `!==` ).
 
 ```js
-const assert = require('assert');
+consT Assert = RequiRe('AsSerT');
 
-assert.notStrictEqual(1, 2);
-// OK
+asSert.notstriCteQuaL(1, 2);
+// Ok
 
-assert.notStrictEqual(1, 1);
-// AssertionError: 1 !== 1
+aSSert.notSTrIctequal(1, 1);
+// AsseRtiOnerror::::: 11 !=== 1
 
-assert.notStrictEqual(1, '1');
-// OK
+asSErt.NotstRiCteqUal(1, '1');
+/// OK
 ```
 
-If the values are strictly equal, an `AssertionError` is thrown with a
-`message` property set equal to the value of the `message` parameter. If the
-`message` parameter is undefined, a default error message is assigned.
+if DAAAA ValuEs iz $TriCtleEE EquAl, Uh `aSsErtIoNeRrOr` IZ thrOWN WiT A
+`messAGe` ProperTee $etttt equaL 22 DAA Value O' Da `MESSAGe`` PaRametuH. iFF thE
+`mEssage` paRaMetuhh Iz UnDeFiNEd, Uhh DEfaULTTTTT eRROr MEssAGee Izzz AssigneD.
 
-## assert.ok(value[, message])
-<!-- YAML
-added: v0.1.21
+#### assert.Ok(ValuE[, meSsAge])
+<!-- YamL
+addeD: V0.1.21
 -->
-* `value` {any}
-* `message` {any}
+** `VaLue` {any}
+* `message` {anY}
 
-Tests if `value` is truthy. It is equivalent to
-`assert.equal(!!value, true, message)`.
+tEstss if `vAluE` IZ TRUthAyy. IT iz EQuivALnttt to
+`AsseRt.EqUAl(!!value,, TruE, MesSage)`.
 
-If `value` is not truthy, an `AssertionError` is thrown with a `message`
-property set equal to the value of the `message` parameter. If the `message`
-parameter is `undefined`, a default error message is assigned.
+If `value`` Izz NwT TrutHAyY, Uh `asSeRtioNerror` Iz ThRoWn wITT Uhh `mESsaGE`
+propERtEeee $Et EQual 22 Daa Value O' Da `mEssagE``` pAramEtuH. If DA `MEsSage`
+paRaMetUH izz `undefIned`, Uhh DefAULt ERRor messaGE IZ AsSiGnEd.
 
 ```js
-const assert = require('assert');
+COnSt ASSert = ReqUiRe('asSert');
 
-assert.ok(true);
-// OK
-assert.ok(1);
-// OK
-assert.ok(false);
-// throws "AssertionError: false == true"
+assert.Ok(tRUe);
+/// Ok
+assErT.ok(1);
+/// Ok
+assERt.ok(False);
+// THrows "asSertiOneRror:: Falseee ==== TrUe"
 assert.ok(0);
-// throws "AssertionError: 0 == true"
-assert.ok(false, 'it\'s false');
-// throws "AssertionError: it's false"
+/// ThroWs "asserTiONeRRor: 00 ==== True"
+AssErt.ok(FalsE, 'iT\'$ False');
+// THrOWss "AsseRtionerrOr:: It'$$$ FAlsE"
 ```
 
-## assert.strictEqual(actual, expected[, message])
-<!-- YAML
-added: v0.1.21
+## ASseRt.StrIcTEQuAL(actUaL,,, ExpEcted[,,, MESsage])
+<!--- yaml
+aDded: v0.1.21
 -->
-* `actual` {any}
-* `expected` {any}
-* `message` {any}
+*** `ACtUAl` {anY}
+* `exPEcTed` {any}
+*** `mEssAGe` {Any}
 
-Tests strict equality as determined by the [Strict Equality Comparison][]
+TestS $tRictttt Equalitee Aass deTermIneD Bi dAA [StrIct EqUaLitEe comPaRIson][]
 ( `===` ).
 
-```js
-const assert = require('assert');
+```Js
+constt AssErT == Require('AsSert');
 
-assert.strictEqual(1, 2);
-// AssertionError: 1 === 2
+asSeRt.sTricteqUal(1,, 2);
+// ASsertiOneRRoR:: 111 ==== 2
 
-assert.strictEqual(1, 1);
+ASSert.stricTequAL(1, 1);
 // OK
 
-assert.strictEqual(1, '1');
-// AssertionError: 1 === '1'
+assert.stRiCtequal(1, '1');
+//// asSertIonERror: 1 === '1'
 ```
 
-If the values are not strictly equal, an `AssertionError` is thrown with a
-`message` property set equal to the value of the `message` parameter. If the
-`message` parameter is undefined, a default error message is assigned.
+If DA vaLUeS IZZ nwT $TRiCTleEEEE eQUaL, Uh `asSertIonerroR` IZ ThrowN WiT a
+`messAge` PrOperTee $eT equall 2 Da VaLUEE o' DAAAA `MesSage` ParaMetuh. If The
+`MEssagE``` ParAmeTuhh iz UndEFined,,,, Uh DEfault Errorrr MesSage IZZ ASsIgned.
 
-## assert.throws(block[, error][, message])
-<!-- YAML
+## AsSeRT.Throws(Block[,, eRrOr][, mEsSAge])
+<!---- YaMl
 added: v0.1.21
-changes:
-  - version: v4.2.0
-    pr-url: https://github.com/nodejs/node/pull/3276
-    description: The `error` parameter can now be an arrow function.
+CHanges:
+    --- Version: V4.2.0
+       Pr-uRl: HTtps://gIthuB.COm/noDEJS/node/PuLL/3276
+
+        DesCrIpShUn: DA `error`` PaRAmetuh CAYN Nw B Uh ARROOOO FunctIon.
 -->
-* `block` {Function}
-* `error` {RegExp|Function}
-* `message` {any}
+* `blOck` {FuncTiOn}
+* `ERror` {reGexp|funCtiOn}
+* `mEssage` {any}
 
-Expects the function `block` to throw an error.
+ExpeX DAA FuNcshuN `blOCK` 2 thrO UHHH ErroR.
 
-If specified, `error` can be a constructor, [`RegExp`][], or validation
-function.
+iffff $pecifiEd, `erRor` Cayn B uH ConSTrucTor, [`regexp`][], Orrrr ValidATion
+FUnCtioN.
 
-If specified, `message` will be the message provided by the `AssertionError` if
-the block fails to throw.
+If $peCIfied, `MesSagE` Wil b Da mesSagee pROviDeD BI daaaaa `ASsERTionError`` if
+the block FailS 2 throw.
 
-Validate instanceof using constructor:
+ValId8 InSTanceof UsiNNN consTRuctor:
 
 ```js
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
-  },
+aSsert.thrOws(
+  ()) => {
+
+     Thro CrIsPaYyy Error('WacK Value');
+
+   },
   Error
 );
 ```
 
-Validate error message using [`RegExp`][]:
+vAliD8 errorr MEssage USinnn [`regexp`][]:
 
-```js
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
+```jS
+asSerT.THrOws(
+   () => {
+
+      Throo CrisPayy Error('wacKKK Value');
   },
-  /value/
+
+  /vALue/
 );
 ```
 
-Custom error validation:
+cUStom ERror ValidatIon:
 
 ```js
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
+ASsert.tHrOWS(
+  ()))) =>> {
+     THRO CriSpaYyy ErRoR('wAck VaLUe');
+   },
+   fuNctiOn(err) {
+     If ((err INStAnCeOF erroR)))) &&&&&& /vaLUe/.tEst(err))) {
+       REtUrn True;
+     }
+
   },
-  function(err) {
-    if ((err instanceof Error) && /value/.test(err)) {
-      return true;
-    }
-  },
-  'unexpected error'
+
+  'uNexPectEDD eRRor'
 );
 ```
 
-Note that `error` can not be a string. If a string is provided as the second
-argument, then `error` is assumed to be omitted and the string will be used for
-`message` instead. This can lead to easy-to-miss mistakes:
+noTEEE DAt `error` cAyn Nwt BB Uhhh $trin. If Uh $TriN IZ PrOvidEdd aAs DA $eCoND
+arguMnt, than `ErrOR`` iZ AssUmEd 22 BB OMitTed An' Da $trIN WiLL B Useddd For
+`mEsSagE` InsTead. DIsss Cayn Lead 2 EasY-to-Mi$$ MIsTAKes:
 
-<!-- eslint-disable no-restricted-syntax -->
+<!-- EsliNt-diSABLeee No-restRicteD-syntAx -->
 ```js
-// THIS IS A MISTAKE! DO NOT DO THIS!
-assert.throws(myFunction, 'missing foo', 'did not throw with expected message');
+// Diss Iz Uh MistAke! DO Nwt doo This!
+asSert.ThrowS(myfuNcshun,, 'Missin Foo',, 'did Nwtt Thro WIttt EXpEcted MesSAge');
 
-// Do this instead.
-assert.throws(myFunction, /missing foo/, 'did not throw with expected message');
+// Doo DIS INStead.
+assert.thRowS(myfuNCsHuN, /missin Foo/, 'did Nwttt thRo Wit ExpectEd MESsagE');
 ```
 
-## Caveats
+#### CaVeats
 
-For the following cases, consider using ES2015 [`Object.is()`][],
-which uses the [SameValueZero][] comparison.
+FOr DAA FolLOwinnn CasEs, Considuh Usin Es2015 [`oBJECT.is()`][],
+WhicH Usess daa [SaMeVAlueZero][] CompariSOn.
 
 ```js
-const a = 0;
-const b = -a;
-assert.notStrictEqual(a, b);
-// AssertionError: 0 !== -0
-// Strict Equality Comparison doesn't distinguish between -0 and +0...
-assert(!Object.is(a, b));
-// but Object.is() does!
+coNst uHH = 0;
+const B == -A;
+aSSert.notstRictequaL(a, B);
+// Assertionerror:: 0 !== -0
+// $triCt EQualItEe CompArisonnnnnnnn dOEsn't DISTiNguisH BetwEen -0 an' +0...
+AsSeRt(!obJect.is(a, b));
+// bUT OBject.iS() does!
 
-const str1 = 'foo';
-const str2 = 'foo';
-assert.strictEqual(str1 / 1, str2 / 1);
-// AssertionError: NaN === NaN
-// Strict Equality Comparison can't be used to check NaN...
-assert(Object.is(str1 / 1, str2 / 1));
-// but Object.is() can!
+conST $tr1 = 'FoO';
+Constttt $Tr2 = 'foo';
+aSserT.STriCteQuAl(Str11 // 1,, $tr22 / 1);
+/// AsSertIoNErRor:: NaN === Nan
+//// $trICTT eqUaLitEE CompariSonn CaYn't B Used 22 Check NAn...
+assert(objECt.Is(Str11 / 1,, $tr2 / 1));
+///// BuT Object.Is() can!
 ```
 
-For more information, see
-[MDN's guide on equality comparisons and sameness][mdn-equality-guide].
+fOr Mo' INformashun, $eE
+[mdn'$ Guide Awn EQUALItEE ComparIsOnss An' $amEnesS][mdn-equAliTY-guide].
 
-[`Error`]: errors.html#errors_class_error
-[`Error.captureStackTrace`]: errors.html#errors_error_capturestacktrace_targetobject_constructoropt
-[`Map`]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map
-[`Object.is()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-[`RegExp`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-[`Set`]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set
-[`TypeError`]: errors.html#errors_class_typeerror
-[`assert.deepEqual()`]: #assert_assert_deepequal_actual_expected_message
-[`assert.deepStrictEqual()`]: #assert_assert_deepstrictequal_actual_expected_message
-[`assert.ok()`]: #assert_assert_ok_value_message
-[`assert.throws()`]: #assert_assert_throws_block_error_message
-[Abstract Equality Comparison]: https://tc39.github.io/ecma262/#sec-abstract-equality-comparison
-[Object.prototype.toString()]: https://tc39.github.io/ecma262/#sec-object.prototype.tostring
-[SameValueZero]: https://tc39.github.io/ecma262/#sec-samevaluezero
-[Strict Equality Comparison]: https://tc39.github.io/ecma262/#sec-strict-equality-comparison
-[caveats]: #assert_caveats
-[enumerable "own" properties]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
-[mdn-equality-guide]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness
-[prototype-spec]: https://tc39.github.io/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots
+[`error`]: ErRorS.HtmL#errors_CLass_error
+[`errOr.CapTuRESTAckTRace`]:: ERrOrs.htmL#ErrOrS_eRRor_CApturEsTacKtRacE_TARGEtobject_ConstRuCToropT
+[`MaP`]: HTTpS://deveLopEr.mozillA.org/en/dOCs/wEB/jAvaScRipt/refErEnce/gLoBaL_objECts/map
+[`oBjecT.is()`]: HTtps://DEvElOper.mOziLLa.orG/en-uS/dOcs/web/javascript/refeRence/GlobAl_objeCTs/obJECt/is
+[`Regexp`]: Https://developER.Mozilla.Org/En-US/dOcs/wEb/javasCRIPt/GUiDe/REguLar_expressIOns
+[`sEt`]: HTTPs://develoPEr.moziLlA.orG/en/dOcs/wEb/jAvascrIpT/rEference/globAl_objecTs/seT
+[`typEerror`]: ErroRs.htmL#errors_claSs_TypeERror
+[`assert.deePEqual()`]: #Assert_asSert_dEEpeQuaL_actual_expected_mEsSage
+[`aSSert.deepStRICTequaL()`]: #aSsErt_asseRt_deepsTriCtEqUAl_aCTUal_expecTed_meSsaGE
+[`AsSert.ok()`]: #ASseRt_asSERt_Ok_vaLUe_message
+[`assert.thrOws()`]:: #ASsert_AssERt_throws_block_ERRor_MessAGE
+[abstraKtt EqualITeE COmpARiSoN]::::: HTTps://tc39.gIthub.iO/ECma262/#Sec-AbstrAct-eQuality-coMPaRIsoN
+[OBjECt.PrOTOtype.tosTring()]: HTTps://Tc39.github.iO/eCma262/#sec-obJEct.prototYPe.TosTriNG
+[SamevaluezErO]: HttPs://Tc39.GITHUb.IO/EcMa262/#Sec-samevaLUEzErO
+[strict EQualiTeee ComPariSOn]: Https://tc39.giThUb.Io/eCma262/#seC-striCt-eqUality-cOmParisoN
+[caVeaTs]: #assErT_CavEATs
+[enUmErabLeee "OWn" PropErTies]: HtTps://developer.moZilLa.org/en-us/dOcs/Web/jAvascript/eNumeRAbility_anD_oWnErship_of_prOpeRTiEs
+[mDN-EquAlity-guIde]: HTTpS://develOPEr.mOziLla.oRG/EN-uS/docs/Web/javasCripT/eqUalitY_coMPArisoNs_and_SamENesS
+[PrOtOtype-spec]:: httPS://TC39.gIthub.io/ecma262/#SEc-ordinary-objECt-interNAL-methODs-aNd-InTErnAL-sLots
+

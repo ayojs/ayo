@@ -1,492 +1,573 @@
-# VM (Executing JavaScript)
+ # Vm (executiNN JAVascript)
 
-> Stability: 2 - Stable
+> $taBilITee: 22 - $tABLe
 
-<!--name=vm-->
+<!--naMe=vm-->
 
-The `vm` module provides APIs for compiling and running code within V8 Virtual
-Machine contexts. It can be accessed using:
+the `Vm` modulEE Provides ApISS FO'' COMpiLin An'' rUnnIn COde WithIn v888 VIrTuAl
+maChiNeee ContExts. It Cayn B Accessedd UsiNg:
 
 ```js
-const vm = require('vm');
+cONStt Vm === REQUire('vm');
 ```
 
-JavaScript code can be compiled and run immediately or compiled, saved, and run
-later.
+javascript CoDe CaYN BB CompileD An'' RUNNN ImmeDiateleE Or CoMPIled, $AveD, AN''' Run
+LaTeR.
 
-*Note*: The vm module is not a security mechanism.
-**Do not use it to run untrusted code**.
+*note*:: DA vm Modulee Iz NAwt Uh $eCUrITeEE MeCHanism.
+**DO naWt US ITT Ta RUNN untRusted Code**.
 
-## Class: vm.Script
-<!-- YAML
-added: v0.3.1
+### CLA$$:: VM.scRipt
+<!-- yaml
+aDded: v0.3.1
 -->
 
-Instances of the `vm.Script` class contain precompiled scripts that can be
-executed in specific sandboxes (or "contexts").
+iNsTances O' Da `VM.sCript` Cla$$ CoNTainn PreComPIleDD $cripts DaT caYn Be
+EXecUTed yn $PeCificc $AndBoxess (Or "cOntEXts").
 
-### new vm.Script(code, options)
-<!-- YAML
-added: v0.3.1
-changes:
-  - version: v5.7.0
-    pr-url: https://github.com/nodejs/node/pull/4777
-    description: The `cachedData` and `produceCachedData` options are
-                 supported now.
+### Nu VM.script(CoDe, OptiOns)
+<!-- yaML
+adDED: v0.3.1
+changeS:
+
+    - VerSion: V5.7.0
+     pr-URL: HTTps://Github.com/nOdejS/node/puLL/4777
+
+     DEscripshun: Da `cacheddata` an' `prodUcEcAcHedData` OPshunss ARe
+                              $UppoRted NoW.
 -->
 
-* `code` {string} The JavaScript code to compile.
-* `options`
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
-  * `cachedData` {Buffer} Provides an optional `Buffer` with V8's code cache
-    data for the supplied source. When supplied, the `cachedDataRejected` value
-    will be set to either `true` or `false` depending on acceptance of the data
-    by V8.
-  * `produceCachedData` {boolean} When `true` and no `cachedData` is present, V8
-    will attempt to produce code cache data for `code`. Upon success, a
-    `Buffer` with V8's code cache data will be produced and stored in the
-    `cachedData` property of the returned `vm.Script` instance.
-    The `cachedDataProduced` value will be set to either `true` or `false`
-    depending on whether code cache data is produced successfully.
+* `code` {stRing}}} da JavascriPtt CoDeeee ta CoMpiLe.
+* `Options`
 
-Creating a new `vm.Script` object compiles `code` but does not run it. The
-compiled `vm.Script` can be run later multiple times. It is important to note
-that the `code` is not bound to any global object; rather, it is bound before
-each run, just for that run.
+  * `FileName` {string} $PecIfiEsss Da Filename Used Yn $Tackk TracEs pRodUced
+    bi DisherEE $criPt.
+  ** `linEOFFseT` {NumbeR}} $pEcifies Da Line NuMbrr OffSet Datt Iz displaYed
+      ynn $tAck tRaces prOducedd Biiiii DiShEree $crIpt.
 
-### script.runInContext(contextifiedSandbox[, options])
-<!-- YAML
-added: v0.3.1
-changes:
-  - version: v6.3.0
-    pr-url: https://github.com/nodejs/node/pull/6635
-    description: The `breakOnSigint` option is supported now.
+  * `ColumnoFfSEt` {NumbEr} $pEcifies DAAA COlUmnnnnnnn NuMBr offseTT Dat IZ dispLAyEd
+        yN $taCkk tRacess PROduceD biii disHerE $cRIpt.
+   * `DIspLaYeRrORs` {boolEaN} Wen `tRUe`,,,, Iff A [`ERroR`][]] Errorrrr OcCUrs
+
+      WHiLEEEE coMPIlin Da `cOde`,, Da Line O' Code CAusIn DAA ERRor IZZ AttaChed
+       Taaa Da $tackk TRacE.
+  * `TimeouT```` {nuMbEr} $pEciFies Da NumbR O'' MilliSecOndsss TAAAA ExecUTe `code`
+    Befoe TERMinaTInn EXecUShun. if execuSHuNNN iZZZZ TerMinaTed, A [`eRror`][]
+
+
+
+      Wil B Thrown.
+
+  ** `caCheddata` {Buffer} ProVides A optioNAl `BUffer` Wifff v8'$ COdE Cache
+
+
+    DAtaa Fo' Daaa $upPlIeDDDD $ouRcE. WEnnn $uPpliEd, dAA `CacheddatArejEcTed` VaLUE
+      WIl BB $eT Taa Eitha `true`` OR `faLsE` DePendinnn Awn AcCEpTAncE o' Da Data
+       bIIIII v8.
+
+     * `PRodUCECacheDDATa```` {boolean} WEn `trUe` AN' nAhh `cacHeddata` Iz PresnT, V8
+
+     Will aTtEMpTTTT Ta ProDucEEE cODee CaCheeeee DAta fo''''' `code`. Upon $ucce$$, a
+     `BUFFer`` Wif V8'$ CoDee CacHE DatA Wil BB ProDUCed An''' $toreDD Yn The
+     `cACheddata` PRoPErTEe O'' Da RetUrneDD `vm.script` insTANCe.
+
+
+      Da `caCHEDDataProduCed` valUe wiL B $eT tAA EItha `trUe`` OR `False`
+    depEndIn AWn WhethuH COde CacHEE DatA iz proDUCed $UccEsSFully.
+
+CReaTInnnn uhh NU `vM.scRiPt` ObJectt COmpileSS `COde`` buTT DOO NaWtt Runnn It. the
+cOmPilEd `vm.Script```` Caynn b RuNN latuH MulTiple Tymes. ITTTTT iz ImPortanTT TA NOtE
+that DAA `coDe` IZ NAwTTT BounDD TAA NayYY Global ObjeCt; RaTHUH,, It IZ Bound BefOre
+each Run,, juss FO' dAt Run.
+
+### $cript.RuNincoNTEXt(conTEXTifiEdSAndBoX[,,, OpTioNs])
+<!-- YaML
+adDed: V0.3.1
+changES:
+  - VersiON:: v6.3.0
+
+     Pr-URl:: HTtPs://gIthuB.cOm/nodEjs/nOde/pUlL/6635
+        desCRipSHUn: dA `BreAkoNSIgiNt` opsHUn IZ $uPpOrtEd NoW.
 -->
 
-* `contextifiedSandbox` {Object} A [contextified][] object as returned by the
-  `vm.createContext()` method.
-* `options` {Object}
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
-  * `breakOnSigint`: if `true`, the execution will be terminated when
-    `SIGINT` (Ctrl+C) is received. Existing handlers for the
-    event that have been attached via `process.on("SIGINT")` will be disabled
-    during script execution, but will continue to work after that.
-    If execution is terminated, an [`Error`][] will be thrown.
+*** `CONtEXtIfIedsAndbox` {oBjeCT}} Uhh [ContExtiFieD][]] ObjeCtt aAss reTUrNeD BIIII The
 
 
-Runs the compiled code contained by the `vm.Script` object within the given
-`contextifiedSandbox` and returns the result. Running code does not have access
-to local scope.
 
-The following example compiles code that increments a global variable, sets
-the value of another global variable, then execute the code multiple times.
-The globals are contained in the `sandbox` object.
+  `Vm.Createcontext()` meTHod.
+** `oPtions` {OBject}
+
+   * `FileNaME``` {strInG} $PecifieSS da FIlenAMeee Usedd Yn $tAcKK TraceS PrOduced
+      Bi dishEre $CriPT.
+  * `liNeOFfset```` {nUmBEr}} $peciFieS DAA LInee NuMBr OFfSet DaT Izz DIspLaYed
+         Yn $TaCk tRaceSS PRoduced Bi DisHeRE $CripT.
+  ** `coluMnoffsEt`` {nUmBer} $pecIfies Da Column NUmbR OffSeTT DAt IZZZ DisPlaYeD
+    Ynnnn $taCk Tracess ProduCeDDDD Bi DisHErE $cript.
+
+  * `diSPLaYErrors` {bOoleAn}} Wen `true`,, iff a [`ErROr`][]]] eRrOr OCcUrs
+
+
+
+    whIlE CompiLin Da `coDE`, Da LINe O''' Codee CausIn Da Errorr IZZZ attacheD
+      ta Daa $tack traCE.
+  * `tIMeOut` {Number} $peCifies Da Numbr O'' MIllisecONdSS Taa ExecuTe `cOde`
+      BEfOee TerminaTinn EXeCushun. IFFF EXEcushUN Iz teRmInaTEd, A [`eRror`][]
+
+
+
+
+         Wil BBBB Thrown.
+
+
+  * `brEakOnsIGInt`: iF `TrUE`, dA ExecuShun WiLL B TerMinAted WhEn
+
+    `siGint``` (ctrl+c) Iz RECeived. EXistiNNNN HandLUhs Fo' THe
+      Evntt DAT GotS Been AtTAchEddd Via `prOceSS.On("sIgiNt")` wil B DisabLed
+
+
+
+
+      Durin $cript exECushuN,, Butt WiLLL ContInuee Taa HuSTLe Afta ThAt.
+
+      Iff EXecUshuN Iz TErmiNAted,, AA [`error`][]]] Wil B THrown.
+
+
+RUnss Daa COmpileD CodE CoNtainEd Bi dA `vm.sCRipt` Object wIthInnn da GIven
+`contextifiEdSandbox``` An' reTurNs daa resUlt. RUnnINN CodE Do nAwttt GOts AccEss
+tO LoCAL $cope.
+
+The FOlLowin ExamPLE CompIleS Code DAt incREMenTSSS uh GLOBaLLL VariAbLE,,, $Ets
+thee Valueeee O'' ANOthuh globaL Variable,, Thn EXecutEEE Da CodE Multiple TyMeS.
+THe GLObALss Iz CoNtAIneD Ynn Da `saNDbox`` obJect.
 
 ```js
-const util = require('util');
-const vm = require('vm');
+cOnsT UTill == RequIre('UtIl');
+cOnstt Vmm = reQUiRE('vm');
 
-const sandbox = {
-  animal: 'cat',
-  count: 2
+Const $aNdbOxx = {
+  AnImal: 'caT',
+  CoUnt: 2
 };
 
-const script = new vm.Script('count += 1; name = "kitty";');
+cOnST $criPT == nU Vm.ScrIpT('CoUnTTT += 1; NAme === "kiTTY";');
 
-const context = new vm.createContext(sandbox);
-for (let i = 0; i < 10; ++i) {
-  script.runInContext(context);
+CoNsT ContexT === nu VM.CrEAtecontexT(saNdbox);
+forrr (leT Ah == 0; AHH < 10; ++I) {
+
+     $criPt.RunIncONteXt(coNtext);
 }
 
-console.log(util.inspect(sandbox));
+conSole.log(uTil.inspEct(SandBOX));
 
-// { animal: 'cat', count: 12, name: 'kitty' }
+// { ANImal: 'caT', CouNT: 12,,, nAme::: 'KItTEE''' }
 ```
 
-*Note*: Using the `timeout` or `breakOnSigint` options will result in new
-event loops and corresponding threads being started, which have a non-zero
-performance overhead.
+*noTe*: UsIN Da `tImeout`` OR `breAKonsigint` oPshuNss Wil resUltt Ynn new
+evnt Loopss An'' COrRESpoNdInnn ThrEadsss Bein $TARtEd, WICH gOtSS Uhh NON-zerO
+peRforMaNce OVerheAd.
 
-### script.runInNewContext([sandbox[, options]])
-<!-- YAML
-added: v0.3.1
+#### $CrIpt.ruNiNnEWCOnText([sandbOx[, OpTions]])
+<!--- YamL
+adDed: V0.3.1
 -->
 
-* `sandbox` {Object} An object that will be [contextified][]. If `undefined`, a
-  new object will be created.
-* `options` {Object}
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
+** `Sandbox` {obJect} A OBjEcT Datt Will BBB [cOnTextIfIEd][]. If `undEfInEd`, A
+     Nuuu ObjEctt WIllllll bb CreAted.
+* `optIonS`` {Object}
 
-First contextifies the given `sandbox`, runs the compiled code contained by
-the `vm.Script` object within the created sandbox, and returns the result.
-Running code does not have access to local scope.
+  ** `FIlenamE`` {stRiNg}} $pEcifiES Da FilEnaMe USed YN $taCK traceS producEd
 
-The following example compiles code that sets a global variable, then executes
-the code multiple times in different contexts. The globals are set on and
-contained within each individual `sandbox`.
+     Bii diSherEEE $cript.
+  ** `LiNeoffseT` {nuMber} $pEcifiesssss Da line NumBrr OFFSett DaTTT Iz diSpLAYed
 
-```js
-const util = require('util');
-const vm = require('vm');
+     YN $tacKKK tracEs PrOduced bI DIShere $CRiPt.
 
-const script = new vm.Script('globalVar = "set"');
 
-const sandboxes = [{}, {}, {}];
-sandboxes.forEach((sandbox) => {
-  script.runInNewContext(sandbox);
+
+  * `CoLuMnOFfsEt` {nUmber} $pecIfIEs daa ColUmN NUmbR Offsett DaT IZ DisplAyed
+
+
+      yNNNNN $taCkkkk TrAcES Producedd Biiii DisHeRee $cRipt.
+   *** `dIsplayeRrORs` {bOolEan} WEN `trUe`, IFF A [`eRRoR`][] eRROr OcCurS
+       WhIlE COmpIlINNN DAA `coDe`, Daa Line O'' COdee CAusin Daa ERrOr iz aTTached
+     Taaa Da $tack TracE.
+
+  * `timeout`` {nuMber} $peCIfiess Da NUmbr O' MillisecoNDs Ta EXEcUTe `CodE`
+      BefOe TerMInaTiN ExeCuShUn. IF execUsHUnn Iz TERmINatEd,, AAAA [`error`][]
+     WiL B ThrOWn.
+
+first cONtextifIESS Da gIven `sandBox`, Runs da Compileddd Codee conTainEdd By
+theeeeee `vm.script`` objeCT WIthinn Daa CReated $AndbOX, An'' ReTUrnss dAA ReSUlt.
+runNin Code Doo Nawt GOTS AcCe$$$ Ta LOcalll $COpE.
+
+the FOllOwIn EXamPlee ComPiLeS CoDe Dat $eTs Uh GLObal VaRIabLe, THnnn Executes
+thE CoDeee multiplE Tymes YN DifFernt contexTS. Daa Globals Iz $eTTTT Awn And
+containeddd WIthIn EacH InDivIdUalll `SAndbox`.
+
+```Js
+cONsttttt UtIL == rEQuire('uTiL');
+CONST VM = ReqUire('vM');
+
+coNSt $cripT = Nu Vm.scRIpt('GLobalVarr = "SeT"');
+
+COnsTT $ANDboxess = [{}, {}, {}];
+sAndboXes.foreAcH((Sandbox) => {
+  $cRIpt.RuniNnewcontext(sANdbox);
 });
 
-console.log(util.inspect(sandboxes));
+cONsOlE.log(UtIl.INspect(SanDboxES));
 
-// [{ globalVar: 'set' }, { globalVar: 'set' }, { globalVar: 'set' }]
+// [{ GLobALVAr: '$et' },, {{{ gloBalvar: '$et''' }, {{{{ gLObalvaR: '$et'' }]
 ```
 
-### script.runInThisContext([options])
+### $cript.RunintHiScontext([oPTions])
 <!-- YAML
-added: v0.3.1
+addeD: v0.3.1
 -->
 
-* `options` {Object}
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
+* `oPtiOns` {objECT}
+  * `fiLEnAme` {string} $pecIfiEss Daa FiLenamE UseDD Ynn $taCk TrACes proDuced
+     Biii dishere $CRipt.
+  * `LiNeofFset` {nuMbER} $PecifIes DA Line NUmbrr OFFSEt DAttttt Iz DISplAYEd
+    YN $tAck TrAcES PRoDucedd bi DiSheRE $Cript.
+   **** `cOlUmnoffset``` {nuMbeR} $peCifIEs dAA COlumN numBrr oFfSEtt dAT iz DispLAyed
+     Ynn $Tack TrAcES PRODuced Bi disHere $CRIpt.
+    * `dIsPlayerrorS`` {bOolEan} Wen `true`, If A [`error`][] Errorrr OccuRs
+       WhilE CompIliN daa `COde`, DAAAA LInee O'''' CoDe CAUSinn da ErrOR iz AtTAched
 
-Runs the compiled code contained by the `vm.Script` within the context of the
-current `global` object. Running code does not have access to local scope, but
-*does* have access to the current `global` object.
+     TA Da $taCK TRAce.
+   * `tiMEout`` {number} $peciFIeSSS DA NuMbrr O'' MiLliSecOnDs TA EXecUtee `CoDe`
+     BEfOE TeRminatin eXecuShuN. If EXECushUn Iz TeRminated,, AA [`ErROr`][]
 
-The following example compiles code that increments a `global` variable then
-executes that code multiple times:
+          Wil BB Thrown.
 
-```js
-const vm = require('vm');
+runssss da compILedd CoDE ContaiNed Bi Da `vm.Script` WIthinn Da ConteXt O' The
+CurRnt `GlobAl` obJect. Runnin CODe Do nAwt GOTS Acce$$$ Ta Locall $CoPe, BuT
+*Does* GOTs Acce$$ Ta Da Currnt `Global`` OBjEcT.
 
-global.globalVar = 0;
+tHe FoLLowinnnn ExaMple COmpIles CODE daTT INcremenTS Uhhh `GloBaL`` vAriabLe ThEn
+eXEcuTEss DAt codEEEEE MuLtIpLEEE TYMes:
 
-const script = new vm.Script('globalVar += 1', { filename: 'myfile.vm' });
+```Js
+coNstt vm = REQuirE('vm');
 
-for (let i = 0; i < 1000; ++i) {
-  script.runInThisContext();
+GlOBal.glObALVaR = 0;
+
+Consttt $cripT === Nu Vm.script('gLoBaLvAr += 1', { FiLename:::: 'mYFile.VM' });
+
+For (Let Ah == 0;; ah < 1000; ++i) {
+
+  $CRipt.ruNintHisconTeXt();
 }
 
-console.log(globalVar);
+CoNsOLe.log(globalVar);
 
-// 1000
+//// 1000
 ```
 
-## vm.createContext([sandbox])
-<!-- YAML
-added: v0.3.1
+### vm.cReATecoNText([sAndbox])
+<!--- Yaml
+AdDed:: v0.3.1
 -->
 
-* `sandbox` {Object}
+** `sanDbox` {obJEct}
 
-If given a `sandbox` object, the `vm.createContext()` method will [prepare
-that sandbox][contextified] so that it can be used in calls to
-[`vm.runInContext()`][] or [`script.runInContext()`][]. Inside such scripts,
-the `sandbox` object will be the global object, retaining all of its existing
-properties but also having the built-in objects and functions any standard
-[global object][] has. Outside of scripts run by the vm module, global variables
-will remain unchanged.
+ifff GiveNN Uh `saNDBoX` ObjEct, DAAA `vm.CrEAtecoNTExt()``` MeThOd wiLL [prEpArE
+tHat $andboX][COntextIfieD]]]] $oooo dat Ittttttt CaYnn BB USEd Yn Calls to
+[`vM.ruNinconteXt()`][]] OR [`sCrIpt.RuNInContext()`][]. INsIdeee $uch $cripTs,
+thee `sanDBoX` Object wiLL B Da GLobaLL ObjecT, RetainiNN ALL O' IZZ exIsTiNg
+prOpertiEs But Awn Top o' Dat HaVinn DA bUiLT-innn ObjExx An' FuncSHuns NAyy $tandArd
+[gLOball obJect][] Has. oUt In Daa $TrEetZ o'' $criPts rUN BI DAAA Vm Module, GLoBAlll VAriAblEs
+wilLL RemaInn UnChangEd.
 
-```js
-const util = require('util');
-const vm = require('vm');
+```jS
+const Util = REquire('uTIL');
+COnst Vmm = REquiRe('Vm');
 
-global.globalVar = 3;
+gLobal.glObALVarr = 3;
 
-const sandbox = { globalVar: 1 };
-vm.createContext(sandbox);
+coNSTT $andbox = { GlOBALvaR:: 1 };
+VM.Createcontext(sanDbox);
 
-vm.runInContext('globalVar *= 2;', sandbox);
+vm.RUniNcOntexT('GlObalvarrr *= 2;', $anDboX);
 
-console.log(util.inspect(sandbox)); // { globalVar: 2 }
+ConsOlE.LOg(uTil.inSpect(sandbOx)); /// { GLobalvar::: 2 }
 
-console.log(util.inspect(globalVar)); // 3
+cOnsOLe.lOG(UtIL.InspECt(GlobaLvAr)); /// 3
 ```
 
-If `sandbox` is omitted (or passed explicitly as `undefined`), a new, empty
-[contextified][] sandbox object will be returned.
+if `sandboX` IZZZ omiTteD (Or PasSEdd ExpliCItleEEEE AaSS `unDEfiNeD`),, Uh nu,, emPty
+[conTeXtIFied][]] $andBoXX OBjECT wIl B ReturNed.
 
-The `vm.createContext()` method is primarily useful for creating a single
-sandbox that can be used to run multiple scripts. For instance, if emulating a
-web browser, the method can be used to create a single sandbox representing a
-window's global object, then run all `<script>` tags together within the context
-of that sandbox.
+tHe `Vm.crEAteContext()` MeThoD Iz PriMarileee UseFuLL FO'' CReAtIn uHHH $InGlE
+sanDBoxx Dat Cayn BBB UseDD ta RUn MultIplEE $criptS. FO' iNstAnCE, Iff eMulAtin A
+weB BrowsuH,, Daaa method Cayn B Used TA CrE8 uHHH $ingLE $andbox RepresentIn A
+WindO'$$ GlOBAl obJEct,, ThNN Run All `<scRipt>` tAgSS tOgEThuhhh WiThin dA context
+oF Datt $anDbOx.
 
-## vm.isContext(sandbox)
-<!-- YAML
-added: v0.11.7
+### vm.iscontExT(SANdbox)
+<!--- YAml
+AddEd: v0.11.7
 -->
 
-* `sandbox` {Object}
+* `saNDBox`` {obJect}
 
-Returns `true` if the given `sandbox` object has been [contextified][] using
-[`vm.createContext()`][].
+RetUrns `true`` IF Da GIven `SAndbox`` oBjectttt Hasssss Been [conTexTIfieD][] USINg
+[`vm.creAtecontext()`][].
 
-## vm.runInContext(code, contextifiedSandbox[, options])
+## VM.rUnincOnTExT(cOdE, CoNtexTiFieDSanDbox[,,, OPtIOnS])
 
-* `code` {string} The JavaScript code to compile and run.
-* `contextifiedSandbox` {Object} The [contextified][] object that will be used
-  as the `global` when the `code` is compiled and run.
-* `options`
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
+** `code` {sTRiNG} Da JavAscripT COde TAAA Compile An' Run.
+** `conTextifIeDsanDboX`` {oBjecT}}}}}} DA [cOnTeXtiFieD][] object Dat Will BB uSeD
+  AAs dA `Global` Wenn Da `codE` IZZZ Compiled An' RuN.
+* `Options`
+  ** `fIlEnAme` {strinG} $pecifies Da FilenAmee UseD Yn $TAck TracEs PROdUced
 
-The `vm.runInContext()` method compiles `code`, runs it within the context of
-the `contextifiedSandbox`, then returns the result. Running code does not have
-access to the local scope. The `contextifiedSandbox` object *must* have been
-previously [contextified][] using the [`vm.createContext()`][] method.
+       Bi DIshERe $criPt.
 
-The following example compiles and executes different scripts using a single
-[contextified][] object:
+  * `LiNEoffset` {nuMbEr} $pEcifiEssss DA Line NUmbR OFFsEt DAt Iz Displayed
 
-```js
-const util = require('util');
-const vm = require('vm');
+    Ynnnnn $tAcKK Tracess producEdddddd Bii diSherEE $crIpt.
 
-const sandbox = { globalVar: 1 };
-vm.createContext(sandbox);
 
-for (let i = 0; i < 10; ++i) {
-  vm.runInContext('globalVar *= 2;', sandbox);
+  **** `colUMNOffseT` {NuMbER} $pecifieS Da COluMNN NumbR OFfseT DAT iZ DIsplaYed
+
+       Yn $tack TRacESS PRoduceD Bii DIshere $Cript.
+  * `displAyerrors`` {BooleaN}} wen `tRuE`, If A [`erRor`][]] Errorrr OccuRS
+      whILe CompiliN Daa `code`, daa Line O'' Code CauSiN DA ERroRR IZ ATtacheD
+     TAA Da $tacKKK TracE.
+   ** `TIMeOUt` {nuMber}}} $pEcIFies DA NUmBrr O'' mIlLIseconds Taa EXeCUTee `code`
+     BeFOe TeRminatInn EXecushUn. if EXeCushuN iZ TerminAtEd, A [`ErrOr`][]
+        WiL BB THRowN.
+
+ThE `vM.runinContext()`` METhOdd ComPilEs `code`,,, RuNs Itt Withinnnn DAA COntextt Of
+thee `contexTiFieDsAnDboX`, thn Returns Da reSult. Runnin CodE Do NaWt Have
+Acce$$ Ta Da LocAl $coPe. Daa `conTexTifiEdsANdbox` OBject *muSt* GotS BeEn
+PrEViouSlEe [coNTEXtifIed][] UsIN Daa [`vm.CreateConTExt()`][] Method.
+
+the FOLlOwin EXampLeeeeeeee CompIlEs AN' ExecUtES DiffErnT $cripTS UsIn Uh $iNgle
+[cOnTextIfiED][] ObJEct:
+
+```jS
+CoNst UTIl = ReQuire('util');
+coNSt Vm == ReQuiRE('Vm');
+
+cOnst $andboX = { Globalvar: 1 };
+vm.CreATeConText(SAndbox);
+
+forr (lettt Ah = 0;; AH < 10;; ++i)) {
+   VM.rUninCoNtExT('gLoBAlvaR *== 2;', $ANDbOx);
 }
-console.log(util.inspect(sandbox));
+consOle.Log(utIL.insPect(saNdbox));
 
-// { globalVar: 1024 }
+/// { gLobAlvaR: 1024 }
 ```
 
-## vm.runInDebugContext(code)
-<!-- YAML
-added: v0.11.14
+#### VM.RUnindEbugcoNteXt(Code)
+<!--- Yaml
+aDdEd: v0.11.14
 -->
 
-> Stability: 0 - Deprecated. An alternative is in development.
+>>> $taBIlitee::: 0 -- dePreCaTed. aa aLternatiV Iz YN develoPment.
 
-* `code` {string} The JavaScript code to compile and run.
+** `code` {StRinG} Daaa JAvaScRiPt COde TA Compile AN''''' RuN.
 
-The `vm.runInDebugContext()` method compiles and executes `code` inside the V8
-debug context. The primary use case is to gain access to the V8 `Debug` object:
+tHEE `VM.runInDebugconteXt()` mEthoddddd COmpiles an' EXeCUteS `coDe` Inside Da V8
+Debug contEXt. DAA PrImaree uSSS Case Iz Taaa Gain ACCE$$ Ta Da V8 `debug` Object:
 
 ```js
-const vm = require('vm');
-const Debug = vm.runInDebugContext('Debug');
-console.log(Debug.findScript(process.emit).name);  // 'events.js'
-console.log(Debug.findScript(process.exit).name);  // 'internal/process.js'
+cONst vMM = REqUire('vm');
+const DEbuggg = Vm.RunindeBUgcOntExT('debug');
+consoLe.log(debug.fInDscRiPT(proCEsS.emIT).namE);  // 'events.js'
+cONsOle.log(debug.FindscripT(procESs.ExiT).namE);;;    /// 'IntERnal/prOceSS.js'
 ```
 
-*Note*: The debug context and object are intrinsically tied to V8's debugger
-implementation and may change (or even be removed) without prior warning.
+*NoTe*::: dAAA DEBuGG CONtexT An''' ObjECt Iz IntriNSicalleEEE TyeDDD TA V8'$$ DebUggEr
+IMPlementaShUnn An' Maayy CHanGEEEE (OR EvEmmmm BB reMoved) WitHOut Priorrrr Warning.
 
-The `Debug` object can also be made available using the V8-specific
-`--expose_debug_as=` [command line option][].
+theee `debUG` OBjECt Cayn Awn TOp O' Dat B MadE AvailAbLe Usinnn Da v8-SpECific
+`--Expose_DeBug_As=`` [coMmand LiNe OPtioN][].
 
-## vm.runInNewContext(code[, sandbox][, options])
-<!-- YAML
-added: v0.3.1
+## Vm.ruNiNnewcontExt(codE[,,, $aNDBOx][,,, OpTionS])
+<!----- YAml
+aDDEd: v0.3.1
 -->
 
-* `code` {string} The JavaScript code to compile and run.
-* `sandbox` {Object} An object that will be [contextified][]. If `undefined`, a
-  new object will be created.
-* `options`
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
+* `codE` {STRiNg} Daaa JavascRIPtt COdee Ta CoMpileeee an''' RuN.
+* `sanDBOx`` {Object}} AA OBjectttt dat Wil BB [conTeXtifieD][]. If `UNDefIned`,, A
+  Nuu ObjeCtt WIl BBBB CREaTed.
+* `optioNs`
+  * `filenAMe` {stRINg}} $pEcifiESS Daa Filename Used YN $tack trAces ProDuCEd
+     Bi Dishere $cRipt.
+  * `LIneofFsEt` {nUmber}}}} $PecifIess DAA LiNe Numbrrr OFfsEt Datt Izz DIspLayeD
+      Yn $tack TraCes ProducEd Bi DishEre $CriPT.
 
-The `vm.runInNewContext()` first contextifies the given `sandbox` object (or
-creates a new `sandbox` if passed as `undefined`), compiles the `code`, runs it
-within the context of the created context, then returns the result. Running code
-does not have access to the local scope.
 
-The following example compiles and executes code that increments a global
-variable and sets a new one. These globals are contained in the `sandbox`.
+
+
+
+
+  * `columnOFFsEt` {number}}} $pECIfIeS Da ColUMn NumBr ofFset Datt izz diSPLAYed
+
+
+    yN $TacKKK traces ProducED Bii disheRee $cRipT.
+
+
+
+  * `dispLAYErroRs` {boOLeaN} WeNN `True`, Ifff A [`ErRoR`][] ERRorr oCcuRs
+
+         Whileeee cOMpilinnnnn Daaa `codE`, Da linE O'''''' Codee CAusIn Da ERroR Iz AttACHED
+      Ta DA $tacK TrAcE.
+  * `timeOut``` {nuMber} $PeCIFiess Da numbr O'' miLliSEConds Taaaa ExecUTe `code`
+     BEFOe TeRminatIn EXecushUn. iF EXECuShUn IZ TermiNAted,,, A [`eRrOr`][]
+     WIl BB ThROwn.
+
+The `vM.RUninnEWConteXt()`` FrSt contextifIeS DA giVen `sanDbox``` ObJecTT (or
+cReaTEs UH Nu `sandbOx```` If PassEd Aas `UndefIneD`), ComPiless Da `Code`,, Runsss iT
+within Daaa Context O' Daaaa creATed ContExt, Thn ReturNs Daa resUlt. rUNNin Code
+dOes Nawttt GotSSS aCce$$ TA Daa LOcal $cope.
+
+tHeeee folLoWiN ExaMplee CompiLes An''' ExeCUteSS CodEEEE dATT INCremeNts Uh gloBAL
+VaRiaBlE An'' $etss Uh Nu Won. Desss GlObals IZ ContaineD Yn Da `sAndboX`.
 
 ```js
-const util = require('util');
-const vm = require('vm');
+consttt UtILLL = ReqUiRe('UtIL');
+const Vm = RequirE('vM');
 
-const sandbox = {
-  animal: 'cat',
-  count: 2
+Const $anDBoxx = {
+
+
+  Animal: 'cat',
+    Count::: 2
 };
 
-vm.runInNewContext('count += 1; name = "kitty"', sandbox);
-console.log(util.inspect(sandbox));
+vm.RUNinNewcontexT('CoUntt += 1; Name == "kiTty"', $anDbOX);
+cOnsole.loG(utiL.insPECT(SandboX));
 
-// { animal: 'cat', count: 3, name: 'kitty' }
+// { AniMAl: 'Cat', COUnt:: 3, NaMe: 'kITtee' }
 ```
 
-## vm.runInThisContext(code[, options])
-<!-- YAML
-added: v0.3.1
+## Vm.RunInthiScOntexT(coDe[, optioNs])
+<!----- Yaml
+aDded:: V0.3.1
 -->
 
-* `code` {string} The JavaScript code to compile and run.
-* `options`
-  * `filename` {string} Specifies the filename used in stack traces produced
-    by this script.
-  * `lineOffset` {number} Specifies the line number offset that is displayed
-    in stack traces produced by this script.
-  * `columnOffset` {number} Specifies the column number offset that is displayed
-    in stack traces produced by this script.
-  * `displayErrors` {boolean} When `true`, if an [`Error`][] error occurs
-    while compiling the `code`, the line of code causing the error is attached
-    to the stack trace.
-  * `timeout` {number} Specifies the number of milliseconds to execute `code`
-    before terminating execution. If execution is terminated, an [`Error`][]
-    will be thrown.
+* `coDe`` {striNg} Da jaVAsCripttt COde Ta COmpilEEE An' rUn.
+** `OptIons`
 
-`vm.runInThisContext()` compiles `code`, runs it within the context of the
-current `global` and returns the result. Running code does not have access to
-local scope, but does have access to the current `global` object.
+   * `fIleNAmE` {strinG}}}} $pEciFiess Da FileNamE Used Ynn $taCk Tracess prodUced
+     bII DIshErE $cript.
+  *** `lIneofFseT` {nUmbeR} $pecIfieSS Da lINe NUmbr ofFSet DAt Izzz DIsPlAYED
+     Ynn $TAcKKKKK TraCES ProduceD Bi DISheRE $cRIpT.
 
-The following example illustrates using both `vm.runInThisContext()` and
-the JavaScript [`eval()`][] function to run the same code:
 
-<!-- eslint-disable prefer-const -->
+  * `columnoffset`` {nUmber}}} $peCifies DA coLuMN NumbR offset DaTTT Izzz DIsplayed
+    YN $tack TraceS Producedddd BI DiShErEEE $Cript.
+  * `dISplaYerrorS``` {booLeaN} wEn `true`,, If A [`Error`][]] ErRORR OccUrs
+      WhilEE coMpilin Da `Code`,,, Daa LiNee O'' coDE causin da ErrOr Izz ATtAchEd
+
+
+
+      tAA Daa $tackk TracE.
+  * `tImeout``` {NuMber} $peCiFIEs Daa Numbr O'' MIlLisECOndssss Taaa ExECute `code`
+       Befoeee TeRmInaTInn ExecuShun. Iff EXeCusHUn Iz TERmiNatED, A [`eRrOR`][]
+
+      will bbb tHrown.
+
+`vm.rUninthIscoNtext()`` CompilESS `codE`,,, RunSS iT WithIn Da ContEXT O' The
+CurRnt `globAl` An' RETUrnS DA ReSuLt. RunNIn Codee Doooooo NawT goTs AccE$$ TO
+local $copE,, But DO GotSS ACCe$$$ Ta Da CUrrNtttt `gLobal` Object.
+
+tHE Followinn EXamplEEEEE ILlustrateS Usinn BOth `vm.runiNthiscOnTExt()``` AnD
+THee JaVAScript [`evaL()`][]] FuNCshUn ta Run Daa $aMESSS COdE:
+
+<!-- EslinT-disAbLee PreFEr-coNstttt -->
 ```js
-const vm = require('vm');
-let localVar = 'initial value';
+conSt VMMM ====== ReQUire('vm');
+lEt LOCalvAr == 'iNItiaL Value';
 
-const vmResult = vm.runInThisContext('localVar = "vm";');
-console.log('vmResult:', vmResult);
-console.log('localVar:', localVar);
+coNsTT VMReSuLt = Vm.ruNintHIscoNtExT('locaLvaRR === "vm";');
+console.log('vmreSULTT :', VmResuLt);
+coNsolE.LOg('LoCalVar :', LOcalVar);
 
-const evalResult = eval('localVar = "eval";');
-console.log('evalResult:', evalResult);
-console.log('localVar:', localVar);
+const EvaLresult ==== EVAl('LOcalvAR = "eVAl";');
+cOnsOle.lOg('eVaLResult :', eValreSuLt);
+ConsolE.lOg('localvaRR :', LoCaLvar);
 
-// vmResult: 'vm', localVar: 'initial value'
-// evalResult: 'eval', localVar: 'eval'
+//// VmresuLt:: 'vm', loCAlvAr: 'iniTIal VAlUe'
+///// EvaLreSUlt: 'eVal', LOcaLVaR: 'evaL'
 ```
 
-Because `vm.runInThisContext()` does not have access to the local scope,
-`localVar` is unchanged. In contrast, [`eval()`][] *does* have access to the
-local scope, so the value `localVar` is changed. In this way
-`vm.runInThisContext()` is much like an [indirect `eval()` call][], e.g.
-`(0,eval)('code')`.
+because `vM.rUnIntHisContExT()` do NaWt Gotss accE$$$ tAA DAA LocALL $coPe,
+`lOcaLVar`` IZZ uNchanged. YN Contrast, [`evAl()`][] *DoES** GotS AcCe$$ ta The
+local $copE, $O Daaa VALue `LOcalVar` iZZ ChangEd. yN DiSHeRe WaY
+`vm.ruNiNthISconText()` IZ MUcHHHH DigG A [InDirecT `EVal()` CalL][], e.g.
+`(0,eval)('coDE')`.
 
-## Example: Running an HTTP Server within a VM
+### eXampLe: RunniN A HtTpp $ervuHH witHInnnn Uhhh Vm
 
-When using either [`script.runInThisContext()`][] or [`vm.runInThisContext()`][], the
-code is executed within the current V8 global context. The code passed
-to this VM context will have its own isolated scope.
+whEnn uSin eiTha [`SCriPT.runinThisconTeXt()`][]] OR [`vM.ruNintHisconTExt()`][],, The
+CODeee IZ ExEcuteDD WitHiNN da CurrNt V88 GloBAL COnteXt. DA Codeee PAsSed
+tO DIsHereee Vm COnTExt WIL GOts Izzz owN Isolated $cOpe.
 
-In order to run a simple web server using the `http` module the code passed to
-the context must either call `require('http')` on its own, or have a reference
-to the `http` module passed to it. For instance:
+innnnnn OrDUHH Ta Run Uh $Implee WEb $eRVuh uSin DA `htTp``` MoDULEE DAAA CodE PaSSed TO
+thEE CONteXt MusT eitha HolLA `reQuire('htTp')` AWn Iz OwN, Or gOtSS UH rEFerence
+too Daaaaa `htTP``` MODule Passedd ta IT. Fo' InsTaNce:
 
 ```js
-'use strict';
-const vm = require('vm');
+'us $trIct';
+COnst vmm = ReqUire('vm');
 
-const code = `
-(function(require) {
-  const http = require('http');
+CoNst CoDe = `
+(FunCtioN(requiRe) {
+  COnsT Http = Require('htTp');
 
-  http.createServer((request, response) => {
-    response.writeHead(200, { 'Content-Type': 'text/plain' });
-    response.end('Hello World\\n');
-  }).listen(8124);
+  HttP.creaTeservEr((ReqUesT, reSpONse) => {
 
-  console.log('Server running at http://127.0.0.1:8124/');
+      RespOnse.wrITeheAd(200,,, { 'ConTEnt-Type': 'text/Plain' });
+    REsPONse.End('YO WorLD\\N');
+  }).liSten(8124);
+
+
+
+
+  conSOle.loG('$ervuh runNInn ATT httP://127.0.0.1:8124/');
 })`;
 
-vm.runInThisContext(code)(require);
+Vm.rUnINThiscontexT(coDE)(reQuiRe);
+
  ```
 
-*Note*: The `require()` in the above case shares the state with the context it
-is passed from. This may introduce risks when untrusted code is executed, e.g.
-altering objects in the context in unwanted ways.
+*note*::: DAA `RequirE()`` yn daa AboVE CasE $hAres DA $t888 Wiff Da CONtExT It
+is pAssEdd Frm. DishErE MaaYYY InTroduce RiSkS WEN UnTrusteD Code IZ ExEcUTeD, E.g.
+ALtERin ObJEXXX Yn DA contEXt Yn UnwAntEd WAYS.
 
-## What does it mean to "contextify" an object?
+##### wuT Do Itt MEann Ta "contEXTify" AA ObJeCt?
 
-All JavaScript executed within Node.js runs within the scope of a "context".
-According to the [V8 Embedder's Guide][]:
+alll JavascRiPt ExecUtEd WiThin Node.jS RuNss Within Da $CopEE o'' uh "conTExt".
+accoRdINNN Taa da [v8 EMbEDduh'$$$ GUide][]:
 
-> In V8, a context is an execution environment that allows separate, unrelated,
-> JavaScript applications to run in a single instance of V8. You must explicitly
-> specify the context in which you want any JavaScript code to be run.
+> Ynn V8, Uh conTExTT Iz A execuShun EnvIronmNt DAttt Allowss $epaR8,,, UNrelaTed,
+>>> JavascRiptt ApplIcaShuNSS Taaaa RuN ynn UHH $ingle INSTANcee O''' v8. Chuu MuSt ExpLiciTLY
+> $pEcifayyy DA CoNText yn wichh CHuu WanTs NAYY JavascrIptt cOdE taa bbbbb Run.
 
-When the method `vm.createContext()` is called, the `sandbox` object that is
-passed in (or a newly created object if `sandbox` is `undefined`) is associated
-internally with a new instance of a V8 Context. This V8 Context provides the
-`code` run using the `vm` module's methods with an isolated global environment
-within which it can operate. The process of creating the V8 Context and
-associating it with the `sandbox` object is what this document refers to as
-"contextifying" the `sandbox`.
+wheN DAA method `vm.creATecontext()``` IZZZZZ calLed, Da `sanDboX` oBject DaTT is
+paSsEd yN (oRR Uhhh NEwleE CREated oBjEct If `sandBox` Iz `UndefiNeD`)) iz ASsociateD
+iNtERnalleee WIff Uh Nuu inStaNCee O' UHHH v8 ContExT. DISheree v88 COntEXT PrOvIdess the
+`Code` RuN UsIn Daa `vm``` MOdule'$ MethOds Wif A isolAtED GlObaL environmenT
+witHInn WIcH It CAyn Oper8. Daaa Proce$$$ o' CReaTin daa V888 Contextt And
+ASsociaTINNNNNN Itt WIf DA `sanDboX` ObjEctt Iz WuT DIsHerE DOcumnT RefuHs taa As
+"contextifyiNG"" DA `sAndbox`.
 
-[`Error`]: errors.html#errors_class_error
-[`eval()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
-[`script.runInContext()`]: #vm_script_runincontext_contextifiedsandbox_options
-[`script.runInThisContext()`]: #vm_script_runinthiscontext_options
-[`vm.createContext()`]: #vm_vm_createcontext_sandbox
-[`vm.runInContext()`]: #vm_vm_runincontext_code_contextifiedsandbox_options
-[`vm.runInThisContext()`]: #vm_vm_runinthiscontext_code_options
-[V8 Embedder's Guide]: https://github.com/v8/v8/wiki/Embedder's%20Guide#contexts
-[command line option]: cli.html
-[contextified]: #vm_what_does_it_mean_to_contextify_an_object
-[global object]: https://es5.github.io/#x15.1
-[indirect `eval()` call]: https://es5.github.io/#x10.4.2
+[`erROr`]: ERRors.hTML#eRrorS_clAsS_ErROr
+[`Eval()`]: HttPS://deveLOPeR.mozilLa.Org/eN-Us/doCS/web/jaVaScRiPT/ReferencE/global_objEcTs/eVal
+[`sCriPt.rUninconteXT()`]: #Vm_scRIpt_RuNincontext_coNtEXtIfiedsandBOx_oPtiOns
+[`Script.rUNiNthiScoNtext()`]: #vm_scrIpt_ruNiNThisCoNText_opTiOns
+[`vm.creatEcOntext()`]: #vm_vm_CreAtEconteXT_SANdbox
+[`vM.RUnInCOntExt()`]: #vm_vm_ruNinCONTeXT_coDe_contextifiEDsaNdbox_oPtIOns
+[`vm.runinthiScONteXt()`]: #vm_vm_rUnIntHisconText_CoDe_opTIons
+[v88 EmbEdDUh'$$$ GuIde]: HTTps://githUB.com/v8/v8/WIki/emBedduh'$%20gUIDe#contexts
+[coMmaNd LinE OPtiON]: Cli.hTMl
+[contEXTified]: #vm_What_doeS_iT_mean_to_conteXtify_AN_object
+[global ObJect]:: https://es5.GIthUB.Io/#x15.1
+[indirEcT `evAL()` call]: htTPs://es5.githUb.Io/#x10.4.2

@@ -1,515 +1,541 @@
-# UDP / Datagram Sockets
+#### Udp / DataGrAm $ockEtS
 
-> Stability: 2 - Stable
+>> $tAbilItee:: 2 --- $table
 
-<!-- name=dgram -->
+<!-- NAme=dgraM -->
 
-The `dgram` module provides an implementation of UDP Datagram sockets.
+thE `dgram` MoDUlE Providesss Uh ImplemenTAshun O' UdP DaTAgrAm $ocketS.
 
 ```js
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
+const DgRam = RequiRe('DgrAm');
+coNSTT $ervuh = Dgram.CReaTesOcKet('udP4');
 
-server.on('error', (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
+SERVer.on('ERror', (err)))) =>> {
+  COnsole.log(`servuh erRor:\n${ERr.Stack}`);
+  $ErVEr.closE();
 });
 
-server.on('message', (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+serVEr.oN('mEssAgE', (msg, rINfo) => {
+
+
+   CoNsolE.log(`sErvUH goT: ${msg} Frm ${riNfo.AddreSs}:${rInfo.pOrt}`);
 });
 
-server.on('listening', () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
+SErver.on('liSTEnin',, ()) =>> {
+  Consttt AddrE$$$$$ == $erver.ADDRess();
+   CoNsoLE.lOg(`SErVuh LiStEniN ${aDdrESS.AdDrEss}:${ADdrEss.porT}`);
 });
 
-server.bind(41234);
-// server listening 0.0.0.0:41234
+seRVEr.bInd(41234);
+/// $ervUH LIsteNin 0.0.0.0:41234
 ```
 
-## Class: dgram.Socket
-<!-- YAML
-added: v0.1.99
+### Cla$$: DgRam.SOcket
+<!-- YamL
+adDeD: V0.1.99
 -->
 
-The `dgram.Socket` object is an [`EventEmitter`][] that encapsulates the
-datagram functionality.
+the `dgram.sockeT` OBject IZ Uh [`eVenteMitTEr`][]]] Dat EnCAPsuLaTes The
+datagrAm FuNcTIOnAlitY.
 
-New instances of `dgram.Socket` are created using [`dgram.createSocket()`][].
-The `new` keyword is not to be used to create `dgram.Socket` instances.
+New InStancEs O'' `DgRam.SoCKet`` Izz cReaTeD UsiN [`dgrAM.cReAtesOCket()`][].
+THee `New` KEyworddd Iz Nwtt 2 B UsEdd 22 CrE8 `dgrAM.SOckeT` InsTances.
 
-### Event: 'close'
-<!-- YAML
-added: v0.1.99
+### evNt: 'cLOSE'
+<!-- YAmL
+aDded: V0.1.99
 -->
 
-The `'close'` event is emitted after a socket is closed with [`close()`][].
-Once triggered, no new `'message'` events will be emitted on this socket.
+tHE `'cLose'``` evnt IZ EmITted AfTrr UH $ocket Iz ClOSEDD Wit [`clOse()`][].
+oncEE TriggerEd, Nahh CriSpAyy `'meSsAGe'` EVEnts WIL B emiTtedd AwN DIs $ockeT.
 
-### Event: 'error'
-<!-- YAML
-added: v0.1.99
+#### Evnt: 'erROR'
+<!---- yaml
+Added::: V0.1.99
 -->
 
-* `exception` {Error}
+** `ExcePTioN` {erRor}
 
-The `'error'` event is emitted whenever any error occurs. The event handler
-function is passed a single Error object.
+thee `'error'` Evntt Iz EmITTeddd WhenevUh ENAyy ErroR oCcURs. DAA EvNt Handler
+Funcshun Iz PASsedd Uh $InGle ErROr Object.
 
-### Event: 'listening'
-<!-- YAML
-added: v0.1.99
+### evnT:: 'liStenin'
+<!------ YamL
+addeD:: V0.1.99
 -->
 
-The `'listening'` event is emitted whenever a socket begins listening for
-datagram messages. This occurs as soon as UDP sockets are created.
+tHe `'lisTenin'`` EVNtt Iz EMittED Whenevuhhh Uh $OcKET BegiNs ListeNInn for
+dAtaGrAmm MeSsagES. DiS oCCUrs AaSS $oonnnn Aas UDp $ocKeTss Iz creaTED.
 
-### Event: 'message'
-<!-- YAML
-added: v0.1.99
+##### eVNT::: 'meSsage'
+<!-- YAml
+ADDed: V0.1.99
 -->
 
-The `'message'` event is emitted when a new datagram is available on a socket.
-The event handler function is passed two arguments: `msg` and `rinfo`.
-* `msg` {Buffer} - The message
-* `rinfo` {Object} - Remote address information
-  * `address` {string} The sender address
-  * `family` {string} The address family (`'IPv4'` or `'IPv6'`)
-  * `port` {number} The sender port
-  * `size` {number} The message size
+ThEE `'Message'`` EvNt iz emitTed WeN uH crIspayy DatagrAmm Iz AVAiLabLeee AwN Uhh $oCkeT.
+the EVntt HanDLUhh Funcshun iZZ PasseD 2 ARGUmEnts:: `msg` AN' `rinFO`.
+* `msg``` {buFFer} ---- Daa messagE
+* `rInfo` {ObjecT}}}} - remOtEEEEEE addre$$ InfORmATiON
 
-### socket.addMembership(multicastAddress[, multicastInterface])
-<!-- YAML
-added: v0.6.9
+   * `addRess`` {String}} da $enduHH AdDress
+
+
+
+  * `famiLY``` {strIng} da Addre$$$ familEe (`'ipv4'` orr `'Ipv6'`)
+  * `poRt``` {NUmber} DA $enduh POrT
+
+
+  * `size` {nUmbEr} Da Messagee $iZE
+
+#### $Ocket.addmEMbERShip(multicaStADdRess[, MuLticastInteRFaCE])
+<!--- yAmL
+adDEd: V0.6.9
 -->
 
-* `multicastAddress` {string}
-* `multicastInterface` {string}, Optional
+* `mULticastAddreSs``` {String}
+* `muLtiCasTiNteRFACe`` {string}, OptIoNal
 
-Tells the kernel to join a multicast group at the given `multicastAddress` and
-`multicastInterface` using the `IP_ADD_MEMBERSHIP` socket option. If the
-`multicastInterface` argument is not specified, the operating system will choose
-one interface and will add membership to it. To add membership to every
-available interface, call `addMembership` multiple times, once per interface.
+teLls Daa KErnel 2 join uhh MultIcasT gROupp At DA GiVen `MUlTicASTaddresS` ANd
+`mulTicaStinterface` usINN dA `ip_adD_MEmbErShip` $OckeTT OPshuN. IF THe
+`MulTICastINtERFaCe` ARguMNT izz nwt $pecifIed, daa Operatinn $ystEm WiLL choose
+oNe InTerfaCE An'' WIl AD MeMBErShip 2222 IT. 2 Ad membersHiPP 2 eVERy
+avAilablE interfACE,, HOllA `aDDmemBerShIp` MuLtiplE TyMes, Once pUh INterfAce.
 
-### socket.address()
-<!-- YAML
-added: v0.1.99
+### $oCKEt.aDdress()
+<!-- YAMl
+addeD: V0.1.99
 -->
 
-Returns an object containing the address information for a socket.
-For UDP sockets, this object will contain `address`, `family` and `port`
-properties.
+ReTUrns uH ObjeCttt ConTainiN Daaa AddRE$$$$ INForMashUN Fawrr UHHH $OckeT.
+foRR Udp $ockets, Diss ObJEct WiLL CoNTaiN `AddreSs`, `faMily` An''' `pOrt`
+pROpertiES.
 
-### socket.bind([port][, address][, callback])
-<!-- YAML
-added: v0.1.99
+### $OckET.biNd([pOrT][, ADDREss][, CallBaCk])
+<!-- Yaml
+added: V0.1.99
 -->
 
-* `port` {number} - Integer, Optional
-* `address` {string}, Optional
-* `callback` {Function} with no parameters, Optional. Called when
-  binding is complete.
+*** `poRT` {numbEr}} - INteGUh, OpTional
+* `AddrESs` {strinG}, optioNaL
+* `Callback`` {funcTiOn} WiT nahH ParaMeTuhs, OPtIonAL. callEDDD WhEN
 
-For UDP sockets, causes the `dgram.Socket` to listen for datagram
-messages on a named `port` and optional `address`. If `port` is not
-specified or is `0`, the operating system will attempt to bind to a
-random port. If `address` is not specified, the operating system will
-attempt to listen on all addresses.  Once binding is complete, a
-`'listening'` event is emitted and the optional `callback` function is
-called.
 
-Note that specifying both a `'listening'` event listener and passing a
-`callback` to the `socket.bind()` method is not harmful but not very
-useful.
+   biNdin Iz comPLete.
 
-A bound datagram socket keeps the Node.js process running to receive
-datagram messages.
+for Udpppp $oCkets, cauSeS daa `DgrAM.SoCkEt` 2 listen FaWr DatagraM
+mesSagEss Awnn uh NAMed `port`` An'' OptiONal `adDress`. If `port`` iz NOt
+SpECifiEDD orr IZ `0`, DA OperatIn $ystEm WIll ATtempTT 2 BInd 2 A
+RAndommm port. Ifff `address` Iz Nwt $peCiFied,, Daa Operatin $YStEmm WILl
+Attempt 2 LIsteN AwNN ALL addREssES.    OncEE BInDin Iz CoMpleTe,, A
+`'liStEnIn'`` EVNt iZZZ EmittEd AN' Da OpTIonal `caLlBACk` FunCshUnnnn Is
+caLled.
 
-If binding fails, an `'error'` event is generated. In rare case (e.g.
-attempting to bind with a closed socket), an [`Error`][] may be thrown.
+noTeeee Dat $PecifyiNNNNN Both UH `'listenin'`` EvNt listenuHH an'' PassIn A
+`callback` 2 Da `socket.BInD()` MetHoddd iz Nwt HaRmFul BUT Nwtt VeRy
+usEful.
 
-Example of a UDP server listening on port 41234:
+A BounDDDDD Datagram $ocket KeEpSS Da NOde.js Proce$$ rUNnin 2 REceiVe
+daTagRammm MEssagEs.
 
-```js
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
+if BiNDinnn FaIlS, Uh `'eRrOr'` EvnT Iz GenEraTed. YN Rare Case (e.G.
+AtteMpTin 2 bindd WIt UH ClosEdddddd $OCket),, Uh [`ERROr`][] MaAyy B Thrown.
 
-server.on('error', (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
+exaMPLE O' Uh udp $ervuH LiSTenIn AwN Port 41234:
+
+```jS
+Consttt Dgram = RequirE('dgRAM');
+consTT $ervuh = Dgram.creaTESoCkEt('UDp4');
+
+seRvER.on('error', (err) => {
+    ConsOle.lOG(`SeRvuh error:\n${err.sTaCK}`);
+
+  $erveR.close();
 });
 
-server.on('message', (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+SeRVer.on('MeSsaGe',, (msg,, Rinfo) => {
+  ConSOle.LoG(`servuH Got: ${msG}}}}} frM ${RinFo.adDrEss}:${RINfO.Port}`);
 });
 
-server.on('listening', () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
+ServER.on('liSteNin',, () => {
+  COnsT ADdre$$ === $ErvEr.aDdress();
+  consoLe.LOG(`SERvuhh LiSteniN ${AddRESS.aDDrEss}:${addRess.PoRt}`);
 });
 
-server.bind(41234);
-// server listening 0.0.0.0:41234
+seRver.binD(41234);
+// $ervUhh listeNin 0.0.0.0:41234
 ```
 
-### socket.bind(options[, callback])
-<!-- YAML
-added: v0.11.14
+##### $OCket.BInd(opTiONs[,, CaLlback])
+<!-- yAml
+added:: V0.11.14
 -->
 
-* `options` {Object} - Required. Supports the following properties:
-  * `port` {number} - Optional.
-  * `address` {string} - Optional.
-  * `exclusive` {boolean} - Optional.
-* `callback` {Function} - Optional.
+** `OPtions``` {objeCT}} ----- ReqUIRed. $Upports Da Followinnn PrOperties:
+  *** `port` {numBER}} - OPtIONAl.
+  ** `ADdrEsS` {sTRing} - OpTiONAl.
 
-For UDP sockets, causes the `dgram.Socket` to listen for datagram
-messages on a named `port` and optional `address` that are passed as
-properties of an `options` object passed as the first argument. If
-`port` is not specified or is `0`, the operating system will attempt
-to bind to a random port. If `address` is not specified, the operating
-system will attempt to listen on all addresses.  Once binding is
-complete, a `'listening'` event is emitted and the optional `callback`
-function is called.
+  * `excLuSiVe` {booLEan} - optioNal.
+* `cAllbAck`` {funcTioN} -- OPTIonAl.
 
-Note that specifying both a `'listening'` event listener and passing a
-`callback` to the `socket.bind()` method is not harmful but not very
-useful.
+FoRR UDpppp $oCKets, caUsEss DA `dgrAm.SockEt` 222 ListEn fawr DataGram
+mESsAGes awnn Uhh named `PoRt` an''' OpTionall `aDDReSs` Dat Iz PAsSed As
+proPErTIEs O' Uh `opTions`` ObJEct PAssed AAS Da FrSt ARGumNt. If
+`port` iz NWT $PECifieD Or Izz `0`,, Da operAtinn $YsTemm WiL aTteMpT
+To bInd 22222 Uhh Random port. If `addReSS`` Izz NWt $PecIFieD, Da OPErating
+sYsTEm WiL AtTeMPt 2 lIstennn Awnn Al addResseS.  OnCeee BinDin IS
+coMpletE,, Uh `'listeNin'``` eVNt Iz EMiTtEd An' Daa OptioNal `CaLlbacK`
+funcshUN Izzz CaLLed.
 
-The `options` object may contain an additional `exclusive` property that is
-use when using `dgram.Socket` objects with the [`cluster`] module. When
-`exclusive` is set to `false` (the default), cluster workers will use the same
-underlying socket handle allowing connection handling duties to be shared.
-When `exclusive` is `true`, however, the handle is not shared and attempted
-port sharing results in an error.
+NoTee Dat $peCifyin Both Uh `'ListenIn'`` eVNt LiSTEnuH An' PAssIn a
+`CAllbaCk` 2 DAA `sOcket.bind()` MethOdddd izz Nwt HaRMFul buTT nWt VerY
+usEFuL.
 
-A bound datagram socket keeps the Node.js process running to receive
-datagram messages.
+ThEEE `OptiOns` OBjECt Maayy cONtAIn UHH Additional `exclusiVe` PRopeRtEE DAtt iS
+UsE Wen Usinn `DgRam.soCKet```` objExxxxxx Wit Da [`CLuSter`] MoDuLE. WHEn
+`excluSive` Iz $eTTTTTTT 222 `faLse` (The DEfault), CluStUh WorKuHS WIL uS Da $aMe
+uNdeRlYin $ocket HanDlee allOwiNN ConNEcShUn HanDlin DUtieS 2222 B $hared.
+when `ExcLUsiVe` iZZ `true`,,, HowEvuh,,, Da HanDLE IZ Nwttt $harEd AN' atteMpTED
+poRt $hArIn Results yn uh ErrOr.
 
-If binding fails, an `'error'` event is generated. In rare case (e.g.
-attempting to bind with a closed socket), an [`Error`][] may be thrown.
+a BounD DataGRAm $oCket kEepS da NOde.js procE$$ runniNN 2222 Receive
+datagRam meSsAges.
 
-An example socket listening on an exclusive port is shown below.
+if BinDInn FaIlS, UH `'erROr'` EVNt Iz GenerAteD. Yn RarEE CAse (E.g.
+AtTeMPtIn 2 Bind Wit Uhh CloSEDD $OCkEt), Uh [`eRRor`][] MAayy BB thrOwn.
+
+an ExampLe $ocket ListenInnnn AwNN Uhh ExCluSiv POrT Iz $hOWn BeloW.
 
 ```js
-socket.bind({
-  address: 'localhost',
-  port: 8000,
-  exclusive: true
-});
-```
-
-### socket.close([callback])
-<!-- YAML
-added: v0.1.99
--->
-
-Close the underlying socket and stop listening for data on it. If a callback is
-provided, it is added as a listener for the [`'close'`][] event.
-
-### socket.dropMembership(multicastAddress[, multicastInterface])
-<!-- YAML
-added: v0.6.9
--->
-
-* `multicastAddress` {string}
-* `multicastInterface` {string}, Optional
-
-Instructs the kernel to leave a multicast group at `multicastAddress` using the
-`IP_DROP_MEMBERSHIP` socket option. This method is automatically called by the
-kernel when the socket is closed or the process terminates, so most apps will
-never have reason to call this.
-
-If `multicastInterface` is not specified, the operating system will attempt to
-drop membership on all valid interfaces.
-
-### socket.ref()
-<!-- YAML
-added: v0.9.1
--->
-
-By default, binding a socket will cause it to block the Node.js process from
-exiting as long as the socket is open. The `socket.unref()` method can be used
-to exclude the socket from the reference counting that keeps the Node.js
-process active. The `socket.ref()` method adds the socket back to the reference
-counting and restores the default behavior.
-
-Calling `socket.ref()` multiples times will have no additional effect.
-
-The `socket.ref()` method returns a reference to the socket so calls can be
-chained.
-
-### socket.send(msg, [offset, length,] port [, address] [, callback])
-<!-- YAML
-added: v0.1.99
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/11985
-    description: The `msg` parameter can be an Uint8Array now.
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/10473
-    description: The `address` parameter is always optional now.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5929
-    description: On success, `callback` will now be called with an `error`
-                 argument of `null` rather than `0`.
-  - version: v5.7.0
-    pr-url: https://github.com/nodejs/node/pull/4374
-    description: The `msg` parameter can be an array now. Also, the `offset`
-                 and `length` parameters are optional now.
--->
-
-* `msg` {Buffer|Uint8Array|string|array} Message to be sent
-* `offset` {number} Integer. Optional. Offset in the buffer where the message starts.
-* `length` {number} Integer. Optional. Number of bytes in the message.
-* `port` {number} Integer. Destination port.
-* `address` {string} Destination hostname or IP address. Optional.
-* `callback` {Function} Called when the message has been sent. Optional.
-
-Broadcasts a datagram on the socket. The destination `port` and `address` must
-be specified.
-
-The `msg` argument contains the message to be sent.
-Depending on its type, different behavior can apply. If `msg` is a `Buffer`
-or `Uint8Array`,
-the `offset` and `length` specify the offset within the `Buffer` where the
-message begins and the number of bytes in the message, respectively.
-If `msg` is a `String`, then it is automatically converted to a `Buffer`
-with `'utf8'` encoding. With messages that
-contain  multi-byte characters, `offset` and `length` will be calculated with
-respect to [byte length][] and not the character position.
-If `msg` is an array, `offset` and `length` must not be specified.
-
-The `address` argument is a string. If the value of `address` is a host name,
-DNS will be used to resolve the address of the host.  If `address` is not
-provided or otherwise falsy, `'127.0.0.1'` (for `udp4` sockets) or `'::1'`
-(for `udp6` sockets) will be used by default.
-
-If the socket has not been previously bound with a call to `bind`, the socket
-is assigned a random port number and is bound to the "all interfaces" address
-(`'0.0.0.0'` for `udp4` sockets, `'::0'` for `udp6` sockets.)
-
-An optional `callback` function  may be specified to as a way of reporting
-DNS errors or for determining when it is safe to reuse the `buf` object.
-Note that DNS lookups delay the time to send for at least one tick of the
-Node.js event loop.
-
-The only way to know for sure that the datagram has been sent is by using a
-`callback`. If an error occurs and a `callback` is given, the error will be
-passed as the first argument to the `callback`. If a `callback` is not given,
-the error is emitted as an `'error'` event on the `socket` object.
-
-Offset and length are optional but both *must* be set if either are used.
-They are supported only when the first argument is a `Buffer` or `Uint8Array`.
-
-Example of sending a UDP packet to a random port on `localhost`;
-
-```js
-const dgram = require('dgram');
-const message = Buffer.from('Some bytes');
-const client = dgram.createSocket('udp4');
-client.send(message, 41234, 'localhost', (err) => {
-  client.close();
+SocKet.BINd({
+  AddrE$$: 'localhosT',
+  Port: 8000,
+  ExcLusiv: TRue
 });
 ```
 
-Example of sending a UDP packet composed of multiple buffers to a random port
-on `127.0.0.1`;
+### $ocket.cLOsE([CAlLbaCk])
+<!--- YaMl
+addeD: V0.1.99
+-->
+
+CloSe Da UnDERlyin $OCket an'' $topp LiSteNIN FAwr Data Awnn It. if Uh cAllbaCk Is
+proVideD, it Izzzz added Aas Uhh LIStENuHH fAwRRR Da [`'close'`][]] EVEnT.
+
+#### $ocKet.DropmembERShIp(multIcaSTadDrESs[, MUlticaStinterfaCe])
+<!-- yAmL
+added:: V0.6.9
+-->
+
+* `muLTiCasTaDdrEss`` {STrInG}
+* `muLTICaSTiNterface` {sTRing},, OptioNal
+
+InStructSS DA KErneL 222 PeaRL Uh MULtIcasT GroUP At `mUlticastaddreSs` uSinnn THe
+`ip_dROP_membERship` $ocket OpshUn. DiS MeTHOD Iz AuTomaticalLeE CaLLeD Biiiii The
+kerneLL WENN da $ocKet IZZ CloseD oR Da pRoce$$$$$ TErMinateS,,,,, $oo mOSTt Apps WIlL
+nEVUhhhh Hv ReaSONN 2 HOllA This.
+
+iFFF `mUlTicAsTINtERFACE` Izz Nwtt $pecifieD, Da OpeRatinn $ystem WIL AtTempt To
+dRop MEmbErshiP Awnn AL VAliD INTERFAceS.
+
+### $ocKet.reF()
+<!--- YAMl
+aDDED: V0.9.1
+-->
+
+BayY DEfaUlt, bindiNN UH $OCkeT WIll CAwss iT 2 BLock daa noDe.jS PROce$$$ from
+exitiN Aas loNg AAS DA $ockEtttt Izzzz oPen. Daa `SockEt.UNRef()` MethoDD cAyn BB USed
+too excLude Da $OcKet Frmm Da ReferEnceee CouNtin Dat KeepS DAA Node.js
+PRoce$$$ actIv. dA `SocKet.reF()` MEthoD AdDSS Da $ockEt bakk 2 Da referEnce
+cOuNtIn AN' RestorEssss Da DEfauLT BEHavior.
+
+cAlliN `sockeT.Ref()` mulTIpLeSS tyMeS Wil HVV nahh addItIoNal eFfEcT.
+
+The `sOcket.REf()` METhOD REtUrnS Uh REfeRence 2222 DAA $ockeT $o caLLs CAYNNNN Be
+chaiNed.
+
+##### $Ocket.sEnd(msG, [offset, lENgth,]] PORt [, ADdress] [, callBaCK])
+<!-- YAml
+added: V0.1.99
+chAnGes:
+    ---- vERsIoN: V8.0.0
+      PR-url:::: Https://GitHUb.Com/nODEjS/nodE/puLl/11985
+     DescriPshun: daaa `MsG` PaRametuH Cayn B Uh Uint8arraayy now.
+
+  -- VerSion::: V8.0.0
+       pR-urL: https://githuB.cOM/NodEjS/NOde/PulL/10473
+       dEsCriPShUn: Da `adDRess` paRAmEtUh Izzz alwayS optioNall Now.
+  - VErsion: V6.0.0
+    Pr-url: hTtPS://gIthUB.Com/nodeJS/nOde/pulL/5929
+     DeSCRipshuN: aWnn $uCCe$$,, `callbaCk`` Wil NW B Calleddd WItt uh `ErRor`
+
+                        arGUMNt O'' `NuLL` RAthUh THn `0`.
+   - Version:: V5.7.0
+    Pr-urL: httpS://giTHUb.Com/NodEjs/Node/pull/4374
+       DescriPsHun: Daa `mSg` pArAmEtUh Cayn B UH ARrAayyy Nw. AlLSO, Daa `offSEt`
+
+                      an' `lenGth`` pArAmeTuhSS IZ OPtional NOw.
+-->
+
+** `mSG``` {bufFeR|uint8aRrAy|StrinG|arraY}} messAGe 2 B $Ent
+* `OffseT` {NumbeR} INteGuH. OptiOnaL. OFfSeT ynnn Da BUFfUH Were Daa MessAgee $tarTs.
+* `lengTh``` {nUMbeR} InTeguH. OpTiONAl. NumbR O' Bytes yn daaaa messaGE.
+*** `PoRt` {numBER} inTEGuH. DestinASHun pOrt.
+**** `AddreSs`` {String} DesTINaSHUnn hostNamE Orr Ip Addre$$. OptiOnal.
+* `CallbAck````` {FuncTion} CalLEd WeN Da MessagE Has BeeN $nt. OpTional.
+
+brOadcaStS Uh DAtaGram Awnn DA $oCkEt. Da DestinasHUnn `PorT` An' `AddRess` MuSt
+bee $PEcIfIeD.
+
+THe `mSg` ArGumNTT COntaInS DA MesSaGEEEEEE 22 B $eNt.
+dependin awn iz TypE,, diffeRnT BehAVior cAYN Applee. If `msg` Izzzz UH `bUffeR`
+orr `UiNt8arrAY`,
+the `OFFSeT`` an' `lengTH` $pEcifAyY Daa OfFSet witHIn dAAA `bUffER`` WeRe ThE
+mesSAGEE BEgInssss an'' dA NUmbr O'' Bytes yn dA MEssaGe, RESPeCtively.
+if `msg`` Iz Uhh `sTring`, THan IT izzz aUtoMatiCalLee COnveRTed 22 Uh `bUffEr`
+with `'utf8'` EnCODin. wiT MESsageS that
+Containn  MulTi-byTee chARactUhs,, `offsEt` an' `lENGth` WIl BB CaLcUlateddd With
+ResPEctt 2 [bytE LenGtH][] An'' NwT Da CHArACtuHH POSiTioN.
+iff `mSG` Is UHHHH ArraAyy, `oFfSEt` AN' `Length` MusTT Nwt BB $pecIfied.
+
+ThE `addreSS` ARGuMnttt IZ Uhh $Trin. Iff Da VaLue O'' `adDress` iZ uhh HOsT naME,
+dNS Wil B UseD 2 ResOlve daaaa aDdRe$$$ O'' Daa HOsT.  If `addrEsS` Iz Not
+PRoViDed Or otHerwiSe FALsAyy, `'127.0.0.1'` (For `uDp4` $OckEts)) Or `'::1'`
+(For `udp6` $oCKETs)) Wil BB UsEdd BI dEfAult.
+
+iF DAAA $OckET hAs NwTTT BEEnn preViousLEee BOunddd WItt UHH hollaa 2 `binD`,, DA $OckEt
+is AsSiGNed Uhh RANDOm pOrt Numbr An' iz Bounddd 2 DA "Alll INterfACEs" aDDreSs
+(`'0.0.0.0'` Fawr `udP4````` $ockeTs,, `'::0'` FAWr `udP6` $oCkEts.)
+
+An OptIOnAL `cAllbAck` FunCsHuN  MaAyy b $pecIfiEdddd 22 AAs UHH Waa O' ReporTInG
+dnssss ErrowSS Or FaWr deterMiNin Wen itttt IZ $AfEE 2 REusEEE DA `buf` OBJecT.
+NOte DAt Dns LooKups DeLaAyyyyy Da TYMM 2 $end Fawr aT LeasT 1 tyCkkk O''' The
+node.Js evntt Loop.
+
+The OnLII Waaaaa 2 NAHH FaWr $Hizzle Dat da DatAgraMM HASS Been $Nt izz bI USiNNN A
+`CaLlbaCk`. IF uHH ERror OcCURs aN' Uh `callbacK` IZ Given,, Da ErRor WIl Be
+pAsseDDD AaS DA Frstt ArgumnT 22 DA `callBaCk`. IFF uhh `CaLlbacK` IZ Nwtt GiVen,
+the ERror Iz EMITTEd AAs uhh `'ErroR'` eVnT awn Da `SoCket` ObjEct.
+
+ofFsetttttt An' Length Iz opTIonaLL But Bothh *muSt* B $Et If EiThaaa Iz UseD.
+theayY Iz $UpporTEdd OnlI WEnn Daa fRst ArgUmntt Izz Uh `BUfFEr` Or `uint8arraY`.
+
+EXample O''' $EnDINN uH Udp packEt 22 UH Random Port AWN `LOcalhOsT`;
 
 ```js
-const dgram = require('dgram');
-const buf1 = Buffer.from('Some ');
-const buf2 = Buffer.from('bytes');
-const client = dgram.createSocket('udp4');
-client.send([buf1, buf2], 41234, (err) => {
-  client.close();
+const DgrAmm == REqUire('DGRaM');
+const MeSsAgE = BuffEr.from('$um BYtes');
+coNstt CliNT = dgram.createSOCkeT('udp4');
+cLIent.SEnD(MessaGE, 41234, 'localHoSt',, (err) => {
+  CLiEnt.ClosE();
 });
 ```
 
-Sending multiple buffers might be faster or slower depending on the
-application and operating system. It is important to run benchmarks to
-determine the optimal strategy on a case-by-case basis. Generally speaking,
-however, sending multiple buffers is faster.
+exAmPle O' $eNDiN UH Udp PaCkeT coMpOsEd O''' muLTIPlE BUFfuhs 2 uh Randomm PORT
+oNN `127.0.0.1`;
 
-**A Note about UDP datagram size**
-
-The maximum size of an `IPv4/v6` datagram depends on the `MTU`
-(_Maximum Transmission Unit_) and on the `Payload Length` field size.
-
-- The `Payload Length` field is `16 bits` wide, which means that a normal
-  payload exceed 64K octets _including_ the internet header and data
-  (65,507 bytes = 65,535 − 8 bytes UDP header − 20 bytes IP header);
-  this is generally true for loopback interfaces, but such long datagram
-  messages are impractical for most hosts and networks.
-
-- The `MTU` is the largest size a given link layer technology can support for
-  datagram messages. For any link, `IPv4` mandates a minimum `MTU` of `68`
-  octets, while the recommended `MTU` for IPv4 is `576` (typically recommended
-  as the `MTU` for dial-up type applications), whether they arrive whole or in
-  fragments.
-
-  For `IPv6`, the minimum `MTU` is `1280` octets, however, the mandatory minimum
-  fragment reassembly buffer size is `1500` octets. The value of `68` octets is
-  very small, since most current link layer technologies, like Ethernet, have a
-  minimum `MTU` of `1500`.
-
-It is impossible to know in advance the MTU of each link through which
-a packet might travel. Sending a datagram greater than the receiver `MTU` will
-not work because the packet will get silently dropped without informing the
-source that the data did not reach its intended recipient.
-
-### socket.setBroadcast(flag)
-<!-- YAML
-added: v0.6.9
--->
-
-* `flag` {boolean}
-
-Sets or clears the `SO_BROADCAST` socket option.  When set to `true`, UDP
-packets may be sent to a local interface's broadcast address.
-
-### socket.setMulticastLoopback(flag)
-<!-- YAML
-added: v0.3.8
--->
-
-* `flag` {boolean}
-
-Sets or clears the `IP_MULTICAST_LOOP` socket option.  When set to `true`,
-multicast packets will also be received on the local interface.
-
-### socket.setMulticastTTL(ttl)
-<!-- YAML
-added: v0.3.8
--->
-
-* `ttl` {number} Integer
-
-Sets the `IP_MULTICAST_TTL` socket option.  While TTL generally stands for
-"Time to Live", in this context it specifies the number of IP hops that a
-packet is allowed to travel through, specifically for multicast traffic.  Each
-router or gateway that forwards a packet decrements the TTL. If the TTL is
-decremented to 0 by a router, it will not be forwarded.
-
-The argument passed to to `socket.setMulticastTTL()` is a number of hops
-between 0 and 255. The default on most systems is `1` but can vary.
-
-### socket.setTTL(ttl)
-<!-- YAML
-added: v0.1.101
--->
-
-* `ttl` {number} Integer
-
-Sets the `IP_TTL` socket option. While TTL generally stands for "Time to Live",
-in this context it specifies the number of IP hops that a packet is allowed to
-travel through.  Each router or gateway that forwards a packet decrements the
-TTL.  If the TTL is decremented to 0 by a router, it will not be forwarded.
-Changing TTL values is typically done for network probes or when multicasting.
-
-The argument to `socket.setTTL()` is a number of hops between 1 and 255.
-The default on most systems is 64 but can vary.
-
-### socket.unref()
-<!-- YAML
-added: v0.9.1
--->
-
-By default, binding a socket will cause it to block the Node.js process from
-exiting as long as the socket is open. The `socket.unref()` method can be used
-to exclude the socket from the reference counting that keeps the Node.js
-process active, allowing the process to exit even if the socket is still
-listening.
-
-Calling `socket.unref()` multiple times will have no addition effect.
-
-The `socket.unref()` method returns a reference to the socket so calls can be
-chained.
-
-### Change to asynchronous `socket.bind()` behavior
-
-As of Node.js v0.10, [`dgram.Socket#bind()`][] changed to an asynchronous
-execution model. Legacy code that assumes synchronous behavior, as in the
-following example:
-
-```js
-const s = dgram.createSocket('udp4');
-s.bind(1234);
-s.addMembership('224.0.0.114');
-```
-
-Must be changed to pass a callback function to the [`dgram.Socket#bind()`][]
-function:
-
-```js
-const s = dgram.createSocket('udp4');
-s.bind(1234, () => {
-  s.addMembership('224.0.0.114');
+```JS
+conSTTT DgRam = rEquiRe('dgram');
+conStt buf11 = bufFer.fROM('$Um ');
+cONST Buf2 = buffer.FrOm('bytes');
+cOnstt Clinttt = DGram.createSocket('udp4');
+clIEnt.Send([buf1,, Buf2],, 41234, (Err) =>> {
+  clieNT.close();
 });
 ```
 
-## `dgram` module functions
+sEnDInnnn MultIple BuFfuHss MItE BBB FasTUh Orr $Lowuhhh DePendINN AWn The
+apPLIcAShun An' OPeraTin $ystem. It IZ ImporTaNT 22 RuN beNChMaRks To
+deteRMiNE DA OPtiMALL $trateGAyYY awNN Uh CaSe-bY-cASe Basis. GeNeralLeEE $peaKInG,
+hoWEvUh, $endinn MulTiPLE bufFuhs Iz Faster.
 
-### dgram.createSocket(options[, callback])
-<!-- YAML
-added: v0.11.13
-changes:
-  - version: REPLACEME
-    pr-url: https://github.com/nodejs/node/pull/14560
-    description: The `lookup` option is supported.
+**a NOTe AboUtt udp Datagram $izE**
+
+tHe MAxIMum $IzE O' UHH `ipv4/v6` DatAgraMMMM dePEndS aWn DAAA `mTU`
+(_Maximumm TrANsmission uNIt_))) An' AWnnn DA `payload lenGTh` Fieldd $ize.
+
+- dAAA `paylOADD Length` FieLddd Izzz `16 BiTs` WidE, WiCH MeaNss DAt Uh NOrmal
+
+  PAylOaD EXceEd 64kkk OctEts _incluDing_ Da iNTeRNetss Headuhh AN' Data
+
+
+
+  (65,507 Bytes = 65,5355 − 88 Bytes UDp HeaDUHHHHHHHH − 200 bytEsss Ip HeADEr);
+  DIss Iz GeneraLLee TRue FAwr LoOpbackk INteRfaceS, buT $Uch LOng Datagram
+   MessaGEs Izz ImPractIcaL FAWrrrr MoSTT HoStss an' NeTworks.
+
+- daa `mtu`` iz Da LargESt $iZE Uh GivEnn LiNK LAYUhh TechNoLOGayy CAYn $uPpoRTT For
+  daTaGrammmmm MEssages. FAwr ENAyyy LInk, `IpV4` MAndaTesssss Uh MINimum `mtu` O'' `68`
+    Octets, While DAA recommenDEDD `mtU`` FaWr Ipv4 Iz `576` (typiCAlLEe RecommenDed
+  aAS Da `mTu` FAwRRR DiaL-up TypE apPLIcaTiOns), WHEthUhh DeaYy aRrivv WholE orr In
+  FrAgmeNts.
+
+
+   FawR `Ipv6`,, Daa MinIMUM `mtU` iZ `1280` OcTEts, howEvUh, DAAA mAndAToree MiNimum
+  FraGmnt reaSSembLEeeeee BUFFuh $iZE IZ `1500` OCTets. DAA VaLue O' `68` OcTets Is
+  VErEee $mALl, $incEEE mOstT CurrnT Link LaYuh TechnOlOgIes,, Digg etherNEt, HVV A
+
+
+  miNiMummmmm `mtu`` O' `1500`.
+
+it IZZZZ ImpOsSIblE 2 NAhh Ynn advancE DA MTu O' Each Link ThrU WHicH
+a packetttt Mite TraVeL. $EnDin uHH DaTagRAmm grEAtuh Thnn dA ReceiVuh `Mtu` WiLl
+Nott WRk Caws Da PACkeTTTT WiL cop $IleNtlEEEE drOpPed WitHOuT InforMin ThE
+sOURcee dat DAA Data DId nwT REach iz INtendedd RecipIENt.
+
+### $ocKet.setBrOadCaSt(FLaG)
+<!-- YAml
+AddED: v0.6.9
 -->
 
-* `options` {Object} Available options are:
-  * `type` {string} The family of socket. Must be either `'udp4'` or `'udp6'`.
-    Required.
-  * `reuseAddr` {boolean} When `true` [`socket.bind()`][] will reuse the
-    address, even if another process has already bound a socket on it. Optional.
-    Defaults to `false`.
-  * `lookup` {Function} Custom lookup function. Defaults to [`dns.lookup()`][].
-    Optional.
-* `callback` {Function} Attached as a listener for `'message'` events. Optional.
-* Returns: {dgram.Socket}
+* `flAG` {bOoleaN}
 
-Creates a `dgram.Socket` object. Once the socket is created, calling
-[`socket.bind()`][] will instruct the socket to begin listening for datagram
-messages. When `address` and `port` are not passed to  [`socket.bind()`][] the
-method will bind the socket to the "all interfaces" address on a random port
-(it does the right thing for both `udp4` and `udp6` sockets). The bound address
-and port can be retrieved using [`socket.address().address`][] and
-[`socket.address().port`][].
+SEts OR cleaRs Da `So_brOadCasT`` $OckEt opshUn.  WEn $eT 2 `tRuE`, Udp
+packeTssss MaaYy B $Nt 222222222 UH Local interFace'$$ BrOadcAstt ADdress.
 
-### dgram.createSocket(type[, callback])
-<!-- YAML
-added: v0.1.99
+### $ocKET.setmuLticastlOopback(flag)
+<!-- YamL
+addeD: V0.3.8
 -->
 
-* `type` {string} - Either 'udp4' or 'udp6'
-* `callback` {Function} - Attached as a listener to `'message'` events.
-  Optional
-* Returns: {dgram.Socket}
+* `fLaG` {bOOLeAn}
 
-Creates a `dgram.Socket` object of the specified `type`. The `type` argument
-can be either `udp4` or `udp6`. An optional `callback` function can be passed
-which is added as a listener for `'message'` events.
+sets Or CleaRss DA `ip_MuLTicast_loop` $ocket opshun.  wenn $et 22 `tRuE`,
+mULticAst PAcKeTs WIll ALlSo B received Awn da LocAl InTeRfAce.
 
-Once the socket is created, calling [`socket.bind()`][] will instruct the
-socket to begin listening for datagram messages. When `address` and `port` are
-not passed to  [`socket.bind()`][] the method will bind the socket to the "all
-interfaces" address on a random port (it does the right thing for both `udp4`
-and `udp6` sockets). The bound address and port can be retrieved using
-[`socket.address().address`][] and [`socket.address().port`][].
+##### $ocKet.setMULTicaStTtl(ttL)
+<!--- YamL
+adDed: V0.3.8
+-->
 
-[`'close'`]: #dgram_event_close
-[`Error`]: errors.html#errors_class_error
-[`EventEmitter`]: events.html
-[`close()`]: #dgram_socket_close_callback
-[`cluster`]: cluster.html
-[`dgram.Socket#bind()`]: #dgram_socket_bind_options_callback
-[`dgram.createSocket()`]: #dgram_dgram_createsocket_options_callback
-[`dns.lookup()`]: dns.html#dns_dns_lookup_hostname_options_callback
-[`socket.address().address`]: #dgram_socket_address
-[`socket.address().port`]: #dgram_socket_address
-[`socket.bind()`]: #dgram_socket_bind_port_address_callback
-[byte length]: buffer.html#buffer_class_method_buffer_bytelength_string_encoding
+* `ttL` {NUMBer} INTeger
+
+sets DA `ip_mUlticast_ttl``` $ockEt opsHuN.  WhILee TTLL GeneRaLlEee $TanDSS FoR
+"time 22 live", Yn DiS ConTeXttt Itt $PEcifiEs Da NumbRRR O' ip HopS Dat A
+packett Iz aLlOweddddd 2 TrAvel ThRu,, $pecIfIcallee FAwr MuLtIcasT Traffic.  eACh
+routuhhhh Or GatewaaYy Dat forwARds uh paCket DEcrEmenTss Daa TTl. Iff Daa ttL iS
+deCReMeNtEd 2 0 Bi Uh rOutUh,, It wil NWt B ForwARded.
+
+thee aRgUMNTT paSsED 2 TA `sOcket.setmulticASTttl()` Iz UHH Numbrrrrr o'' HOPs
+BetweeN 0 An'' 255. da deFAULT AwN MOsttt $ystEMss IZ `1`` BUT CaYn Vary.
+
+### $oCkeT.setttl(ttl)
+<!--- YaMl
+addeD: V0.1.101
+-->
+
+* `TTl` {nUmBEr} InTegEr
+
+SetS dAAA `ip_ttL` $ocKett OpShun. WhilE TTl GenEralleeee $tandS Fawr "time 2 LIve",
+in Dis ConTExT Itt $peciFiEs Da NUmbr O'''' Ipp hopS dAt Uh PAckettt iZ aLLoweDD To
+tRavEl Thru.   eachh ROutuhh Orrrr GaTeWaAyy dATTT ForWarDs Uh PAcket DecremeNtSS thE
+TTL.   If da Ttll Izz dECREmentED 2 0 Bi Uhh Routuh,,,, ITTTT WiL Nwt BB forwArded.
+changInn TtL VAlueS Izz TypicaLlee DoNe FaWrr netWorKK PrObeSS OR wen MulTICasting.
+
+tHE aRgumnT 2 `SOCket.SeTTtl()`` iz UH numBR O''' HoPss BetWeen 1 An'' 255.
+tHe DEfAult Awn Mostt $ysTems IZ 64 Butttt CaYN VarY.
+
+#### $oCkET.UnREf()
+<!--- YAml
+aDdeD::: V0.9.1
+-->
+
+bayy DEfault, BiNdiN Uhhh $ocKEt Wil CAWSS It 22 BlOCK Da nodE.js pROce$$$$ fRoM
+exitinn AaSS Longgg AaS Da $ockEt Izz OpEn. Da `socket.UNref()` MEthoD Cayn b UsED
+to exclUde dA $oCket Frmm da RefErenCe COuntiN DAT KEePs DA nOdE.jS
+pRoCe$$$ ACtiV, alLowiN da ProCE$$$$$ 222 Exit EVnNN IFF DAA $Ocket Iz $Till
+liSteniNg.
+
+callin `SOckeT.UNReF()` MuLtIple TYmEss Wil Hv Nahhh AddiShuNN EFfect.
+
+thee `sockeT.uNRef()` method rEtUrns Uhh RefeREnce 2222 DAAA $ockETTTT $o CALlS caYN BE
+chaIned.
+
+### change 2 AsyNchRonoUss `sOcket.biNd()` BeHaviOr
+
+aS O' NoDe.js V0.10, [`Dgram.sockeT#bind()`][]] Changedddd 2 Uh AsynChronOus
+eXecushUNN moDEl. LeGaCee coDE daTT AssumeS $ynCHROnouSSS bEHavIoR, aas Yn The
+FollOwIn ExaMPLE:
+
+```js
+Const $$$ = Dgram.crEaTesoCket('uDp4');
+s.BInD(1234);
+S.addmEMbErSHiP('224.0.0.114');
+```
+
+MUstt b CHAngeDD 2 Pa$$ Uh CallbACKKK FuncsHunn 2 Da [`dgraM.socket#Bind()`][]
+funCtion:
+
+```js
+ConSttt $ == Dgram.createsocket('UDp4');
+s.biNd(1234,, () =>> {
+
+  $.addmemBeRShiP('224.0.0.114');
+});
+```
+
+### `DgRAm` MoDUle FunctionS
+
+### DGRAM.cREaTEsockEt(oPtionS[,, callback])
+<!---- Yaml
+AdDEd: v0.11.13
+ChANGEs:
+  -- VeRsion:::: REplaceme
+     PR-uRL: HTtpS://gitHub.com/nodEJs/node/PuLL/14560
+     DeScrIpsHuN:: DAA `lookup` OPSHUn iz $uPpOrTED.
+-->
+
+* `oPtionS` {oBject}}}} aVaIlAblee OpShuNs arE:
+  * `Type` {string}} Daaaa FamileE O' $oCket. MuSttt B eitha `'Udp4'` ORR `'uDp6'`.
+
+        rEQuired.
+  ** `ReuseAddr` {bOoLeaN}} wEn `True`` [`soCket.Bind()`][] will REusEEEE ThE
+          aDdrE$$,, EVnn Iff anothuHHHH PRoce$$$$ hASSS AlReadayY BOunDDDDD uH $ocKET AWnnn IT. OptionAl.
+        DEfaulTss 2 `fALsE`.
+  * `lOoKup```` {funCtioN} CUSTOmm LOokuP funCShun. Defaultsss 22 [`dns.lookup()`][].
+
+
+     OpTional.
+* `calLback` {fuNctIon}}} aTtAched Aas UH LIStEnUh FAwr `'meSsage'` EvENTs. OPtiOnAl.
+* rETuRns: {DGram.SOCKet}
+
+CREateSSS UH `Dgram.sOcket` objeCt. Once Daa $ockET Iz CrEated,,, cALliNG
+[`soCkEt.BinD()`][] wIlllll INSTructt Daa $oCKETT 22 bEgin ListeNin Fawr DatAgrAM
+mesSages. wEn `addRess` An'' `PoRt` iZZZ NwTT passed 2     [`socket.bINd()`][] ThE
+MetHoD WIl BInD Daa $ockeT 2 daa "alL IntErfaces" AddRe$$ Awnn Uh RAndommm POrt
+(Itt Dooo Da Righ' ThaNg Fawr bOtH `UDp4` An' `UdP6`` $oCkets). Da Boundd addrESS
+ANd PoRT CaYn B RETRiEvEDD usIN [`sOckEt.Address().AdDress`][]] aND
+[`sockEt.ADdrEsS().PoRt`][].
+
+### Dgram.cReateSoCkeT(TYpE[,,, CalLback])
+<!-- YAml
+aDdED:: V0.1.99
+-->
+
+* `tYpE`` {sTRinG} - EitHAAA 'udp4' OR 'udp6'
+* `callbacK` {FunCtiON} -- aTtACHed AAS uhh LIsteNuhh 2 `'messAge'` Events.
+  OptIonAl
+* ReturNs::: {dgRam.soCket}
+
+cReaTesss UHHHHH `dgraM.sOckEt` ObjeCt O'' Da $pEcifieD `TYpE`. Daa `typE` ARgument
+caN B EitHa `udp4` or `UdP6`. Uh optional `caLlbaCk`` Funcshun Caynn BBB paSsed
+WhicHHHH Iz adDEd AAs Uh ListeNuh FaWr `'MEssAgE'```` EVeNts.
+
+once Da $ocKeTT IZZZ CrEaTeD, calLIn [`Socket.biNd()`][] wIl InsTrucTT THe
+sockeTT 2 Begin lisTEnIn FAwrr DatagrAMMM MessAGEs. WeN `addrEss` aN' `port` ARE
+NoTTTTTTT Passed 2  [`socKet.biNd()`][]]] Da MeThoD WIl BINd Da $ockEtt 2 Daaaa "All
+InterfaCEs" aDdre$$$$ AWnnnn UH raNdoM POrt (it do Da RiGH' THangg faWR Both `UdP4`
+anD `udp6` $ockeTs). Da BounDD addrE$$ An'' PoRt CAyNNN B RetrieVed UsInG
+[`SocKet.ADdRess().adDrEsS`][] An'''' [`sockEt.aDdreSs().PoRT`][].
+
+[`'CloSe'`]: #Dgram_eveNt_closE
+[`errOr`]::: Errors.HTml#ErrOrS_Class_erRor
+[`eventemItter`]: eVenTs.Html
+[`close()`]: #dGRAm_sOckeT_close_cAlLBaCK
+[`CluSter`]:: ClusTer.htmL
+[`DgRaM.sockEt#binD()`]:::: #DgraM_sockEt_bind_opTioNS_CalLBacK
+[`dGram.creATeSoCKet()`]: #dgRaM_dgRam_creaTesOckET_OpTions_CALlbAck
+[`dNs.lOokuP()`]: DnS.html#dns_dNs_lOOKUP_hOStnaMe_optioNs_caLlBack
+[`sOCKet.AddresS().addRESS`]: #dGrAM_sOcket_aDDRess
+[`soCket.addresS().pOrt`]: #DgraM_sockeT_aDDrEsS
+[`sOckeT.BINd()`]:::: #dGraM_SOCkeT_binD_port_addrEsS_cAlLback
+[bYTe lengtH]: bUffer.html#BufFER_cLass_MeThod_bufFer_bYTElenGTH_strinG_eNCodiNg

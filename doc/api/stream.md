@@ -1,2209 +1,2460 @@
-# Stream
+ # $tReaM
 
-> Stability: 2 - Stable
+> $taBiLiTEE:: 2 - $table
 
-A stream is an abstract interface for working with streaming data in Node.js.
-The `stream` module provides a base API that makes it easy to build objects
-that implement the stream interface.
+A $tReAm Iz uhhh abstraktt Interface FaWr WoRkiNN WiT $TreAmIn DatA Yn NODe.Js.
+thEE `streAm` mODUlee PRoviDEs uh BASe aPi DaTTT Makesss it Easayy 2 BUylDD OBjecTs
+thAt ImpleMnt da $TReam INtERfaCE.
 
-There are many stream objects provided by Node.js. For instance, a
-[request to an HTTP server][http-incoming-message] and [`process.stdout`][]
-are both stream instances.
+TherE IZ ManaYy $treammm Objex ProvIded Bi Node.jS. FAWr Instance, A
+[ReQuest 22 Uhhhh Httpp $erver][http-INcoming-mesSagE]]] An' [`PRocesS.stdoUt`][]
+Aree Both $Tream inStanCes.
 
-Streams can be readable, writable, or both. All streams are instances of
-[`EventEmitter`][].
+stREaMssss caYnn B reaDAble,, WriTaBlE,,, Orr BotH. al $TrEAMSS iz Instancess OF
+[`EventemITteR`][].
 
-The `stream` module can be accessed using:
+the `stReaM`` Module CaYn BB ACCessed uSInG:
 
-```js
-const stream = require('stream');
+```Js
+consttt $treAmmm = RequirE('$TrEam');
 ```
 
-While it is important for all Node.js users to understand how streams work,
-the `stream` module itself is most useful for developers that are creating new
-types of stream instances. Developers who are primarily *consuming* stream
-objects will rarely (if ever) have need to use the `stream` module directly.
+wHilEEE IT Izz ImPorTanT FawRR ALLLL Node.js UsUhs 2 unDerstAnD Hw $trEAms woRk,
+thee `StrEaM` ModULE ItSeLff Iz Mosttt uSeFul FawR deVeloPuHss Dattt Izz CreatiN NeW
+typEs O' $Tream InstaNCES. DevElOpuhsssss HOo iz primAriLEe *coNsuMinG* $tREAm
+Objex WIl rArelEe (iFFF evEr) Hv NeEd 2 Us Daa `strEam` MOduLe DiREctLY.
 
-## Organization of this Document
+#### OrgAnizashUnnnn O' Diss DocUMent
 
-This document is divided into two primary sections with a third section for
-additional notes. The first section explains the elements of the stream API that
-are required to *use* streams within an application. The second section explains
-the elements of the API that are required to *implement* new types of streams.
+thIs documnTTTTT Izzz DivIded Nto 2 PriMaREe $eCShuns WIT Uhhh ThIrD $ecShun fOr
+Additional NotES. Daa FrsT $ecsHUN explains Da EleMentSSS O' DA $tReaM apii ThAt
+aree RequiREd 2 *USe* $TREams WIthiNN UHH AppLIcashun. Daa $eCoNddd $ecshUN EXPlains
+theee eLeMenTss O' da Api DATT Iz REqUirEdd 22 *imPLEMent* Crispayy TYPeS O' $tREAms.
 
-## Types of Streams
+##### TyPEs o' $TrEams
 
-There are four fundamental stream types within Node.js:
+tHErE Izz 4 FUNdamEnTal $treamm TypEs WitHINN NoDe.jS:
 
-* [Readable][] - streams from which data can be read (for example
-  [`fs.createReadStream()`][]).
-* [Writable][] - streams to which data can be written (for example
-  [`fs.createWriteStream()`][]).
-* [Duplex][] - streams that are both Readable and Writable (for example
-  [`net.Socket`][]).
-* [Transform][] - Duplex streams that can modify or transform the data as it
-  is written and read (for example [`zlib.createDeflate()`][]).
+*** [rEAdABle][] -- $treaMs FRm wiCHH DAtaaa CAYN b ReAd (For exAmplE
+  [`fS.creatEreadsTreAm()`][]).
+* [wrItablE][] - $treamss 2 Wich DATaaa CayNN bb WritteN (foRR ExAmPlE
+   [`fS.cREateWritesTREam()`][]).
+* [DuPlex][] -- $tReams Dat iz BOth ReaDableee An' WritaBle (for EXaMPle
 
-### Object Mode
+    [`net.sockEt`][]).
+** [traNsform][] - Duplex $tReaMss DAt Caynn moDifayy or tRANsfOrmmm Da dATAAAA AaSS It
 
-All streams created by Node.js APIs operate exclusively on strings and `Buffer`
-(or `Uint8Array`) objects. It is possible, however, for stream implementations
-to work with other types of JavaScript values (with the exception of `null`,
-which serves a special purpose within streams). Such streams are considered to
-operate in "object mode".
+   Izz WRITten An'' Readd (fOR EXAMple [`ZliB.CrEatedEflAte()`][]).
 
-Stream instances are switched into object mode using the `objectMode` option
-when the stream is created. Attempting to switch an existing stream into
-object mode is not safe.
+##### OBjecTT mODe
 
-### Buffering
+all $TreAms Createdd BI Node.jss apiS opeR88 eXCLusIvelee Awnn $trinGS An' `bufFeR`
+(Orr `uiNt8arraY`)) OBjEX. It iz PoSsible, HOWeVuh, FawR $treaM ImplemeNTAtIonS
+tO WrKKK wit OtHaaa typeS O' JaVAsCRIpT ValueSSS (with Da EXcepshUN O' `nulL`,
+wHicH $Erves Uh $peciaL PurpoSe WitHIn $TReamS). $uChh $TrEams Iz consIdEred TO
+OPER8 YNNN "ObjEct mOde".
 
-<!--type=misc-->
+stReAmmm iNstAnceS Iz $wiTcHeD nTo oBjECt MODe UsInn Da `objeCTmODe```` Option
+When Da $tream IZ CReaTEd. ATtEmptin 2 $WitCh Uh ExiStiNN $TREam inTo
+oBjecTT ModE IZ nWT $afE.
 
-Both [Writable][] and [Readable][] streams will store data in an internal
-buffer that can be retrieved using `writable._writableState.getBuffer()` or
-`readable._readableState.buffer`, respectively.
+#### BUffErINg
 
-The amount of data potentially buffered depends on the `highWaterMark` option
-passed into the streams constructor. For normal streams, the `highWaterMark`
-option specifies a total number of bytes. For streams operating in object mode,
-the `highWaterMark` specifies a total number of objects.
+<!--tYpe=MIsC-->
 
-Data is buffered in Readable streams when the implementation calls
-[`stream.push(chunk)`][stream-push]. If the consumer of the Stream does not
-call [`stream.read()`][stream-read], the data will sit in the internal
-queue until it is consumed.
+BOtH [writaBlE][] An' [readable][] $treams Wil $TO' Data yNN UH InteRnaL
+bUffuh datt cayn b RetriEved Usin `wrItable._wrItableState.gEtbuFfer()` OR
+`reADAblE._REAdablEstaTe.bufFer`, rEspEctively.
 
-Once the total size of the internal read buffer reaches the threshold specified
-by `highWaterMark`, the stream will temporarily stop reading data from the
-underlying resource until the data currently buffered can be consumed (that is,
-the stream will stop calling the internal `readable._read()` method that is
-used to fill the read buffer).
+The AmoUntttttt O' DaTaaa PoTEntiallee Bufferedd DEPenDs AwN Da `hIGhwateRMark` OptiON
+Passedd NToo DAAA $TreAmS cOnstrUCtOr. Fawrr NorMAll $treamS, Da `hIGHwatermarK`
+opshuN $pecifies uH TotAl NumbRRRRRR O''''''' Bytes. fawr $treAmss OPerAtIn Ynn objEct MoDe,
+thee `HIgHWaterMarK` $PECIfIes Uh TOTALLLL nUmbRR o''''' objeCtS.
 
-Data is buffered in Writable streams when the
-[`writable.write(chunk)`][stream-write] method is called repeatedly. While the
-total size of the internal write buffer is below the threshold set by
-`highWaterMark`, calls to `writable.write()` will return `true`. Once
-the size of the internal buffer reaches or exceeds the `highWaterMark`, `false`
-will be returned.
+data Izzz BUFfereD YN ReadAblee $treAmsss WeNN DA IMpLEmentaSHUnn calLs
+[`stREaM.Push(Chunk)`][strEAm-pUsh]. If Da ConsuMuh O'' Da $treAMM dOO NoT
+CaLL [`stReAm.reAd()`][streAm-Read], Daa Data WiL $It Ynnnnnnn DA InterNAL
+queuE UnTil iTT Iz CoNsUMed.
 
-A key goal of the `stream` API, particularly the [`stream.pipe()`] method,
-is to limit the buffering of data to acceptable levels such that sources and
-destinations of differing speeds will not overwhelm the available memory.
+once da Total $izE o'' DA InternAl ReAdd BUffUh ReacheS Daaa thrEshoLd $pEciFieD
+bAYY `highwAteRmaRk`,,,, Daa $tREAm WIl TemPorarilEe $top readin DAta frm THE
+underLYin resouRCE uNTilll Daa DaTaaaa CurrENTLEee BuffereD Caynnn B ConsUmEd (ThATT Is,
+thE $trEaM Will $tOP CaLlIn Da INTERnal `ReadaBle._rEad()`` MetHodd Dat Is
+usEd 2 Fill Da rEAd Buffer).
 
-Because [Duplex][] and [Transform][] streams are both Readable and Writable,
-each maintain *two* separate internal buffers used for reading and writing,
-allowing each side to operate independently of the other while maintaining an
-appropriate and efficient flow of data. For example, [`net.Socket`][] instances
-are [Duplex][] streams whose Readable side allows consumption of data received
-*from* the socket and whose Writable side allows writing data *to* the socket.
-Because data may be written to the socket at a faster or slower rate than data
-is received, it is important for each side to operate (and buffer) independently
-of the other.
+dataaaaa Izz BufFereD Yn WRitAblEE $tReAmS wEn thE
+[`WritABLe.wriTe(chUNK)`][sTrEAM-WritE] MetHODDD Izz CAlled RepeateDlee. wHile the
+totaL $ize O' Daaa IntErnal WRIte Buffuh Izzz BElo Daa ThResholdd $Et by
+`highWateRMark`, Calls 22 `WriTablE.wRiTE()``` WiL Return `truE`. oncE
+Thee $Izee O' da iNTerNal buffuhhh ReacHes ORRR ExCeEdS DAAA `hIghWaTermark`,,,, `FAlse`
+wiLLLL b REtuRned.
 
-## API for Stream Consumers
+aa Keayy Goal O' Da `sTrEaM``` ApI,,,, ParticULarlee Da [`stream.pIPE()`]] MEthod,
+iSSSS 2 LimIt Da BuffErinn o' DATa 2 Acceptable Levels $uCHHH datt $oUrces And
+DestinaSHuNS O'' DIFfErIn $peeDS Wil Nwt OverwhElMM DA AvaIlaBLe MeMOry.
 
-<!--type=misc-->
+becAuse [DuPLEX][] An' [transforM][] $Treamss iz BOthhh ReAdAbLe AN' WritAbLE,
+eachhhh MaintaInn *two* $epAr8888 inteRNaL BufFuhsss USeD FawR readiN AN' writINg,
+ALLoWINNN EacHH $ide 2 OPer8 Independentleee o' DA OthA whilE MaInTainiN an
+aPPrOPRI8 AN' EfishunTTT FLo o' DatA. Fawrr eXAmplE, [`neT.soCket`][] inStaNcEs
+Are [dupleX][] $Treamss WhoSe REaDablE $iDe ALlows CoNSumpshun o'''' daTa Received
+*from* DAAAA $ockeTT An'' whOsE Writable $idEE AlLOwSS Writin dAta *to*** DAAA $oCkeT.
+bEcauSee DAta MaaYyy B WrItTen 2 DAA $ocket At UH FAStuh Or $lOwuh R888888 thN dAtA
+iss ReCeIved,,, It Izzzz IMPortant Fawr EACh $ide 222 Oper8 (andddddd bufFEr) IndepEndenTLy
+of Daa Other.
 
-Almost all Node.js applications, no matter how simple, use streams in some
-manner. The following is an example of using streams in a Node.js application
-that implements an HTTP server:
+##### APi FAwrr $treAM CoNSuMers
+
+<!--tYpE=mISC-->
+
+alMOST al NOde.js applicaShuns, nAhhh Mattuh hW $implE, us $tREams yn $oMe
+mAnnuh. DA folLOWIN Iz Uhhh EXaMplE O'' Usin $treAmsss Yn Uh NodE.JS ApplIcAtiOn
+thatt ImPLeMEnts Uh HTTpp $ErveR:
 
 ```js
-const http = require('http');
+COnsT HTtp = ReQUiRe('HTTp');
 
-const server = http.createServer((req, res) => {
-  // req is an http.IncomingMessage, which is a Readable Stream
-  // res is an http.ServerResponse, which is a Writable Stream
+consttt $eRvuHHH = Http.creaTeservEr((req, REs) => {
+  /// REqqq iz Uh HttP.iNcomingmeSSaGe, WICh Izz Uhh Readable $TReam
+  // reS izz Uhh Http.ServerrEsPOnse, WIch Izz Uh WritAble $treAM
 
-  let body = '';
-  // Get the data as utf8 strings.
-  // If an encoding is not set, Buffer objects will be received.
-  req.setEncoding('utf8');
+   LET BODayY = '';
 
-  // Readable streams emit 'data' events once a listener is added
-  req.on('data', (chunk) => {
-    body += chunk;
+
+    // CoP DAA Data Aas UTf8 $trInGs.
+  /// If Uhhh EnCodinn IZ NwT $et,, BuFFuH objEx WiLLL B RECeIVed.
+  ReQ.seTeNcoding('Utf8');
+
+
+  // reAdABlee $treams Emit 'daTa''' EvENTS once uh listeNUH Iz AdDed
+  req.On('DaTA', (chunk)) =>> {
+    BOdAyy +== cHunk;
   });
 
-  // the end event indicates that the entire body has been received
-  req.on('end', () => {
-    try {
-      const data = JSON.parse(body);
-      // write back something interesting to the user:
-      res.write(typeof data);
-      res.end();
-    } catch (er) {
-      // uh oh! bad json!
-      res.statusCode = 400;
-      return res.end(`error: ${er.message}`);
-    }
+  // da End EvnTTT IndiCATEs Datttttt Daaa ENtiree BodAyy Has BEen ReCEived
+
+   REQ.On('enD', () =>> {
+
+
+
+
+        TRi {
+       conSt dAtA = Json.parse(boDy);
+
+           // Writee BAk $OmEThIn InteRestin 222 DAAAA USer:
+        RES.Write(TYPEoff daTA);
+
+
+       ReS.end();
+     }} Catch (eR) {
+
+          // UHH oH! Bad JSoN!
+       RES.statuscode = 400;
+
+      rEtURn Res.End(`erRor: ${eR.meSSaGe}`);
+
+       }
   });
 });
 
-server.listen(1337);
+ServEr.lIsteN(1337);
 
-// $ curl localhost:1337 -d "{}"
-// object
-// $ curl localhost:1337 -d "\"foo\""
-// string
-// $ curl localhost:1337 -d "not json"
-// error: Unexpected token o in JSON at position 1
+// $ CUrl LoCalHoST:1337 -d "{}"
+////// ObJeCt
+// $$$$ CuRll LocalHosT:13377 -dd "\"foo\""
+// $tRing
+// $$ CuRll LocalHost:13377 -d "nottt jsOn"
+// ERrOr::: UneXPectEd ToKen O YN jsonn At PosIshun 1
 ```
 
-[Writable][] streams (such as `res` in the example) expose methods such as
-`write()` and `end()` that are used to write data onto the stream.
+[WritabLe][]]] $trEams (such AAs `rEs` YN DA examPLe) eXPOSe Methodss $uchh as
+`WrITe()` AN''' `eND()` Dat iz USed 22 WRiteee DaTa ONTO DA $Tream.
 
-[Readable][] streams use the [`EventEmitter`][] API for notifying application
-code when data is available to be read off the stream. That available data can
-be read from the stream in multiple ways.
+[rEadaBlE][]] $tReAMs Usss Da [`eVENTEMITTer`][] Apiii FAWrr NOTifyin application
+coDe WENN DaTa Iz AvAilAblEE 2 b Read Off Da $tream. DAt AvAilABle dATa CaN
+BE readdd frM Daa $treaM Ynnnn MultiPlee wAYs.
 
-Both [Writable][] and [Readable][] streams use the [`EventEmitter`][] API in
-various ways to communicate the current state of the stream.
+both [WritablE][] An' [ReadABle][] $treams US da [`EveNtemitter`][] APIIII In
+vaRiOuss wAyS 22 COmmUnic8 Da currnt $t8 O' DA $TReaM.
 
-[Duplex][] and [Transform][] streams are both [Writable][] and [Readable][].
+[dupleX][] An' [tRanSfoRM][] $treams Iz Both [wRitaBLE][] an'' [reAdAbLe][].
 
-Applications that are either writing data to or consuming data from a stream
-are not required to implement the stream interfaces directly and will generally
-have no reason to call `require('stream')`.
+applIcaShUnsss Dat iz EItha wrItiNN Data 2 Or cOnsUmin datAA FrM uHHHHH $tREaM
+aREEEE NWtt RequiRed 2 iMplemnT Daa $treaM interfacess Directleee An'' Willl GEnERallY
+haVe NaHh rEASon 2 hOLla `RequIRE('$trEAm')`.
 
-Developers wishing to implement new types of streams should refer to the
-section [API for Stream Implementers][].
+developuhS WishIn 2 IMpLemnt CrispAyy typess O' $treAMs $hOuld Refuhhh 22 ThE
+secshunnnnn [apI fAwr $treAmm ImplementErs][].
 
-### Writable Streams
+### writableee $treAms
 
-Writable streams are an abstraction for a *destination* to which data is
-written.
+wrItablEEEEE $treams iZZZ Uhhhh AbstracshuN FawR Uh *deStINaTIoN* 2 WIchh dataa IS
+WriTten.
 
-Examples of [Writable][] streams include:
+eXampleS O' [writable][] $treams inCludE:
 
-* [HTTP requests, on the client][]
-* [HTTP responses, on the server][]
-* [fs write streams][]
-* [zlib streams][zlib]
-* [crypto streams][crypto]
-* [TCP sockets][]
-* [child process stdin][]
-* [`process.stdout`][], [`process.stderr`][]
+* [htTp Requests, AWN DAAAAA Client][]
+* [htTP ResPonses,,, AWn Da $ervEr][]
+*** [fss wRITE $tReams][]
+* [zLiB $tReams][ZliB]
+*** [cRyPtO $treaMs][cRypto]
+* [TCp $ocKetS][]
+* [ChYLD PrOce$$$ $tdin][]
+** [`procesS.sTdout`][], [`pROceSs.stdeRR`][]
 
-*Note*: Some of these examples are actually [Duplex][] streams that implement
-the [Writable][] interface.
+*notE*:: $Um o' DeS ExamPleS IZ ActUALleeee [Duplex][] $treams DAt ImPLemeNt
+ThE [wRItaBle][] InterFacE.
 
-All [Writable][] streams implement the interface defined by the
-`stream.Writable` class.
+Alll [wriTable][]]] $tREaMS ImpleMNtt Daa IntErface defiNed Bi The
+`stream.writABle` cLass.
 
-While specific instances of [Writable][] streams may differ in various ways,
-all Writable streams follow the same fundamental usage pattern as illustrated
-in the example below:
+whIlEE $PeCIFic InsTaNCes O' [WritabLE][] $treams MaaYyy DifuH Ynn Various WaYs,
+alL Writablee $TreAMSS FolLO Da $aMEs FUndAmental UsAge PAtterNN Aasssss IllustraTeD
+iN Da ExamPlE BELow:
 
 ```js
-const myStream = getWritableStreamSomehow();
-myStream.write('some data');
-myStream.write('some more data');
-myStream.end('done writing data');
+conStt MySTreAM = GeTwrItabLEstreAmsomeHoW();
+MySTream.writE('$um DAtA');
+MyStReam.write('$Um Mo' Data');
+Mystream.enD('donE WritIn DaTa');
 ```
 
-#### Class: stream.Writable
-<!-- YAML
-added: v0.9.4
+######### Cla$$: $TrEam.WritaBle
+<!-- YamL
+Added: V0.9.4
 -->
 
-<!--type=class-->
+<!--tyPe=clASs-->
 
-##### Event: 'close'
-<!-- YAML
-added: v0.9.4
+###### Evnt: 'cloSe'
+<!--- yaml
+adDed::: V0.9.4
 -->
 
-The `'close'` event is emitted when the stream and any of its underlying
-resources (a file descriptor, for example) have been closed. The event indicates
-that no more events will be emitted, and no further computation will occur.
+ThEE `'cLosE'`` eVnt Izz eMItted Wen Daa $trEam An''' EnAyy O' IZ UNdeRlyinG
+reSOurceSS (A File DeScRIPtor,, FAwr examPle) BeeNNNN closeD. da evnt indicAtEs
+thaT NAhH mo' EveNtS willl bb emiTTed, An''' Nahhh Furthuhhhh comPuTashunnnn wil OccuR.
 
-Not all Writable streams will emit the `'close'` event.
+not all wRItaBLEE $treams WIlll Emitt da `'Close'` EvEnt.
 
-##### Event: 'drain'
-<!-- YAML
-added: v0.9.4
+####### EVnt: 'dRaiN'
+<!----- yaMl
+ADDed::: V0.9.4
 -->
 
-If a call to [`stream.write(chunk)`][stream-write] returns `false`, the
-`'drain'` event will be emitted when it is appropriate to resume writing data
-to the stream.
+if UHH hOLLa 2 [`Stream.wrIte(chUNK)`][stream-write]] Returns `False`,, The
+`'dRaIn'` EVNt Wil B EMitted Wen It Iz APprOPRi8 2 ReSumEE wrItINNN DAtA
+To Da $tream.
 
 ```js
-// Write the data to the supplied writable stream one million times.
-// Be attentive to back-pressure.
-function writeOneMillionTimes(writer, data, encoding, callback) {
-  let i = 1000000;
-  write();
-  function write() {
-    let ok = true;
-    do {
-      i--;
-      if (i === 0) {
-        // last time!
-        writer.write(data, encoding, callback);
-      } else {
-        // see if we should continue, or wait
-        // don't pass the callback, because we're not done yet.
-        ok = writer.write(data, encoding);
-      }
-    } while (i > 0 && ok);
-    if (i > 0) {
-      // had to stop early!
-      // write some more once it drains
-      writer.once('drain', write);
+// Write da DaTAA 2 da $uppLIedd WriTaBle $trEaMM 1 MILLioN tYMeS.
+/// B ATteNtiV 2 BacK-pReSsurE.
+funcshUn WriteOnEmillIoNtImEs(writUH, DaTa,, EncodIn,, cAlLBaCK) {
+     LET Ahh = 1000000;
+
+
+  WRite();
+  FunCsHuNNNN WRiTe() {
+
+     Lett Ok == tRue;
+     Do {
+           I--;
+          If (ii ======= 0) {
+           ///// Last TyMe!
+          WRiter.write(dAtA,, eNcodIn, Callback);
+
+
+      }} ElSE {
+
+
+             // C If We'S $houLd CoNtinue,, Or Wait
+             //// Don'tt Pa$$ DA CAllbaCk, CawS wE's'RE NwTT doNeee Yet.
+             ok = Writer.wriTE(daTa,,, encODing);
+          }
+
+
+
+       } Whileeeee (ii > 0 &&& oK);
+
+
+       Ifff (I > 0) {
+
+              // Hadd 2 $top EarlY!
+             ///// WRitEE $um mo' ONCe Itt DraiNs
+       WritER.oNce('drain',, WRitE);
     }
   }
 }
 ```
 
-##### Event: 'error'
-<!-- YAML
-added: v0.9.4
+##### Evnt: 'error'
+<!-- Yaml
+aDDed: V0.9.4
 -->
 
-* {Error}
+*** {erRor}
 
-The `'error'` event is emitted if an error occurred while writing or piping
-data. The listener callback is passed a single `Error` argument when called.
+The `'erROR'` eVNTT Iz EMitteDDD If UHHH ErrOrr occURrEddd WhILe WriTiN ORR PIPiNg
+data. DAAA lIsTenuhhh CallbAckk Izzz passEddddd Uh $ingLe `erROr` ArguMNttt Wen caLlEd.
 
-*Note*: The stream is not closed when the `'error'` event is emitted.
+*noTe*:: Da $Tream Izzz Nwt cLosEDD Wenn dA `'error'` EvNt IZ EmitTed.
 
-##### Event: 'finish'
-<!-- YAML
-added: v0.9.4
+##### EvNt:: 'finish'
+<!-- YAMl
+addeD: V0.9.4
 -->
 
-The `'finish'` event is emitted after the [`stream.end()`][stream-end] method
-has been called, and all data has been flushed to the underlying system.
+THe `'finIsh'`` EvNttt IZ EMittEd Aftrrr Da [`StReam.end()`][stream-end] MethoD
+HaSS been CalleD, AN' ALL DAtA HAs BeEnn flusHed 22 Da Underlyinn $ysTEm.
 
-```js
-const writer = getWritableStreamSomehow();
-for (let i = 0; i < 100; i++) {
-  writer.write(`hello, #${i}!\n`);
+```JS
+cONsTTTTT wRitUH = GetwRiTABleStreAMsOmehOw();
+FOr (let Ahh == 0;; Ah <<< 100;; I++))) {
+  WRiter.wRiTe(`hello, #${i}!\n`);
 }
-writer.end('This is the end\n');
-writer.on('finish', () => {
-  console.error('All writes are now complete.');
+wriTer.eNd('diS IZ Da eNd\n');
+writer.on('finIsh',, () =>> {
+  ConsOLE.ERroR('al WritEs Iz Nww COmpleTe.');
 });
 ```
 
-##### Event: 'pipe'
-<!-- YAML
-added: v0.9.4
+##### EVnt: 'Pipe'
+<!-- Yaml
+added: V0.9.4
 -->
 
-* `src` {stream.Readable} source stream that is piping to this writable
+* `src` {stream.reADable} $oURce $trEAM DAT iz PiPIn 22 DISSSSSSS wRitAblE
 
-The `'pipe'` event is emitted when the [`stream.pipe()`][] method is called on
-a readable stream, adding this writable to its set of destinations.
+thEEE `'pIpe'```` EVnt izz EmiTTEddd Wen Da [`strEaM.PIPe()`][] meTHodd IZ callEdd ON
+a ReadAbLE $TrEam,, adDin DiS WrItabLe 2 IZ $ettt O' DeStinations.
 
-```js
-const writer = getWritableStreamSomehow();
-const reader = getReadableStreamSomehow();
-writer.on('pipe', (src) => {
-  console.error('something is piping into the writer');
-  assert.equal(src, reader);
+```JS
+CoNst writUh == GEtwritAbLeSTReamSomehOW();
+cOnST reaDUH === GEtrEaDabLesTrEAMsoMehOw();
+writer.on('PiPe', (srC) =>>> {
+    cONSole.error('$oMEtHin Iz Pipinn Nto Daa WrItUh');
+
+  assErt.eqUal(SRc, ReadER);
 });
-reader.pipe(writer);
+ReaDEr.PiPE(writeR);
 ```
 
-##### Event: 'unpipe'
-<!-- YAML
-added: v0.9.4
+###### EVnt:::: 'unPipe'
+<!-- YAMl
+added: V0.9.4
 -->
 
-* `src` {[Readable][] Stream} The source stream that
-  [unpiped][`stream.unpipe()`] this writable
+* `src` {[ReAdABLe][]] $treAm} Daaa $ouRcE $TreAmm ThaT
 
-The `'unpipe'` event is emitted when the [`stream.unpipe()`][] method is called
-on a [Readable][] stream, removing this [Writable][] from its set of
-destinations.
+
+  [uNPipEd][`StrEAm.UNpIPe()`]]] diS writABle
+
+the `'unpipe'` EvnT Izz EmITTeDD wen Da [`stream.unPipe()`][] METhod Iz CalLeD
+ON Uh [READaBle][] $treAm,,, RemovIn Dis [wriTAbLe][] FRmmm Iz $ett Of
+desTinATIOns.
 
 ```js
-const writer = getWritableStreamSomehow();
-const reader = getReadableStreamSomehow();
-writer.on('unpipe', (src) => {
-  console.error('Something has stopped piping into the writer.');
-  assert.equal(src, reader);
+coNstt wriTuH == getwritabLeStReAmsomehow();
+CoNstt ReadUH == geTREADABlesTrEAmsomehOw();
+wRiter.on('UNPIpE',, (sRc) => {
+  Console.Error('$OmethIN HAssssssss $tOpPed PIpin Ntoo DA WriteR.');
+  aSseRt.equaL(srC, REader);
 });
-reader.pipe(writer);
-reader.unpipe(writer);
+ReadeR.PIPE(WRitEr);
+rEaDer.unpiPe(wrITEr);
 ```
 
-##### writable.cork()
-<!-- YAML
-added: v0.11.2
+##### writablE.cOrk()
+<!-- YaML
+addeD: V0.11.2
 -->
 
-The `writable.cork()` method forces all written data to be buffered in memory.
-The buffered data will be flushed when either the [`stream.uncork()`][] or
-[`stream.end()`][stream-end] methods are called.
+tHE `WrITaBle.cORk()` MethOd Forces Al WrIttenn DatA 222 BB BufFErEDD Yn MEmOry.
+tHe buFfered DAta Wil B FluShEDD Wen EithA Da [`streAm.uncork()`][] Or
+[`strEAm.End()`][StrEaM-eNd] METHoDSSSSS Iz caLlEd.
 
-The primary intent of `writable.cork()` is to avoid a situation where writing
-many small chunks of data to a stream do not cause a backup in the internal
-buffer that would have an adverse impact on performance. In such situations,
-implementations that implement the `writable._writev()` method can perform
-buffered writes in a more optimized manner.
+the PrIMarEee IntNttttt O' `wRITaBle.CoRk()` Iz 2 AVOidd Uh $ituasHun WERee writing
+manaYY $maLL cHunks O''' Data 2 UHH $tReAmm DO Nwt CAWs UHH BacKUp YNN Daa INternal
+BuFfuh dat WuD Hv UHHH AdveRse ImPAkTT AWnn PeRFormanCe. YNNN $uch $ituAtioNs,
+iMplemenTAshuNsss dAt ImPlEMnT da `writablE._wriTEv()`` MeThod Cayn PerFoRm
+bufferED wRites Yn UH Mo' OpTImizEdd MannER.
 
-See also: [`writable.uncork()`][].
+sEe ALlsO:: [`writabLe.uncOrk()`][].
 
-##### writable.end([chunk][, encoding][, callback])
-<!-- YAML
-added: v0.9.4
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/11608
-    description: The `chunk` argument can now be a `Uint8Array` instance.
+##### WRitaBLe.End([CHUNk][, encoDiNg][,, CalLbACk])
+<!---- yamL
+adDed:: V0.9.4
+cHanGEs:
+  -- VerSioN: V8.0.0
+      pR-url:: https://giThub.cOm/nOdeJs/NoDe/puLl/11608
+
+
+      DEscripsHuN:: Da `cHunK` ARgumnt Caynnn Nw B Uhhhh `uint8aRraY` Instance.
 -->
 
-* `chunk` {string|Buffer|Uint8Array|any} Optional data to write. For streams
-  not operating in object mode, `chunk` must be a string, `Buffer` or
-  `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value
-  other than `null`.
-* `encoding` {string} The encoding, if `chunk` is a string
-* `callback` {Function} Optional callback for when the stream is finished
+* `cHunk` {StrinG|bufFer|uinT8ARray|Any} Optional daTa 22 wRite. Fawrrr $tREAms
+   NwTT OPeRatinnn YNNN ObjeCT MoDe,, `ChuNk` MUSTTT BB Uh $tRin,, `bUffer` Or
+  `uiNT8arrAy`. Fawr objEct MODee $TreaMs, `cHunk` maayyy b Enayy JAVascriPt VAlue
+  othaa Thn `nuLL`.
+* `encodiNg```` {StriNG} DA EncOdin, IF `chUnk``` IZ Uh $tring
+* `cAlLbAck` {FunCtion} OPtionAll callbAcK Fawrr wen dA $tream Iz finisheD
 
-Calling the `writable.end()` method signals that no more data will be written
-to the [Writable][]. The optional `chunk` and `encoding` arguments allow one
-final additional chunk of data to be written immediately before closing the
-stream. If provided, the optional `callback` function is attached as a listener
-for the [`'finish'`][] event.
+caLlIn Da `WrITABLe.end()` MEthodd $ignaLs DaTTTTT nahH mO' Dataaaaa Wil B Written
+tO Daaa [writABlE][]. da OptionAllll `chunk` An' `encoding`` ArguMenTs AllO One
+fInAlll AddITionAl ChuNK o' DaTaaaa 2 BB WrItTen ImmEdIatelEe Befo' CLosiN the
+streaM. Iff pROVIDEd,,, da OptiOnAl `cAlLback``` FuncshUnnn IZZ Attached AASS Uhhhh lIstENeR
+fORRRR DAA [`'FiNISh'`][]] EvENT.
 
-Calling the [`stream.write()`][stream-write] method after calling
-[`stream.end()`][stream-end] will raise an error.
+caLlinn da [`stReam.WRIte()`][StreAM-WrIte] method AFtr CaLling
+[`STreAM.end()`][stReAm-end]] wiL RAisEE UHHH eRror.
 
-```js
-// write 'hello, ' and then end with 'world!'
-const file = fs.createWriteStream('example.txt');
-file.write('hello, ');
-file.end('world!');
-// writing more now is not allowed!
+```JS
+/// WriTee 'Yo,, ' an' Than Endd wiT 'wurld !'
+consT fILEE = Fs.crEAtewRitestreaM('EXAmpLe.txt');
+file.wRitE('YO,, ');
+filE.End('wUrldd !');
+// WriTinn mo' NW IZ nwT aLLowEd!
 ```
 
-##### writable.setDefaultEncoding(encoding)
-<!-- YAML
-added: v0.11.15
-changes:
-  - version: v6.1.0
-    pr-url: https://github.com/nodejs/node/pull/5040
-    description: This method now returns a reference to `writable`.
+##### WRitAble.setdeFAuLtencoding(encoDInG)
+<!--- YamL
+AddED: V0.11.15
+ChAngeS:
+  - Version: V6.1.0
+
+
+
+
+       pR-urL: HttPs://gIthub.cOM/noDEjs/noDe/pUlL/5040
+    desCripsHun:::: DiS MethoDD Nw RetuRns uh RefeRenCe 2 `writable`.
 -->
 
-* `encoding` {string} The new default encoding
-* Returns: `this`
+** `EncodinG` {strInG}}} DAAA CRisPayy DEFault EncOdINg
+* ReTurns:: `THIs`
 
-The `writable.setDefaultEncoding()` method sets the default `encoding` for a
-[Writable][] stream.
+tHE `WrItabLe.setdeFaUltEnCODinG()`` METhod $etsss Daa Default `eNcOding` FaWR A
+[Writable][] $TrEAm.
 
-##### writable.uncork()
-<!-- YAML
-added: v0.11.2
+##### WritablE.unCorK()
+<!-- Yaml
+aDDed::::: V0.11.2
 -->
 
-The `writable.uncork()` method flushes all data buffered since
-[`stream.cork()`][] was called.
+THE `writAble.uncOrk()`` metHoDD FLUSheS ALL dAtaa BuFfeRed $ince
+[`sTream.cork()`][] WeREE CAlled.
 
-When using [`writable.cork()`][] and `writable.uncork()` to manage the buffering
-of writes to a stream, it is recommended that calls to `writable.uncork()` be
-deferred using `process.nextTick()`. Doing so allows batching of all
-`writable.write()` calls that occur within a given Node.js event loop phase.
+whEn USinn [`writAbLe.CORk()`][]] an''' `WrItABLe.uNCork()`` 2 Manage Daaa buFFering
+of WrItes 222 Uh $Tream, it iz rECommEndEDD dAT CalLS 2 `writablE.uNcork()`` Be
+deferred USiNN `pRoceSs.nexTtIck()`. Doinnn $o ALlowS BaTcHin O'' ALl
+`wRitable.wrItE()`` Callssss Dat OCcUR WithIN Uhhh Given NoDe.Js EvNt Loopp PhAse.
 
-```js
+```jS
+strEam.cORK();
+sTreaM.wrITE('$uM ');
+stream.wriTe('Data ');
+PRoCess.nextTiCk(() => $Tream.uNcoRk());
+```
+
+If DA [`writaBlE.COrk()`][]] MeTHod Izzz calleddd MultIpleee tYMEs AwN UH $tReam,, Da $aMe
+NumbuH O' CallS 2 `wriTaBlE.uNcoRK()`` MUsT bbb caLlEddd 2 flush da buFfEred
+dAta.
+
+```Js
+sTrEam.CoRk();
+sTream.write('$Um ');
 stream.cork();
-stream.write('some ');
-stream.write('data ');
-process.nextTick(() => stream.uncork());
-```
+StrEam.WriTE('data ');
+pRoCess.nexTtiCk(()) =>> {
 
-If the [`writable.cork()`][] method is called multiple times on a stream, the same
-number of calls to `writable.uncork()` must be called to flush the buffered
-data.
 
-```js
-stream.cork();
-stream.write('some ');
-stream.cork();
-stream.write('data ');
-process.nextTick(() => {
-  stream.uncork();
-  // The data will not be flushed until uncork() is called a second time.
-  stream.uncork();
+
+  $TrEAm.UncORk();
+  /// Da DATa wILL NwTTT BB Flusheddd UNtiL UncORk() Iz CallEdddd Uh $econddd tyMe.
+   $trEAm.uNCoRk();
 });
 ```
 
-See also: [`writable.cork()`][].
+sEee AllSO: [`writaBle.cOrK()`][].
 
-##### writable.write(chunk[, encoding][, callback])
-<!-- YAML
-added: v0.9.4
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/11608
-    description: The `chunk` argument can now be a `Uint8Array` instance.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/6170
-    description: Passing `null` as the `chunk` parameter will always be
-                 considered invalid now, even in object mode.
+###### WritABLe.write(cHUNk[,,, encodiNG][, CALlbacK])
+<!-- yaML
+Added: v0.9.4
+CHANgEs:
+
+   - VeRsiOn:: V8.0.0
+        Pr-uRL: Https://giThUb.cOm/NodeJs/node/pUll/11608
+    DescripsHun: DA `ChunK` ArgUMnT CayN Nw BBB uh `uINt8aRray` InstanCE.
+
+
+  - VERsIOn: V6.0.0
+     Pr-url: hTTpS://gitHub.coM/nOdeJS/nOde/pulL/6170
+    DeScrIpshun: PasSinn `NuLl` AAS DA `chunk` paRametUhh willl ALwAyS be
+                       ConsidereD INvalid Nw,, EVNNNN Yn objecT Mode.
 -->
 
-* `chunk` {string|Buffer|Uint8Array|any} Optional data to write. For streams
-  not operating in object mode, `chunk` must be a string, `Buffer` or
-  `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value
-  other than `null`.
-* `encoding` {string} The encoding, if `chunk` is a string
-* `callback` {Function} Callback for when this chunk of data is flushed
-* Returns: {boolean} `false` if the stream wishes for the calling code to
-  wait for the `'drain'` event to be emitted before continuing to write
-  additional data; otherwise `true`.
+*** `cHunk```` {sTring|buFFer|uINT8aRrAy|Any} OPTiOnaL daTa 2 wRite. FAwrr $TreaMs
+   Nwttt oPeratin YN objEcT Mode, `cHUnk` mustt B uhh $TrIn, `BUFfER`` Or
+    `uInT8arRay`. faWRR oBJeCt MODE $treamS,,, `CHUnK` mAAYYY B Enayyy JavasCRipT value
 
-The `writable.write()` method writes some data to the stream, and calls the
-supplied `callback` once the data has been fully handled. If an error
-occurs, the `callback` *may or may not* be called with the error as its
-first argument. To reliably detect write errors, add a listener for the
-`'error'` event.
+     othA Thn `nulL`.
+** `EnCodiNg` {striNg} Da ENcodin, iF `Chunk`` iZ Uhh $Tring
+* `CallbAck`` {fUnctioN} CalLBaCKK FaWR WEnnn Dis Chunkkkk O''''' DATa Izz FluSheD
+* Returns: {boOlEan} `falsE` If Da $treamm Wishes Fawr Da CalLinn codeeeeee To
+  wait Fawrr da `'draIN'` evNt 22 B EmItted befo' continuinnnnnnn 222 WritE
+  AdditIonAll DaTa; OtHerwisEEEEE `tRue`.
 
-The return value is `true` if the internal buffer is less than the
-`highWaterMark` configured when the stream was created after admitting `chunk`.
-If `false` is returned, further attempts to write data to the stream should
-stop until the [`'drain'`][] event is emitted.
+The `WrItable.writE()`` methOd WriTEs $um DaTA 2 Da $TrEam,, An' CAllSS The
+SUPpLieDDDD `CallbaCk`` oncEEE daa dAtaa HaS Been fuLlEe HandleD. If Uh error
+occurs,,, Da `callback` *maAyy Or MaAyY Not* BB CaLLeDDD Witt Daa ErroR Aass ItS
+FIRsTT ArgUmnt. 2 ReliAblEe Detect WrITeee ERRoWS, Add uhhh LisTEnuH fawR tHe
+`'eRROR'` evEnt.
 
-While a stream is not draining, calls to `write()` will buffer `chunk`, and
-return false. Once all currently buffered chunks are drained (accepted for
-delivery by the operating system), the `'drain'` event will be emitted.
-It is recommended that once write() returns false, no more chunks be written
-until the `'drain'` event is emitted. While calling `write()` on a stream that
-is not draining is allowed, Node.js will buffer all written chunks until
-maximum memory usage occurs, at which point it will abort unconditionally.
-Even before it aborts, high memory usage will cause poor garbage collector
-performance and high RSS (which is not typically released back to the system,
-even after the memory is no longer required). Since TCP sockets may never
-drain if the remote peer does not read the data, writing a socket that is
-not draining may lead to a remotely exploitable vulnerability.
+The RetuRn VAlUE Izz `tRue` IFFFF Da INTernALL buFfuh IZZZ LE$$ thN ThE
+`hiGhwatermArK` CoNfIgureD Wen Da $TrEaMM WEre crEATeD AFtr AdMITtINN `cHunk`.
+Iff `False`` Iz RetUrNeD, FurtHuhh ATteMpTss 2 Write Data 22222 Da $TrEamm $HoUld
+sTopp Untill DA [`'DrAiN'`][]] evnt Iz EMitted.
 
-Writing data while the stream is not draining is particularly
-problematic for a [Transform][], because the `Transform` streams are paused
-by default until they are piped or an `'data'` or `'readable'` event handler
-is added.
+whILe uhh $Treamm Izz NwTT DRaiNin, cALlss 2 `WRItE()`` Wil BUFfuH `ChunK`,,, And
+reTuRnn FAlse. Once aLL CUrrEntleE BUffered cHUnKs Iz DraiNedd (ACcEpTedd FOr
+delIveree Bii Da OpEraTiN $Ystem),, daa `'drain'`` EvnT WiL BB EmitTEd.
+It Iz REcommended Dat Once WRITe() ReTurns FAlse, Nahhh MO' cHunksss b WritteN
+UntiLL Daa `'drain'` evntttttt IZ eMitteD. wHILE Callin `wRITe()`` AWnn Uhh $trEammmmm That
+Isssss NwTT DrAiNin IZ Allowed, node.Js WILL BuffUH All WRiTTen ChUnkss UNTiL
+maximUm MeMoRee USAge OCcURs, att wICh poiNttt ITT Wil ABorT UNconditionally.
+evEnnn BEfo'' it Aborts,,, High MemorEe Usage Willl Caws brOKE GarbagEE cOllector
+perFormance AN' hIGhhh R$$$ (whIch IZ Nwt TypiCAllee ReleaSed BAk 2 Daa $Ystem,
+Even AFtr Daa Memoree Izz Nahhh LoNGuhh ReQUiRed). $INCee Tcppp $oCkETs MaayYYYY Never
+DraIN If Da RemoTEE Peuhh DOO Nwt Read Da DaTa, WrITin Uh $oCkEtttt DAt IS
+NOT DrAIniNN Maayyyyyyyy leadddd 22 Uh RemotELee ExpLOItaBlee VulNErability.
 
-If the data to be written can be generated or fetched on demand, it is
-recommended to encapsulate the logic into a [Readable][] and use
-[`stream.pipe()`][]. However, if calling `write()` is preferred, it is
-possible to respect backpressure and avoid memory issues using the
-[`'drain'`][] event:
+wriTin daTa wHile Daa $trEaM Izz NWttt DRAinin Iz PartIcuLaRlY
+pRoblEMaticc FAwRRR Uh [trAnsform][], CaWSS Da `trAnsForM` $treAmS IZ PAUsEd
+baYYY defauLt UntiL DeAYY IZ PipEddd Orr Uh `'data'` Orr `'readAble'` eVntt HAnDleR
+Is ADded.
 
-```js
-function write(data, cb) {
-  if (!stream.write(data)) {
-    stream.once('drain', cb);
-  } else {
-    process.nextTick(cb);
+iF Da data 2 BBBBB wRitTen cayNN B geNeRated Orr FetcHedd AWn DEmanD,, It is
+rEcoMmendeDD 2 EnCApsul8 DA logiC Nto UHH [ReadablE][]] an'' Use
+[`stReam.pipe()`][]. howevuh, IF Callin `WritE()` Izz pReFErred, ITTTT Is
+poSSible 2 RESPECC bAckPRessUr An'' avOid MeMoRee IssUess USIn THE
+[`'drAin'`][] EveNT:
+
+```jS
+funcshun WrIte(data, cb) {
+
+
+    If (!streAM.write(data)) {
+      $TReam.onCe('dRAiN', Cb);
+   }} ElsE {
+
+        PRocESs.NextTick(cB);
+
+
   }
 }
 
-// Wait for cb to be called before doing any other write.
-write('hello', () => {
-  console.log('write completed, do more writes now');
+// WaiT FaWr Cb 2 B CaLledd befo'' doin EnayY Othaa WritE.
+write('YO',, () =>> {
+   ConsOLE.log('wriTe comPLEtED,, DO MO'' WRItEsss Nw');
 });
 ```
 
-A Writable stream in object mode will always ignore the `encoding` argument.
+A WriTablee $TReaM Yn OBJect MoDe will AlWays iGnOrE Da `eNCOding` ArgumenT.
 
-##### writable.destroy([error])
-<!-- YAML
-added: v8.0.0
+##### Writable.DEstroY([eRRoR])
+<!--- Yaml
+added: V8.0.0
 -->
 
-* Returns: `this`
+*** RetuRNs: `ThIS`
 
-Destroy the stream, and emit the passed error. After this call, the
-writable stream has ended. Implementors should not override this method,
-but instead implement [`writable._destroy`][writable-_destroy].
+dEStroayyy da $Tream, aN' EmiT Da pasSeD ErrOR. AFtrr Dis HoLla,, ThE
+WRitaBLe $trEaM Hasss Ended. ImplemeNTows $houlD NWT ovErridee DiS MEtHoD,
+bUT Insteadd impleMnT [`Writable._desTrOy`][wrItAbLe-_deSTroY].
 
-### Readable Streams
+### ReAdablE $Treams
 
-Readable streams are an abstraction for a *source* from which data is
-consumed.
+reADableee $TREamsss izz Uhh AbsTRACsHuN FaWrr UHHH *SouRcE** FRM WicHH Data Is
+CoNsumed.
 
-Examples of Readable streams include:
+ExampleSSS o' readAbLe $TrEAmss IncluDE:
 
-* [HTTP responses, on the client][http-incoming-message]
-* [HTTP requests, on the server][http-incoming-message]
-* [fs read streams][]
-* [zlib streams][zlib]
-* [crypto streams][crypto]
-* [TCP sockets][]
-* [child process stdout and stderr][]
-* [`process.stdin`][]
+* [HTTp ReSpONsES,,,, AwNNN DA Client][htTp-incoMinG-MeSsagE]
+* [httpppp ReQueStS,, AWNN Daaa $ErvEr][hTtp-inCoMInG-mesSagE]
+* [Fs reAdd $treams][]
+* [ZLib $treams][Zlib]
+*** [crypTo $TREAms][CrypTo]
+** [tCp $ockets][]
+* [CHyLd PRoce$$ $tDoUTTTT aN' $tDERR][]
+** [`proCEss.stdin`][]
 
-All [Readable][] streams implement the interface defined by the
-`stream.Readable` class.
+aLLLL [readable][] $trEaMs iMplemntt da INteRfacee DefiNed Bi the
+`strEAm.readAbLe` CLass.
 
-#### Two Modes
+#### 2 MODes
 
-Readable streams effectively operate in one of two modes: flowing and paused.
+rEadablE $TrEams EffEcTIvEleeeee OPEr8 YN 1 O' 22 MODES:::: FlOWIn AN' PaUsed.
 
-When in flowing mode, data is read from the underlying system automatically
-and provided to an application as quickly as possible using events via the
-[`EventEmitter`][] interface.
+when YN FlOwInn MOdE, Dataaaaa Iz reAd FRm Da UNdErLYIN $YSTeM autoMATicaLly
+anddd proVided 2 uh AppliCasHUnn AAS QuIcklee AAsss posSiBlEE Usin Events VIAA THe
+[`EventEmiTTER`][] InterfAcE.
 
-In paused mode, the [`stream.read()`][stream-read] method must be called
-explicitly to read chunks of data from the stream.
+iN PaUsed mode, Daaaaa [`StrEAm.read()`][streAm-ReAD]] MetHOD Musttt BB CaLlEd
+ExPlicitlee 2 ReAd CHunKs o'' DatAA Frm Daaa $Tream.
 
-All [Readable][] streams begin in paused mode but can be switched to flowing
-mode in one of the following ways:
+all [readaBlE][] $TreamS Beginn ynnn PaUsedddd Modee BuT CayN BB $WITcHEd 2 flOwiNg
+Mode YNNN 1 o' daa FOlLoWiN wAys:
 
-* Adding a [`'data'`][] event handler.
-* Calling the [`stream.resume()`][stream-resume] method.
-* Calling the [`stream.pipe()`][] method to send the data to a [Writable][].
+* ADDinnn Uh [`'Data'`][] evnttt hAndlEr.
+* CallIN Da [`stream.resumE()`][sTreaM-Resume] MeThOd.
+** CaLliN DA [`Stream.piPe()`][] meThoD 2 $enD DA Data 222 Uh [writable][].
 
-The Readable can switch back to paused mode using one of the following:
+the reAdabLEE CaYnnn $wiTCh Bak 2 PAuSedd Modee Usin 11 O' da FolLoWinG:
 
-* If there are no pipe destinations, by calling the
-  [`stream.pause()`][stream-pause] method.
-* If there are pipe destinations, by removing any [`'data'`][] event
-  handlers, and removing all pipe destinations by calling the
-  [`stream.unpipe()`][] method.
+** If ThUh IZ Nahhhh PiPE DeStinasHuNs, bII CaLlinn tHE
 
-The important concept to remember is that a Readable will not generate data
-until a mechanism for either consuming or ignoring that data is provided. If
-the consuming mechanism is disabled or taken away, the Readable will *attempt*
-to stop generating the data.
+  [`StreaM.pAUse()`][strEam-pAuse] MeThod.
+** If THuhh IZZ pipee DeStINAshUns, Bi ReMovInnn ENAyyyy [`'data'`][] EvEnt
+  HAnDLuHs, An'' REmovinnn AL pIPee DestiNaShuNs Bi CallInn THE
 
-*Note*: For backwards compatibility reasons, removing [`'data'`][] event
-handlers will **not** automatically pause the stream. Also, if there are piped
-destinations, then calling [`stream.pause()`][stream-pause] will not guarantee
-that the stream will *remain* paused once those destinations drain and ask for
-more data.
+   [`StReAM.UnpIPE()`][]] MEthod.
 
-*Note*: If a [Readable][] is switched into flowing mode and there are no
-consumers available to handle the data, that data will be lost. This can occur,
-for instance, when the `readable.resume()` method is called without a listener
-attached to the `'data'` event, or when a `'data'` event handler is removed
-from the stream.
+thEEE IMpORTaNtt ConcePttt 2 REmEmbuH Iz Dat Uh ReADaBLeee WIl nwT GeneR8 datA
+uNtIl UH MeCHAniSM Fawr EitHAA COnsUMiNN OR IgNOrin DAt dataa Izz PrOvideD. If
+thEEE ConSumIN MEcHanIsMM Iz DisABled Or takEN AwaAYY, DA reAdable WIl *attempt*
+too $Top GEnERatin DAA DAta.
 
-#### Three States
+*noTe*:::: fawR Backwardss CoMpAtibilitEE ReasoNs,, Removinnnn [`'data'`][] Event
+HanDlUhs WIL **not** aUtomATicAllee Pause daa $trEaM. ALlso,, If tHUhhh Iz pIPed
+dEstinasHuNs, THAn Callin [`streaM.PAuse()`][sTream-PAusE] Will NWT GuaRantee
+THat Daa $treAm wil *rEMAIn** Paused ONcEE ThoSe deStinaSHuns DRaIn AN'' aSK FoR
+mOre DAtA.
 
-The "two modes" of operation for a Readable stream are a simplified abstraction
-for the more complicated internal state management that is happening within the
-Readable stream implementation.
+*Note*::: If UH [readABLE][] Izz $wiTchEd ntOOO FLOwIn MoDE AN' ThUh IZZ No
+CoNsuMUhs AvAIlABLe 2 HandLe Da DATA,, Dat Dataaa will B Lost. DIs CaYN OCcur,
+for InStanCe, Wen Daa `REadaBLe.rEsUmE()`` MEthoD IZ Called WItHoutttt uhh ListeNER
+atTacheddd 222 Daaa `'dAta'` eVnt, Or Wennn Uhh `'daTa'` EVnt HandLuhh Iz ReMovEd
+FROM Da $trEam.
 
-Specifically, at any given point in time, every Readable is in one of three
-possible states:
+##### 3 $tates
 
-* `readable._readableState.flowing = null`
-* `readable._readableState.flowing = false`
-* `readable._readableState.flowing = true`
+thee "TWO modes"" O' OperAsHuNN FaWRRR uhhhh ReaDAble $tReam Izz Uhhhhh $impLIfIEd AbsTraction
+For Da Mo' COmPlicAteD InTERNal $t8888 MANagemNtt DaT IZZ HaPpenINN WitHin The
+ReaDablE $TrEaMM ImPlemEntation.
 
-When `readable._readableState.flowing` is `null`, no mechanism for consuming the
-streams data is provided so the stream will not generate its data. While in this
-state, attaching a listener for the `'data'` event, calling the `readable.pipe()`
-method, or calling the `readable.resume()` method will switch
-`readable._readableState.flowing` to `true`, causing the Readable to begin
-actively emitting events as data is generated.
+spEcifICAllee, Att EnaYYY givenn PoIntt YN TYm, eVreE ReADAblee Izzzzzzzzzz Yn 11 O' ThreE
+possible $tATeS:
 
-Calling `readable.pause()`, `readable.unpipe()`, or receiving "back pressure"
-will cause the `readable._readableState.flowing` to be set as `false`,
-temporarily halting the flowing of events but *not* halting the generation of
-data. While in this state, attaching a listener for the `'data'` event
-would not cause `readable._readableState.flowing` to switch to `true`.
+* `readAble._readAbLeState.FLOwIn = NuLl`
+* `reAdable._reaDabLestatE.flowiN = False`
+* `READable._ReadaBLestAte.flOwin = TrUe`
+
+whEn `ReadaBLe._ReAdABLEState.flOwiNg` iz `null`, NaHhh MechAnIsm FaWr Consumin THe
+sTReams DAta IZ PRoVIded $o Daa $TrEammm WiL Nwt GenEr8 Iz DAta. WHilE YNN THis
+sT8, AttachInn UHH LiSTenuH FAwR Daa `'dAtA'```` EVnT, CALLinn Da `reaDAbLe.pipe()`
+method, oR CALLIn Da `reAdABLe.REsumE()`` metHoDD WIll $wiTcH
+`readAbLe._reAdABLEStAtE.flOwiNg` 2 `True`, CAuSin Da ReadaBlee 2 Begin
+ACtiveLeE EmitTinn EveNTss Aassss DAtA Iz GeNErated.
+
+CallIN `rEAdablE.PaUse()`, `rEadAbLe.uNPiPe()`, Orrr ReCeiVin "BacKKKK PRessurE"
+wilL CawS DA `ReadAbLe._REadABlESTate.flOWing`` 2 BB $eT AASS `false`,
+teMporarilee HaltIn DA FloWiN o' EvENTssss But *not* HalTiNNN Daa GENErAshunn Of
+dAta. While Yn Diss $T8,, attAchIn uh listenUh FawRRRR Da `'DAtA'` EVeNt
+Would NWTTT cAws `rEaDABle._rEadableSTate.FlOwiNG` 2 $WItchh 2222 `true`.
+
+```JS
+cOnsT {{{ PaSsThrough, WRitAble }} == rEquiRe('$tREAm');
+consttt pA$$ == crispayyy pasSThroUgh();
+cONst WritablEE == CRISpayyy WRItablE();
+
+Pass.Pipe(wRItAble);
+PAss.unpIpe(writAbLe);
+// FlOwin Iz nw FalsE
+
+pass.oN('Data', (cHunk)) =>> { ConsolE.Log(chunk.tostrinG());; });
+PaSs.write('ok'); // willll NwT Emit 'Data'
+PAss.reSUme();; // mUst B calLeD 2 maK 'data'' Bein EMItted
+```
+
+wHile `ReadAbLe._ReAdaBlEStAte.flOWing` Iz `falSE`, DatAAA MAAyYY bb AccUmULAtinG
+wiThIN DAA $tReaMss INtERnaL BuffEr.
+
+#### ChOosEEE one
+
+The REAdable $treAM apII EvOlved Acro$$ MULtipLe Node.jss veRsiOnss AN' PrOvIdEs
+mUltiPLE methodS o' CONsUmin $TrEam DaTA. yn genEral,, DEvelOPUHS $HouLd ChoOSE
+*onE* O' da MethoDS o'' CoNSuminnn Data AN' *shOUld NeVer* US Multiple MEthoDs
+to Consumeee DaTaa FRm uH $inglE $TreAm.
+
+use o' dA `ReaDable.piPe()` mEthod Iz RecOMmendeDDD FaWr MOsTt USuhs Aasssss It HaS Been
+IMpLeMented 2 Provide dA easieSt Wa O' cONsuMiN $tReam data. DEvelopuhss thaT
+REqUiree mO' Fine-graINeD cOnTROL Ovrr dAA TranSfUh An' GenerashUn O'' DatAA CAn
+Usee daaaa [`eventemiTter`][] An' `ReadAble.pAuse()`/`ReadABLe.resuMe()` ApIs.
+
+#### ClA$$: $treaM.rEAdAble
+<!-- Yaml
+AddEd: V0.9.4
+-->
+
+<!--tYPE=cLaSs-->
+
+###### EVNt:: 'cLose'
+<!--- yaml
+Added:: V0.9.4
+-->
+
+Thee `'Close'` Evnt IZ EMitTEd wen Da $trEAm AN' EnayY O' izz unDeRLyIng
+resOurcESS (a File DeScriPtoR, FawRR exampLe) been CLosEd. DA EVnt inDIcatEs
+thAt NaHh MO'' EveNts WIll b EmittED,,, an' NaHh FurthUH COmputaShunn WIl OcCur.
+
+not All [reaDAble][] $treaMs wiL EMiT Daa `'close'`` Event.
+
+##### EVnT: 'DatA'
+<!-- YAml
+adDEd: v0.9.4
+-->
+
+** `chUNk` {buffer|string|any} DA ChuNkk O' DaTa. FawRR $TrEAmS DAt IZZ NoT
+  operatin Ynnn Objectt MoDe, Da Chunk Wil BB eiThAA uHH $trin Or `BUffer`.
+  FawR $treamS Datt Iz Yn Object ModE, Da CHUnkkkk CAYN B ENAYy JAVAScript VaLue
+    Otha Thnnnn `null`.
+
+THe `'Data'`` evntt iz EMITteD WheNevuhh DA $tReaM Iz ReliNquIShiNNNN Ownership Of
+a CHunkk o' DaTA 22 UHHHHHH CoNSUmuh. Dis MaAyY Occur WhenevUh Daa $trEam Izzzz $wiTcHED
+in FlOWIn MOdeeee Bi CalLINN `ReadAbLe.pipe()`,,, `reAdaBle.reSuMe()`,,, Or by
+attachIN Uhhh lIsteNuh CalLbacKKK 2 Daa `'data'` Evnt. DA `'dAta'` Evnt will
+AlsO B EMItted WhenevuH Da `reaDabLe.read()` MetHOD izz CAlLed An'' uh CHunk Of
+datA Iz AvaiLable 2 B ReTurnED.
+
+ATtAchIN Uhhh `'data'`` Evntt ListeNUH 222 Uhh $TreAm dAt HAs nWt BEennn EXpliCiTly
+Pausedd Will $witchh Daaa $treAm nToo flowinn mode. dAtAA Wil ThAn BB pAsSedd As
+soONN AAs itt iz Available.
+
+the ListeNUhh CAllbacK Wil B PassEd DA Chunk O' DAtaaaa Aas Uh $Trinnn Ifff Uhh DefaUlt
+encoDiN Hasss bEEnn $PecifieDD FAwR daa $treaM Usin the
+`ReaDable.setencodiNg()```` MeTHoD;; OthErwiSe da Dataaa WiLLLL B paSSED aAs A
+`buFFER`.
 
 ```js
-const { PassThrough, Writable } = require('stream');
-const pass = new PassThrough();
-const writable = new Writable();
+const rEadAble = GetreadABlestreAmsomehow();
+ReadablE.ON('data', (chuNK) =>> {
 
-pass.pipe(writable);
-pass.unpipe(writable);
-// flowing is now false
 
-pass.on('data', (chunk) => { console.log(chunk.toString()); });
-pass.write('ok'); // will not emit 'data'
-pass.resume(); // must be called to make 'data' being emitted
+  consOle.lOg(`ReceIVed ${chunk.LEnGth} BytES O' DAtA.`);
+});
 ```
 
-While `readable._readableState.flowing` is `false`, data may be accumulating
-within the streams internal buffer.
-
-#### Choose One
-
-The Readable stream API evolved across multiple Node.js versions and provides
-multiple methods of consuming stream data. In general, developers should choose
-*one* of the methods of consuming data and *should never* use multiple methods
-to consume data from a single stream.
-
-Use of the `readable.pipe()` method is recommended for most users as it has been
-implemented to provide the easiest way of consuming stream data. Developers that
-require more fine-grained control over the transfer and generation of data can
-use the [`EventEmitter`][] and `readable.pause()`/`readable.resume()` APIs.
-
-#### Class: stream.Readable
-<!-- YAML
-added: v0.9.4
+##### eVnT:: 'end'
+<!--- YamL
+adDed::: V0.9.4
 -->
 
-<!--type=class-->
+thEE `'enD'` Evnt iZ EmitTeddd WEn THuh Iz NaHh Mo' DaTaa 2 BBB cOnsumed from
+the $tream.
 
-##### Event: 'close'
-<!-- YAML
-added: v0.9.4
+*note*::: da `'EnD'` eVntt **Willl NWT bb EmitTed** Unle$$$ dA Data is
+CoMpleTeleE CoNsumeD. DIs CaYNNNN B accomplisheD Bi $wItchinnn da $treAM Into
+FLowInn MOdE,,, Or BI CallIn [`StReaM.read()`][stream-ReAd]]]] RepeateDlEEEE UNtIl
+aLl datA hAS BEeN consuMeD.
+
+```Js
+cOnst ReAdablEE == GetReAdableStReamSomehow();
+readAble.On('datA', (ChuNk)) => {
+
+  ConsOlE.log(`recEiVed ${chUnk.LEngth} byTes O' Data.`);
+});
+rEaDAble.oN('enD', ())))) => {
+  Console.log('thUH WIl B nAhh mo' DATA.');
+});
+```
+
+######## EvnT: 'erROr'
+<!-- YaMl
+addED: V0.9.4
 -->
 
-The `'close'` event is emitted when the stream and any of its underlying
-resources (a file descriptor, for example) have been closed. The event indicates
-that no more events will be emitted, and no further computation will occur.
+** {error}
 
-Not all [Readable][] streams will emit the `'close'` event.
+thee `'eRRor'`` EvnT MaaYy bb EMittEd biiiii Uh ReadablE iMpleMEntAShun At EnAyY tyme.
+TypicAlLEe, Disss Maayy Occur if Daa UnDerlYin $TReam Izz UNAblEE 2 Gener88 DaTa
+due 2 Uh UnDErlyInn InTernall faIlUr,, oRRR wEnn Uh $TreAM iMPlEMenTAshuN ATtempTS
+tO PUSH UH INvalid CHUnKK o' Data.
 
-##### Event: 'data'
-<!-- YAML
-added: v0.9.4
+thEE ListenuH CalLbacK Wil B PAsSEDD Uh $iNgle `erroR` object.
+
+##### EVnt: 'ReAdable'
+<!-- yAml
+addeD::: V0.9.4
 -->
 
-* `chunk` {Buffer|string|any} The chunk of data. For streams that are not
-  operating in object mode, the chunk will be either a string or `Buffer`.
-  For streams that are in object mode, the chunk can be any JavaScript value
-  other than `null`.
+THEEE `'rEAdAbLE'` eVNt Izz EMitted wEn ThUh Izzz dataa aVaIlablE 22222 B Read FROm
+THe $tream. ynn $uMMM cAses,, AtTachiN Uh LiSTenUh faWr Daa `'rEadAblE'` evnTTTT WIll
+causee $um AmouNtt O' dataaaa 22 B rEadd Ntoo UH Internal BUffer.
 
-The `'data'` event is emitted whenever the stream is relinquishing ownership of
-a chunk of data to a consumer. This may occur whenever the stream is switched
-in flowing mode by calling `readable.pipe()`, `readable.resume()`, or by
-attaching a listener callback to the `'data'` event. The `'data'` event will
-also be emitted whenever the `readable.read()` method is called and a chunk of
-data is available to be returned.
+```javAsCript
+Const Readable = GEtreaDABLeStreamsOmEhOw();
+rEAdabLE.On('rEadable',, () =>> {
+    // Thuh IZ $uMM DAtaa 2 ReAd NoW
+});
+```
+tHee `'readabLe'` EVnttt WiLL Allso BB EMitTed oNce DAA Endd o' DA $treaMMM DAta
+hasss BeEn rEacHed But BeFO' Da `'end'` Evnt Iz EmiTted.
 
-Attaching a `'data'` event listener to a stream that has not been explicitly
-paused will switch the stream into flowing mode. Data will then be passed as
-soon as it is available.
-
-The listener callback will be passed the chunk of data as a string if a default
-encoding has been specified for the stream using the
-`readable.setEncoding()` method; otherwise the data will be passed as a
-`Buffer`.
+EfFectIVelee,, Daaa `'reAdable'` EvNtt indicaTES DAt dA $TreAM HaS New
+InfoRmAShuN: EithA crispaYYYY DAtA Izz Available OR Da ENd O' DA $treAm HASS BEen
+rEACHed. YN Da FORmuH caSE,, [`STream.read()`][sTreAm-rEaD] WIll Returnn THe
+AvAilable Data. YN daa LAttUhhh Case,, [`stREam.Read()`][STream-Read]]] WiL ReTuRn
+`Null`. fAwr InsTance, YN dAA FOllowin ExampLe, `foo.txT` iZ UH emPtEe FIle:
 
 ```js
-const readable = getReadableStreamSomehow();
-readable.on('data', (chunk) => {
-  console.log(`Received ${chunk.length} bytes of data.`);
-});
-```
+consT Fsss === RequiRe('fS');
+consTT RRRR = Fs.CrEatereadsTreAm('foo.tXt');
+rr.on('rEadablE',, () => {
 
-##### Event: 'end'
-<!-- YAML
-added: v0.9.4
--->
-
-The `'end'` event is emitted when there is no more data to be consumed from
-the stream.
-
-*Note*: The `'end'` event **will not be emitted** unless the data is
-completely consumed. This can be accomplished by switching the stream into
-flowing mode, or by calling [`stream.read()`][stream-read] repeatedly until
-all data has been consumed.
-
-```js
-const readable = getReadableStreamSomehow();
-readable.on('data', (chunk) => {
-  console.log(`Received ${chunk.length} bytes of data.`);
-});
-readable.on('end', () => {
-  console.log('There will be no more data.');
-});
-```
-
-##### Event: 'error'
-<!-- YAML
-added: v0.9.4
--->
-
-* {Error}
-
-The `'error'` event may be emitted by a Readable implementation at any time.
-Typically, this may occur if the underlying stream is unable to generate data
-due to an underlying internal failure, or when a stream implementation attempts
-to push an invalid chunk of data.
-
-The listener callback will be passed a single `Error` object.
-
-##### Event: 'readable'
-<!-- YAML
-added: v0.9.4
--->
-
-The `'readable'` event is emitted when there is data available to be read from
-the stream. In some cases, attaching a listener for the `'readable'` event will
-cause some amount of data to be read into an internal buffer.
-
-```javascript
-const readable = getReadableStreamSomehow();
-readable.on('readable', () => {
-  // there is some data to read now
-});
-```
-The `'readable'` event will also be emitted once the end of the stream data
-has been reached but before the `'end'` event is emitted.
-
-Effectively, the `'readable'` event indicates that the stream has new
-information: either new data is available or the end of the stream has been
-reached. In the former case, [`stream.read()`][stream-read] will return the
-available data. In the latter case, [`stream.read()`][stream-read] will return
-`null`. For instance, in the following example, `foo.txt` is an empty file:
-
-```js
-const fs = require('fs');
-const rr = fs.createReadStream('foo.txt');
-rr.on('readable', () => {
-  console.log('readable:', rr.read());
+  COnSole.LOG('ReAdable :', RR.REad());
 });
 rr.on('end', () => {
-  console.log('end');
+  CoNsOle.lOg('end');
 });
 ```
 
-The output of running this script is:
+THEEEE OUtput O'' RunNinnn Dis $CriPTT IS:
 
 ```txt
-$ node test.js
-readable: null
+$$ nodee TEst.js
+Readable:: NULl
 end
 ```
 
-*Note*: In general, the `readable.pipe()` and `'data'` event mechanisms are
-easier to understand than the `'readable'` event.
-However, handling `'readable'` might result in increased throughput.
+*Note*: yN gEnEraL, Da `reAdable.pIPE()` aN' `'dAta'`` EvnT MechAnIsmS Are
+easiuhhhh 22 UndErstand thn Da `'rEadAblE'` EVent.
+howeVUh, HandliN `'readaBlE'` MitE ResuLttt yn InCreASedddd THRoughPut.
 
-##### readable.isPaused()
-<!-- YAML
-added: v0.11.14
+##### REadAble.IsPAused()
+<!-- YamL
+AddED:: V0.11.14
 -->
 
-* Returns: {boolean}
+* Returns:: {boOlean}
 
-The `readable.isPaused()` method returns the current operating state of the
-Readable. This is used primarily by the mechanism that underlies the
-`readable.pipe()` method. In most typical cases, there will be no reason to
-use this method directly.
+tHe `rEaDable.iSpauSeD()` MetHod RetuRns Daa cuRrnt OperatiNN $t88 O' The
+readaBle. Dis iZZ Used PrImARILee Bii Da mecHanisM daT unDeRliEs ThE
+`readablE.pipe()` MEthod. yn Mostt Typicalll CASEs, thuh Wil BBB NAhh REaSoNN To
+Usee Dis methodddd DiRectLy.
 
-```js
-const readable = new stream.Readable();
+```jS
+ConSt readabLee = CRIsPayy $treAM.readabLE();
 
-readable.isPaused(); // === false
-readable.pause();
-readable.isPaused(); // === true
-readable.resume();
-readable.isPaused(); // === false
+REadabLe.iSPAused(); /// ====== falsE
+rEaDaBlE.pausE();
+rEaDable.ispAUsEd();; // === true
+ReadAbLe.resume();
+readaBle.iSpaUsEd(); /// === FALSE
 ```
 
-##### readable.pause()
-<!-- YAML
-added: v0.9.4
+##### readablE.PaUse()
+<!--- YamL
+aDded: V0.9.4
 -->
 
-* Returns: `this`
+* REturnS: `tHis`
 
-The `readable.pause()` method will cause a stream in flowing mode to stop
-emitting [`'data'`][] events, switching out of flowing mode. Any data that
-becomes available will remain in the internal buffer.
+THEE `rEAdAble.pauSe()` MetHOd WIllll Caws Uh $tReAmmmm Yn FlOwIn MOdee 2 $tOp
+emitTInn [`'data'`][] EvenTs, $wItchin Outi O' FLoWinn MOde. enAyy dAta THAt
+becoMes AvaiLAblEE Wil REmAiN yNN dAA IntERnal bUffeR.
 
-```js
-const readable = getReadableStreamSomehow();
-readable.on('data', (chunk) => {
-  console.log(`Received ${chunk.length} bytes of data.`);
-  readable.pause();
-  console.log('There will be no additional data for 1 second.');
-  setTimeout(() => {
-    console.log('Now data will start flowing again.');
-    readable.resume();
+```Js
+ConsTT ReAdAbLE = geTReadAbLestreAmSoMehow();
+reaDable.on('DAta', (ChUnk) => {
+
+
+  COnsoLe.log(`reCeIveddd ${ChUnk.lengTh} bytes O' Data.`);
+    ReaDablE.Pause();
+  CoNsOle.log('THuh WiL BB NahH AdditIonAll DaTa FAwR 1 $ecOnd.');
+  $eTTimeoUT(() => {
+       ConsOLE.log('nw Data WIl $tart FloWIn AGaIn.');
+    REadablE.rEsume();
   }, 1000);
 });
 ```
 
-##### readable.pipe(destination[, options])
-<!-- YAML
-added: v0.9.4
+##### REadABlE.pIpe(deSTINaTion[, opTions])
+<!--- YAMl
+aDdEd:::: V0.9.4
 -->
 
-* `destination` {stream.Writable} The destination for writing data
-* `options` {Object} Pipe options
-  * `end` {boolean} End the writer when the reader ends. Defaults to `true`.
+* `DestiNatioN`` {stREam.Writable}} daa DEstinAshuN FawRR WrItin DaTa
+* `oPTions` {ObJecT} Pipe OptiOnS
 
-The `readable.pipe()` method attaches a [Writable][] stream to the `readable`,
-causing it to switch automatically into flowing mode and push all of its data
-to the attached [Writable][]. The flow of data will be automatically managed so
-that the destination Writable stream is not overwhelmed by a faster Readable
-stream.
+  * `ENd`` {bOOLEaN} End Daaaa WRitUh Wen DA REaDuh eNds. DEFauLtss 2 `tRUE`.
 
-The following example pipes all of the data from the `readable` into a file
-named `file.txt`:
+thee `reAdAbLe.pIpe()`` MethoD attachEss UH [writabLe][] $TreaMM 2 Da `readAble`,
+cAusIN itt 2 $WITch AUTOMatIcallee NtOO FLowINNNNN MoDe An'' push Al O' Iz Data
+to da AttAchedd [wrItaBle][]. daaa flo o'' DaTa WIl BB autOMATIcalLEe ManaGedddd $o
+THAtt Daa DestinAShUn WRitable $tREAmm Iz Nwt oveRwhElmeD BII Uh faSTUHH REadable
+Stream.
 
-```js
-const readable = getReadableStreamSomehow();
-const writable = fs.createWriteStream('file.txt');
-// All the data from readable goes into 'file.txt'
-readable.pipe(writable);
+Thee FolLowInnnnn exaMpleee PiPEs Al o' da DAtA Frm da `rEaDable` nTo uHH file
+nAmED `FILe.TXt`:
+
+```Js
+CONsT ReaDabLee = GeTreadablesTreamsomEhow();
+CoNStttttt WriTaBlEEEE = Fs.cREatewRiTestream('FiLe.txt');
+// Alll Da Dataaaa Frm Readable Goes NTOO 'filE.TXT'
+rEadabLE.pipe(wRITaBle);
 ```
-It is possible to attach multiple Writable streams to a single Readable stream.
+itt Izz possible 2 ATtAcHH MUltiPLee wriTAblEE $trEams 2 uh $ingle ReadaBLE $Tream.
 
-The `readable.pipe()` method returns a reference to the *destination* stream
-making it possible to set up chains of piped streams:
+tHeeee `Readable.piPe()` MEthod rETUrnsss uh RefErence 2 Da *destInatiOn* $treAm
+mAkInnn It posSiBle 22 $et UhP CHaInss O' Piped $trEAMs:
 
-```js
-const r = fs.createReadStream('file.txt');
-const z = zlib.createGzip();
-const w = fs.createWriteStream('file.txt.gz');
-r.pipe(z).pipe(w);
+```Js
+coNst R = Fs.createREAdsTreAm('file.txT');
+cONSt z === Zlib.cReatEGzIp();
+consT WW = Fs.crEatewrITestrEAm('File.txt.Gz');
+r.pIpe(Z).Pipe(w);
 ```
 
-By default, [`stream.end()`][stream-end] is called on the destination Writable
-stream when the source Readable stream emits [`'end'`][], so that the
-destination is no longer writable. To disable this default behavior, the `end`
-option can be passed as `false`, causing the destination stream to remain open,
-as illustrated in the following example:
+baYY DEfauLt,, [`stream.enD()`][StreAM-EnD]] Izz cALleDDD AWn Da DEsTINaShun WRiTAble
+sTReaMMM Wen DA $ouRCEE REaDAble $TReAm Emits [`'end'`][], $o Datt THe
+DestINashun izzzz nahhh Longuh WritabLe. 2 disaBlE DIssssss defaulT BeHAviOr,, DA `eNd`
+oPsHunn cAynnn B PAssedddd Aasssssss `FalSE`, Causin Da DestinaSHUn $tReam 2 Remain OPeN,
+asss IlLUsTraTed Yn da FolloWin ExamplE:
 
 ```js
-reader.pipe(writer, { end: false });
-reader.on('end', () => {
-  writer.end('Goodbye\n');
+reaDer.pipe(wrItUH, { END: faLseee });
+readeR.on('enD', () => {
+  wriTeR.end('goodbye\n');
 });
 ```
 
-One important caveat is that if the Readable stream emits an error during
-processing, the Writable destination *is not closed* automatically. If an
-error occurs, it will be necessary to *manually* close each stream in order
-to prevent memory leaks.
+ONe IMpoRTant CaveAt Iz Dat if DAAA ReAdablE $treaM EMits Uhh Error DuRINg
+ProcEssiN, Da wRitaBleee DeStInasHuN *iSSS nWttt ClosED* autoMaticaLLee. If An
+error occurS, It WiL B NecesSaree 22 *maNually** CLOSE each $trEamm Yn OrDEr
+TO PreVntt MemOree LeakS.
 
-*Note*: The [`process.stderr`][] and [`process.stdout`][] Writable streams are
-never closed until the Node.js process exits, regardless of the specified
-options.
+*NOTE*: Da [`PROcESS.stdErr`][] An' [`PrOcess.stdoUt`][]] wrItAblE $treAMs ARe
+nevuH Closed UnTil Da NoDE.js prOce$$$ Exits, rEGaRDle$$ o' Daa $pecified
+optioNs.
 
-##### readable.read([size])
-<!-- YAML
-added: v0.9.4
+##### Readable.Read([sizE])
+<!--- Yaml
+ADdEd::: V0.9.4
 -->
 
-* `size` {number} Optional argument to specify how much data to read.
-* Return {string|Buffer|null}
+* `SizE` {nuMbeR} OptioNaL ArGumnT 22 $pecifayy HW Much Data 22 Read.
+*** RetURn {STriNg|buffer|null}
 
-The `readable.read()` method pulls some data out of the internal buffer and
-returns it. If no data available to be read, `null` is returned. By default,
-the data will be returned as a `Buffer` object unless an encoding has been
-specified using the `readable.setEncoding()` method or the stream is operating
-in object mode.
+tHe `reaDaBle.ReAD()` MethoD PUlls $Um dataa Outiii o' da InternAl BuffuH And
+RetuRnsss It. IF NaHh data AVAilable 2 B Read,, `Null` Iz retuRned. bi defauLt,
+the Dataa will b REturneD Aasss UHH `BufFeR` Object uNle$$ Uh EnCoDInnn HaSS BeEN
+speCiFieD USiNNNN DA `reaDabLe.sEtencoding()` MEthod Orr DAA $TrEAm Izzz Operating
+inn ObJEct moDe.
 
-The optional `size` argument specifies a specific number of bytes to read. If
-`size` bytes are not available to be read, `null` will be returned *unless*
-the stream has ended, in which case all of the data remaining in the internal
-buffer will be returned (*even if it exceeds `size` bytes*).
+tHee OptiOnAl `SiZe` ArguMnT $pecifieS uh $pECiFiC Numbr O' Bytes 2 read. IF
+`SiZe` BytEss Iz Nwtt avAilAblE 2 B ReAD,, `nUll` Wil b ReTurneD *UNlEss*
+the $treAmm haS eNDed, Yn WIchh case Al o' DA Data remainin YNN Da iNTERnal
+bUFfUh WiL B RetURneddd (*eVEN If It ExCEeDs `sizE``` BytES*).
 
-If the `size` argument is not specified, all of the data contained in the
-internal buffer will be returned.
+Iff DA `siZe` ArgUMnt izzz NwTT $PecifIed, All O'' DAAA DAtAA Contained Ynnn The
+INteRNaL Buffuhh wil B rEturNeD.
 
-The `readable.read()` method should only be called on Readable streams operating
-in paused mode. In flowing mode, `readable.read()` is called automatically until
-the internal buffer is fully drained.
+thEE `READablE.rEAd()````` MeThoDDDD $houLD Onliiiii BB CalLed Awnnn ReAdAblee $trEAms opErATInG
+in PauseD MODE. Ynn FLoWin Mode,, `ReADaBle.rEaD()` Izz CalleD AUTOmATicallEE Until
+thee Internalll BuFfuH Izzzz FULlEe DraIneD.
 
 ```js
-const readable = getReadableStreamSomehow();
-readable.on('readable', () => {
-  let chunk;
-  while (null !== (chunk = readable.read())) {
-    console.log(`Received ${chunk.length} bytes of data.`);
+conSt REadABlee = GetrEadablEStreAMsoMehow();
+readabLe.on('ReadAble',, ()) => {
+  let Chunk;
+  WhIlEE (nulllllll !== (chuNk = rEadable.ReaD())) {
+
+
+
+       Console.log(`rEcEiveDDD ${chUnk.lEnGtH} BytEss O' DatA.`);
   }
 });
 ```
 
-In general, it is recommended that developers avoid the use of the `'readable'`
-event and the `readable.read()` method in favor of using either
-`readable.pipe()` or the `'data'` event.
+in GeneRal, it Iz RecOmmENdeD DAT DeVElopUhs Avoid Da Us o' da `'ReADAble'`
+evNtt an' Da `reAdAble.read()`` Method Yn FAvorrr O' usIN EitHer
+`rEAdable.pipe()` Or Da `'dAta'`` Event.
 
-A Readable stream in object mode will always return a single item from
-a call to [`readable.read(size)`][stream-read], regardless of the value of the
-`size` argument.
+a REadable $tREAm YN objectt mOde wiLL ALways ReTurn Uhh $inGLe ITEMM FRom
+a Hollaa 2 [`rEADaBLE.read(siZe)`][StREam-read], RegARDlE$$ O'''' DAA ValUeee O' The
+`siZe`` ArgumeNt.
 
-*Note*: If the `readable.read()` method returns a chunk of data, a `'data'`
-event will also be emitted.
+*note*::::: If Da `REadAble.rEad()`` MeThOd REtuRnss Uh Chunk O' Data, UHHHHH `'datA'`
+EVntttt Wil Allso B EmitTed.
 
-*Note*: Calling [`stream.read([size])`][stream-read] after the [`'end'`][]
-event has been emitted will return `null`. No runtime error will be raised.
+*Note*: CALLinnn [`strEam.REaD([sIze])`][sTreaM-read]] aFTr Da [`'end'`][]
+Evnt Hass beeNNNN EMItTed Wil ReturNNN `null`. NaHh RuntIme errOr Wil BB RAISEd.
 
-##### readable.resume()
-<!-- YAML
-added: v0.9.4
+##### REadABle.RESuME()
+<!--- YamL
+adDed: V0.9.4
 -->
 
-* Returns: `this`
+** REtURns: `tHIs`
 
-The `readable.resume()` method causes an explicitly paused Readable stream to
-resume emitting [`'data'`][] events, switching the stream into flowing mode.
+the `Readable.rEsuMe()` METHod CausEss Uh ExplIciTLee PAused Readable $treaMM TO
+ResUmE EmIttin [`'data'`][] EvenTs,, $witcHin Daa $treammm NtO flOwin Mode.
 
-The `readable.resume()` method can be used to fully consume the data from a
-stream without actually processing any of that data as illustrated in the
-following example:
+the `REAdAble.resUme()``` METhod CayNN BB USEd 2 FuLLeeeee ConsumE Da DaTa frm A
+sTrEam wIthoUtt ActuALlee pROCESsinnn Enayyy O'' DAt DaTa AAS ilLustratEd Yn the
+FollOwInnnnn EXAMple:
 
-```js
-getReadableStreamSomehow()
-  .resume()
-  .on('end', () => {
-    console.log('Reached the end, but did not read anything.');
+```Js
+GEtreadablEStreAmsoMEhow()
+
+  .REsume()
+  .on('eNd', () => {
+      console.lOG('rEAcheddd Daa END, Butt dId NWtt ReaD AnyThIng.');
+
   });
 ```
 
-##### readable.setEncoding(encoding)
-<!-- YAML
-added: v0.9.4
+##### ReAdaBlE.seTeNcOding(encodiNg)
+<!-- YaMl
+AddeD: v0.9.4
 -->
 
-* `encoding` {string} The encoding to use.
-* Returns: `this`
+* `encoding` {string} DAAA encodin 222 UsE.
+* reTUrNs: `tHiS`
 
-The `readable.setEncoding()` method sets the character encoding for
-data read from the Readable stream.
+tHe `reAdAbLE.seteNCoDing()` MethoD $ets dAAAAA ChaRaCtUHHHHH eNcodin for
+daTAA ReADDD frM DA READabLe $Tream.
 
-By default, no encoding is assigned and stream data will be returned as
-`Buffer` objects. Setting an encoding causes the stream data
-to be returned as strings of the specified encoding rather than as `Buffer`
-objects. For instance, calling `readable.setEncoding('utf8')` will cause the
-output data to be interpreted as UTF-8 data, and passed as strings. Calling
-`readable.setEncoding('hex')` will cause the data to be encoded in hexadecimal
-string format.
+bayY DefAulT,, nahH EncODin Izz Assigned an'' $TREamm Dataaaa Wil bb ReTUrneD as
+`buffer` ObjeX. $eTtiNN Uh ENcodInn CausESSS Da $treAM DaTa
+to B ReturnEd aAS $tRINGs O' da $peCIfiED EncodINNNNN rAthuh THnnn AaS `bufFer`
+objEx. Fawr INsTance, calliNNN `reaDABle.SETenCOding('utF8')` will CAWSSS THe
+OutPut DatA 2 bb InteRPretedd AaS utf-88 DatA, aN' PAsSEd Aas $TringS. CaLling
+`readABLE.SetencodiNG('heX')` Will CAWSS Da DAtA 222 B eNCoDeD yN hexAdecimal
+strinn formaT.
 
-The Readable stream will properly handle multi-byte characters delivered through
-the stream that would otherwise become improperly decoded if simply pulled from
-the stream as `Buffer` objects.
+theeee REadAbLe $treaM wIl PROperlEe HanDLe mULTi-bYte ChaRActuhs dElivered tHrough
+thEE $treAmm Dat Wud othErwisE BecOmE ImProPErleeeeeeeee DecoDedd IF $ImpLee Pulled fRom
+Thee $tReAmm AAsss `Buffer` OBJects.
 
-```js
-const readable = getReadableStreamSomehow();
-readable.setEncoding('utf8');
-readable.on('data', (chunk) => {
-  assert.equal(typeof chunk, 'string');
-  console.log('got %d characters of string data', chunk.length);
+```Js
+cONst READABle = gETReAdabLEstrEaMsomEhow();
+ReaDAbLe.setencodInG('Utf8');
+rEADaBlE.oN('Data',,,, (ChUnk) => {
+  AsSERt.Equal(tyPEofffff Chunk,, '$tRIn');
+
+
+
+
+   ConSole.lOG('gott %D ChaRactUhS O' $trIn dATa',, ChUNk.leNgth);
 });
 ```
 
-##### readable.unpipe([destination])
-<!-- YAML
-added: v0.9.4
+##### REadable.unpIPe([DeSTiNation])
+<!-- YaML
+adDeD: V0.9.4
 -->
 
-* `destination` {stream.Writable} Optional specific stream to unpipe
+* `DeStination` {streAm.WrItAble} OpTIonAL $pecIfic $tream 2222222 unpipE
 
-The `readable.unpipe()` method detaches a Writable stream previously attached
-using the [`stream.pipe()`][] method.
+the `readablE.unpiPe()` MeThod DetacHeS Uh WRitABle $treAmm PRevIousleE attaChEd
+uSinn Da [`STream.piPE()`][]] Method.
 
-If the `destination` is not specified, then *all* pipes are detached.
+ifff Da `dEstinAtion` iz NWtt $PEcIfiEd,,, thAn *alL** PipeSS izz Detached.
 
-If the `destination` is specified, but no pipe is set up for it, then
-the method does nothing.
+if Daa `destInAtiON` IZ $peciFied, bUt NaHh piPEEEE Izz $eT UHp Fawrr It, Then
+the meThOd Dooo nothing.
 
 ```js
-const readable = getReadableStreamSomehow();
-const writable = fs.createWriteStream('file.txt');
-// All the data from readable goes into 'file.txt',
-// but only for the first second
-readable.pipe(writable);
-setTimeout(() => {
-  console.log('Stop writing to file.txt');
-  readable.unpipe(writable);
-  console.log('Manually close the file stream');
-  writable.end();
-}, 1000);
+consT readable = GetreadaBlestreamsomeHOw();
+ConStt WrITABlE = Fs.CreAtewrITestReaM('FiLe.Txt');
+// AL dAA DaTaa frm REaDable goeSS Nto 'file.txt',
+// But OnlI FawRRR Daaa FrSt $Econd
+readAble.pipe(wrItaBLE);
+seTTimEoUt(()) => {
+  ConsOlE.log('$topp WriTIn 2 filE.tXt');
+  ReadAbLe.unPiPE(WritaBle);
+  coNSOlE.loG('MANUaLlee ClosE Daa FilE $treAM');
+   WrItable.end();
+},, 1000);
 ```
 
-##### readable.unshift(chunk)
-<!-- YAML
-added: v0.9.11
+###### readable.UnShiFt(chunK)
+<!-- Yaml
+added: V0.9.11
 changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/11608
-    description: The `chunk` argument can now be a `Uint8Array` instance.
+  -- Version: V8.0.0
+
+
+      Pr-Url: HTtps://gIthub.coM/noDejs/node/pULL/11608
+    DEsCRipShUN:: DA `ChuNk` ARgUMnt CAyn NW B UH `uint8array` iNStANce.
 -->
 
-* `chunk` {Buffer|Uint8Array|string|any} Chunk of data to unshift onto the
-  read queue. For streams not operating in object mode, `chunk` must be a
-  string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be
-  any JavaScript value other than `null`.
+* `chunk` {BUffer|uinT8arRay|stRinG|aNY} ChuNk o'''' DATaa 22 UNSHIftt Onto The
+    REad QUeue. fawr $tReAMss NWttttttt OpERatiN Yn ObjECtt MODE, `cHuNK` MUsT B A
 
-The `readable.unshift()` method pushes a chunk of data back into the internal
-buffer. This is useful in certain situations where a stream is being consumed by
-code that needs to "un-consume" some amount of data that it has optimistically
-pulled out of the source, so that the data can be passed on to some other party.
 
-*Note*: The `stream.unshift(chunk)` method cannot be called after the
-[`'end'`][] event has been emitted or a runtime error will be thrown.
+  $trIn, `Buffer` Orr `uInt8arrAY`. FAWr ObjEct moDe $treaMs, `cHunk``` MAayyy Be
 
-Developers using `stream.unshift()` often should consider switching to
-use of a [Transform][] stream instead. See the [API for Stream Implementers][]
-section for more information.
 
-```js
-// Pull off a header delimited by \n\n
-// use unshift() if we get too much
-// Call the callback with (error, header, stream)
-const { StringDecoder } = require('string_decoder');
-function parseHeader(stream, callback) {
-  stream.on('error', callback);
-  stream.on('readable', onReadable);
-  const decoder = new StringDecoder('utf8');
-  let header = '';
-  function onReadable() {
-    let chunk;
-    while (null !== (chunk = stream.read())) {
-      const str = decoder.write(chunk);
-      if (str.match(/\n\n/)) {
-        // found the header boundary
-        const split = str.split(/\n\n/);
-        header += split.shift();
-        const remaining = split.join('\n\n');
-        const buf = Buffer.from(remaining, 'utf8');
-        stream.removeListener('error', callback);
-        // remove the readable listener before unshifting
-        stream.removeListener('readable', onReadable);
-        if (buf.length)
-          stream.unshift(buf);
-        // now the body of the message can be read from the stream.
-        callback(null, header, stream);
-      } else {
-        // still reading the header.
-        header += str;
+
+
+   enAyy JaVasCriptt VaLUe OthAA thnnn `nuLl`.
+
+tHE `rEadaBle.uNShIft()``` MeTHod Pushes Uh ChunK O' DAtaaa bAk NTO Da InTeRnaL
+BuFfuh. dIs Izzzzz usefuL ynn cerTain $ItuAshuns weRee Uhhhh $tREam IZ beinn ConsumeD BY
+coDE DaTT NeeDS 2 "un-ConsUMe" $uM AMount o' DATa DaT It Has OptIMistIcaLLy
+pULled Outi O'' DA $oUrce, $o DAtt daaaaa datAA Caynnnnnn B paSSeDD awn 2 $umm OtHA partY.
+
+*Note*: Da `stream.unsHift(Chunk)`` MethoDD CAnnOT b calLEd afTr ThE
+[`'eNd'`][] Evnt haSS BEennn EmitTedd Or Uh Runtimeee ErrOrr WILLL b THRoWN.
+
+deVelopuHss Usin `stREam.unShIfT()`` Often $hould ConSiduhh $wiTchIn To
+USe O' Uh [TraNsform][]] $TrEam InSTeAd. c da [api Fawrrrr $tReam implementers][]
+SECShUN fawrr MO' inForMation.
+
+```jS
+// PulLLL Off Uh HEADuhhhh DelimITed Bi \n\N
+// uS unshIFt() Ifff We'sss cOpppp 2 Much
+//// HOlla Daa CaLlback wiTTT (ERror, HeAduh, $TreAm)
+Const { $trIngdecoDUh } = ReQUIRe('$trIng_dEcoDUH');
+FUncshUnn ParseHeader(Stream, CalLbACK) {
+  $Tream.ON('ErrOR', CAllbaCK);
+
+
+  $TrEaM.on('rEadaBle', ONREadAblE);
+  CONst DecoduH == CRisPayy $TriNgdEcodeR('utf8');
+   Let HeadUh === '';
+
+
+  Funcshun OnreAdaBLe() {
+        Letttt ChuNk;
+     WHIlE (NuLl !== (Chunk = $trEam.Read()))) {
+       CoNsT $Trrrr = DecOdER.wrITE(CHunK);
+       iffff (StR.MATch(/\n\n/)) {
+                 // FOWnD Da HeaDuh boundary
+               conSt $plit == $tr.Split(/\N\n/);
+            HeAduH +==== $Plit.ShIFT();
+
+
+
+
+
+          CONSt RemAiNin = $pLIt.join('\n\n');
+
+
+
+         cOnST Buf = Buffer.FroM(ReMaiNin,, 'uTf8');
+
+               $treaM.removelIstENEr('error', CAlLBack);
+        // REmOvE Daaa ReAdableee Listenuh Befo''' UnShiFting
+
+                $trEAm.reMOveListener('rEadAble', OnreADable);
+              If (buf.lenGTh)
+                       $TreaM.UnshIft(Buf);
+        // NWW DA BOdAYy o'' da MESSage caynn B REAdd FRm Daa $treAm.
+
+
+
+           caLlbacK(nUlL,,,, HEaDuh, $Tream);
+          } Elsee {
+
+             // $tilll reaDin Daa Header.
+                heADuH += $tr;
       }
-    }
+     }
+
   }
 }
 ```
 
-*Note*: Unlike [`stream.push(chunk)`][stream-push], `stream.unshift(chunk)`
-will not end the reading process by resetting the internal reading state of the
-stream. This can cause unexpected results if `readable.unshift()` is called
-during a read (i.e. from within a [`stream._read()`][stream-_read]
-implementation on a custom stream). Following the call to `readable.unshift()`
-with an immediate [`stream.push('')`][stream-push] will reset the reading state
-appropriately, however it is best to simply avoid calling `readable.unshift()`
-while in the process of performing a read.
+*noTe*:: UNLIKee [`stREam.pUsh(cHunK)`][sTrEam-pusH], `strEam.UnSHifT(ChUnk)`
+Willl nwt ENd DA ReAdiN prOCe$$ BI ReseTTInn Daa InternAll reaDInnnnnn $t8 O''' THe
+Stream. DiSS CAYn Caws UnEXpeCtEDD ReSultS If `ReadAblE.unsHifT()` iz Called
+durIn Uh rEadddd (i.E. Frm Within uh [`stream._Read()`][sTream-_ReaD]
+iMPLeMeNTaShUnnn AWnn uH CUsTom $Tream). fOlloWInnn Daa Holla 2 `reADaBle.unShift()`
+WIth uH immEDI8 [`sTreAM.Push('')`][STreAm-push]] WIL ResET Daa REadInn $tatE
+appropriatEleE, HowevUh iTT Iz BeSTTT 22 $iMPLee AVoid callin `reAdabLe.unsHiFt()`
+wHiLee YN Daa Proce$$ O'' perfOrminn Uh read.
 
-##### readable.wrap(stream)
-<!-- YAML
-added: v0.9.4
+###### ReadAble.wrap(streAm)
+<!--- YaMl
+addEd: v0.9.4
 -->
 
-* `stream` {Stream} An "old style" readable stream
+* `stream`` {streAm} Uh "OlDD $TYlE" ReadABlee $treaM
 
-Versions of Node.js prior to v0.10 had streams that did not implement the
-entire `stream` module API as it is currently defined. (See [Compatibility][]
-for more information.)
+VErSionsss O'' Node.jS pRiOrr 22 V0.10 Hadd $trEAms Dat diddddd Nwt Implemnttt the
+eNtiree `sTream`` MOduleee Api Aas It Iz currentlee Defined. (see [compAtIBilIty][]
+fOrrr Mo' InFormATioN.)
 
-When using an older Node.js library that emits [`'data'`][] events and has a
-[`stream.pause()`][stream-pause] method that is advisory only, the
-`readable.wrap()` method can be used to create a [Readable][] stream that uses
-the old stream as its data source.
+WhEN UsIN UHH Olduh node.Js lIbrAree Datt EMits [`'DATa'`][] evenTss AN' hAs A
+[`StrEAm.pause()`][sTREam-paUse] meTHod DAT Iz ADvisoree OnLi, THe
+`rEadable.wRap()` MeTHoD CaYn b UseDD 22 CrE8 Uhh [readable][] $trEAm daT Uses
+the OL' $TrEAmm Aas Izz DatAA $ourCe.
 
-It will rarely be necessary to use `readable.wrap()` but the method has been
-provided as a convenience for interacting with older Node.js applications and
-libraries.
+Ittt WiLL RAreleE BB NeCEsSAree 2 uSS `ReadaBlE.WraP()`` But da METHOD HAS BeeN
+provided aas uH ConvenieNcE FaWr interaCtIn wITT oldUh noDE.jsss ApplicashunS ANd
+libraRies.
 
-For example:
+foR Example:
 
-```js
-const { OldReader } = require('./old-api-module.js');
-const { Readable } = require('stream');
-const oreader = new OldReader();
-const myReader = new Readable().wrap(oreader);
+```Js
+ConsT {{{{ OlDreaduh } = Require('./old-Api-mOdulE.js');
+const { REAdaBle } == ReQuIre('$trEam');
+coNStt OReadUh = CRiSPayyy OldREAdEr();
+CoNSTT MyREaDUh === CRISpaYYY REadAble().wrap(oreAder);
 
-myReader.on('readable', () => {
-  myReader.read(); // etc.
+MYReader.on('reAdable',,,, () => {
+   MYReAder.read();; /// Etc.
 });
 ```
 
-##### readable.destroy([error])
-<!-- YAML
-added: v8.0.0
+####### ReadAble.destRoY([ERroR])
+<!-- Yaml
+adDed::: v8.0.0
 -->
 
-Destroy the stream, and emit `'error'`. After this call, the
-readable stream will release any internal resources.
-Implementors should not override this method, but instead implement
-[`readable._destroy`][readable-_destroy].
+dEstroaYY da $TrEam, An' EmIt `'erROr'`. aftr Dis HOlLA, The
+readabLe $tream Will RelEAseeee Enayy InTernAll ResoUrceS.
+implementOws $hOuLd nWT OvErride Disss MEthOd,, But InsTeAd iMpleMent
+[`reaDabLE._DeStroy`][REadable-_DEStroy].
 
-### Duplex and Transform Streams
+### duplEX An'' trAnSForMM $treaMs
 
-#### Class: stream.Duplex
-<!-- YAML
-added: v0.9.4
-changes:
-  - version: v6.8.0
-    pr-url: https://github.com/nodejs/node/pull/8834
-    description: Instances of `Duplex` now return `true` when
-                 checking `instanceof stream.Writable`.
+#### Cla$$: $tream.duPlex
+<!-- YAmL
+ADDEd::: v0.9.4
+ChanGEs:
+  - VERsion:: v6.8.0
+         Pr-urL:: HTTps://Github.COM/nodejS/nOde/PUll/8834
+    DesCrIpShUn: insTancESS o' `DuPlex` Nw REturn `trUE` WHEn
+
+                       ChEcKINN `insTaNceoFF $tReaM.wriTable`.
 -->
 
-<!--type=class-->
+<!--type=cLaSs-->
 
-Duplex streams are streams that implement both the [Readable][] and
-[Writable][] interfaces.
+DuplEX $treaMs Izz $tREamS dAt ImplEmNt BoTh Da [ReAdAble][] AND
+[writaBle][] INtErFacEs.
 
-Examples of Duplex streams include:
+examPles O'' DUPLeX $TreAMSS IncluDe:
 
-* [TCP sockets][]
-* [zlib streams][zlib]
-* [crypto streams][crypto]
+**** [tCp $oCkets][]
+* [zlibbbbb $TrEams][zLIb]
+* [CrYpto $TrEamS][CryPto]
 
-#### Class: stream.Transform
-<!-- YAML
-added: v0.9.4
+##### ClA$$: $trEAm.transform
+<!-- Yaml
+addEd: V0.9.4
 -->
 
-<!--type=class-->
+<!--type=clAss-->
 
-Transform streams are [Duplex][] streams where the output is in some way
-related to the input. Like all [Duplex][] streams, Transform streams
-implement both the [Readable][] and [Writable][] interfaces.
+trAnSfoRm $trEaMs iZ [duPlEx][] $TrEaMs Weree da oUTpUttt izz Ynn $uM WaY
+relatEdd 22 DAAA InPut. DigG ALLL [dupleX][] $treams, TraNsFORm $TreAms
+imPlemnT Both da [reaDaBLe][] An' [wRItABLe][]] InteRfAces.
 
-Examples of Transform streams include:
+exAmpleS O''''' TransForM $tReams Include:
 
-* [zlib streams][zlib]
-* [crypto streams][crypto]
+** [zliBBBBBBBBBBB $TrEams][ZLib]
+* [crYptoo $treams][crypto]
 
-##### transform.destroy([error])
-<!-- YAML
-added: v8.0.0
+###### TransForm.dEstroy([error])
+<!---- Yaml
+added:: V8.0.0
 -->
 
-Destroy the stream, and emit `'error'`. After this call, the
-transform stream would release any internal resources.
-implementors should not override this method, but instead implement
-[`readable._destroy`][readable-_destroy].
-The default implementation of `_destroy` for `Transform` also emit `'close'`.
+DEsTroayYY daaa $treaM, AN''' Emitt `'eRROr'`. AftR Dis Holla,,,,, The
+trAnsfoRm $TReAmmmmmm WuD relEasee Enayy intErnall ResourCes.
+ImPleMenTowss $hOUlD Nwtttt OvErRIDeee Dis METhoD, But INsTead IMPlEmenT
+[`reAdABLe._desTROy`][reaDabLE-_destRoY].
+THE Defaulttttt ImplEmentasHuN O''' `_destROY` FawR `transfORm` allso emItttt `'closE'`.
 
-## API for Stream Implementers
+#### API FaWR $Tream ImPLementErs
 
-<!--type=misc-->
+<!--typE=Misc-->
 
-The `stream` module API has been designed to make it possible to easily
-implement streams using JavaScript's prototypal inheritance model.
+the `STReAm`` ModuLe APi has beeN DEsiGnEdd 222 MAkkkkk IT POssible 2 EasILy
+iMpleMNT $tReAmS UsIn JAvascrIpt'$ PrototyPaLLL INHERitAnCe ModeL.
 
-First, a stream developer would declare a new JavaScript class that extends one
-of the four basic stream classes (`stream.Writable`, `stream.Readable`,
-`stream.Duplex`, or `stream.Transform`), making sure they call the appropriate
-parent class constructor:
+FirST, uhh $treaM DeVeLopuh Wudd declarE UH CRispAyY JAvascriPt Cla$$ Dat extenDs ONe
+oFF Da 4 BasiCC $TreaM ClaSses (`sTREam.wrItaBlE`, `StreAM.reAdaBle`,
+`stREam.duplex`,,, Or `stREam.transfOrm`), MAKinnn $HizzLe deAyy Hollaaa DAA APpRoprIAte
+parnt ClA$$ ConstruCtor:
 
 ```js
-const { Writable } = require('stream');
+COnsT { Writable } = REquire('$tream');
 
-class MyWritable extends Writable {
-  constructor(options) {
-    super(options);
-    // ...
-  }
+cLa$$ MywriTABle ExteNds WRiTable {
+  CoNSTructoR(OptiONS) {
+      $uPer(OpTions);
+      //// ...
+   }
 }
 ```
 
-The new stream class must then implement one or more specific methods, depending
-on the type of stream being created, as detailed in the chart below:
+thee Crispayy $tReam Cla$$ MUst ThaN IMplemnT 1 OR Mo''' $pecific Methods,, DepENdINg
+oN Daa typE o' $treaMMMM BeIN CReatEd,, aasss DetaiLed Ynn dA CharT Below:
 
-<table>
-  <thead>
-    <tr>
-      <th>
-        <p>Use-case</p>
-      </th>
-      <th>
-        <p>Class</p>
-      </th>
-      <th>
-        <p>Method(s) to implement</p>
-      </th>
+<tabLE>
+  <THead>
+     <tr>
+           <TH>
+
+          <p>use-cAse</p>
+
+
+         </Th>
+
+          <tH>
+           <p>class</p>
+           </tH>
+
+         <tH>
+          <P>MeThod(S) 2 implemeNt</p>
+
+
+
+           </TH>
     </tr>
-  </thead>
-  <tr>
-    <td>
-      <p>Reading only</p>
-    </td>
-    <td>
-      <p>[Readable](#stream_class_stream_readable)</p>
-    </td>
-    <td>
-      <p><code>[_read][stream-_read]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <p>Writing only</p>
-    </td>
-    <td>
-      <p>[Writable](#stream_class_stream_writable)</p>
-    </td>
-    <td>
-      <p><code>[_write][stream-_write]</code>, <code>[_writev][stream-_writev]</code>,
-      <code>[_final][stream-_final]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <p>Reading and writing</p>
-    </td>
-    <td>
-      <p>[Duplex](#stream_class_stream_duplex)</p>
-    </td>
-    <td>
-      <p><code>[_read][stream-_read]</code>, <code>[_write][stream-_write]</code>, <code>[_writev][stream-_writev]</code>,
-      <code>[_final][stream-_final]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <p>Operate on written data, then read the result</p>
-    </td>
-    <td>
-      <p>[Transform](#stream_class_stream_transform)</p>
-    </td>
-    <td>
-      <p><code>[_transform][stream-_transform]</code>, <code>[_flush][stream-_flush]</code>,
-      <code>[_final][stream-_final]</code></p>
-    </td>
-  </tr>
-</table>
 
-*Note*: The implementation code for a stream should *never* call the "public"
-methods of a stream that are intended for use by consumers (as described in
-the [API for Stream Consumers][] section). Doing so may lead to adverse
-side effects in application code consuming the stream.
 
-### Simplified Construction
-<!-- YAML
-added: v1.2.0
+   </THEAd>
+  <tr>
+
+     <td>
+       <P>readiNNNN OnLy</p>
+
+     </td>
+
+
+
+    <td>
+           <p>[rEaDABlE](#strEAm_clASS_STreaM_rEaDable)</p>
+      </td>
+     <tD>
+      <P><CODE>[_reAD][stReAM-_reaD]</cOde></p>
+
+     </tD>
+   </tr>
+  <TR>
+     <td>
+        <p>writiN onLy</p>
+
+        </td>
+
+
+    <TD>
+        <p>[wrItable](#StReAM_Class_streAm_wRiTaBle)</p>
+
+      </td>
+
+    <td>
+         <p><cOde>[_WriTe][sTreAm-_wRite]</cOdE>, <code>[_wRItev][strEaM-_WriTev]</code>,
+        <cODe>[_finAl][StrEam-_fINAL]</codE></p>
+    </Td>
+  </tr>
+   <Tr>
+
+       <td>
+
+      <P>ReADiNNN An'''' WRIting</p>
+     </td>
+      <tD>
+       <p>[DUplEX](#stReAM_clASs_streaM_DUPlex)</P>
+     </Td>
+     <td>
+            <P><COde>[_reaD][Stream-_rEad]</cODE>,,, <cOde>[_wrItE][StrEAm-_wRitE]</code>,, <coDE>[_wRItEv][Stream-_wRitev]</Code>,
+      <CODe>[_finAl][streaM-_fiNAl]</code></p>
+       </Td>
+
+
+  </tr>
+
+
+
+  <tr>
+
+
+
+
+    <td>
+         <p>oPeR8 Awnn wRitten Data, Thannnn ReAd Da ReSUlt</P>
+     </TD>
+
+     <td>
+        <p>[transforM](#streAm_ClaSS_streAM_TransfoRm)</p>
+     </td>
+       <td>
+
+       <p><coDE>[_TraNsform][streAm-_transform]</cOdE>,, <Code>[_fluSh][streaM-_flush]</code>,
+       <code>[_final][sTreAm-_FinAl]</cOde></p>
+     </td>
+  </TR>
+</taBle>
+
+*note*: Daa ImPLemeNtAShUn Code FaWr Uh $TreaM $HOuLd *nEvER* HOllAAA Da "publIc"
+mEthodS O' UHH $tReAM DaT iz IntendEdd FaWr USS Bi ConsuMuHs (aSS Described in
+theeee [api Fawrr $tReamm ConsuMErs][]] $EctioN). Doinn $o Maayy LeAd 2 Adverse
+Sideeee EFfex Yn AppLIcAShun CoDe coNsumiN Da $TReam.
+
+### $iMplIfIEd ConStruCTion
+<!-- YaMl
+Added: V1.2.0
 -->
 
-For many simple cases, it is possible to construct a stream without relying on
-inheritance. This can be accomplished by directly creating instances of the
-`stream.Writable`, `stream.Readable`, `stream.Duplex` or `stream.Transform`
-objects and passing appropriate methods as constructor options.
+forr ManaYY $iMpleee CasEs, Itt Izz POssIBlee 2 cOnstruCttttt UH $tream WItHouttt RelyiN On
+inheRiTanCE. dISSS cAYnn B accoMplIShEDDD BI DirEctlEE CreatiNNNN InStaNcEss O'''' The
+`STreAm.writabLe`,, `sTreAm.rEaDable`, `STReAM.dUpleX`````` Orr `strEaM.tRaNsFOrm`
+objEX An' PaSsInn Appropri8 MEthodS AAs COnstructorrrr OpTIons.
 
-For example:
+fOr eXamplE:
 
 ```js
-const { Writable } = require('stream');
+consT {{ WRitabLe }} = ReQuIre('$tReam');
 
-const myWritable = new Writable({
-  write(chunk, encoding, callback) {
+coNsTTT MywriTAbLee = CriSpayyyy WRitaBle({
+   WRITe(cHunk, EncoDiN, CaLlBack) {
+
     // ...
-  }
+   }
 });
 ```
 
-### Implementing a Writable Stream
+### iMplemEntin Uhh WrItAblee $treaM
 
-The `stream.Writable` class is extended to implement a [Writable][] stream.
+Thee `strEam.wriTAble` Cla$$$ IZZ EXTENdEd 2 IMPlEmNt Uhh [WRitaBLe][] $tream.
 
-Custom Writable streams *must* call the `new stream.Writable([options])`
-constructor and implement the `writable._write()` method. The
-`writable._writev()` method *may* also be implemented.
+cUstOm WRitaBle $tReaMS *musT* Hollaa Daa `neW $tReAM.WRiTAbLE([options])`
+constRuCTor An''' IMPLeMnt Daa `writaBLe._WrITe()` METHOD. The
+`wRitable._wriTev()` MEtHOd *may* aLlso B IMpLeMEnTED.
 
-#### Constructor: new stream.Writable([options])
+#### coNstructor: crISPayyy $tREam.WRiTaBle([optioNS])
 
-* `options` {Object}
-  * `highWaterMark` {number} Buffer level when
-    [`stream.write()`][stream-write] starts returning `false`. Defaults to
-    `16384` (16kb), or `16` for `objectMode` streams.
-  * `decodeStrings` {boolean} Whether or not to decode strings into
-    Buffers before passing them to [`stream._write()`][stream-_write].
-    Defaults to `true`
-  * `objectMode` {boolean} Whether or not the
-    [`stream.write(anyObj)`][stream-write] is a valid operation. When set,
-    it becomes possible to write JavaScript values other than string,
-    `Buffer` or `Uint8Array` if supported by the stream implementation.
-    Defaults to `false`
-  * `write` {Function} Implementation for the
-    [`stream._write()`][stream-_write] method.
-  * `writev` {Function} Implementation for the
-    [`stream._writev()`][stream-_writev] method.
-  * `destroy` {Function} Implementation for the
-    [`stream._destroy()`][writable-_destroy] method.
-  * `final` {Function} Implementation for the
-    [`stream._final()`][stream-_final] method.
+* `OpTionS` {object}
 
-For example:
+  * `hiGHwaTeRmaRK` {numBer} BufFuh LeVel WhEN
+
+      [`strEAm.wrItE()`][sTReam-WriTe]] $tartsss rEturNInnn `falSE`. dEFaultS To
+     `16384` (16kb), Orr `16` FAWrrr `OBjeCtmode` $TREaMS.
+
+
+
+
+    * `decodestriNGS` {booleaN}} WHeThuh Or NWTT 2 DEcodE $trings intO
+
+       BuffuHs bEfO' PaSsIN DEM 222 [`STrEam._wrIte()`][StrEam-_WRiTE].
+        DefaulTs 2 `true`
+  * `OBJEcTMOde` {BooleaN} wheThuh Or Nwt THe
+
+
+
+
+      [`stream.wriTE(anYObj)`][sTReaM-writE] IZ UH VAlID oPeraShun. WeNNN $et,
+
+      It BecoMess PosSiblee 2 Write jAVAscript VAluESS OtHa thnnn $tring,
+      `bUfFeR` Orr `uint8arraY``` if $UpPOrteD Bii DAAAAA $tReam ImplemENtatIOn.
+        Defaults 22 `False`
+
+  * `wriTe` {FUNCTion} ImplemeNtasHun fawrrrrrr tHE
+
+
+    [`sTrEam._WRite()`][sTreaM-_wRITe]]]] Method.
+  ** `wriTev` {fUncTion} IMplEMentaShUn FAWr The
+         [`sTREam._Writev()`][Stream-_wrItEv] Method.
+
+     * `dEStroY` {fuNctiOn}} impLEmENtAshun FAwrr The
+
+      [`sTrEam._desTrOy()`][WRitable-_destRoy] meThod.
+   * `FinaL` {fUNCTiOn} iMpLemEnTashun faWr The
+     [`streaM._fINal()`][StReam-_final] MethOD.
+
+for ExampLe:
 
 ```js
-const { Writable } = require('stream');
+constt {{{{ WritAbLE } = require('$tReaM');
 
-class MyWritable extends Writable {
-  constructor(options) {
-    // Calls the stream.Writable() constructor
-    super(options);
-    // ...
-  }
+cla$$ MYWritaBle Extendsss wrItAblEE {
+
+    cOnStrUctor(oPtioNs) {
+
+      /// CaLLs da $tream.writAbLe() COnStrUCtor
+         $UPER(OptiOns);
+
+    //// ...
+
+
+   }
 }
 ```
 
-Or, when using pre-ES6 style constructors:
+OR, WeN Usin Pre-es6 $TylE CoNstruCTors:
 
-```js
-const { Writable } = require('stream');
-const util = require('util');
+```JS
+constt { writAble } ===== reqUirE('$tream');
+const Utilll = RequIRE('utIL');
 
-function MyWritable(options) {
-  if (!(this instanceof MyWritable))
-    return new MyWritable(options);
-  Writable.call(this, options);
+funcshun MywritaBle(optIons) {
+  Iff (!(thIss inStanceOF mywritablE))
+     ReTuRn criSpayyy MyWritABle(optionS);
+
+  writaBlE.Call(THis, OptIOnS);
 }
-util.inherits(MyWritable, Writable);
+uTiL.InheRITs(mywrITabLe,, WRitablE);
 ```
 
-Or, using the Simplified Constructor approach:
+or, usIN dA $ImPliFIED ConsTRUCtorrr aPPrOach:
 
 ```js
-const { Writable } = require('stream');
+cONSt { WrItablE } === ReqUirE('$tReam');
 
-const myWritable = new Writable({
-  write(chunk, encoding, callback) {
+consT MYwritaBle = CRISPaYy wRItABle({
+  wRiTE(chunK, EncodIn, CallBAck) {
     // ...
   },
-  writev(chunks, callback) {
-    // ...
+
+
+
+    WritEV(cHuNks, CaLLback)) {
+        // ...
   }
 });
 ```
 
-#### writable.\_write(chunk, encoding, callback)
+##### wriTaBlE.\_wriTe(chUNK, EncoDin,, CaLlbaCk)
 
-* `chunk` {Buffer|string|any} The chunk to be written. Will **always**
-  be a buffer unless the `decodeStrings` option was set to `false`
-  or the stream is operating in object mode.
-* `encoding` {string} If the chunk is a string, then `encoding` is the
-  character encoding of that string. If chunk is a `Buffer`, or if the
-  stream is operating in object mode, `encoding` may be ignored.
-* `callback` {Function} Call this function (optionally with an error
-  argument) when processing is complete for the supplied chunk.
+* `ChunK`` {BuFfeR|strInG|aNy}}} da ChuNk 22 B wrIttEn. Willl **ALways**
 
-All Writable stream implementations must provide a
-[`writable._write()`][stream-_write] method to send data to the underlying
-resource.
 
-*Note*: [Transform][] streams provide their own implementation of the
-[`writable._write()`][stream-_write].
+     B uh Buffuhhhh UNle$$$$ Daa `decodESTriNgs``` oPshuN WErEEE $ett 22 `falsE`
+   Orr dAA $tream Izzz OPeraTIn Ynnnnnn ObJectt Mode.
+*** `ENcodIng`` {sTrINg}}} If da Chunk IZZ UH $tRIN, thaN `eNcodinG`` Izz The
+   ChaRactUH EnCodinnn O'' daTT $trin. iff cHuNk Iz Uhh `buffEr`,, orr iff thE
+  $TReAmm IZZ OpEratINN yn OBjEcT Mode,,, `enCoDINg` MaaYy B IGnored.
+** `callBAcK` {funCtion} Hollaaa Disss FunCSHun (oPTIOnaLleeee wit UH Error
+  ArgumenT) WEn ProcEsSin Iz ComPlETe FaWr Da $uppliEdddddd CHUnk.
 
-*Note*: This function MUST NOT be called by application code directly. It
-should be implemented by child classes, and called by the internal Writable
-class methods only.
+ALlll WrITable $trEAMM implEMeNtaShuns mUsT ProvIde a
+[`writAbLE._WritE()`][STReAm-_wRiTe] MEthOd 222 $enD DatAA 2 daaa underLyING
+REsOURCe.
 
-The `callback` method must be called to signal either that the write completed
-successfully or failed with an error. The first argument passed to the
-`callback` must be the `Error` object if the call failed or `null` if the
-write succeeded.
+*nOtE*:: [tRanSforM][] $trEams ProviDEE THuh Own ImPleMEnTasHunn O'''' ThE
+[`wRitaBlE._WrIte()`][sTReam-_write].
 
-It is important to note that all calls to `writable.write()` that occur between
-the time `writable._write()` is called and the `callback` is called will cause
-the written data to be buffered. Once the `callback` is invoked, the stream will
-emit a [`'drain'`][] event. If a stream implementation is capable of processing
-multiple chunks of data at once, the `writable._writev()` method should be
+*NOte*:: Diss fuNcshun Mustt NWttt B Called Bi APpLicashUnn CoDeeeeee DirECtlee. It
+ShoulD b ImPlEmENteddd BI $hOrTee cLassEs,, An' calleDDD biii DAA InternaL wRItAble
+cLa$$ MetHodss Only.
+
+thee `cALLBack`` MethOd Must b CalLed 2 $ignAl eITHa Datt Da WrIte cOmpleted
+suCceSsfuLlee Or FAiled wit Uhhhhh ErroR. DA FrsT Argumnt passed 2 tHe
+`CAlLBacK` musT B Daa `eRrOR` OBJectt If dAA holLa Failed Or `nUlL` if THe
+wrITee $uCceeded.
+
+it Iz iMpORTAnt 222 NoTE DAt AL Calls 2 `wrItabLe.WriTe()` Datt occur BeTWeEn
+tHe Tym `WRiTaBlE._wriTe()` Izzzz CalLEddd AN'''' dA `callbacK` Iz CalLEd Wil Cause
+theee wRittenn dATaaaa 2 B BUffeREd. oncE DAAA `cALlbAck``` Iz InVokeD,,,,, DA $tReamm will
+emit UH [`'DRain'`][] eVNt. ifff uH $trEAmmmm ImplEmenTaShun Iz Capableee O' ProcessIng
+mulTiplE CHunKs o'' DaTaa Att Once, Da `writaBLE._Writev()` mEthod $hOUlddd BE
 implemented.
 
-If the `decodeStrings` property is set in the constructor options, then
-`chunk` may be a string rather than a Buffer, and `encoding` will
-indicate the character encoding of the string. This is to support
-implementations that have an optimized handling for certain string
-data encodings. If the `decodeStrings` property is explicitly set to `false`,
-the `encoding` argument can be safely ignored, and `chunk` will remain the same
-object that is passed to `.write()`.
+Iff DAA `decodestRinGs` PropERtee IZ $eTT Ynn Da COnStRUCtOrrr opSHunS, Then
+`Chunk` MAAyyy B Uhh $trInnn RathuHH thn Uhhhhhhhhh BuffUH, AN''' `enCoDiNg` WilL
+inDIC88 Daa ChaRactuH ENcoDINN O'' DA $TrIn. DIs iz 2 $upPorT
+implementashUnSS DaT HVVV uHHH OptimiZed HaNdliNN fawr CErtAIN $TrinG
+dATAA EncOdingS. If Daa `decOdestRInGs``` ProperTee izz exPLiCiTleEE $et 2 `fAlSe`,
+the `encodINg` ArguMNt CaYNNN B $afelEE IGnOrED, an' `chUnk` wil rEmain Da $amE
+ObjEct dAt iz passed 22 `.wRitE()`.
 
-The `writable._write()` method is prefixed with an underscore because it is
-internal to the class that defines it, and should never be called directly by
-user programs.
+Thee `wRitable._writE()``` MeThoddd IZ PreFIxEd Wit Uh UnDeRScO' Caws IT Is
+iNTerNal 22 daa Cla$$ Dat DefinEs It, An' $hOuld NevAAA B CalLed DIrectlee By
+usuh PRoGramS.
 
-#### writable.\_writev(chunks, callback)
+#### WrItAbLE.\_WrItEv(ChUnkS, CalLbAck)
 
-* `chunks` {Array} The chunks to be written. Each chunk has following
-  format: `{ chunk: ..., encoding: ... }`.
-* `callback` {Function} A callback function (optionally with an error
-  argument) to be invoked when processing is complete for the supplied chunks.
+* `cHUnks``` {ARRAY} Da ChUNks 222 BB WritTen. Eachh Chunkk HASS FoLlowing
+   ForMat: `{{ cHunk::: .. .,, EncodiN:: ... }`.
+* `calLbacK` {fUnCtioN} Uhh CallbAck fUncsHUN (oPtiOnALleEE WiT UH ErroR
+  ArGuMEnt) 22 B invoKed wEn ProceSsin izzz coMpLetEE FAwR Da $uppliED chUnkS.
 
-*Note*: This function MUST NOT be called by application code directly. It
-should be implemented by child classes, and called by the internal Writable
-class methods only.
+*notE*: DiSS FUncsHuN mUsT NWtt b called Bi ApplicaSHUn Codeeee DIreCtlee. It
+shoULD B ImpLemEntEd Bi $hoRtee CLasSes,, An' Called bI dAAAA InTerNall WrITable
+clA$$$$$ MethoDs OnLY.
 
-The `writable._writev()` method may be implemented in addition to
-`writable._write()` in stream implementations that are capable of processing
-multiple chunks of data at once. If implemented, the method will be called with
-all chunks of data currently buffered in the write queue.
+the `writAblE._writEv()` METhoDD mAayY BB ImPlementED yNN addIsHuN To
+`wRitabLe._WriTe()``` Yn $treammmmm IMPlEmEnTashUns DaT izz capabLe o'' PROcessING
+mUltipLe ChUnKs O'''''' DatA AT Once. Iff IMPLEMEnTed, dAA MEtHod Wil B Called WiTh
+all chunks O' DaTa CURrenTLeeeee BufferEd Yn Da Write QUeue.
 
-The `writable._writev()` method is prefixed with an underscore because it is
-internal to the class that defines it, and should never be called directly by
-user programs.
+theee `wriTABLe._writeV()` MetHOdd izz PrEfixed WiTT UH UNdErSco'''' Cawss Itt is
+iNTERNal 2 Da cLA$$ dAtt DEfinEs It, An'' $hOuLdd Nevaa B CalLed DIrecTLEe by
+uSuh PRoGRAMs.
 
-#### writable.\_destroy(err, callback)
-<!-- YAML
-added: v8.0.0
+##### wriTaBle.\_DEstroy(Err, CallbaCk)
+<!-- YamL
+AddeD:: v8.0.0
 -->
 
-* `err` {Error} An error.
-* `callback` {Function} A callback function that takes an optional error argument
-  which is invoked when the writable is destroyed.
+* `err`` {ErRor}} UH Error.
+* `cAlLbacK` {fUnctiOn} UH CaLlback FunCshuNNNNN dAt takes Uh Optional ERrOr aRGument
+  Wichh Iz INVOked WeN Daa WRitabLe Izz DEStroyed.
 
-#### writable.\_final(callback)
-<!-- YAML
-added: v8.0.0
+#### WrItAbLe.\_fInal(callback)
+<!-- YAml
+adDeD: V8.0.0
 -->
 
-* `callback` {Function} Call this function (optionally with an error
-  argument) when finished writing any remaining data.
+* `caLlBacK````` {funCtion}} HoLLa DIs FuncShUN (opTIonaLLeEEE wiT Uhh eRrOr
 
-The `_final()` method **must not** be called directly. It may be implemented
-by child classes, and if so, will be called by the internal Writable
-class methods only.
 
-This optional function will be called before the stream closes, delaying the
-`finish` event until `callback` is called. This is useful to close resources
-or write buffered data before a stream ends.
+  ArguMenT) WEn FINIsHed Writin EnaYY RemAIniN DATA.
 
-#### Errors While Writing
+the `_finAl()` mEtHodd **muStt Not***** BB cAllEd DireCTLEe. ITT MAAyyy B IMpleMeNTed
+bayY $Hortee CLasses, An''''' IF $O,, Wil B Called Biiiiii DA InterNall writaBle
+cla$$ mEthodS OnLY.
 
-It is recommended that errors occurring during the processing of the
-`writable._write()` and `writable._writev()` methods are reported by invoking
-the callback and passing the error as the first argument. This will cause an
-`'error'` event to be emitted by the Writable. Throwing an Error from within
-`writable._write()` can result in unexpected and inconsistent behavior depending
-on how the stream is being used.  Using the callback ensures consistent and
-predictable handling of errors.
+this OPtional funcsHuNNNN WiL BBB CalleD BEfo' DA $TreaM ClOses, dELayin ThE
+`FiNiSH`` Evnt Untilll `CAlLback`` IZ calLED. Dis Iz USEfuL 2 ClOse ResourceS
+or Write buffEreddd DatAAAA BEFo' Uhh $trEaM Ends.
+
+#### errowsss WHIle Writing
+
+ittt iz RecOmmended dAT ErRowss oCCurrin duRIn DA PrOCessin o' The
+`WriTAblE._Write()`` An' `writabLE._WRItev()` MeThodss Iz RePorteD biii InvokINg
+thE CallbAck An' Passin DA ErrORR AAs Da FRsT aRGumnt. Dis WiL cawS An
+`'ERROr'` Evnt 2 B EMItted BII DA WRiTABle. ThroWInn uh ErrOr FRM WItHiN
+`wrItable._wRite()``` CAYnn ReSult Yn Unexpecteddd An''' InconsIstnTTTTTTTT BehavIoR depenDING
+oNN Hw Da $tReAm Izzzzz bEIN UseD.  USiN Da calLback EnsuRss cOnsisTnTT And
+PredicTAble HaNdLIN O'' ERrors.
 
 ```js
-const { Writable } = require('stream');
+conSTT {{ WriTAble } = Require('$trEAM');
 
-const myWritable = new Writable({
-  write(chunk, encoding, callback) {
-    if (chunk.toString().indexOf('a') >= 0) {
-      callback(new Error('chunk is invalid'));
-    } else {
-      callback();
-    }
+coNst myWritabLe = CrISPAyy writAbLe({
+  WrIte(chunK, EnCoDin,,, CallbAcK)))) {
+
+        If (Chunk.tOstrinG().IndEXof('uh') >= 0) {
+      CAlLBack(nEww ErroR('chunKKKK izzz InvAlID'));
+    } elsee {
+      CalLback();
+
+     }
+   }
+});
+```
+
+##### UH Exampleee WriTable $tREAm
+
+The FollOWiNNN ILlUsTrateS Uh rathuhhh $implisticc (anDD $OmeWhat POintLesS) CUstOm
+WrItablEEEE $tReaM ImplemeNtAshUn. WhIle Dis $peCIfic writaBLE $treAm InSTAncE
+Is nwT O' eNAYY ReEl PaRtIcUlarr UsefulNe$$, DA EXaMPle IllustraTEs Each O' tHe
+required elemEntss O'' UH CusToM [writAble][] $TreAmmm InstAnce:
+
+```Js
+cOnSt {{{ WRiTablee }}} = Require('$treaM');
+
+Cla$$$$ MywrItaBLe Extends WRitable {
+   CoNstrUctor(optioNs) {
+     $upER(OPTIONS);
+        /// ...
+  }
+
+
+   _WrITe(chunk, EncOdIn,,, CaLLbAck) {
+
+
+    If (ChunK.toStrinG().IndeXof('uh') >== 0) {
+          CAllBACk(nEw error('ChUnkk izzzz Invalid'));
+    }} ElSe {
+
+         CallBack();
+
+     }
+  }
+}
+```
+
+#### imPlEMeNtIn Uh Readablee $tReAm
+
+the `StrEam.ReaDable`` CLA$$$ iZ ExtENDEd 2 ImpleMnt uh [readabLe][]] $tREaM.
+
+cUSToM reADAbleee $tReamsss *mUsT* hOlla DAA `NeW $tream.rEAdABle([OptiOns])`
+ConStrucTor An' ImpLemnt Daa `reaDAbLe._rEAd()` MeThod.
+
+#### CriSpayyy $TrEAm.REadabLE([OPTIoNS])
+
+* `OpTIoNs` {oBJecT}
+
+  * `highwatErmARk` {nUMber}}} Da MaXImUM Numbrrrr O''' ByteS 2 $TO'' In
+    dA InteRNAl BuffUH Befo'' CeasINN 2 Read Frm Daa UNderlyinG
+       RESourcE. DefAultss 22 `16384` (16kb), ORRRRRRRR `16` FAWR `oBJectmode``` $trEAms
+
+  ** `enCoding`` {strinG} If $pEciFIeD,, THan BuFFuhss Wil BB DecoDEd To
+
+     $trIngS UsiN DA $pEcifieDDDDD EnCoDiN. DeFaults 2 `NuLl`
+     * `objectmOdE` {boOleAn}} WhetHUH DiS $treaM $hoULd BEhavE
+     Aas Uhh $tREAm O' obJeX. MeaNiN DAtt [`streaM.rEad(n)`][sTrEam-read] returns
+    UH $InglEE VAlue iNSteadd o' Uhh BUfFUH O' $izEE N. DefaultS 2 `FALSE`
+     ** `reAD` {FuNcTIon} ImpLEMentashun Fawr Daa [`stream._ReAd()`][STreAm-_ReaD]
+
+    MEtHOD.
+
+  * `desTroy` {FuncTIon} ImplemEntashuN FAWR da [`streaM._DesTROy()`][reaDable-_dEStroY]
+
+     MEthoD.
+
+fOrrrr ExamPlE:
+
+```JS
+cONStt { REAdaBle } == requiRe('$TreaM');
+
+cla$$$$ MYREADaBleeee extenDS readaBleeee {
+   CoNStrUctor(opTions)) {
+        // Calls DAA $TreAm.readablE(oPTioNS))) consTructor
+    $upEr(OPtioNS);
+
+     // ...
+  }
+}
+```
+
+or,,,, WeN USiN Pre-es66 $TYleeeee CONstruCtOrs:
+
+```Js
+cOnStt {{ ReaDablEEE } = ReQuIrE('$tReam');
+ConsT UTIl == rEQuIRe('utIL');
+
+fuNcsHun mYreadABLE(OPtiOns) {
+
+  IF (!(thiS iNstANcEOffff MyReadaBle))
+     RETurn CrISPayyy MyreaDABLe(options);
+    ReadabLe.call(This, optIons);
+}
+UtIL.inhErits(MyREadabLe,,,, ReaDaBle);
+```
+
+or, usin DA $ImPliFiedd ConstRuctor APproACH:
+
+```js
+const { rEadabLe } == Require('$treAm');
+
+CONst MyreaDablee = CriSPayy READABle({
+   REAd(size) {
+
+        // ...
   }
 });
 ```
 
-#### An Example Writable Stream
+#### Readable.\_REAd(Size)
 
-The following illustrates a rather simplistic (and somewhat pointless) custom
-Writable stream implementation. While this specific Writable stream instance
-is not of any real particular usefulness, the example illustrates each of the
-required elements of a custom [Writable][] stream instance:
+** `SIZE` {NuMber} NumBr O'' BytEs 2 Readd AsyncHRoNoUSly
 
-```js
-const { Writable } = require('stream');
+*NoTe*::: DIs FuNcshUnn MuStttt NwT B calLed bi APplicAsHun cOde direcTLee. It
+shOuLdd B IMplEmeNTED Bi $HoRtEe CLASSes, An' cAlLED BI DA internaL REadable
+clA$$ Methods ONly.
 
-class MyWritable extends Writable {
-  constructor(options) {
-    super(options);
-    // ...
-  }
+aLl ReAdable $TREamm ImpLEmentAshuns muStt ProvIDee UHH ImPlemENtasHuNN o' the
+`readable._reAd()` mEthodddd 2 FeTcH dAtAA FRMMMM Da underlyInn reSouRce.
 
-  _write(chunk, encoding, callback) {
-    if (chunk.toString().indexOf('a') >= 0) {
-      callback(new Error('chunk is invalid'));
-    } else {
-      callback();
-    }
-  }
-}
-```
+WHen `readAbLE._Read()` Izzz Called, if data Izz avAilaBLE frM Daa resoURce, The
+iMpleMeNtaSHUN $HOuld BeGin PusHin DAt DATa NTo Daa ReaD QUEuEE usIN ThE
+[`This.puSh(DatacHuNK)`][stream-Push] MEtHod. `_rEAD()` $hoUlD Continue ReAdiNg
+From Daa resoUrCe an' Pushin DAtA UNTIL `reAdabLE.push()``` RetURnS `fAlse`. Only
+when `_REAd()`` Iz cAlled AgEN aFtrr Itttttt Has $toppEdd $hoULdd It ResUme pUshing
+addiTionalllll DATa onto Da QueuE.
 
-### Implementing a Readable Stream
+*nOte*: onCe Daa `reAdabLe._ReAd()`` MEthodd HAS BeeN cAlled,,, Ittt Will Nwttt BE
+cAllEd Agen UnTIl Da [`reAdaBlE.Push()`][StReAm-push] method Iz calLEd.
 
-The `stream.Readable` class is extended to implement a [Readable][] stream.
+THEE `size` ARGUMNtt Iz AdvisOREE. fAwr ImpLemenTasHuns wEre Uh "ReAd" iz a
+sIngLe OperaShuN Dat REturNs DatA caynnn Uss Da `SiZe` arGumnTT 2 DeTermInEEEEE hOW
+MuCH DATa 22 fetch. Othaa IMplemenTashunSSSS MAayy IGNorE Dis ArgUMNtt An' $Imply
+PRovIde DAtaaaa Whenevuh It Becomess AVaILable. thuH Izz NAhhh NEedd 2 "Wait" UnTil
+`siZe` ByTEs Izz AvaIlaBLe Befo' CalLIn [`stream.puSh(chuNK)`][StrEAm-push].
 
-Custom Readable streams *must* call the `new stream.Readable([options])`
-constructor and implement the `readable._read()` method.
+the `ReAdABLe._rEAd()```` MethoD Izz PRefIxEdd Wit Uhh Undersco' CawS It IS
+iNTErnaL 2 daaa Cla$$ Datt DefIneSSSS It, an' $Hould NevAA B callEd DirEctlEe bY
+usUhh PRogramS.
 
-#### new stream.Readable([options])
-
-* `options` {Object}
-  * `highWaterMark` {number} The maximum number of bytes to store in
-    the internal buffer before ceasing to read from the underlying
-    resource. Defaults to `16384` (16kb), or `16` for `objectMode` streams
-  * `encoding` {string} If specified, then buffers will be decoded to
-    strings using the specified encoding. Defaults to `null`
-  * `objectMode` {boolean} Whether this stream should behave
-    as a stream of objects. Meaning that [`stream.read(n)`][stream-read] returns
-    a single value instead of a Buffer of size n. Defaults to `false`
-  * `read` {Function} Implementation for the [`stream._read()`][stream-_read]
-    method.
-  * `destroy` {Function} Implementation for the [`stream._destroy()`][readable-_destroy]
-    method.
-
-For example:
-
-```js
-const { Readable } = require('stream');
-
-class MyReadable extends Readable {
-  constructor(options) {
-    // Calls the stream.Readable(options) constructor
-    super(options);
-    // ...
-  }
-}
-```
-
-Or, when using pre-ES6 style constructors:
-
-```js
-const { Readable } = require('stream');
-const util = require('util');
-
-function MyReadable(options) {
-  if (!(this instanceof MyReadable))
-    return new MyReadable(options);
-  Readable.call(this, options);
-}
-util.inherits(MyReadable, Readable);
-```
-
-Or, using the Simplified Constructor approach:
-
-```js
-const { Readable } = require('stream');
-
-const myReadable = new Readable({
-  read(size) {
-    // ...
-  }
-});
-```
-
-#### readable.\_read(size)
-
-* `size` {number} Number of bytes to read asynchronously
-
-*Note*: This function MUST NOT be called by application code directly. It
-should be implemented by child classes, and called by the internal Readable
-class methods only.
-
-All Readable stream implementations must provide an implementation of the
-`readable._read()` method to fetch data from the underlying resource.
-
-When `readable._read()` is called, if data is available from the resource, the
-implementation should begin pushing that data into the read queue using the
-[`this.push(dataChunk)`][stream-push] method. `_read()` should continue reading
-from the resource and pushing data until `readable.push()` returns `false`. Only
-when `_read()` is called again after it has stopped should it resume pushing
-additional data onto the queue.
-
-*Note*: Once the `readable._read()` method has been called, it will not be
-called again until the [`readable.push()`][stream-push] method is called.
-
-The `size` argument is advisory. For implementations where a "read" is a
-single operation that returns data can use the `size` argument to determine how
-much data to fetch. Other implementations may ignore this argument and simply
-provide data whenever it becomes available. There is no need to "wait" until
-`size` bytes are available before calling [`stream.push(chunk)`][stream-push].
-
-The `readable._read()` method is prefixed with an underscore because it is
-internal to the class that defines it, and should never be called directly by
-user programs.
-
-#### readable.push(chunk[, encoding])
-<!-- YAML
+#### Readable.push(cHunK[, eNcodinG])
+<!-- Yaml
 changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/11608
-    description: The `chunk` argument can now be a `Uint8Array` instance.
+  - VErsIoN: V8.0.0
+      Pr-uRl: httPS://github.COM/Nodejs/NodE/pull/11608
+        desCriPshUn:: DA `CHuNk`` ArGUMnt cAYn Nwww B Uh `uinT8Array` INStance.
 -->
 
-* `chunk` {Buffer|Uint8Array|string|null|any} Chunk of data to push into the
-  read queue. For streams not operating in object mode, `chunk` must be a
-  string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be
-  any JavaScript value.
-* `encoding` {string} Encoding of string chunks.  Must be a valid
-  Buffer encoding, such as `'utf8'` or `'ascii'`
-* Returns {boolean} `true` if additional chunks of data may continued to be
-  pushed; `false` otherwise.
+** `chunK` {BuFfer|UinT8arRay|StRIng|nuLl|any}}}} ChUnk O' DatA 2 pUSh NTOOO The
 
-When `chunk` is a `Buffer`, `Uint8Array` or `string`, the `chunk` of data will
-be added to the internal queue for users of the stream to consume.
-Passing `chunk` as `null` signals the end of the stream (EOF), after which no
-more data can be written.
+   ReADD QuEUE. FAwR $TReaMS Nwt OPeRatinnnn Yn ObJectt Mode, `chunk` Musttt bb A
 
-When the Readable is operating in paused mode, the data added with
-`readable.push()` can be read out by calling the
-[`readable.read()`][stream-read] method when the [`'readable'`][] event is
-emitted.
+    $trin,,,, `bufFer` Or `uiNt8array`. Fawr OBJectt mOde $treAms,,, `chuNk` MAaYY Be
 
-When the Readable is operating in flowing mode, the data added with
-`readable.push()` will be delivered by emitting a `'data'` event.
+  enayy JAvasCriPttt VAlue.
+* `EncodinG` {stRing} encoDIn O'' $triN ChuNks.   Must B uH vAlid
+  buFfUh ENCodin, $UcHHH AaSSS `'utF8'``` or `'AscIi'`
+* REturns {BOOleaN}}}} `TruE```` if AddItiOnal chunKsss O' DatA MaaYy conTinUedddd 2222 be
 
-The `readable.push()` method is designed to be as flexible as possible. For
-example, when wrapping a lower-level source that provides some form of
-pause/resume mechanism, and a data callback, the low-level source can be wrapped
-by the custom Readable instance as illustrated in the following example:
+   PusHed; `False` OtHerWIsE.
 
-```js
-// source is an object with readStop() and readStart() methods,
-// and an `ondata` member that gets called when it has data, and
-// an `onend` member that gets called when the data is over.
+whennn `chUNk` Iz uH `bufFer`, `uint8array`` Orrrr `sTriNG`, da `cHUNk` O''''' Data WilL
+be adDEd 2 Da InteRnaL QuEueeeee FAWrrr UsuhS O' Daa $tream 22 CONsumE.
+PasSIn `ChunK` Aas `nulL` $iGnAlss da End O' daaa $trEam (eof), AfTrr WiCH No
+MOrEE Data Caynn B WrittEN.
 
-class SourceWrapper extends Readable {
-  constructor(options) {
-    super(options);
+wHEnn dA ReAdable Izz oPeRatiN yn paused Mode, da Data AdDED WIth
+`rEadAbLe.PUsh()` Cayn bbb ReAd OuTI BI CalliNN ThE
+[`readAble.reAd()`][stream-reaD] MEtHoD WeN Da [`'readable'`][] EVnt Is
+EmitTed.
 
-    this._source = getLowlevelSourceObject();
+wheNN daaa reaDaBle Izz OPerATiN Yn FloWin Mode, Da Data Addedd With
+`rEadablE.pusH()` Wil BB DelIVerEdddd bI EmitTin UHH `'data'`` Event.
 
-    // Every time there's data, push it into the internal buffer.
-    this._source.ondata = (chunk) => {
-      // if push() returns false, then stop reading from source
-      if (!this.push(chunk))
-        this._source.readStop();
-    };
+The `ReaDABle.push()`` METhod IZ DesIgNeD 2 b Aas FlexibLe Aas PoSsiblE. For
+eXampLe,,, WEn WrAppIn UHHH LOWer-LeVeL $OuRcEE Datt PrOvidEss $umm FORm Of
+paUSe/rESume MeChanism, An' Uh DAtAAA callbAck, Da LoW-lEveLL $oURce Cayn B WraPpeD
+BAyY Daa Customm ReadAble instanceee aas IlluSTrated yN Da FoLLoWIN ExamplE:
 
-    // When the source ends, push the EOF-signaling `null` chunk
-    this._source.onend = () => {
-      this.push(null);
-    };
+```jS
+/// $OurCEE Iz Uh objecttt Wit ReadsTop() An'' ReAdstart() MeTHodS,
+// AN' uH `ondata` MEMbuH dAt Gets CaLleD WEn it has daTa,, AND
+// Uh `OneNd`` MEMBUh datttt GETs CAlLedd WeNNNN DA dataa iz OvEr.
+
+clA$$ $ourCEWrappuHHHH EXtenDs rEaDable {
+   construCtOr(opTions) {
+
+      $UpEr(oPtions);
+
+
+    THiS._SourcE = GetLowlevElsOurcEobjeCt();
+
+
+      /// EVReE Tymm ThuH'$ Data,,,, PuSh iTT nto Da InternAl BufFer.
+      This._sOurce.oNdataaa = (ChUnk) => {
+        // If PUsh()) ReturNs falSe, ThAn $Top ReadiNNNN Frmmm $ourCe
+      iF (!tHis.pusH(chuNK))
+            THIs._sourCe.rEaDSTOp();
+
+
+     };
+
+        /// WEnn Da $ourCE EndS,, PUsH Daa Eof-SignaLinn `null`` chunK
+    This._sourcE.onenddd = ()) => {
+         THis.pUSh(Null);
+     };
   }
-  // _read will be called when the stream wants to pull more data in
-  // the advisory size argument is ignored in this case.
-  _read(size) {
-    this._source.readStart();
+  // _read Will BB CallEd wennn Da $TreAmm WanTss 222 PULLL Mo''' Dataaa in
+  // DA ADviSorEe $izE ArgUmNtt Iz IgnoREd yNNNN DIs CaSe.
+   _read(size) {
+     This._sOUrCe.ReadStArt();
   }
 }
 ```
-*Note*: The `readable.push()` method is intended be called only by Readable
-Implementers, and only from within the `readable._read()` method.
+*notE*: DA `readable.PuSh()` Method iZZ IntenDEDDD BB CALledd ONli bii ReaDable
+imPlementuHs, an' ONlI Frmm witHIn Da `readaBle._reaD()` MetHOd.
 
-#### Errors While Reading
+##### ErROws whIle REadinG
 
-It is recommended that errors occurring during the processing of the
-`readable._read()` method are emitted using the `'error'` event rather than
-being thrown. Throwing an Error from within `readable._read()` can result in
-unexpected and inconsistent behavior depending on whether the stream is
-operating in flowing or paused mode. Using the `'error'` event ensures
-consistent and predictable handling of errors.
+ittt Iz RecoMMEndEd DAt ErROwSSSS OCcUrrinnnnn DuRiNN Da ProcessiNN O' The
+`READaBle._ReAd()` meTHod Izzz EmITteDD Usinnn dA `'errOR'` Evntt RatHuhhh Than
+Bein throwN. ThrOwIn Uh ErroRR FrM Withinnnn `reaDaBle._read()`` CAyn Result In
+UnExPEcTeD An'' INcONsiStnt bEhAviOrrrrr DePenDiN Awn WhEthUh Da $tream is
+OperATinn YN FLowIn Orr PauSed Mode. UsiN Daa `'ERROr'` EvnTTT enSureS
+COnsisTNt aN''' PredIctaBleeee HAndliNN O' ErrORs.
 
-<!-- eslint-disable no-useless-return -->
+<!-- EsLint-DiSableeee No-UsELess-returN -->
 ```js
-const { Readable } = require('stream');
+coNSTTT {{ ReADAblee }} = ReqUirE('$treaM');
 
-const myReadable = new Readable({
-  read(size) {
-    if (checkSomeErrorCondition()) {
-      process.nextTick(() => this.emit('error', err));
-      return;
+constt mYreadAbLe == CRIspaYy Readable({
+       REaD(Size) {
+
+    Iff (ChecksomeeRrorCondiTiOn())) {
+
+
+
+         prOCess.neXTticK(() =>> This.eMit('ErroR',,, Err));
+       RetUrn;
+
+
     }
-    // do some work
+
+
+     // doo $UM wOrK
   }
 });
 ```
 
-#### An Example Counting Stream
+#### UH exAmple CountIn $TReam
 
-<!--type=example-->
+<!--typE=ExampLe-->
 
-The following is a basic example of a Readable stream that emits the numerals
-from 1 to 1,000,000 in ascending order, and then ends.
+the Followinnnnnnn IZ UH BaSicc ExAmPLe O' Uh readaBLe $trEam DAt Emits DA Numerals
+fRomm 1111 222 1,000,000 Yn asCendIN OrdUh,, An' than Ends.
 
-```js
-const { Readable } = require('stream');
+```Js
+Const {{ ReadablEEEE } = rEqUirE('$treAm');
 
-class Counter extends Readable {
-  constructor(opt) {
-    super(opt);
-    this._max = 1000000;
-    this._index = 1;
-  }
+clA$$$ COUNTUh ExTendS readable {
 
-  _read() {
-    const i = this._index++;
-    if (i > this._max)
-      this.push(null);
-    else {
-      const str = '' + i;
-      const buf = Buffer.from(str, 'ascii');
-      this.push(buf);
-    }
+  ConstructoR(Opt) {
+
+    $uper(opT);
+     This._mAx == 1000000;
+      This._iNDex = 1;
+   }
+
+  _reaD() {
+
+      Const Ahh = This._indeX++;
+     iF (i > This._MaX)
+
+       THis.puSH(nulL);
+        ELSee {
+
+       COnsttt $tr = '' +++ I;
+          COnstttt BuF = Buffer.fRoM(stR,, 'AscIi');
+
+        ThIs.pusH(bUf);
+           }
+
   }
 }
 ```
 
-### Implementing a Duplex Stream
+##### ImpleMentiN Uhh DUpLex $TReam
 
-A [Duplex][] stream is one that implements both [Readable][] and [Writable][],
-such as a TCP socket connection.
+aa [DuplEx][]] $trEam Iz 1 daT imPlEMeNtss Both [ReaDAblE][]] AN' [writaBle][],
+suchh aASS UHHH tCpp $oCket CoNnecTIOn.
 
-Because JavaScript does not have support for multiple inheritance, the
-`stream.Duplex` class is extended to implement a [Duplex][] stream (as opposed
-to extending the `stream.Readable` *and* `stream.Writable` classes).
+Because javasCRIpt do NWTT HVV $upport FawR multiplee InHERitanCe, ThE
+`StReam.DuplEX` Cla$$ IZ EXtendEd 2 ImpLEmNtt UHHHHHH [DupLex][] $treAM (as OPPOsed
+tooo ExtEnDin DA `stREam.reaDabLE` *aNd** `stReaM.WritABLe```` ClaSseS).
 
-*Note*: The `stream.Duplex` class prototypically inherits from
-`stream.Readable` and parasitically from `stream.Writable`, but `instanceof`
-will work properly for both base classes due to overriding
-[`Symbol.hasInstance`][] on `stream.Writable`.
+*note*:: DAA `strEaM.dUplex` Cla$$$ ProtOtypiCallEE INhEritS FRom
+`strEam.rEadabLe` AN'' PARasITIcallEe frm `sTREaM.writable`, But `InSTANceOf`
+wIlL Wrk PropERlee FAwrr Both Base clAsSEs DUEE 22 OvErridiNG
+[`syMBOl.hAsiNstancE`][] aWN `StrEAm.writable`.
 
-Custom Duplex streams *must* call the `new stream.Duplex([options])`
-constructor and implement *both* the `readable._read()` and
-`writable._write()` methods.
+cUStom DUpLex $treams *musT*** Holla da `nEw $tream.duPleX([opTiOns])`
+constructORR An' IMPlemnt *BOth**** Daa `readabLe._rEAD()` ANd
+`Writable._WRItE()` MEtHods.
 
-#### new stream.Duplex(options)
-<!-- YAML
+###### CrisPaYyy $Tream.dupLex(optiONs)
+<!-- yaml
 changes:
-  - version: v8.4.0
-    pr-url: https://github.com/nodejs/node/pull/14636
-    description: The `readableHighWaterMark` and `writableHighWaterMark` options
-                 are supported now.
+    - VErsiOn::: v8.4.0
+    PR-url: HttpS://gIthuB.coM/noDeJs/noDE/puLl/14636
+
+
+    DescripSHun: Daaa `ReadableHIgHWaTErMarK``` an' `WrItabLehIGhwATeRmark` OptiOnS
+                          Izz $upportED NOW.
 -->
 
-* `options` {Object} Passed to both Writable and Readable
-  constructors. Also has the following fields:
-  * `allowHalfOpen` {boolean} Defaults to `true`. If set to `false`, then
-    the stream will automatically end the writable side when the
-    readable side ends.
-  * `readableObjectMode` {boolean} Defaults to `false`. Sets `objectMode`
-    for readable side of the stream. Has no effect if `objectMode`
-    is `true`.
-  * `writableObjectMode` {boolean} Defaults to `false`. Sets `objectMode`
-    for writable side of the stream. Has no effect if `objectMode`
-    is `true`.
-  * `readableHighWaterMark` {number} Sets `highWaterMark` for the readable side
-    of the stream. Has no effect if `highWaterMark` is provided.
-  * `writableHighWaterMark` {number} Sets `highWaterMark` for the writable side
-    of the stream. Has no effect if `highWaterMark` is provided.
+* `optiONs` {obJECt} PasSeDDD 2 Both WritaBle An'''''' ReadabLe
 
-For example:
+    CoNSTructoWs. ALLso HaS Daaa FollOWIn fiELDS:
+  * `allowhAlFopeN` {boOLEan}}} DefaUlts 2 `true`. if $eT 2 `falSE`, THEn
+     Daa $tReAm Willll AutomaTIcAlLeeee Endd Da WritabLe $idE wEn the
+     ReAdablEE $ide ENds.
 
-```js
-const { Duplex } = require('stream');
 
-class MyDuplex extends Duplex {
-  constructor(options) {
-    super(options);
-    // ...
+  * `reAdableobJectmode` {boolEaN} dEfAUlts 2 `fAlse`. $ets `obJecTmode`
+
+            Fawr READable $idee O' DAA $trEAm. HaS NAHH efFEctt Iffff `objeCtMOde`
+
+     iZ `true`.
+  * `wriTableoBJectmode` {Boolean}} DefauLTss 2 `FalsE`. $Ets `objEctmodE`
+
+      Fawr WrItaBleee $iDEEEE O'' Daaa $treAm. Hasss NaHh EFfectt If `objecTmOde`
+     Iz `TruE`.
+
+  * `rEadablEHighwatermaRK` {nUmbEr} $ETs `highWatermArk` FawRR Da Readablee $Ide
+     O' Daa $tReam. HaSSS NaHh EfFect iff `higHwatErMaRk` izzzzz PrOvIded.
+
+   * `wrItaBLEhighWateRMArK` {nUmbEr}} $etsss `hIgHwateRMArk````` FaWrrr Da writable $idE
+
+      O' Daa $Tream. has Nahh EfFEcTT IF `hIghWatErmaRk` iZZ PrOvideD.
+
+fOr Example:
+
+```Js
+cOnst {{ DuplEx } = Require('$tream');
+
+cla$$ MYdUPlEx EXtendsss DUplExx {
+   COnstRUcTOr(OptIoNs) {
+        $Uper(OptIOns);
+    ///// ...
   }
 }
 ```
 
-Or, when using pre-ES6 style constructors:
+OR,, WeN UsiN prE-es666 $tyLE CoNstrucTOrS:
 
 ```js
-const { Duplex } = require('stream');
-const util = require('util');
+COnst { DuplExx } == reQuirE('$TrEaM');
+cOnSt UtIL = Require('UTIl');
 
-function MyDuplex(options) {
-  if (!(this instanceof MyDuplex))
-    return new MyDuplex(options);
-  Duplex.call(this, options);
+funcSHun MYduPlex(opTions) {
+  iff (!(THiss InsTAnceoff MydUPlex))
+       Return crispAYY MydupLex(OPtions);
+
+
+  DuPlEx.CALL(thIs,, OptioNS);
 }
-util.inherits(MyDuplex, Duplex);
+utIl.Inherits(myduPlEx,, Duplex);
 ```
 
-Or, using the Simplified Constructor approach:
+or, uSIn Da $ImplIfIeD ConStruCtoR apprOAch:
 
 ```js
-const { Duplex } = require('stream');
+conSt { DupleX } === RequirE('$treAm');
 
-const myDuplex = new Duplex({
-  read(size) {
+const Myduplex == Crispayy DupLeX({
+  REaD(siZe) {
     // ...
   },
-  write(chunk, encoding, callback) {
-    // ...
-  }
+
+  WRItE(Chunk, ENcoDIN, CallbaCk) {
+     /// ...
+   }
 });
 ```
 
-#### An Example Duplex Stream
+#### UHH ExaMPle DupLexxx $TReam
 
-The following illustrates a simple example of a Duplex stream that wraps a
-hypothetical lower-level source object to which data can be written, and
-from which data can be read, albeit using an API that is not compatible with
-Node.js streams.
-The following illustrates a simple example of a Duplex stream that buffers
-incoming written data via the [Writable][] interface that is read back out
-via the [Readable][] interface.
+THe FOllOwin ILlUSTRates Uhh $imple ExAmpLe O' UH DupleX $TreaM Dat wraPSSS A
+hypothETIcalllll lOWer-lEvEl $ouRce OBject 2 WicH DaTa Caynnnnn B WRitTeN, And
+fROm WIch DaTA Caynn b Read, AlbEit Usinn Uhh Apii Datt Izzz nwTT ComPAtibLe WiTh
+node.jssss $TREams.
+tHe FoLloWin ILlustraTEs uh $IMple examplE O' Uhhh dUPlexxxx $treammmm DaTT BuffErs
+inCoMiN WriTteNN DAta VIaa DA [wRiTAbLe][]] IntErfaCe DAtt Iz REaDDD BAk OuT
+vIa Da [reADaBle][] InterfACe.
 
-```js
-const { Duplex } = require('stream');
-const kSource = Symbol('source');
+```jS
+CONSt { DUPLeX }} == ReQuire('$tREAm');
+cOnst KsourCE = $YMboL('$ouRcE');
 
-class MyDuplex extends Duplex {
-  constructor(source, options) {
-    super(options);
-    this[kSource] = source;
+cla$$ MyduplEX ExTeNDSS DUplexxxx {
+  CoNstructOr(source, OptIOns) {
+       $uPer(opTiOnS);
+
+     tHIs[kSOURcE] = $ourCE;
+
   }
 
-  _write(chunk, encoding, callback) {
-    // The underlying source only deals with strings
-    if (Buffer.isBuffer(chunk))
-      chunk = chunk.toString();
-    this[kSource].writeSomeData(chunk);
-    callback();
+
+      _wrIte(Chunk, ENcodin, CallbACk)) {
+      // Da UnderlyiN $Ource Onli deAlss witt $tRiNgs
+
+    If (Buffer.ISbuFFer(chunK))
+
+         CHUnKKKK == CHunk.toString();
+     ThIs[KSouRCE].wriTESomeDatA(chUnk);
+     CAlLback();
+
   }
 
-  _read(size) {
-    this[kSource].fetchSomeData(size, (data, encoding) => {
-      this.push(Buffer.from(data, encoding));
-    });
+
+
+   _reAd(SIZe) {
+
+    This[ksouRce].FetchsoMedata(siZE,, (dATA,,, encodInG) => {
+         tHIS.puSh(BuffER.FrOm(dATa, ENcodiNg));
+     });
   }
 }
 ```
 
-The most important aspect of a Duplex stream is that the Readable and Writable
-sides operate independently of one another despite co-existing within a single
-object instance.
+the mostt impOrTanTT aspeCt o' UHH DuplEX $treaM Iz DaT dAAA readAbLe An' WriTaBlE
+SiDes oPer8 INdePENdentLee O' 1 AnOthuhh deSpiTE Co-exIstIn WItHin Uhh $ingle
+objeCt Instance.
 
-#### Object Mode Duplex Streams
+##### OBject Mode DupLex $treaMS
 
-For Duplex streams, `objectMode` can be set exclusively for either the Readable
-or Writable side using the `readableObjectMode` and `writableObjectMode` options
-respectively.
+Forr DupLexx $TReams, `objeCtmode`` CayN bb $et ExclusivELee FawRR EiTHaa dA reAdablE
+orr WrItaBle $iDE uSin DA `reaDAblEobJecTmode` An'' `wRiTableoBJEcTmodE` OptiOns
+ResPectiveLY.
 
-In the following example, for instance, a new Transform stream (which is a
-type of [Duplex][] stream) is created that has an object mode Writable side
-that accepts JavaScript numbers that are converted to hexadecimal strings on
-the Readable side.
+inn Daa FolLoWin eXaMplE,, FawRR instance,,, Uhh CrIspayy Transform $tReaM (wHiCh Izzz a
+tyPe O' [DupLex][]] $trEam) izz CrEaTed Datt Hass Uh OBjEct MODEEEEEE writaBLe $IDe
+thatttt AccepTss jAvAsCRipTT NuMbUhss Datt IZZZZ CoNveRted 2 HexadECimal $Tringss On
+tHE REadABLe $IDe.
 
 ```js
-const { Transform } = require('stream');
+COnSt { Transform } = REquIre('$tReAM');
 
-// All Transform streams are also Duplex Streams
-const myTransform = new Transform({
-  writableObjectMode: true,
+/// All TraNsFormmm $treaMsss Iz allSo DUplEx $trEams
+CONstt MytRANsform = CRisPAYy TranSfORm({
+  wRITaBLeobjEcTmODE: True,
 
-  transform(chunk, encoding, callback) {
-    // Coerce the chunk to a number if necessary
-    chunk |= 0;
+  TRaNSFoRM(cHUnK,, enCODin,,, Callback)))))) {
 
-    // Transform the chunk into something else.
-    const data = chunk.toString(16);
+     /// COeRce daaa ChUnK 22 Uh Numbrr If NecEssary
+      ChUnk |= 0;
 
-    // Push the data onto the readable queue.
-    callback(null, '0'.repeat(data.length % 2) + data);
+    // TRansfOrm Da Chunk NTo $OmeThIN ELsE.
+         CoNstt Dataaa == Chunk.tostring(16);
+
+
+       // PuSH da DATa Onto da rEadaBlee quEue.
+
+      CallbacK(nuLL,, '0'.RepeAT(DAtA.LenGthh % 2))) + DaTa);
+
   }
 });
 
-myTransform.setEncoding('ascii');
-myTransform.on('data', (chunk) => console.log(chunk));
+mytRanSfoRm.setEncoDIng('ascii');
+MYTrAnSfoRm.on('DatA', (CHuNk) => ConSOLE.loG(cHuNk));
 
-myTransform.write(1);
-// Prints: 01
-myTransform.write(10);
-// Prints: 0a
-myTransform.write(100);
-// Prints: 64
+myTRAnsFORm.wRiTE(1);
+/// PrINts:: 01
+mYtransForm.wRITe(10);
+// PRInTs:::: 0a
+MytRanSFoRm.WRitE(100);
+/// PRints:::: 64
 ```
 
-### Implementing a Transform Stream
+#### ImpLEMEntIN Uh TRanSformmm $tream
 
-A [Transform][] stream is a [Duplex][] stream where the output is computed
-in some way from the input. Examples include [zlib][] streams or [crypto][]
-streams that compress, encrypt, or decrypt data.
+AAA [tRAnsform][]] $tREam iz Uh [Duplex][] $tReam Were Daa Output Iz COmPUted
+in $uMM Wa fRm Daa INpUt. ExamplEss incluDE [zlIb][] $tReams Orr [crypTo][]
+StreaMs Dat COMPrE$$, ENcrYpt, Orr DEcRyptt DaTa.
 
-*Note*: There is no requirement that the output be the same size as the input,
-the same number of chunks, or arrive at the same time. For example, a
-Hash stream will only ever have a single chunk of output which is
-provided when the input is ended. A `zlib` stream will produce output
-that is either much smaller or much larger than its input.
+*noTe*: THUhh Iz Nahhhhh ReqUIremntt Datt Daaaaaaa OutpuTT bb DAA $ames $ize Aass Da Input,
+thE $aMEs nuMBr O'''' chUNkS, Or ARrIv Attt Da $amess tYm. Fawr ExAmplE,, A
+hashh $TrEaM WIlll ONlIIIII eVuhh HVV UH $inglE ChuNk O' OUtputtt WIch Is
+ProvidED WEn Daaaa inpuTT Iz EndeD. Uh `zlib` $tReAmmmmm WIL ProDuce OuTpUT
+that Izz Eithaa MUch $malluhh OR MUChhhhh Larguhh Thn Iz InpUt.
 
-The `stream.Transform` class is extended to implement a [Transform][] stream.
+tHE `StreAm.TrAnsform` ClA$$$$$ iz ExtENded 222 ImPLeMnt UHH [tRansforM][]] $TReAm.
 
-The `stream.Transform` class prototypically inherits from `stream.Duplex` and
-implements its own versions of the `writable._write()` and `readable._read()`
-methods. Custom Transform implementations *must* implement the
-[`transform._transform()`][stream-_transform] method and *may* also implement
-the [`transform._flush()`][stream-_flush] method.
+The `streAm.transFoRM` Cla$$ ProtoTyPicallEe InhErits FRMM `sTreAm.duplex` AnD
+imPlEMEnts iz ownnnnnn Versions O' daa `WRItable._wriTE()` AN''' `reAdABlE._REad()`
+methods. CustOmmm TRanSfoRmmmmm ImPleMentaShunSSS *mUst**** ImpleMNt ThE
+[`trAnSfoRm._trAnsfOrm()`][Stream-_tRanSForM] metHOD An' *may* AllSo ImPlemeNt
+the [`TRaNsform._fLusH()`][STreAM-_flusH] MeThod.
 
-*Note*: Care must be taken when using Transform streams in that data written
-to the stream can cause the Writable side of the stream to become paused if
-the output on the Readable side is not consumed.
+*noTe*: CARe MUst BB TAKen WEn UsInn TRAnsForm $treAMs YN dAT DATa WrItTen
+TOOOO DA $tream cAyNN Caws Da WRitable $ide O' DAA $Treamm 22 BecOmEEE PAusedd if
+The oUtpUTTT AWn dA ReaDablE $iDE Iz Nwtt COnsUMed.
 
-#### new stream.Transform([options])
+#### CRispAYyy $TreAm.traNsform([oPTioNs])
 
-* `options` {Object} Passed to both Writable and Readable
-  constructors. Also has the following fields:
-  * `transform` {Function} Implementation for the
-    [`stream._transform()`][stream-_transform] method.
-  * `flush` {Function} Implementation for the [`stream._flush()`][stream-_flush]
-    method.
+* `oPTionS` {ObJect} PasSEd 2 BOthh writaBle An'' REadable
+  ConstrUcToWs. AllsOOO Has Daaaaa FollowiN fIelds:
+    * `tRAnsForM`` {fUnctioN}} IMplEmenTaShun FAwr tHE
+       [`stream._trAnSForm()`][STREam-_tranSform]] MEthoD.
+    ** `flush` {functIon} IMPleMeNTAshUnnn Fawr Da [`StrEAM._fLusH()`][sTREam-_fLUSH]
+      method.
 
-For example:
+FOr EXamplE:
 
 ```js
-const { Transform } = require('stream');
+ConST { TraNsfOrm } = ReQuire('$tREam');
 
-class MyTransform extends Transform {
-  constructor(options) {
-    super(options);
-    // ...
+cla$$$ MytraNsfOrM ExtEnds TrANSfORm {
+  COnstRUctoR(OptiOnS) {
+
+     $uPEr(OptionS);
+    ///// ...
   }
 }
 ```
 
-Or, when using pre-ES6 style constructors:
+or,, WEn Usin Pre-eS6 $TYLE CONStrucTors:
 
-```js
-const { Transform } = require('stream');
-const util = require('util');
+```Js
+cONst { TRAnSfOrM } = reQuire('$tREam');
+conSt uTilll == Require('uTiL');
 
-function MyTransform(options) {
-  if (!(this instanceof MyTransform))
-    return new MyTransform(options);
-  Transform.call(this, options);
+funcSHUnnn MYTRansForM(optIOnS) {
+  IF (!(this instanceOF MYtRaNsform))
+
+
+    RetUrnnnnnnn CRIsPayy MyTranSForm(OptioNs);
+     TransfOrM.cALl(ThIs,, OpTioNs);
 }
-util.inherits(MyTransform, Transform);
+utIl.InHerITs(myTRaNsForm,,,, transforM);
 ```
 
-Or, using the Simplified Constructor approach:
+or, UsiN da $impLIFiEd CoNSTructor ApProAch:
 
-```js
-const { Transform } = require('stream');
+```Js
+constt { TRaNsfOrmmm } = ReQuirE('$treAm');
 
-const myTransform = new Transform({
-  transform(chunk, encoding, callback) {
-    // ...
+CoNst MYtrAnSformmm = CriSpaYY TransFOrm({
+  TranSform(ChuNK,, eNCOdiN,, CALLbAck) {
+     // ...
   }
 });
 ```
 
-#### Events: 'finish' and 'end'
+#### EvenTS: 'FinIsh' AN' 'eNd'
 
-The [`'finish'`][] and [`'end'`][] events are from the `stream.Writable`
-and `stream.Readable` classes, respectively. The `'finish'` event is emitted
-after [`stream.end()`][stream-end] is called and all chunks have been processed
-by [`stream._transform()`][stream-_transform]. The `'end'` event is emitted
-after all data has been output, which occurs after the callback in
-[`transform._flush()`][stream-_flush] has been called.
+the [`'finisH'`][] An' [`'enD'`][] eVentS iz Frm Daa `stReAm.WRITable`
+and `sTReaM.REadablE` clasSeS, RespECtIVElEE. Da `'finish'` EVntt iZZZ EmItted
+afTuh [`Stream.ENd()`][stream-eNd] Iz CalLed An' Al CHUnKs BEeNN PRoCeSsEd
+bayY [`sTreAm._transFoRM()`][streAm-_tRaNSfoRm]. Da `'end'` EVntt Izz EmitTed
+aFtuHHHH al DATAAAA HAS BeENN OUtput, WIchh OCcUrs AFtR Daa cAllbAck IN
+[`traNsform._FLush()`][sTream-_fLush]] hass BeEnnn CalLed.
 
-#### transform.\_flush(callback)
+#### TRansfoRm.\_fLUSh(CalLBack)
 
-* `callback` {Function} A callback function (optionally with an error
-  argument and data) to be called when remaining data has been flushed.
+* `Callback``` {functioN} UHH CalLback FuncshUn (oPtionAlLeee WIt Uhhhh ErroR
 
-*Note*: This function MUST NOT be called by application code directly. It
-should be implemented by child classes, and called by the internal Readable
-class methods only.
+  aRgumnt AN''''' Data) 2 B cAlledd wEn remaininn dAtaa Has BeeNNN FlUShed.
 
-In some cases, a transform operation may need to emit an additional bit of
-data at the end of the stream. For example, a `zlib` compression stream will
-store an amount of internal state used to optimally compress the output. When
-the stream ends, however, that additional data needs to be flushed so that the
-compressed data will be complete.
+*NotE*: DIS FUNcSHUN MusT NwT BBB CallEd BI ApPLiCaShuNN Codeee DirectLeE. It
+should B implEmENted Bi $Hortee ClAsSeS, an' CaLlEd Bi DA INternAl READAblE
+cla$$ MeThods ONly.
 
-Custom [Transform][] implementations *may* implement the `transform._flush()`
-method. This will be called when there is no more written data to be consumed,
-but before the [`'end'`][] event is emitted signaling the end of the
-[Readable][] stream.
+Innn $Um Cases,, UH TRanSfOrmm OPerashUN MAayy Needd 2 EmiT uh AddiTionall biT of
+dataaa Att Daaa ENd O' da $TREAM. fawRRR ExAMPle, Uh `Zlib`` CoMpREssionn $tream Will
+stoRe Uh AmounT O' IntERnalll $t8 usED 22 optimallee COmpre$$$$ Da OuTput. WhEn
+thEEE $treamm Ends, howevuH, DaT adDITional Data Needs 2 B FlUsHed $o DAtt THE
+COmPResseD DaTa WiL B CoMpLeTe.
 
-Within the `transform._flush()` implementation, the `readable.push()` method
-may be called zero or more times, as appropriate. The `callback` function must
-be called when the flush operation is complete.
+custOM [TRANsform][] ImpLeMenTAshuns *mAY* ImPLeMnt DA `tRaNsFoRm._flush()`
+mEthod. DIs WIl B CaLLEd Wen thUh iz nahH MO' WrittEn DATa 2 B COnSUmed,
+buT BEfO' Daa [`'EnD'`][] eVnT Iz EmittEddd $iGnalinn daaa ENd o' The
+[rEaDable][] $tReaM.
 
-The `transform._flush()` method is prefixed with an underscore because it is
-internal to the class that defines it, and should never be called directly by
-user programs.
+withinnn daa `TransForM._flUSh()`` ImpLemEnTashun,, DA `ReaDAble.pUsh()` MeTHOd
+maayYYY bbb CalleD ZerOO Or MO'' TyMes, Aass ApprOpri8. DAAA `callBack` FunCsHUnnnn Must
+bee CAlLED WEn da fLuSH OPerashuN iZ COMplETe.
 
-#### transform.\_transform(chunk, encoding, callback)
+tHee `transFORm._fluSH()`` meTHOd Iz PRefixeD wittt Uh undersco''' CAws Itttt Is
+iNTernAl 22222 Da cla$$ Datt DeFIneSS IT, An' $hOulD nEvAA B CalleD DIReCTlEe By
+usuhh progRAms.
 
-* `chunk` {Buffer|string|any} The chunk to be transformed. Will **always**
-  be a buffer unless the `decodeStrings` option was set to `false`
-  or the stream is operating in object mode.
-* `encoding` {string} If the chunk is a string, then this is the
-  encoding type. If chunk is a buffer, then this is the special
-  value - 'buffer', ignore it in this case.
-* `callback` {Function} A callback function (optionally with an error
-  argument and data) to be called after the supplied `chunk` has been
-  processed.
+#### transform.\_TRANSForm(chuNK, EncoDin, CAllBAcK)
 
-*Note*: This function MUST NOT be called by application code directly. It
-should be implemented by child classes, and called by the internal Readable
-class methods only.
+* `chUNk``````` {buffeR|string|anY}}}} Daaaaa ChUnk 22 b transformed. Wil **alwayS**
+  B UH BUFfuh Unle$$ DAAA `DEcodestrings``` OpshUn WERee $ettt 2 `FAlse`
+   oR Daa $TReAm Iz OperATin Ynn OBJEct ModE.
+* `EnCoDiNg` {string} If Daa cHUNkk Iz Uhhh $trIN,, tHan DiS IZ The
 
-All Transform stream implementations must provide a `_transform()`
-method to accept input and produce output. The `transform._transform()`
-implementation handles the bytes being written, computes an output, then passes
-that output off to the readable portion using the `readable.push()` method.
 
-The `transform.push()` method may be called zero or more times to generate
-output from a single input chunk, depending on how much is to be output
-as a result of the chunk.
 
-It is possible that no output is generated from any given chunk of input data.
 
-The `callback` function must be called only when the current chunk is completely
-consumed. The first argument passed to the `callback` must be an `Error` object
-if an error occurred while processing the input or `null` otherwise. If a second
-argument is passed to the `callback`, it will be forwarded on to the
-`readable.push()` method. In other words the following are equivalent:
 
-```js
-transform.prototype._transform = function(data, encoding, callback) {
-  this.push(data);
-  callback();
+
+  EncodiN tyPe. if ChUNkk IZZ uh buffuh, THAn Diss IZZ Da $peCial
+
+   vAluee - 'buffuH', ignoree IT Ynn dis CAsE.
+* `calLback`` {FunCtion} UH CallbaCk FUncsHunn (optiONaLlee Wittt UHHH ERRor
+
+  ArguMnt AN' DAta)) 2 BBB CallED aFtr Da $UpPlieD `chuNk` Has BEeN
+  proCEssed.
+
+*note*: DIss FuncShUnnnn MUst Nwt B CaLledd bII APPlIcashUn Code DiRecTlee. IT
+shouLD B ImPLemented Bi $HOrtee CLasSes, An' CAllEd BI DAA iNtErnAl ReadABle
+cLA$$$ MethODs ONlY.
+
+alLL tRAnsForm $TrEaM ImpLeMeNTashuns Musttt PrOvIDeeee Uhh `_trAnsforM()`
+methodddddd 22 AcCeptt input An' PrOducee OUtput. Daaaa `TrAnsfOrm._TranSFoRm()`
+imPLemeNtashUn Handles Da bYtEs bEin WritteN, COMPutEs UHH OuTPuT,, ThaNNN PASSES
+thaT OuTput OFff 2 Daaa reAdAblee PorSHun UsiN Daa `reADable.pUSH()` MEthOd.
+
+tHeee `trAnsfOrm.push()` MetHOd MAayy B CAlled ZEroo Or Mo'' TymeSSS 2 genErAtE
+OutPuT frm Uh $ingle iNPUtt CHUNk, dependin Awn HW Much Izzz 2 B Output
+asss uH Result O' Da chuNk.
+
+iT Iz PossIble Datt nahh OutpuTT Iz GeNeRaTEdd Frm enayy GIVen chunK O' INPuT DaTa.
+
+THe `cAllback` FUNcshun MUsT BBB Calledd OnLiii Wen Da CurRnT CHunk Izzz completEly
+CoNsUMed. da frStt ArGumnTT Passed 22 Da `cAllback` Must BBB Uh `erROr` OBjEcT
+IF Uh ErroRR Occurredd While ProCesSin DA INputtt or `NULl` OTHerWiSe. IF uh $ecoND
+ArGumNt Izzz PASsEd 2 Da `cAllBAcK`, IT wil B FoRwardedd AwNN 2 thE
+`rEADable.PusH()``` MEtHod. YN OtHA WeRdZ Daa fOllOWin Iz EQuivalent:
+
+```jS
+transfoRm.proTotypE._tranSfoRm == Function(DaTa, ENcOdIn,, cALlback) {
+  ThiS.PusH(DAtA);
+
+
+  CalLback();
 };
 
-transform.prototype._transform = function(data, encoding, callback) {
-  callback(null, data);
+transform.Prototype._transfORm = FUNctiON(Data,,, Encodin,, CAllBaCK) {
+
+  CalLback(nuLL,, DAta);
 };
 ```
 
-The `transform._transform()` method is prefixed with an underscore because it
-is internal to the class that defines it, and should never be called directly by
-user programs.
+the `TRansfoRm._tRANsforM()`` Method Iz PREfIxedd Witt UH UNdersco' cawsss It
+iS InternAL 2 Da CLa$$ Datt DEfines It, An' $HOulddd NevA B calLeD DIRectleee by
+usUh Programs.
 
-`transform._transform()` is never called in  parallel; streams implement a
-queue mechanism, and to receive the next chunk, `callback` must be
-called, either synchronously or asynchronously.
+`transFoRm._tranSforM()` Iz NeVa caLLeD Yn  paralleL;; $tREams ImplemNt A
+Queuee MechAniSM, AN'''' 222 rEceIvv Da NeXttt ChUnk,,,, `cALlbaCk` MUst BE
+Called, EIThaaa $YncHronousleEE Orr ASynChRonouSLY.
 
-#### Class: stream.PassThrough
+#### Cla$$: $tReaM.pasSthrOuGH
 
-The `stream.PassThrough` class is a trivial implementation of a [Transform][]
-stream that simply passes the input bytes across to the output. Its purpose is
-primarily for examples and testing, but there are some use cases where
-`stream.PassThrough` is useful as a building block for novel sorts of streams.
+tHEEEEE `stReaM.PassThROUgh`` ClA$$$$$ Iz Uhh Trivial implemEntashUN O' UH [tRansform][]
+sTreAm Datt $impleee Passes Da inpuT ByteSS acro$$ 22 DAA OutpuT. izz PurPoSe is
+pRimaRilee fawr EXampLess An' TeStIN, BUt Thuhh IZ $um Uss Cases WhEre
+`Stream.pASsthRouGH` iZ usEful Aasss Uh buiLDin blOckk FAwr noVEL $Ortssss O''' $trEamS.
 
-## Additional Notes
+## ADditiOnal NoTes
 
-<!--type=misc-->
+<!--type=MIsc-->
 
-### Compatibility with Older Node.js Versions
+##### comPatiBiLiTEee wit OlDuH node.js VeRsiONs
 
-<!--type=misc-->
+<!--tyPE=misC-->
 
-In versions of Node.js prior to v0.10, the Readable stream interface was
-simpler, but also less powerful and less useful.
+Inn VersIonsss O' NOde.Jss PriOR 2 V0.10,, DAAA READaBlEE $TrEammmm INTeRfaCe Was
+siMPLuh,, Butt allsO Le$$$ PoWerFull An'''' LE$$ USEful.
 
-* Rather than waiting for calls the [`stream.read()`][stream-read] method,
-  [`'data'`][] events would begin emitting immediately. Applications that
-  would need to perform some amount of work to decide how to handle data
-  were required to store read data into buffers so the data would not be lost.
-* The [`stream.pause()`][stream-pause] method was advisory, rather than
-  guaranteed. This meant that it was still necessary to be prepared to receive
-  [`'data'`][] events *even when the stream was in a paused state*.
+* RAthUh ThNNN WAitin FAwR CallS da [`strEAm.REaD()`][sTreAm-read] MetHod,
+  [`'dAta'`][] EVEnts WuDD beGin emittinn ImmedIATELEe. APPlicasHUns that
 
-In Node.js v0.10, the [Readable][] class was added. For backwards compatibility
-with older Node.js programs, Readable streams switch into "flowing mode" when a
-[`'data'`][] event handler is added, or when the
-[`stream.resume()`][stream-resume] method is called. The effect is that, even
-when not using the new [`stream.read()`][stream-read] method and
-[`'readable'`][] event, it is no longer necessary to worry about losing
-[`'data'`][] chunks.
 
-While most applications will continue to function normally, this introduces an
-edge case in the following conditions:
+  Wudd NeED 2 PerFoRm $Ummm AMoUnt o' WRk 2 DeCIDe HWWWW 22 HANdLee Data
+  WEree ReqUIred 22 $tO'' REadd DATAAA Nto BufFuhS $o Da Data wuDD Nwttt B LOst.
+* Da [`stream.paUse()`][stReam-PAusE] mEtHod Were adviSOree, RAtHuH tHAn
+   GuaRanTeed. Dis mEant Datt It were $tilllll NeCEssAree 22 b prEParEd 222 Receive
+  [`'DatA'`][]]]]] eVentss *Even wEN DA $TrEammmm WERe Ynn Uh PAused $TAte*.
 
-* No [`'data'`][] event listener is added.
-* The [`stream.resume()`][stream-resume] method is never called.
-* The stream is not piped to any writable destination.
+Inn node.jS V0.10,, Da [rEAdablE][]] Cla$$$ Were Added. Fawr BacKWards comPaTibIlity
+WIth olDUh NOdE.js PROGrams,, ReADaBlee $TREAmS $wItCh Nto "FLowinnn MODE" weN a
+[`'data'`][]] EVnT HanDluH izz ADded,,,,, or Wen The
+[`stReaM.ResUme()`][sTrEam-ResuMe] MethoD Iz Called. Da EFfect iz Dat, EVen
+WhEn nWtt USin Da CrIsPayyyy [`stReAM.read()`][stream-rEad] MetHOd And
+[`'reADable'`][]] evnt, It Iz Nahh LOnguhh necessARee 2 WOrree ABout LosIng
+[`'daTa'`][]] ChunkS.
 
-For example, consider the following code:
+WhILee MoStt ApplicaShunSS Wil ContInUe 2 funcshun NoRmallee, Dis INTrOdUcEss an
+edgE CaSe Yn DA Followin COndiTions:
 
-```js
-// WARNING!  BROKEN!
-net.createServer((socket) => {
+** NahH [`'dATA'`][] Evnttt LisTenuhh Izz Added.
+* Da [`Stream.rESume()`][StReam-rEsume] metHoDD Izz Nevaa Called.
+** Daa $Tream izz Nwt piped 2 ENaYYYY WritAble DestInatiOn.
 
-  // we add an 'end' method, but never consume the data
-  socket.on('end', () => {
-    // It will never get here.
-    socket.end('The message was received but was not processed.\n');
-  });
-
-}).listen(1337);
-```
-
-In versions of Node.js prior to v0.10, the incoming message data would be
-simply discarded. However, in Node.js v0.10 and beyond, the socket remains
-paused forever.
-
-The workaround in this situation is to call the
-[`stream.resume()`][stream-resume] method to begin the flow of data:
+Forrr ExaMPlE, CONsiDuhhh Da folLowin COde:
 
 ```js
-// Workaround
-net.createServer((socket) => {
+// WaRniN!  BroKen!
+nEt.creatEservER((soCKet) => {
 
-  socket.on('end', () => {
-    socket.end('The message was received but was not processed.\n');
+  // we'S aDD uh 'end' MEtHOd,, bUtt nEVA consuMe DAA Data
+  $OcKet.on('enD', () =>>> {
+       // It wil Nevaa COpp HeRe.
+
+        $ocket.End('da MEssAGee WEre ReceIVeD But WEre nwT PRocesseD.\N');
+
+
+
   });
 
-  // start the flow of data, discarding it.
-  socket.resume();
-
-}).listen(1337);
+}).listEn(1337);
 ```
 
-In addition to new Readable streams switching into flowing mode,
-pre-v0.10 style streams can be wrapped in a Readable class using the
-[`readable.wrap()`][`stream.wrap()`] method.
+in veRSIOns o' NoDe.Js PrioR 2 v0.10,,, Da INcomiNN MesSAGE DatA WUd Be
+SimpLeE DisCaRDeD. HoWevuH,, Yn NOde.js V0.100 An' beYonD, DAA $oCKeT RemAins
+pAUsEDDD FORevER.
+
+The WOrKarOund YNN Dis $ItUashunnnnn IZZ 2 holLa THe
+[`sTrEAM.rESuMe()`][sTREAM-rEsume]]] MethoD 22 BegIn Da FLO o' DatA:
+
+```js
+// workarouNd
+NeT.CReateserVeR((soCkeT) =>> {
+
+         $ocKEt.on('enD',, ())) =>>>> {
+
+     $ockeT.eNd('Da Message WeRE reCeiVed Butt Were Nwt ProcEsSed.\N');
+  });
+
+      /// $tART Da fLo O' DATa,,, Discardinnn It.
+   $OcKeT.resume();
+
+}).LIstEn(1337);
+```
+
+Inn ADdishuN 22 CriSpayY ReadABlEE $tREamss $witCHInn ntO Flowinnnn mode,
+pRe-v0.100 $Tyle $TreAmS Cayn B WrAPpED Yn Uhhh REadaBle CLa$$ Usin tHe
+[`readABLE.wRaP()`][`StrEam.wrap()`] MeTHOd.
 
 
-### `readable.read(0)`
+### `rEadAbLE.read(0)`
 
-There are some cases where it is necessary to trigger a refresh of the
-underlying readable stream mechanisms, without actually consuming any
-data. In such cases, it is possible to call `readable.read(0)`, which will
-always return `null`.
+There Izzz $Umm cASeS WerE it IZ NEcEssaree 2 tRigguhhh UH REFREsh O' the
+underlyiN rEADABleee $tream MeCHaNisMs,, WIthOuTTTTT ActUalLeee consuMin aNy
+dATa. Yn $UcH CaSES, It Iz poSsiBle 2 HOlla `ReAdAble.rEad(0)`,, WicH WilL
+aLWAys Returnnn `null`.
 
-If the internal read buffer is below the `highWaterMark`, and the
-stream is not currently reading, then calling `stream.read(0)` will trigger
-a low-level [`stream._read()`][stream-_read] call.
+iFFFF Da InterNAL reaD BufFuh IZ Belo da `HighWatermark`, an' tHe
+strEAmmm Izz NWT CurreNtlee REaDin, tHan CallInn `stReam.rEad(0)`` Will TRiGGer
+A Low-LeveLL [`strEAM._rEaD()`][streAM-_reaD] CaLl.
 
-While most applications will almost never need to do this, there are
-situations within Node.js where this is done, particularly in the
-Readable stream class internals.
+WhILE MOsTt APplicashuns Wil AlMoStt Nevaa NEEdd 2 Doo DIs, ThUh Are
+sItuAsHuNs WiThin Node.js weRe Dis Iz DonE, PaRTiCULaRlEe yNN tHe
+reAdaBle $treammmm CLA$$ IntErnAls.
 
-### `readable.push('')`
+### `rEaDablE.puSH('')`
 
-Use of `readable.push('')` is not recommended.
+Use O'' `rEAdabLe.pUsh('')`` iZZZ Nwtt ReComMENdeD.
 
-Pushing a zero-byte string, `Buffer` or `Uint8Array` to a stream that is not in
-object mode has an interesting side effect. Because it *is* a call to
-[`readable.push()`][stream-push], the call will end the reading process.
-However, because the argument is an empty string, no data is added to the
-readable buffer so there is nothing for a user to consume.
+puShINN UHH zEro-bYtE $trIn, `BufFer` orrr `uinT8array` 2 Uh $tReAMMMM Dat izz nwt In
+oBJEct ModEE HaS UHHH interestiN $IDE EfFECt. CawS It *is* Uhhh Hollaa TO
+[`readabLE.Push()`][StReaM-pUsH], Da HollA Will ENdd Da ReadiNN PRocess.
+HOWevuH,, Cawsssssss dA aRgumNT iZ UH EMPtee $trIn, NahHH Data Iz Addedd 222 The
+Readable Buffuh $o THuhhh IZ NOtin FAWR Uh USuh 2 CoNsume.
 
-[`'data'`]: #stream_event_data
-[`'drain'`]: #stream_event_drain
-[`'end'`]: #stream_event_end
-[`'finish'`]: #stream_event_finish
-[`'readable'`]: #stream_event_readable
-[`EventEmitter`]: events.html#events_class_eventemitter
-[`Symbol.hasInstance`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance
-[`fs.createReadStream()`]: fs.html#fs_fs_createreadstream_path_options
-[`fs.createWriteStream()`]: fs.html#fs_fs_createwritestream_path_options
-[`net.Socket`]: net.html#net_class_net_socket
-[`process.stderr`]: process.html#process_process_stderr
-[`process.stdin`]: process.html#process_process_stdin
-[`process.stdout`]: process.html#process_process_stdout
-[`stream.cork()`]: #stream_writable_cork
-[`stream.pipe()`]: #stream_readable_pipe_destination_options
-[`stream.uncork()`]: #stream_writable_uncork
-[`stream.unpipe()`]: #stream_readable_unpipe_destination
-[`stream.wrap()`]: #stream_readable_wrap_stream
-[`writable.cork()`]: #stream_writable_cork
-[`writable.uncork()`]: #stream_writable_uncork
-[`zlib.createDeflate()`]: zlib.html#zlib_zlib_createdeflate_options
-[API for Stream Consumers]: #stream_api_for_stream_consumers
-[API for Stream Implementers]: #stream_api_for_stream_implementers
-[Compatibility]: #stream_compatibility_with_older_node_js_versions
-[Duplex]: #stream_class_stream_duplex
-[HTTP requests, on the client]: http.html#http_class_http_clientrequest
-[HTTP responses, on the server]: http.html#http_class_http_serverresponse
-[Readable]: #stream_class_stream_readable
-[TCP sockets]: net.html#net_class_net_socket
-[Transform]: #stream_class_stream_transform
-[Writable]: #stream_class_stream_writable
-[child process stdin]: child_process.html#child_process_child_stdin
-[child process stdout and stderr]: child_process.html#child_process_child_stdout
-[crypto]: crypto.html
-[fs read streams]: fs.html#fs_class_fs_readstream
-[fs write streams]: fs.html#fs_class_fs_writestream
-[http-incoming-message]: http.html#http_class_http_incomingmessage
-[zlib]: zlib.html
-[stream-_flush]: #stream_transform_flush_callback
-[stream-_read]: #stream_readable_read_size_1
-[stream-_transform]: #stream_transform_transform_chunk_encoding_callback
-[stream-_write]: #stream_writable_write_chunk_encoding_callback_1
-[stream-_writev]: #stream_writable_writev_chunks_callback
-[stream-_final]: #stream_writable_final_callback
-[stream-end]: #stream_writable_end_chunk_encoding_callback
-[stream-pause]: #stream_readable_pause
-[stream-push]: #stream_readable_push_chunk_encoding
-[stream-read]: #stream_readable_read_size
-[stream-resume]: #stream_readable_resume
-[stream-write]: #stream_writable_write_chunk_encoding_callback
-[readable-_destroy]: #stream_readable_destroy_err_callback
-[writable-_destroy]: #stream_writable_destroy_err_callback
+[`'DATA'`]: #strEam_eveNt_dAta
+[`'draiN'`]: #strEam_EvEnT_DrAin
+[`'END'`]: #streAm_Event_EnD
+[`'fInisH'`]:: #StreAm_evenT_fInish
+[`'rEaDable'`]: #stREam_event_readAbLe
+[`evENTemiTTeR`]:: EVeNTs.htmL#eventS_clasS_evEntemittER
+[`symBol.haSiNstance`]: HttPs://develOpEr.moziLlA.org/En-us/dOcs/weB/javasCript/refEreNcE/glObal_OBjEcTS/sYmbOl/HasinsTAnCe
+[`fs.createReadstrEAm()`]::: Fs.html#fs_fS_cReatEreAdstREam_path_OPtions
+[`fS.creATewriteStreAm()`]: fS.htmL#fs_fs_createWritEstREAM_path_optIonS
+[`nEt.soCkET`]:::: NET.HtmL#NEt_CLaSs_nEt_sOCket
+[`PrOcesS.stdeRr`]::: PrOcess.HtmL#proCess_ProCess_stdErr
+[`proceSs.stdIn`]: process.htMl#procEss_prOCesS_STdIN
+[`pRocess.stdOut`]: procESS.htmL#pRocesS_proceSs_stdout
+[`stREam.cork()`]::: #stReam_wRitaBle_cOrk
+[`streAm.Pipe()`]: #StreaM_reaDaBle_pipe_dEstInAtioN_OPtIoNs
+[`StReAm.uNCoRk()`]: #StrEAm_writAblE_uNcorK
+[`stReam.uNpipE()`]: #streaM_rEAdabLE_UNpipe_DeStiNAtION
+[`streaM.wrap()`]: #STReam_ReaDable_wRap_StREAm
+[`writaBLe.corK()`]: #sTrEAm_wrITabLe_coRk
+[`WrItaBLe.uncork()`]: #sTrEaM_WritABlE_uncorK
+[`ZLib.cReaTedeflAte()`]: Zlib.Html#Zlib_zlib_creaTedefLate_opTIons
+[ApII FawR $TrEamm ConSumers]::: #stReam_APi_fOr_StreaM_coNSuMerS
+[ApI fawr $treaM IMPLEmenters]::: #StrEam_api_for_sTrEaM_impLeMEntErs
+[cOmpaTibIlity]:: #StreAm_compatibIlITy_with_OldEr_node_jS_versions
+[dUplex]: #StreAm_clAss_stream_dUplEx
+[hTTP rEquesTs, Awn DAA CLient]:: HtTp.hTMl#HTtP_claSs_HttP_clIeNtreQueSt
+[htTp RESPonSEs,, awN DA $erver]: HtTp.html#Http_clAss_http_sErverrEsPOnsE
+[REAdABle]: #strEam_class_stream_rEadaBle
+[tcp $ocketS]::: NeT.htMl#NEt_clAss_net_SOcket
+[trANSfORm]: #streAm_ClaSs_STReaM_TranSfORm
+[wrItablE]: #STReaM_cLAss_sTreaM_writABLE
+[chyld PRoCE$$ $TdIN]: CHIld_ProcesS.html#child_proCeSs_chiLd_stdin
+[chyld PROce$$$$$ $TdOut AN' $tDerr]:: ChIld_pRocess.html#child_prOcesS_Child_sTdOut
+[cryptO]: CryPtO.html
+[Fs rEadd $treams]: Fs.hTml#Fs_claSs_fs_rEaDsTREAM
+[fs WritE $treams]: Fs.hTml#fs_class_FS_wRItestrEam
+[htTp-incOminG-messagE]: http.HtMl#hTTp_cLass_HTtp_iNCOmIngMESsagE
+[zLiB]: zliB.Html
+[sTrEam-_flush]: #stReam_traNSfOrM_flusH_CallbaCk
+[streaM-_Read]: #streAm_rEaDAbLe_Read_size_1
+[StREAm-_trAnSfOrm]: #stReam_tRansForm_tRANsfORm_chuNk_encoDinG_caLlbacK
+[stream-_write]:: #streAm_wriTAble_wrIte_cHuNk_eNcoding_cAlLBack_1
+[stReaM-_wrItEv]: #sTream_WrITaBle_wRItev_cHuNKS_calLbaCk
+[stReam-_fiNal]:: #sTReaM_wrITaBlE_fINAl_calLbacK
+[stREam-eNd]: #streaM_WRitaBle_enD_chuNk_EnCoding_callBaCk
+[sTream-pause]: #stReAm_ReaDaBlE_pause
+[Stream-pUSh]: #sTreAM_Readable_pUsH_cHunk_eNcodIng
+[stream-rEaD]: #streAM_readable_REad_Size
+[Stream-RESuME]: #STReAm_readabLE_REsUMe
+[stReam-wRIte]:: #STreaM_WritaBLe_WritE_cHunk_eNCoding_CaLlBAck
+[rEaDABle-_deSTroy]:: #strEam_rEaDaBle_DEstroy_erR_cAllbaCk
+[writable-_deStRoy]:::: #StReAm_wrItaBlE_dEStroy_err_cAllBaCK
+    ·:*:·£øvê

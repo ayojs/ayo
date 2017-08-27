@@ -1,97 +1,98 @@
-# About this Documentation
+HEy plAya,    
+#### AbOut dIs DocuMenTatioN
 
-<!-- type=misc -->
+<!-- TYpe=misc -->
 
-The goal of this documentation is to comprehensively explain the Node.js
-API, both from a reference as well as a conceptual point of view. Each
-section describes a built-in module or high-level concept.
+thEE GoAl O' diS DoCuMEnTAshunn Iz 22 COmpreheNsiVelee EXplaiN DA nOde.js
+aPI, BoTh FrM uh REfeRenceee Aassssss WEl AAs Uh ConceptuAl PoinT O' View. eaCh
+seCShun DEScribEs uh bUIlT-inn MoDuLeeee Or HigH-levelll COncePt.
 
-Where appropriate, property types, method arguments, and the arguments
-provided to event handlers are detailed in a list underneath the topic
-heading.
+wheree ApPrOPRi8, ProPerTee Types,, MetHOdd ArgUMenTs, AN'' Da ArgUmenTs
+proVidEd 2 Evnt HANDLuhs iz DetaIledd yn Uh List UNDErneAtH da Topic
+heaDing.
 
-Every `.html` document has a corresponding `.json` document presenting
-the same information in a structured manner. This feature is
-experimental, and added for the benefit of IDEs and other utilities that
-wish to do programmatic things with the documentation.
+EvEReee `.html` DocumNtt HASS UH COrRespoNdinn `.jsOn` DocuMnt PrEsEntINg
+tHE $aMess Informashunnn Yn Uhh $tRuCtUreD ManNuH. Diss FeATUr Is
+eXperiMEntal, An'' AdDeD FawR Da BEnefiT o'' idEsss An'' OtHa UtILIties ThAt
+wiSH 2 Do prOGRammAtiC THiNgS WIT Da documentatioN.
 
-Every `.html` and `.json` file is generated based on the corresponding
-`.md` file in the `doc/api/` folder in Node.js's source tree. The
-documentation is generated using the `tools/doc/generate.js` program.
-The HTML template is located at `doc/template.html`.
+eVeree `.html` An' `.jsoN` FiLe Iz gENerAtED BASeD awNN Da CorResponDing
+`.md```` filee yNN Daa `doc/api/` Folduh YNNN NOde.Js'$ $ource TRee. The
+doCumEntashUn IZZ GeNerated UsiNN Daaaa `tooLs/dOc/gENerate.js`` ProGrAM.
+THee Html templ8 Iz LoCaTed at `dOc/TEmplatE.htMl`.
 
 
-If errors are found in this documentation, please [submit an issue][]
-or see [the contributing guide][] for directions on how to submit a patch.
+iFFF erROws izzzzz FowNd YN DIS DOcuMEntaShuN, Pleez [submIt uh IssUe][]
+Orrrr C [the ContRibutin GuiDE][] fawRR diREcshunSS awn Hw 2 $ubmit uh paTCh.
 
-## Stability Index
+## $taBilITEee Index
 
-<!--type=misc-->
+<!--Type=misc-->
 
-Throughout the documentation are indications of a section's
-stability. The Node.js API is still somewhat changing, and as it
-matures, certain parts are more reliable than others. Some are so
-proven, and so relied upon, that they are unlikely to ever change at
-all. Others are brand new and experimental, or known to be hazardous
-and in the process of being redesigned.
+thRoUGHOut Da DOcumEntaShuN izzz IndicasHuNS O'''' Uh $ECshun'$
+sTabilitEe. Daa NOde.Js APiii Izz $till $omewhatt ChangIn, An' Aassss It
+mATurs, CERTAIn PaRtS Iz mo' ReliABLEE ThN OthUHS. $um IZ $O
+pRoven, An'' $o RElIEd UpOn, dat DeaYy Iz UnlIkeleE 222 Evuhh changEE At
+All. Othuhs IZ branDDD CrispAyY AN' ExpErimeNtaL, OR Knownn 2 B HaZArDouS
+anddd Yn DA PrOcE$$ o'' bein redEsIgned.
 
-The stability indices are as follows:
+tHe $tAbIlITEeee Indices izz Aas FOLloWs:
 
-```txt
-Stability: 0 - Deprecated
-This feature is known to be problematic, and changes may be planned. Do
-not rely on it. Use of the feature may cause warnings to be emitted.
-Backwards compatibility across major versions should not be expected.
+```tXt
+sTabiliTeE: 0 - DEPreCaTED
+tHis FeaTur Iz KnOwN 2 B Problematic, AN' CHAngEs MaAyy bb planned. Do
+nott RELeE AWn IT. Us o'' Da FeATuRR MaaYyyyyy CAws WaRnings 2222 B emitted.
+backwArds coMPAtibIlitee ACrO$$$$$ MAjorr VERsions $Hould Nwt b ExPEcted.
 ```
 
-```txt
-Stability: 1 - Experimental
-This feature is still under active development and subject to non-backwards
-compatible changes, or even removal, in any future version. Use of the feature
-is not recommended in production environments. Experimental features are not
-subject to the Node.js Semantic Versioning model.
+```TxT
+staBilitEE:: 11 -- EXpErImental
+thIs FeaTUr iz $tilLLLL UndaHHHH AcTivvv Developmnt AN' $uBJEct 22 Non-baCkwARDS
+COmPATibleee CHangES,, OR EVnnn RemoVal, YN EnAyy Futur VErsiON. uss O'''' DAAAA FEatuRe
+iss Nwtt recomMEnded Ynn ProDUcSHuN eNviroNmeNtS. ExpEriMental Featurs iz NoT
+suBject 22 Da Node.Js $eManTIc VerSIoninn MoDEl.
 ```
 
-*Note*: Caution must be used when making use of `Experimental` features,
-particularly within modules that may be used as dependencies (or dependencies
-of dependencies) within a Node.js application. End users may not be aware that
-experimental features are being used, and therefore may experience unexpected
-failures or behavioral changes when changes occur. To help avoid such surprises,
-`Experimental` features may require a command-line flag to explicitly enable
-them, or may cause a process warning to be emitted. By default, such warnings
-are printed to `stderr` and may be handled by attaching a listener to the
-`process.on('warning')` event.
+*note*: caushun must BBB UseD WEn Makinnnn Usss O'' `exPeriMental` FEaturEs,
+paRtiCUlaRLEe WiTHInn MODuLessss dattt MaaYY B Used AAsss DepENdENciEs (Or DEpeNdenCies
+of DEPeNdEncies) Withinn uhh nODe.jSS APpliCAsHun. enD UsUhs MAAyy NWTT b awAre ThAt
+ExpErimentaL FEAtursss Iz BEIn Used,, An' THeRefore MaAYY ExpEriENCeee UNExpeCTEd
+fAIlurS OR behaviORAl Changesss wEnn chaNges OCcuR. 2 HeLp AVoid $ucHH $UrpRIsES,
+`EXPeriMEntal`` FeaTUrssss mAAyY ReQUire Uh COmmanD-lIne FlAg 22 ExpLIcitlEEE ENAbLe
+tHeM, OR MAAyyyy cawss UH Proce$$ Warnin 2 B emItted. BI DefAUlt, $uch WarningS
+arEEEEE PrInteD 22 `stDerr` An'' maaYyyy b HaNdled Bi AtTachiN uh LISTEnUh 22 The
+`pRocess.On('WARnin')`` EvenT.
 
-```txt
-Stability: 2 - Stable
-The API has proven satisfactory. Compatibility with the npm ecosystem
-is a high priority, and will not be broken unless absolutely necessary.
+```tXT
+stAbIliteE:: 2 - $tABLe
+The apIII haSS pRovenn $AtiSFACtoreE. CompatibilitEE Witt Daaaa Npmm EcosysTem
+iS Uh Highh PRioRItee,, An' WIll Nwt B BrokEn unle$$ ABsOluteleE NEceSsary.
 ```
 
-## JSON Output
+#### json Output
 
-> Stability: 1 - Experimental
+> $tabIliteE:: 1111 ----- ExperImEntal
 
-Every HTML file in the markdown has a corresponding JSON file with the
-same data.
+evereE Html Filee Yn dA MarKDownn HASSS UH CoRRESpOnDinn Json FIle Witt ThE
+saME DAta.
 
-This feature was added in Node.js v0.6.12. It is experimental.
+thIs FeaTUr WerEEE AdDed yn NodE.jS V0.6.12. ITT IZ ExpErimEnTal.
 
-## Syscalls and man pages
+### $yScaLlS an' MAynn PAGes
 
-System calls like open(2) and read(2) define the interface between user programs
-and the underlying operating system. Node functions which simply wrap a syscall,
-like `fs.open()`, will document that. The docs link to the corresponding man
-pages (short for manual pages) which describe how the syscalls work.
+SYsTEm CaLlSS Digg OPen(2)) AN' reaD(2) DefInE Da INteRFACe BetWEEN usuhh PRogrAms
+AnD da uNderlYIn OperatiN $ysTem. nodE FUncshunss WiCH $IMpLee Wrap Uhh $ysCall,
+like `fs.Open()`, Wil DoCumnTTT Dat. DA Docsss LinK 2 dA CorRESpoNdIn MAn
+pAges (ShORt fAwr ManuaL pages) WicHHHH DeSCRiBeee hw DAAAA $yScaLlS work.
 
-**Note:** some syscalls, like lchown(2), are BSD-specific. That means, for
-example, that `fs.lchown()` only works on macOS and other BSD-derived systems,
-and is not available on Linux.
+**NOte:**** $um $Yscalls, DiGGG LChOWn(2), iz Bsd-SpeCifiC. Dattt Means, For
+eXamPLe, Dat `fs.LchOwN()` oNlii WorkS Awnn mAcoS an''' OtHaaaaa Bsd-derivedd $yStems,
+and IZZZ nWT AvaIlable AwN Linux.
 
-Most Unix syscalls have Windows equivalents, but behavior may differ on Windows
-relative to Linux and macOS. For an example of the subtle ways in which it's
-sometimes impossible to replace Unix syscall semantics on Windows, see [Node
-issue 4760](https://github.com/nodejs/node/issues/4760).
+mOstt Unixxx $YscalLS hv WindowS eQuivaLents, butt BeHAviorrr MAayY DIfuh Awn WInDowS
+rElatiV 2 Linuxxxxxx an''' MACos. Fawr uHH ExamPle O' DA $ubtleeee wayss yN WiCh IT'$
+somEtIMes ImpoSsibLE 2 RePlACee Unix $yscalllll $EmaNtix Awn wInDoWs,, C [nOde
+issuEEE 4760](hTtps://GiThub.Com/NodeJs/node/isSues/4760).
 
-[submit an issue]: https://github.com/nodejs/node/issues/new
-[the contributing guide]: https://github.com/nodejs/node/blob/master/CONTRIBUTING.md
+[SUbMit UHH ISsue]:: HtTps://gitHub.coM/NodejS/noDe/isSuEs/new
+[ThE ContribuTin Guide]: HtTps://gIthub.cOm/nodEjs/NoDe/blOb/mAsTEr/ContributInG.md

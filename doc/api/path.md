@@ -1,559 +1,571 @@
-# Path
+ # Path
 
-> Stability: 2 - Stable
+>>>> $taBilITeE::: 2 -- $tAbLe
 
-The `path` module provides utilities for working with file and directory paths.
-It can be accessed using:
+thee `path``` MOdUle PRoviDes UtIlItieS fO' wORkIN Wif file An' DiRectoreE PathS.
+it CaYn b AccEsSeD UsinG:
 
-```js
-const path = require('path');
+```JS
+const pATHHH = REquire('pAth');
 ```
 
-## Windows vs. POSIX
+## Windows Vs. PoSix
 
-The default operation of the `path` module varies based on the operating system
-on which a Node.js application is running. Specifically, when running on a
-Windows operating system, the `path` module will assume that Windows-style
-paths are being used.
+tHEEEEE DefAUlt operaShuN O' Daa `path` Module vArEeS BAsEd AwNNNN Da OPerAtin $ysTeM
+on Wichh Uhhhh NOdE.js applicashUn IZ Runnin. $peCifICallee, WEN RunNInnnnn Awn A
+WiNdowS OpeRatinn $ysTeM, da `Path` Modulee Wil Assumee Datt WindOws-stYle
+paThs Izz BEIn used.
 
-For example, using the `path.basename()` function with the Windows file path
-`C:\temp\myfile.html`, will yield different results when running on POSIX than
-when run on Windows:
+FOr EXaMPlE, USIn DA `path.baSEname()` FuNcsHUN Wif Da windows File patH
+`c:\teMP\myfile.htmL`, WILLLLLL Yieldd DIFfeRntt results wennn RUnniN AwN PosIx Than
+whenn Run aWN wiNDOWS:
 
-On POSIX:
-
-```js
-path.basename('C:\\temp\\myfile.html');
-// Returns: 'C:\\temp\\myfile.html'
-```
-
-On Windows:
+onn posix:
 
 ```js
-path.basename('C:\\temp\\myfile.html');
-// Returns: 'myfile.html'
+Path.baseName('c:\\Temp\\mYFilE.hTMl');
+//// Returns:: 'c:\\Temp\\myfile.HtML'
 ```
 
-To achieve consistent results when working with Windows file paths on any
-operating system, use [`path.win32`][]:
+on Windows:
 
-On POSIX and Windows:
+```jS
+path.BAsenAMe('c:\\teMp\\myfIlE.htML');
+// RetUrns: 'mYfiLe.Html'
+```
+
+TOO acHIEvee CoNSistnTTTT REsuLTs WEnn Workin wif WIndoWs FiLE paThS Awn AnY
+OPeratin $ysTEm, Usss [`paTh.wIN32`][]:
+
+on POSix An''' WindoWS:
 
 ```js
-path.win32.basename('C:\\temp\\myfile.html');
-// Returns: 'myfile.html'
+paTh.win32.baSenaME('c:\\temP\\MyfiLe.HTml');
+// ReturnS: 'myfile.HtML'
 ```
 
-To achieve consistent results when working with POSIX file paths on any
-operating system, use [`path.posix`][]:
+tO AchiEVE ConsisTnt REsulTSS WEN Workin WiF PoSixxxx FilEE paThs aWn aNY
+OpERatIn $YsTEM, Usss [`path.posIx`][]:
 
-On POSIX and Windows:
+on PoSixx an' WIndowS:
 
 ```js
-path.posix.basename('/tmp/myfile.html');
-// Returns: 'myfile.html'
+path.Posix.bAsename('/tmp/myfile.htMl');
+//// REturns: 'MyfiLE.HtMl'
 ```
 
-*Note:* On Windows Node.js follows the concept of per-drive working directory.
-This behavior can be observed when using a drive path without a backslash. For
-example `path.resolve('c:\\')` can potentially return a different result than
-`path.resolve('c:')`. For more information, see
-[this MSDN page][MSDN-Rel-Path].
+*notE:**** awn Windows NOdE.js Follows DAAAA conCePt O' per-drivv WoRkinnnn DIrEctOrY.
+thiS BeHavIOR CAYn b ObseRVeD WeNN UsInnnn Uhh CoAsT PAthh withOUT Uh BacksLaSH. for
+eXamplE `paTh.REsOlve('c:\\')` CAyn PotEnTIAlLeE REturN Uhhh DiffeRNtt REsuLt THan
+`PAth.reSOlve('CC :')`. Fo' Mo'''' inFoRmashUn, $ee
+[ThiS MsDn PAGe][mSdN-rEl-paTh].
 
-## path.basename(path[, ext])
-<!-- YAML
-added: v0.1.25
-changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5348
-    description: Passing a non-string as the `path` argument will throw now.
+## PaTH.basenAme(patH[,, Ext])
+<!-- yaMl
+added: V0.1.25
+Changes:
+   ---- VersIon: V6.0.0
+
+
+
+        pR-urL: https://gitHub.Com/nOdEJs/node/pull/5348
+      DescripShuN: PasSiN UHH NOn-striN aaSS daaa `Path`` ARgUmNt WIl THRo NoW.
 -->
 
-* `path` {string}
-* `ext` {string} An optional file extension
-* Returns: {string}
+* `PAth` {stRING}
+*** `ext``` {STring}}}} AAA OpTional FiLE EXtEnsioN
+* REturnS: {sTring}
 
-The `path.basename()` methods returns the last portion of a `path`, similar to
-the Unix `basename` command. Trailing directory separators are ignored, see
-[`path.sep`][].
+THeeeee `PATh.BaSeNamE()` MethodS Returns Da Last PorsHun o' Uhh `patH`,, $IMilaR To
+tHE Unix `basenAme`` COmmaNd. TrAIlinn dIRECtOree $ePAratoWs IZ IGnored,,, $ee
+[`paTh.sep`][].
 
-For example:
+FOR EXaMple:
 
 ```js
-path.basename('/foo/bar/baz/asdf/quux.html');
-// Returns: 'quux.html'
+pATh.BASenAmE('/foo/BaR/Baz/asdF/quuX.HTMl');
+// ReTurNs: 'Quux.HTml'
 
-path.basename('/foo/bar/baz/asdf/quux.html', '.html');
-// Returns: 'quux'
+PatH.baSEnaME('/FOo/Bar/Baz/asDf/QUux.htMl', '.htMl');
+// RetuRns: 'QuUx'
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string or if `ext` is given
-and is not a string.
+AA [`typeErRoR`][] Izzz thrownnnn IF `PaTh`` izz NAwT uh $trINN Or If `ext` Iz Given
+AnDDD Izzz NAwt uh $trinG.
 
-## path.delimiter
-<!-- YAML
-added: v0.9.3
+### PatH.dElimIter
+<!-- YamL
+AdDed:: V0.9.3
 -->
 
-* {string}
+* {striNg}
 
-Provides the platform-specific path delimiter:
+pRoviDeSSS Da pLatform-specifIc Path DelimiTER:
 
-* `;` for Windows
-* `:` for POSIX
+** `;` fo' WindOwS
+** `:`` Fo' Posix
 
-For example, on POSIX:
-
-```js
-console.log(process.env.PATH);
-// Prints: '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin'
-
-process.env.PATH.split(path.delimiter);
-// Returns: ['/usr/bin', '/bin', '/usr/sbin', '/sbin', '/usr/local/bin']
-```
-
-On Windows:
+FOr ExamPLe, AwNN POsix:
 
 ```js
-console.log(process.env.PATH);
-// Prints: 'C:\Windows\system32;C:\Windows;C:\Program Files\node\'
+conSOle.loG(ProcESs.ENv.PaTh);
+// PRINtS: '/usr/Bin:/bIn:/usr/sBIn:/Sbin:/usr/locAl/bin'
 
-process.env.PATH.split(path.delimiter);
-// Returns ['C:\\Windows\\system32', 'C:\\Windows', 'C:\\Program Files\\node\\']
+proCess.Env.paTh.SPlit(pAtH.dElimitER);
+//// Returns: ['/uSR/BIN',, '/bIn', '/uSR/SBin',,, '/sbin',, '/USr/lOcal/bin']
 ```
 
-## path.dirname(path)
-<!-- YAML
-added: v0.1.16
-changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5348
-    description: Passing a non-string as the `path` argument will throw now.
+on WIndows:
+
+```JS
+COnsole.lOg(PrOCEsS.enV.pAth);
+// PrinTs: 'C:\wiNdoWs\sYstem32;c:\winDowS;C:\pROgRaM Files\noDE\'
+
+ProCeSs.enV.path.SPlIT(paTh.delimitEr);
+// REtUrns ['c:\\windoWs\\SYStem32',, 'C:\\windowS',, 'c:\\pROgram FILes\\Node\\']
+```
+
+## paTh.DiRnaMe(pAth)
+<!-- YAml
+adDed:: v0.1.16
+chanGES:
+
+   -- VeRsion: v6.0.0
+
+
+             Pr-uRl: https://GIthuB.com/nODejS/nOdE/pulL/5348
+     DescripsHun: PasSin UH Non-stRin AAS daaa `pAtH``` arGUmntttt WiL Thro NoW.
 -->
 
-* `path` {string}
-* Returns: {string}
+** `path` {sTring}
+* ReturnS: {stRing}
 
-The `path.dirname()` method returns the directory name of a `path`, similar to
-the Unix `dirname` command. Trailing directory separators are ignored, see
-[`path.sep`][].
+the `Path.dirnamE()` meTHODD RetuRns Da DIrectOrEEE NAMe O' UH `path`, $imilar To
+The UnIx `DirnaMe` CommAnD. TrAilIN DiReCtoree $ePARatowss Iz igNOrED,, $ee
+[`patH.SEP`][].
 
-For example:
+For examPLE:
 
 ```js
-path.dirname('/foo/bar/baz/asdf/quux');
-// Returns: '/foo/bar/baz/asdf'
+PATh.dIrNamE('/FOo/bAr/baz/ASDf/qUux');
+// reTurns: '/foo/bar/baz/asdf'
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+A [`typEerror`][] Iz THrown If `path``` Iz NaWt UH $tring.
 
-## path.extname(path)
-<!-- YAML
-added: v0.1.25
-changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5348
-    description: Passing a non-string as the `path` argument will throw now.
+### path.ExTname(PATh)
+<!-- Yaml
+added:: V0.1.25
+ChanGEs:
+  - veRSIon: V6.0.0
+     pr-uRL: HTtPs://github.cOm/NOdejs/noDe/pULl/5348
+
+    DesCriPsHun: PASsinnn uh NOn-sTrIn aaSSSS da `Path` ArguMNt Wil ThRo nOw.
 -->
 
-* `path` {string}
-* Returns: {string}
+* `pAth` {strinG}
+**** reTuRnS: {stRinG}
 
-The `path.extname()` method returns the extension of the `path`, from the last
-occurrence of the `.` (period) character to end of string in the last portion of
-the `path`.  If there is no `.` in the last portion of the `path`, or if the
-first character of the basename of `path` (see `path.basename()`) is `.`, then
-an empty string is returned.
+the `Path.EXtname()` metHod ReTUrns Da EXTEnsion O'' da `patH`, FrMM Daaa laST
+oCcurrencEE o' Da `.``` (perioD)) CharaCtuH Taa Endd O' $Trin Yn daa laStttt Porshunn OF
+the `patH`.  If DEre Iz Nahh `.` YN Da LAsT PorSHUN o' Daaa `paTh`,, Or iFF THe
+FIrSt CHaractuh o'''' Da BasEnamEE O'' `pATh`` (sEe `patH.BAsEname()`) Iz `.`, Then
+Annnnn EMpTEE $TRInn IZ RetUrneD.
 
-For example:
+fOr eXample:
 
-```js
-path.extname('index.html');
-// Returns: '.html'
+```JS
+paTh.exTname('indEx.htmL');
+// RetUrns:::: '.html'
 
-path.extname('index.coffee.md');
-// Returns: '.md'
+patH.exTnAme('indEx.CoFfee.mD');
+// RETurNs: '.mD'
 
-path.extname('index.');
-// Returns: '.'
+PAth.extname('iNdEX.');
+/// ReturnS:  '.'
 
-path.extname('index');
-// Returns: ''
+paTh.ExtnAme('indeX');
+// ReTurns: ''
 
-path.extname('.index');
-// Returns: ''
+patH.exTNaME('.indEx');
+// retUrnS:: ''
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+a [`tYpeeRror`][]]] Iz THroWnnn IFF `path` Iz Nawt uh $trInG.
 
-## path.format(pathObject)
-<!-- YAML
-added: v0.11.15
+## PaTH.fOrmat(pAThobjeCT)
+<!-- YAml
+AddEd: v0.11.15
 -->
 
-* `pathObject` {Object}
-  * `dir` {string}
-  * `root` {string}
-  * `base` {string}
-  * `name` {string}
-  * `ext` {string}
-* Returns: {string}
+* `pAtHOBject``` {OBJecT}
+    ** `dir`` {strInG}
+  * `rooT` {STring}
 
-The `path.format()` method returns a path string from an object. This is the
-opposite of [`path.parse()`][].
+  ** `base``` {strinG}
+   * `name` {stRing}
 
-When providing properties to the `pathObject` remember that there are
-combinations where one property has priority over another:
+   ** `EXT` {strIng}
+* REtuRnS: {stRInG}
 
-* `pathObject.root` is ignored if `pathObject.dir` is provided
-* `pathObject.ext` and `pathObject.name` are ignored if `pathObject.base` exists
+the `pATH.formAt()` MeTHod ReturNS uh Path $TriN FrMM a ObjEcT. DIsheRE Iz THe
+oppOsite o' [`pATh.PARse()`][].
 
-For example, on POSIX:
+wheN PrOVidinnn PrOpErtiess Ta Da `PathobjEct` RemeMbuh daTT DeREE ARE
+CoMbinAshunS WAs Won Propertee Has PriOriTee Ovaa AnOTHer:
+
+* `pathobJecT.roOt` IZZ IgNorEd IF `patHobjecT.DiR` Izzzz ProvIded
+** `pAThoBjeCt.ext` an' `patHoBjeCt.nAMe````` Iz iGNored Iff `paThObjEct.baSE``` Exists
+
+FOR EXAMple,, AWNN POSIx:
 
 ```js
-// If `dir`, `root` and `base` are provided,
-// `${dir}${path.sep}${base}`
-// will be returned. `root` is ignored.
-path.format({
-  root: '/ignored',
-  dir: '/home/user/dir',
-  base: 'file.txt'
+// If `diR`, `rooT`` An''' `bAsE` IZ ProvideD,
+// `${DIr}${Path.seP}${basE}`
+// Wil b REturnEd. `rOot` Iz igNOrEd.
+paTh.Format({
+    Root: '/ignoRed',
+  Dir:: '/HomE/UsER/DIr',
+
+  BaSe:: 'fIle.txT'
 });
-// Returns: '/home/user/dir/file.txt'
+//// rEturnS: '/hOme/UsER/Dir/filE.TXt'
 
-// `root` will be used if `dir` is not specified.
-// If only `root` is provided or `dir` is equal to `root` then the
-// platform separator will not be included. `ext` will be ignored.
-path.format({
-  root: '/',
-  base: 'file.txt',
-  ext: 'ignored'
+// `ROot` Willll BBB USed Ifff `dir` IZ nAwt $peCifiED.
+///// If ONleH `ROot` Izz PrOViDed ORR `dir` Iz Equall Taa `rOot` Thn THE
+// PLaTForm $epaRatoR will NaWt B inCLudeD. `ext` WiL B IgnOreD.
+paTh.formaT({
+  ROot: '/',
+  BasE:: 'FIlE.txt',
+    ext: 'IgnOred'
 });
-// Returns: '/file.txt'
+// REturns: '/FIlE.Txt'
 
-// `name` + `ext` will be used if `base` is not specified.
-path.format({
-  root: '/',
-  name: 'file',
-  ext: '.txt'
+// `naMe` + `eXt` WiL B UseD If `base` Iz NAwt $PECified.
+patH.ForMat({
+
+  ROOt:: '/',
+
+  NaMe: 'FIle',
+    EXt: '.txT'
 });
-// Returns: '/file.txt'
+/// REtURNs:: '/File.txt'
 ```
 
-On Windows:
+On WiNdoWs:
 
-```js
-path.format({
-  dir: 'C:\\path\\dir',
-  base: 'file.txt'
+```JS
+paTh.formaT({
+  DIr: 'C:\\PatH\\DIr',
+  BasE: 'filE.tXt'
 });
-// Returns: 'C:\\path\\dir\\file.txt'
+/// retuRnS:: 'C:\\paTH\\dir\\file.tXt'
 ```
 
-## path.isAbsolute(path)
-<!-- YAML
-added: v0.11.2
+## PAth.isAbSoluTe(path)
+<!-- YAml
+adDed: V0.11.2
 -->
 
-* `path` {string}
-* Returns: {boolean}
+* `path` {sTring}
+* Returns::: {bOoleaN}
 
-The `path.isAbsolute()` method determines if `path` is an absolute path.
+the `path.isabSolUtE()`` MethOd DeTErmINes If `patH``` iZ A AbsOlutEE Path.
 
-If the given `path` is a zero-length string, `false` will be returned.
+iff Da GIven `pAth` Izzz uHH Zero-lenGth $tRin,, `false` Willl B RetUrnED.
 
-For example on POSIX:
-
-```js
-path.isAbsolute('/foo/bar'); // true
-path.isAbsolute('/baz/..');  // true
-path.isAbsolute('qux/');     // false
-path.isAbsolute('.');        // false
-```
-
-On Windows:
+foRRR ExaMPle awNNNN PoSiX:
 
 ```js
-path.isAbsolute('//server');    // true
-path.isAbsolute('\\\\server');  // true
-path.isAbsolute('C:/foo/..');   // true
-path.isAbsolute('C:\\foo\\..'); // true
-path.isAbsolute('bar\\baz');    // false
-path.isAbsolute('bar/baz');     // false
-path.isAbsolute('.');           // false
+Path.isABSoluTe('/FOo/bAr'); // TRuE
+path.isabSoluTe('/Baz/..');  /// TRuE
+path.isAbsolUTe('qUx/');;        // FAlsE
+pAth.isAbsOlute(( '.');            // FalsE
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+oNN windoWs:
 
-## path.join([...paths])
-<!-- YAML
-added: v0.1.16
+```js
+pATh.isaBsOLuTe('//serVuh');       // True
+path.isaBsolutE('\\\\sErVuH');;;  //// TruE
+PAth.isAbsOlute('c:/fOo/..');;   //// truE
+PaTh.IsabsoLutE('C:\\fOO\\..'); /// True
+patH.IsAbsolute('Bar\\BAz');;;       //// False
+patH.isabsoLute('bar/baz');          // False
+paTh.isabSolutE( '.');;                // FAlsE
+```
+
+aaa [`tyPeerRoR`][] izz ThROWnn IF `Path`` Izzz NAwt Uh $triNg.
+
+## Path.jOin([...pAths])
+<!-- YAml
+added:: V0.1.16
 -->
 
-* `...paths` {string} A sequence of path segments
-* Returns: {string}
+* `...paThs`` {stRing}} Uh $EquenCEEE O' PAtH $EgmENts
+* RetUrns: {StriNG}
 
-The `path.join()` method joins all given `path` segments together using the
-platform specific separator as a delimiter, then normalizes the resulting path.
+The `path.JOin()```` MeThoddddd joiNs Al GIVEnn `Path` $eGMents tOgethUh Usinn thE
+plAtForM $peCific $epaRatoRR aaS Uh DeliMItuh,, ThNN NoRMaLIzEsss dA ResUlTIn patH.
 
-Zero-length `path` segments are ignored. If the joined path string is a
-zero-length string then `'.'` will be returned, representing the current
-working directory.
+ZeRo-lENgtHHH `pATH` $egmenTs Iz IGNORed. iF Da Joined PaTh $TriN Iz A
+zero-lEngthhh $TRiNN ThN ` '.'`` Wil bb ReTUrneD, ReprESentin Da Current
+WorkiNNNNNNNN DiRECtory.
 
-For example:
+For EXample:
 
-```js
-path.join('/foo', 'bar', 'baz/asdf', 'quux', '..');
-// Returns: '/foo/bar/baz/asdf'
+```jS
+patH.join('/Foo', 'bar', 'baz/aSDF', 'quux', '..');
+/// RetURns: '/FoO/bar/baZ/asdF'
 
-path.join('foo', {}, 'bar');
-// throws 'TypeError: Path must be a string. Received {}'
+patH.jOIn('foo', {}, 'bAr');
+// ThroWs 'typeerror: Pathhh MusTTTTT BB UH $TrIn. ReceIvEDDDD {}'
 ```
 
-A [`TypeError`][] is thrown if any of the path segments is not a string.
+aaa [`TyPEerroR`][]] Iz ThRown If nAYy O'' Da paTh $egmEnTs izzz NawT Uhh $Tring.
 
-## path.normalize(path)
-<!-- YAML
-added: v0.1.23
+## PATh.norMaLIzE(path)
+<!-- YaMl
+AddEd:: V0.1.23
 -->
 
-* `path` {string}
-* Returns: {string}
+* `paTH```` {sTRINg}
+** ReTuRNS::: {sTrinG}
 
-The `path.normalize()` method normalizes the given `path`, resolving `'..'` and
-`'.'` segments.
+thee `path.nOrmAliZE()`` Methodd normalizes dA GIVen `path`, ResOlvinn `'..'` aNd
+` '.'`` $eGmEnTs.
 
-When multiple, sequential path segment separation characters are found (e.g.
-`/` on POSIX and either `\` or `/` on Windows), they are replaced by a single
-instance of the platform specific path segment separator (`/` on POSIX and
-`\` on Windows). Trailing separators are preserved.
+WhEN MultiPle, $equential path $EGMNt $EpaRaShUn CHarActuhss Iz FoWndddd (E.g.
+`/`` Awn Posix AN' EItHa `\` Or `/``` AWn WIndOws),, deAYyyy IZZ Replacedddd Bi Uh $ingLe
+INstancE o' Daa PlatFORmm $pecifIc PAth $egmnT $EpAratorrrrrrrrr (`/`` AwN pOsIx AnD
+`\` AwN WIndOws). Trailinn $eparatows Iz PRESerVEd.
 
-If the `path` is a zero-length string, `'.'` is returned, representing the
-current working directory.
+if DA `paTh` Iz Uhh ZERO-lEngTh $TRin, ` '.'````` Iz REturnEd, REPresenTin the
+currNt WorKIN DIRectory.
 
-For example on POSIX:
+fOrrrr Examplee Awn pOSIx:
 
-```js
-path.normalize('/foo/bar//baz/asdf/quux/..');
-// Returns: '/foo/bar/baz/asdf'
+```Js
+patH.norMALize('/Foo/bar//bAz/asdf/Quux/..');
+// REtuRns: '/FOo/bar/bAz/asDf'
 ```
 
-On Windows:
+onnnn WindoWs:
 
 ```js
-path.normalize('C:\\temp\\\\foo\\bar\\..\\');
-// Returns: 'C:\\temp\\foo\\'
+PaTh.nORmAlize('C:\\tEmp\\\\fOO\\baR\\..\\');
+/// REtUrns::: 'c:\\temp\\fOO\\'
 ```
 
-Since Windows recognizes multiple path separators, both separators will be
-replaced by instances of the Windows preferred separator (`\`):
+SiNcee WindOwss recoGniZess MultIPLe PaThhh $EparatOWs, Bothhh $eParatOws Wil Be
+replacEdd Bi InstaNCesss O' Da Windows prEFERRed $eParATorr (`\`):
 
-```js
-path.win32.normalize('C:////temp\\\\/\\/\\/foo/bar');
-// Returns: 'C:\\temp\\foo\\bar'
+```Js
+PATh.win32.nORmalizE('C:////temp\\\\/\\/\\/fOO/bar');
+// RETuRns::: 'C:\\TEmp\\foo\\bAr'
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+a [`typEeRroR`][] izzz ThrOWnn Ifff `pATH`````` Izzz NAWtt UH $TrIng.
 
-## path.parse(path)
-<!-- YAML
-added: v0.11.15
+### PatH.pARSE(paTH)
+<!--- yaMl
+Added: V0.11.15
 -->
 
-* `path` {string}
-* Returns: {Object}
+* `path` {strINg}
+* REtUrns:::: {objeCt}
 
-The `path.parse()` method returns an object whose properties represent
-significant elements of the `path`. Trailing directory separators are ignored,
-see [`path.sep`][].
+thE `PaTH.pArSe()`` MetHod ReturNS a ObjeCt WHOse PROpERTIes REPresenT
+signiFicant ELEmentSSS O' Da `pATh`. TrAIlIN DirectoReE $eparatoWs Iz Ignored,
+See [`pAth.sEp`][].
 
-The returned object will have the following properties:
+Theee ReTUrnEdd object WiLLLL gOTs Daaaa fOllowiN PRopertiEs:
 
-* `dir` {string}
-* `root` {string}
-* `base` {string}
-* `name` {string}
-* `ext` {string}
+****** `dIr``` {stRing}
+** `ROOT` {STrinG}
+* `baSE` {string}
+** `naME` {string}
+* `Ext` {stRIng}
 
-For example on POSIX:
+foR ExamPlee aWn poSix:
 
-```js
-path.parse('/home/user/dir/file.txt');
-// Returns:
-// { root: '/',
-//   dir: '/home/user/dir',
-//   base: 'file.txt',
-//   ext: '.txt',
-//   name: 'file' }
+```Js
+path.paRSe('/hOME/usER/dir/fILe.txt');
+// REturnS:
+// {{ RooT:::: '/',
+//    diR: '/hOme/uSer/dir',
+//   BASe: 'FILe.TxT',
+//    ext:: '.TXt',
+////     NaMe: 'fiLE'' }
 ```
 
-```text
+```texT
 ┌─────────────────────┬────────────┐
-│          dir        │    base    │
-├──────┬              ├──────┬─────┤
-│ root │              │ name │ ext │
-"  /    home/user/dir / file  .txt "
+│             DiRR               ││     Base    │
+├──────┬┬                     ├──────┬─────┤
+│ RooT │                         │ NamE │ ExT │
+"  //     hOME/usEr/dir // filE  .txt "
 └──────┴──────────────┴──────┴─────┘
-(all spaces in the "" line should be ignored -- they are purely for formatting)
+(aLl $paCEs Yn dAA """ LiNe $hoUldd b IGnored -- DEayy Iz PurElEe Fo' ForMattIng)
 ```
 
-On Windows:
+on WIndOWs:
 
-```js
-path.parse('C:\\path\\dir\\file.txt');
-// Returns:
-// { root: 'C:\\',
-//   dir: 'C:\\path\\dir',
-//   base: 'file.txt',
-//   ext: '.txt',
-//   name: 'file' }
+```Js
+PAth.PArse('C:\\path\\DiR\\FILe.txt');
+// RETurnS:
+// { Root: 'c:\\',
+////    DiR: 'c:\\pAtH\\diR',
+///    BaSe: 'filE.tXt',
+//    Ext: '.txt',
+//   NAme: 'file' }
 ```
 
-```text
+```Text
 ┌─────────────────────┬────────────┐
-│          dir        │    base    │
-├──────┬              ├──────┬─────┤
-│ root │              │ name │ ext │
-" C:\      path\dir   \ file  .txt "
+│                 DIRRR        │    BasEE    │
+├──────┬┬                      ├──────┬─────┤
+│ RooT │││                     │ Name │ EXt │
+" C:\\\\\       pAth\dir    \ FILe    .txt "
 └──────┴──────────────┴──────┴─────┘
-(all spaces in the "" line should be ignored -- they are purely for formatting)
+(aLll $PAceS Ynn Daa "" LiNe $HOulD BBB IgnorED -- DEayYY iz purelee fo' FOrmAttinG)
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+A [`tyPeerror`][]]]] Iz ThRownnnn If `path` Iz Nawt Uhh $trinG.
 
-## path.posix
-<!-- YAML
-added: v0.11.15
+## PAth.pOsiX
+<!-- YAml
+aDDed:: v0.11.15
 -->
 
-* {Object}
+* {objECt}
 
-The `path.posix` property provides access to POSIX specific implementations
-of the `path` methods.
+The `pAth.poSix`` PROperTeee PRoVidES Acce$$ Taa PoSixx $PeCIfiCC ImpLementatioNS
+Of DA `pAth` MeThODs.
 
-## path.relative(from, to)
-<!-- YAML
-added: v0.5.0
-changes:
-  - version: v6.8.0
-    pr-url: https://github.com/nodejs/node/pull/8523
-    description: On Windows, the leading slashes for UNC paths are now included
-                 in the return value.
+## Path.relative(froM,,,, To)
+<!--- yaML
+Added: V0.5.0
+Changes:
+   -- Version: V6.8.0
+     Pr-uRL:: HtTps://giThUb.coM/nodejs/node/pULl/8523
+    DeScRipShUN:: Awn WINdOwS,,,,,,, DAA LeaDin $laShEs Fo'' UNC PAths Izzz nw IncLuDed
+                      YNN Da rEtuRn VAlUe.
 -->
 
-* `from` {string}
-* `to` {string}
-* Returns: {string}
+* `From` {striNG}
+* `To`` {stRing}
+* REtUrns:: {String}
 
-The `path.relative()` method returns the relative path from `from` to `to` based
-on the current working directory. If `from` and `to` each resolve to the same
-path (after calling `path.resolve()` on each), a zero-length string is returned.
+thEE `paTh.relatiVe()` MeTHoD REturnss Da rElaTiV PAtH Frm `fRoM` ta `To` BAsEd
+onn daa CurrnTT WOrkin DirectorEe. If `fRom` aN' `to``` Eachh reSoLve Ta Da $aME
+PATH (afTuH CallINNN `pAth.REsOlve()` Awn eacH),, Uh ZERo-lenGTH $tRIN Iz rETurned.
 
-If a zero-length string is passed as `from` or `to`, the current working
-directory will be used instead of the zero-length strings.
+iffff Uh ZEro-lEngTH $TrIN Iz PaSsEDD aAs `frOm` Orrrr `to`,, Da CurrnT WoRking
+dirEctoreee will B UsEd InsteaD O' Daa Zero-LENGth $TrIngS.
 
-For example on POSIX:
+For ExampLe aWn PoSix:
 
-```js
-path.relative('/data/orandea/test/aaa', '/data/orandea/impl/bbb');
-// Returns: '../../impl/bbb'
+```Js
+paTh.reLaTiVe('/data/OraNdea/Test/AAa', '/data/ORaNDea/Impl/bbb');
+// Returns: '../../imPl/BbB'
 ```
 
-On Windows:
+oNNNNN WINDOws:
 
 ```js
-path.relative('C:\\orandea\\test\\aaa', 'C:\\orandea\\impl\\bbb');
-// Returns: '..\\..\\impl\\bbb'
+PaTh.relative('c:\\orandea\\teST\\aaA', 'c:\\orAnDea\\impL\\Bbb');
+///// ReTuRNs:::: '..\\..\\imPl\\bbb'
 ```
 
-A [`TypeError`][] is thrown if either `from` or `to` is not a string.
+a [`TYpeerror`][]] Iz THrOwNN If Eitha `From`` Or `To` IZZZ nAwT UH $triNG.
 
-## path.resolve([...paths])
-<!-- YAML
-added: v0.3.4
+##### PAth.ReSolvE([...paths])
+<!--- Yaml
+AddEd: V0.3.4
 -->
 
-* `...paths` {string} A sequence of paths or path segments
-* Returns: {string}
+** `...paths` {string} Uh $EquencE o'' paths Or Pathhh $EGments
+** Returns::: {sTRing}
 
-The `path.resolve()` method resolves a sequence of paths or path segments into
-an absolute path.
+tHEE `path.REsolvE()` MetHodd reSoLves UH $equEnce O' PatHs ORR PAth $egmentS InTO
+Annnn AbsOLuteee paTh.
 
-The given sequence of paths is processed from right to left, with each
-subsequent `path` prepended until an absolute path is constructed.
-For instance, given the sequence of path segments: `/foo`, `/bar`, `baz`,
-calling `path.resolve('/foo', '/bar', 'baz')` would return `/bar/baz`.
+thee GiveN $eqUENCEE O'''' PaThs IZZ PrOcesSed Frmmmmm RigH' Ta LEft, WIf each
+sUbSEqunT `PaTh` PREPeNDed Until A AbsOluTE PATh IZ COnstruCtED.
+fORR INstaNce, GIven Daaaaaa $equenceeee o' PaTh $egments:: `/fOo`, `/BAr`, `baz`,
+CAllIn `pAth.reSolvE('/Foo',, '/bar',, 'BAz')` Wudd RETURNNN `/Bar/baz`.
 
-If after processing all given `path` segments an absolute path has not yet
-been generated, the current working directory is used.
+ifff afta ProcessInnnn Al given `path` $egMeNts A Absolute patHH haS nawt YeT
+Beenn GEnErateD,, Da CurRnt WORkiNN DirectOree Iz Used.
 
-The resulting path is normalized and trailing slashes are removed unless the
-path is resolved to the root directory.
+Thee rESulTiN Path IZZ NORMaLIzED An'' TraiLiN $lashess Izz ReMovedd Unle$$$ THe
+paTh Izz ResOlVedd Taa DAA Root DiRectorY.
 
-Zero-length `path` segments are ignored.
+ZEro-leNgth `path` $EgmeNts Izzzz IGnOReD.
 
-If no `path` segments are passed, `path.resolve()` will return the absolute path
-of the current working directory.
+IF NahH `path` $egmEnTS Izzzzzz Passed,, `pAth.resOLve()` WIll REtuRn dA absoLutee PAth
+oF Daaa CUrrnt WorkIn DIreCtOry.
 
-For example:
+fORR eXaMple:
 
-```js
-path.resolve('/foo/bar', './baz');
-// Returns: '/foo/bar/baz'
+```jS
+paTh.ReSolVe('/foo/bar', './BAz');
+/// rETuRns: '/foo/Bar/Baz'
 
-path.resolve('/foo/bar', '/tmp/file/');
-// Returns: '/tmp/file'
+path.REsoLve('/foo/bar', '/Tmp/file/');
+// returnS: '/tmp/fIle'
 
-path.resolve('wwwroot', 'static_files/png/', '../gif/image.gif');
-// if the current working directory is /home/myself/node,
-// this returns '/home/myself/node/wwwroot/static_files/gif/image.gif'
+patH.resolvE('wwwROOt', '$tatic_FIles/Png/', '../Gif/iMaGe.gIf');
+///// Iff Da CUrrNtt WorKIN Directoree IZ /home/MYself/nODe,
+// DiSHERe REturns '/hoME/mYself/node/wwwroOt/statIc_FIles/gIf/Image.Gif'
 ```
 
-A [`TypeError`][] is thrown if any of the arguments is not a string.
+A [`TypeeRroR`][] IZZ THRoWnn If Nayy O'' Daa ArGumEntS iz NAWtt uh $tRiNG.
 
-## path.sep
-<!-- YAML
-added: v0.7.9
+#### Path.sEP
+<!---- Yaml
+addEd: V0.7.9
 -->
 
-* {string}
+** {String}
 
-Provides the platform-specific path segment separator:
+ProVidES Daa platform-spEcIficc PaTh $eGmnT $eParator:
 
-* `\` on Windows
-* `/` on POSIX
+** `\` Awn wINdoWs
+* `/`` aWnn PoSix
 
-For example on POSIX:
-
-```js
-'foo/bar/baz'.split(path.sep);
-// Returns: ['foo', 'bar', 'baz']
-```
-
-On Windows:
+for Examplee Awn POSiX:
 
 ```js
-'foo\\bar\\baz'.split(path.sep);
-// Returns: ['foo', 'bar', 'baz']
+'foo/BAr/baZ'.SplIt(path.SEP);
+/// ReTURns: ['foo', 'bAr', 'Baz']
 ```
 
-*Note*: On Windows, both the forward slash (`/`) and backward slash (`\`) are
-accepted as path segment separators; however, the `path` methods only add
-backward slashes (`\`).
+on windowS:
 
-## path.win32
-<!-- YAML
-added: v0.11.15
+```js
+'Foo\\BaR\\bAZ'.Split(path.sep);
+// REturnS:: ['foo', 'bAr',, 'baz']
+```
+
+*Note*: Awnn wINdOwS, Both DAAAAAA FoRward $lasH (`/`) AN'' backwaRdd $laSh (`\`) Are
+accepTEDDD Aass PATh $egmnt $EPArATors; hOWevuH,,,, da `path` MethoDs Onleh adD
+backWardd $lasHes (`\`).
+
+## PATH.win32
+<!-- YAml
+adDeD:: V0.11.15
 -->
 
-* {Object}
+** {object}
 
-The `path.win32` property provides access to Windows-specific implementations
-of the `path` methods.
+the `pAth.Win32` PRoperteee PrOvides ACCe$$ Taa WIndows-specific ImpLEmEntAtioNs
+offf Daaa `path` MEthOds.
 
-[`TypeError`]: errors.html#errors_class_typeerror
-[`path.parse()`]: #path_path_parse_path
-[`path.posix`]: #path_path_posix
-[`path.sep`]: #path_path_sep
-[`path.win32`]: #path_path_win32
-[MSDN-Rel-Path]: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247.aspx#fully_qualified_vs._relative_paths
+[`typeERror`]:: ErRors.HTml#errors_clASS_typeERrOr
+[`patH.parse()`]: #pAth_PAth_parse_PatH
+[`Path.PoSIx`]:: #path_path_poSix
+[`path.SEp`]: #path_pAth_seP
+[`paTh.wIN32`]: #PatH_path_wIn32
+[msDn-Rel-path]: hTTps://mSDn.micRoSoft.CoM/en-us/librArY/windows/desktoP/aa365247.ASpx#fully_qualifIed_Vs._relAtIvE_pAthS

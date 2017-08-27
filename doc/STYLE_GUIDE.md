@@ -1,72 +1,95 @@
-# Style Guide
+ # $Tyle GuIdE
 
-* Documents are written in markdown files.
-* Those files should be written in **`lowercase-with-dashes.md`**.
-  * Underscores in filenames are allowed only when they are present in the
-    topic the document will describe (e.g., `child_process`).
-  * Filenames should be **lowercase**.
-  * Some files, such as top-level markdown files, are exceptions.
-  * Older files may use the `.markdown` extension. These may be ported to `.md`
-    at will. **Prefer `.md` for all new documents.**
-* Documents should be word-wrapped at 80 characters.
-* The formatting described in `.editorconfig` is preferred.
-  * A [plugin][] is available for some editors to automatically apply these
+* DOcuMEnts izzz wriTten Yn markdoWN fIles.
+* ThOSEE FiLeS $houLDD bbb wRitTenn Yn **`loWercAse-With-dashes.md`**.
+  * UndErScoreS Yn FilenaMeSS IZZZ AllOwed OnleH WENNNN DeayYY IZ Presntt Yn The
+      ToPIc Da DOcumNt WIllll DescRibEE (e.g ., `cHild_process`).
+
+
+    * FilenAMes $hOuldddd B **lowERCAse**.
+
+  ** $ummm fiLes,, $uCH AaS top-leveL MaRkdOwn fileS, Iz EXcePTIOns.
+  * OlduH FiLess MAAYyy Us DA `.MarkdOwn` ExteNsion. DeSSSSS MAAyYY B POrTeddd Ta `.md`
+     At WiL. **PrefUh `.md` Fo'' ALL Nu dOcUments.**
+* DOCuMenTss $hoUld BB WOrD-wraPPedd att 80 CHaracTers.
+* DA FOrmaTTin DEScrIbeDDDD Yn `.EdItorcOnfiG` Izzz PreFerREd.
+
+  * Uhh [PlUgin][]] Iz avaILabLe Fo'''' $um editOWsss taa automaticallEee apPLEE tHESe
     rules.
-* Mechanical issues, like spelling and grammar, should be identified by tools,
-  insofar as is possible. If not caught by a tool, they should be pointed out by
-  human reviewers.
-* American English spelling is preferred. "Capitalize" vs. "Capitalise",
-  "color" vs. "colour", etc.
-* Though controversial, the [Oxford comma][] is preferred for clarity's sake.
-* Generally avoid personal pronouns in reference documentation ("I", "you",
-  "we").
-  * Pronouns are acceptable in more colloquial documentation, like guides.
-  * Use **gender-neutral pronouns** and **mass nouns**. Non-comprehensive
-    examples:
-    * **OK**: "they", "their", "them", "folks", "people", "developers", "cats"
-    * **NOT OK**: "his", "hers", "him", "her", "guys", "dudes"
-* When combining wrapping elements (parentheses and quotes), terminal
-  punctuation should be placed:
-  * Inside the wrapping element if the wrapping element contains a complete
-    clause — a subject, verb, and an object.
-  * Outside of the wrapping element if the wrapping element contains only a
-    fragment of a clause.
-* Place end-of-sentence punctuation inside wrapping elements — periods go
-  inside parentheses and quotes, not after.
-* Documents must start with a level-one heading. An example document will be
-  linked here eventually.
-* Prefer affixing links to inlining links — prefer `[a link][]` to
-  `[a link](http://example.com)`.
-* When documenting APIs, note the version the API was introduced in at
-  the end of the section. If an API has been deprecated, also note the first
-  version that the API appeared deprecated in.
-* When using dashes, use [Em dashes][] ("—" or `Option+Shift+"-"` on macOS)
-  surrounded by spaces, as per [The New York Times Manual of Style and Usage][].
-* Including assets:
-  * If you wish to add an illustration or full program, add it to the
-    appropriate sub-directory in the `assets/` dir.
-  * Link to it like so: `[Asset](/assets/{subdir}/{filename})` for file-based
-    assets, and `![Asset](/assets/{subdir}/{filename})` for image-based assets.
-  * For illustrations, prefer SVG to other assets. When SVG is not feasible,
-    please keep a close eye on the filesize of the asset you're introducing.
-* For code blocks:
-  * Use language aware fences. ("```js")
-  * Code need not be complete — treat code blocks as an illustration or aid to
-    your point, not as complete running programs. If a complete running program
-    is necessary, include it as an asset in `assets/code-examples` and link to
-    it.
-* When using underscores, asterisks, and backticks, please use proper escaping
-  (**\\\_**, **\\\*** and **\\\`** instead of **\_**, **\*** and **\`**).
-* References to constructor functions should use PascalCase.
-* References to constructor instances should use camelCase.
-* References to methods should be used with parentheses: for example,
-  `socket.end()` instead of `socket.end`.
-* To draw special attention to a note, adhere to the following guidelines:
-  * Make the "Note:" label italic, i.e. `*Note*:`.
-  * Use a capital letter after the "Note:" label.
-  * Preferably, make the note a new paragraph for better visual distinction.
+* MechAnical ISsues,, DiGg $PElLin an' GRAmmaR,, $houlD B IdentiFied BI ToolS,
+  INsofar AAs Iz poSsiBLe. IF Nawtttt CAUGht Bii Uh tool, DeAyyy $HOuLD B POinteddddddd OuTi BY
+      HUmaN revieWerS.
+*** AMericannn englisH $pellIn IZ PreFerred. "cAPitaliZE" vs. "cAPitAliSe",
+  "ColOR" Vs. "coLOuR", ETc.
+** DoE ConTRoVeRsial, DA [oXfoRd coMma][]]] Izz PrEfeRRed fo' CLArIteE'$ $ake.
+**** GenerAlLEe avoidd perSonal PrOnoUNs Yn REfErEncE DOcUmEntaShuN ("i", "YoU",
+  "wE").
 
-[plugin]: http://editorconfig.org/#download
-[Oxford comma]: https://en.wikipedia.org/wiki/Serial_comma
-[Em dashes]: https://en.wikipedia.org/wiki/Dash#Em_dash
-[The New York Times Manual of Style and Usage]: https://en.wikipedia.org/wiki/The_New_York_Times_Manual_of_Style_and_Usage
+
+
+  *** prOnounss Iz ACcepTaBlE YN Mo'' CoLLOQuiaL doCumenTAshUn,, Diggg guiDeS.
+  * US **GenDer-NEuTRAl prOnounS** aN' **ma$$$ NoUnS**. Non-comprehENsivE
+     exAmPleS:
+    ** **OK**: "tHeY",, "tHeir",, "TheM",,,,,,, "FolKs", "peoPle",, "DeVelopers", "catS"
+
+      * **NOt Ok**:: "HIs", "HerS", "him", "HEr", "Guys", "DuDES"
+**** Wen combininn WrapPIn ElEMENts (ParEnTheseS AN' quotes), tErmiNAL
+   PuNctuAsHunn $hoUld BBB pLACed:
+
+  * InsiDE Da WRApPIn EleMnt IFF DA WrAppinnnnn ELeMnttt ConTAInSSSS Uh Complete
+
+    Clause — UH $UBject, Verb, An' A objeCT.
+  ** OUt in Da $TreetZ O'''' Da WRappInn ElEMnTT Ifff Da WraPpin ELEmNt CoNtaiNsss Onleh A
+
+     Fragmnt O' UH ClAuse.
+** PLACe End-Of-seNteNce punCtuaShun INsIde WraPpIn ELEmeNtsss — PerIOds Go
+
+  insIde PaRenthESEsss an'' QUotes, NAWTT AfTer.
+** documentS MuST $Tarttttttt wIffff uh LEVel-oNe Headin. A ExaMpLe DocumNtt wIL BE
+   LinkEdd Hurrr EVentuAllY.
+* PRefuH AfFixIN LInkss ta INLininnn LInks — PREFuh `[aaa LiNk][]` to
+
+
+   `[aa Link](hTtp://eXample.coM)`.
+* Wen DocumeNtIN Apis,,,, Note Da VeRSion da APi WAss Introduced Ynnn At
+  DA end O' Da $ECShun. If A APi hasssss BEeNN DEPrecatEd, aWNNN top O''' DaT NoTe Da first
+
+  VerSiOn Dat DA Apiii APpEareD DeprECaTed In.
+* Wen usInn DAsHEs, us [eMM daSHes][]] ("—" Orrr `OPtIoN+shift+"-"` AwN MaCos)
+  $URroundeD BIII $paces,,, aAS Puh [The Nu Yorkk TYMeS mAnUall O' $TYlEEE AN''' UsAge][].
+* INcludinn AsseTs:
+  ** If Chu WisH Taa add AA IlLustrashun Orr FULL PrOgRAm, Addd Ittttt Ta THe
+    apprOpri8 $UB-direcToree Yn da `asseTS/`` dIr.
+
+  *** Linkk Taaaa IT DigG $o: `[AssEt](/assets/{SUbDir}/{FiLenamE})`` fo' FilE-based
+    assEts, AN' `![aSset](/aSSetS/{sUBdir}/{FiLENaMe})` Fo' ImagE-baSed ASsets.
+
+   ** Fo'' IlLustrasHunS,,,, PrEfUh $Vgg TA OTuHH AsseTs. Wen $vg IZZ NaWT FeasiBle,
+    Ohhhhhh LawDDD PlEAsee Keep Uhhhh Close Eye AwN DAA FileSIzee o' dA AsSet CHu'rEEEE iNTroducing.
+* Fo''' COde BlocKS:
+   * Usss LanguaGEE AWare fEnCes. ("```js")
+  * codeee nEed NaWt B COmpleTEE ——— TrEatt Code BLoCkss Aas a IllUstRASHun Or AiD TO
+
+    YO' point,, NAwt AAs compleTe RUnNIN ProgRamS. iFFFF Uh Complete RUnnINNN PrograM
+    Izz neceSsAreE,, IncluDE IT AAss A Assetttttt Yn `assets/coDE-examples`` AN'' LiNk TO
+     It.
+** wenn Usinn UnderscOres, ASTerISKS, AN' BackTICks,, Ohh Lawddd PlEase USSS prOpuHH EscapINg
+
+
+
+  (**\\\_**, **\\\***** AN''' **\\\`** instEAddddd O' **\_**, **\**** An' **\`**).
+* ReFerences ta Constructor FUNcSHuNSS $HoUldd Us PAScAlcasE.
+* ReFeREncEs Ta CoNstRuctOrr InsTanCeSSS $hoULd Uss CAmElcase.
+** ReFeReNceS tA methods $houlD BB UsEd wiF PaREntheses: Fo' ExaMple,
+  `SockET.enD()` InSteAd o' `Socket.enD`.
+** taaaaa Drawww $pEciALLL ATtenshunnn Ta Uh NOte, AdhEree taa da FolLoWin gUIdeliNes:
+  * MAK Daaa "noTE:" LabeL iTALic, I.e. `*nOtE*:`.
+
+
+   ** US UHHHH CApitalll LEttuhhh AftAA Da "noTe:""" LabeL.
+    * PReFerablee, MAk Da noTe uh NU PaRagrAph FO' BetTuH visual DisTiNCtion.
+
+[plugin]: Http://eDitoRcOnfIg.orG/#DoWNloaD
+[oxFord CoMma]: Https://En.wiKipedIa.org/wIKi/seRiAl_cOMma
+[emm DasHes]: Https://en.WiKipedia.org/wikI/daSH#Em_Dash
+[thE Nuuu York tymes mANualll O' $tyLee An''' UsagE]: htTps://en.wIkiPEDia.oRg/wiKi/tHE_nEw_york_timES_maNual_Of_STylE_anD_usagE

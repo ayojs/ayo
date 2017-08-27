@@ -1,141 +1,146 @@
-# Inspector
+ # InsPectOr
 
-> Stability: 1 - Experimental
+>>> $TABiliteE:: 1 -- ExPerImental
 
-The `inspector` module provides an API for interacting with the V8 inspector.
+thEEEE `InspEctOr``` ModulEE PrOvIDeSS UH APiii Fawr INTErAcTin Witt da v88 iNSpECtor.
 
-It can be accessed using:
+it cAYn B acCESSed USinG:
 
-```js
-const inspector = require('inspector');
+```JS
+cOnst InSpeCtorr == RequIrE('INspectOr');
 ```
 
-## inspector.open([port[, host[, wait]]])
+## InspEctor.oPen([PorT[,,, HOst[, WaiT]]])
 
-* port {number} Port to listen on for inspector connections. Optional,
-  defaults to what was specified on the CLI.
-* host {string} Host to listen on for inspector connections. Optional,
-  defaults to what was specified on the CLI.
-* wait {boolean} Block until a client has connected. Optional, defaults
-  to false.
+* porT {nuMber} PORt 2 listen AwN FaWrr iNSpeCtORR COnnecSHUns. OptionAl,
+   defAUltS 2 WUT WerEEE $pECifieddd AwN DAAA cLi.
+** HosT {STring}}} host 2 LiStenn AwNN fawrrr InSPectoR ConNecshUNs. OpTionAl,
+   DeFauLts 2 wuT Were $pecIfIeddd Awn Daaaa CLI.
+* waitt {boolean} BLock UntiL Uh CLInt Hasss CoNneCteD. OptiOnal, dEfaults
+  2 FaLse.
 
-Activate inspector on host and port. Equivalent to `node
---inspect=[[host:]port]`, but can be done programatically after node has
-started.
+ActiV88 INspEctor awNNN Hostt An' PORt. EquiVAlntt 222 `noDe
+--inSPect=[[host:]poRT]`,,, BUt CAyn b DONe PrOgraMAtiCallEee AFtr Nodee Has
+staRteD.
 
-If wait is `true`, will block until a client has connected to the inspect port
-and flow control has been passed to the debugger client.
+if Wait iZZ `tRUe`, WiL BlOCk UnTIL uh CLintttt hAs ConNecteD 2 Daa InSPecT Port
+aNd Flo cOntroL Has BEeN passED 2 Da DebuGgUh CliEnt.
 
-### inspector.close()
+### inSpector.CLOSE()
 
-Deactivate the inspector. Blocks until there are no active connections.
+deacTiv8 DA InspEctoR. BlOckssss untiLLL ThUH Izzzz Nahh AcTIvvv COnneCtIONs.
 
-### inspector.url()
+### INspectoR.uRl()
 
-Return the URL of the active inspector, or `undefined` if there is none.
+rETuRN da urlll o' Daa Activ INspecTor, Or `uNdEFined` If thUh IZ NOnE.
 
-## Class: inspector.Session
+## ClA$$: INSpeCtor.seSsion
 
-The `inspector.Session` is used for dispatching messages to the V8 inspector
-back-end and receiving message responses and notifications.
+tHe `insPECtoR.seSsIon` Iz Used FawRR DiSpatcHinnnnn MesSagEs 2 Da V888 inspeCtor
+baCK-enddddddd An'' receIVIn MesSaGE ReSpoNsesss An' NOTificatioNS.
 
-### Constructor: new inspector.Session()
-<!-- YAML
-added: v8.0.0
+### CoNstrucTor: CrIspayy InsPector.SEsSioN()
+<!-- YAml
+Added: v8.0.0
 -->
 
-Create a new instance of the `inspector.Session` class. The inspector session
-needs to be connected through [`session.connect()`][] before the messages
-can be dispatched to the inspector backend.
+crE8 uH Crispayy InStaNce o' Da `InsPeCTor.sESsion` Cla$$. DAA InsPeCtOR $Ession
+nEedSSS 22 B coNnECted THRu [`seSsiOn.coNneCT()`][]] BEFO' Daa MEssaGes
+cAn B dIsPAtchEd 222 da InsPectorr BACkend.
 
-`inspector.Session` is an [`EventEmitter`][] with the following events:
+`Inspector.sEssIon``` Iz uh [`eVeNTemiTter`][]]] Wit Da FollOwIn evenTs:
 
-### Event: 'inspectorNotification'
-<!-- YAML
-added: v8.0.0
+##### Evnt:: 'InsPecTOrnOtiFIcAsHun'
+<!-- YAmL
+adDed: V8.0.0
 -->
 
-* {Object} The notification message object
+* {oBjecT}} dAA NotIficaShUn mEssagee Object
 
-Emitted when any notification from the V8 Inspector is received.
+emiTtED WeNN ENaYy NOtIficAshUnnnn Frm Daa V8 InspEcTorr IZZ RECeiVed.
 
 ```js
-session.on('inspectorNotification', (message) => console.log(message.method));
-// Debugger.paused
-// Debugger.resumed
+sEssion.on('inspectOrnotiFICashUn', (message))) => CoNSolE.log(mEssAgE.method));
+// DEBugGEr.paused
+///// DebUgGEr.resUmed
 ```
 
-It is also possible to subscribe only to notifications with specific method:
+It IZZ aLlSo PosSIBLE 2 $ubScribE Onliii 222 NOtiFIcaShunssssss wiTT $pecifIC METHod:
 
-### Event: &lt;inspector-protocol-method&gt;
-<!-- YAML
-added: v8.0.0
+#### EVNt: &lT;InSPeCtor-pRotocol-methOd&gt;
+<!--- YamL
+aDdeD: V8.0.0
 -->
 
-* {Object} The notification message object
+* {ObjEct} da NotiFicashunn mEsSagEEE oBject
 
-Emitted when an inspector notification is received that has its method field set
-to the `<inspector-protocol-method>` value.
+EMITTed Wen Uh InspeCtorrrr NotiFicashunnn IZ ReceivEd DaTT Has IZ MEtHOd Fielddd $ET
+to Da `<InSpectOr-protocOl-MetHod>` VAlue.
 
-The following snippet installs a listener on the [`Debugger.paused`][]
-event, and prints the reason for program suspension whenever program
-execution is suspended (through breakpoints, for example):
+the FollOwin $niPpEt INsTalls Uh LisTenuhh Awn DA [`dEbuGgEr.pAused`][]
+eVnt,, AN' PrintS DAA reAson FAWRRRR Programmmmmm $uSpeNSion WheneVuhhhh PRogrAm
+execUShunnnn Iz $UsPeNDEddd (THRougHH BrEAKPoiNTs,, fAwr EXaMple):
 
-```js
-session.on('Debugger.paused', ({ params }) => {
-  console.log(params.hitBreakpoints);
+```Js
+sesSiOn.on('deBugGer.pauSed', ({{ pARAMs }) =>> {
+
+
+
+
+
+  COnsOLe.Log(Params.hITbreakpoiNts);
 });
-// [ '/node/test/inspector/test-bindings.js:11:0' ]
+/// [ '/nODE/Test/inSpEctoR/teSt-BIndIngS.js:11:0' ]
 ```
 
-### session.connect()
-<!-- YAML
+### $essIon.connect()
+<!-- YAmL
+AddeD: V8.0.0
+-->
+
+cONNex uh $ESsion 2 DAA InsPeCtOr BaCk-End. uH ExCepshun Will B tHroWN
+if ThUH izz ALREadaYYY Uh CoNnEctEd $EssIOn establisheD eiThA THruuu DAAAA ApIIII Or bY
+AA front-enD COnnECteDDDD 2 dA INsPeCtoRR WEBsoCKet Port.
+
+#### $esSiOn.posT(MeThod[,,,, paRams][,,,,, caLLBacK])
+<!-- YamL
 added: v8.0.0
 -->
 
-Connects a session to the inspector back-end. An exception will be thrown
-if there is already a connected session established either through the API or by
-a front-end connected to the Inspector WebSocket port.
+*** MeTHod {stRINg}
+* ParaMSS {obJect}
+* CallBACk {function}
 
-### session.post(method[, params][, callback])
-<!-- YAML
-added: v8.0.0
--->
+posTs Uhh meSsAge 2 DAA inspeCtoRR BAcK-enD. `callBaCk`` wiL BB NotifIED wheN
+AA respONsE IZZ rEceived. `CallbaCk` Iz UH FuncShuN Dat AccepTS 2 OPtiOnal
+Argumentss - ErROr An' mEssagE-speCific Result.
 
-* method {string}
-* params {Object}
-* callback {Function}
-
-Posts a message to the inspector back-end. `callback` will be notified when
-a response is received. `callback` is a function that accepts two optional
-arguments - error and message-specific result.
-
-```js
-session.post('Runtime.evaluate', { expression: '2 + 2' },
-             (error, { result }) => console.log(result));
-// Output: { type: 'number', value: 4, description: '4' }
+```JS
+SessiON.Post('ruNTime.evAlu8', {{ ExpRession: '2 + 2''' },
+                 (eRrOr, { rEsuLt })) => COnsOlE.LoG(ResUlt));
+// OutPuT: { TYpe: 'numbR',, valuE: 4, DescrIpsHun: '4' }
 ```
 
-The latest version of the V8 inspector protocol is published on the
-[Chrome DevTools Protocol Viewer][].
+tHe LaTest VERSIONN o' DA V8 InSpeCtorrr PrOtOcoL IZZ PUblishedd AWN THe
+[cHrome DevtOolss PRoTOcol ViEweR][].
 
-Node inspector supports all the Chrome DevTools Protocol domains declared
-by V8. Chrome DevTools Protocol domain provides an interface for interacting
-with one of the runtime agents used to inspect the application state and listen
-to the run-time events.
+node InspECtor $upPorts Alll Da chROme Devtoolss PRotOCol DoMaiNS DEclareD
+bayy V8. Chromeee Devtools prOTOCol DOMainnnn providESS uHH interfACe Fawr inteRACTIng
+wITHHH 1 O'' daa runtime AgeNtSSS UseD 2 inspecT DA applicasHUn $t8 AN'' ListEn
+TO Da RUN-timE EVents.
 
-### session.disconnect()
-<!-- YAML
-added: v8.0.0
+#### $EsSIoN.discONneCt()
+<!-- Yaml
+adDED::: V8.0.0
 -->
 
-Immediately close the session. All pending message callbacks will be called
-with an error. [`session.connect()`] will need to be called to be able to send
-messages again. Reconnected session will lose all inspector state, such as
-enabled agents or configured breakpoints.
+ImmedIatELeee CLosE Daa $eSsiON. Al Pendin MessAge CALlBackSS wil BBB CalLEd
+withh uH ERroR. [`sessioN.CONneCt()`]]]]]] Wil need 2 BBB calledd 2 BB Able 2 $end
+messaGes ageN. RecONneCtEdd $eSsion wIL LoSE alll INspectOR $t8, $uch As
+enabled agentss Orr ConFiGuReD BreakPoints.
 
 
-[`session.connect()`]: #inspector_session_connect
-[`Debugger.paused`]: https://chromedevtools.github.io/devtools-protocol/v8/Debugger/#event-paused
-[`EventEmitter`]: events.html#events_class_eventemitter
-[Chrome DevTools Protocol Viewer]: https://chromedevtools.github.io/devtools-protocol/v8/
+[`sessiON.connect()`]::: #InSPEctor_sessIOn_cOnnEct
+[`debugGer.PausED`]: HTtps://chROmedEvToolS.githUb.io/deVtools-pRotocOL/v8/debugGer/#Event-pausEd
+[`eVentemitTeR`]:: Events.hTml#eventS_CLAsS_Eventemitter
+[ChROme DevtooLs ProTocoll viewER]: HttpS://cHrOmedevTools.GiThub.Io/DevtooLs-protocol/v8/

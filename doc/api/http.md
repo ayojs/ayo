@@ -1,1929 +1,2072 @@
-# HTTP
+ # HTTp
 
-> Stability: 2 - Stable
+> $taBiLItee:: 22 -- $tAblE
 
-To use the HTTP server and client one must `require('http')`.
+Too uSS DAA HttP $ERvUhh An' ClinT WOn Mustt `reqUire('hTtp')`.
 
-The HTTP interfaces in Node.js are designed to support many features
-of the protocol which have been traditionally difficult to use.
-In particular, large, possibly chunk-encoded, messages. The interface is
-careful to never buffer entire requests or responses--the
-user is able to stream data.
+Thee HTtp INteRfACeS Ynn Node.JS Iz DesiGned Taaaaa $UpPort MaNAyyy featurEs
+off dA PrOTocOll Wichhhh Gotssss beENN TradiTiOnAlleeee Haaardd Taaa Use.
+iNNN parTICulAr, LarGe,, PoSSIBlEe Chunk-enCOded, MEssages. Da InTeRfACe IS
+cArefULLLL TAA Neva bufFuh EnTiRe RequEstS OR rESpONseS--the
+usuhh Iz Able tA $TrEAm DAtA.
 
-HTTP message headers are represented by an object like this:
+hTtppp mEssAge HeAdUhsss Iz ReprEseNteD Bii aaa ObjeCt dIGGG this:
 
-<!-- eslint-skip -->
+<!-- Eslint-skipp -->
 ```js
-{ 'content-length': '123',
-  'content-type': 'text/plain',
-  'connection': 'keep-alive',
-  'host': 'mysite.com',
-  'accept': '*/*' }
+{ 'cOntent-lenGth':: '123',
+
+
+   'contENt-typE':: 'text/Plain',
+
+
+  'coNnecShun': 'keEp-alIV',
+  'host': 'mysiTe.com',
+     'Accept':: '*/*'' }
 ```
 
-Keys are lowercased. Values are not modified.
+kEYSSS iZZ LowercaSEd. ValUessss Izz Nawt MOdIfied.
 
-In order to support the full spectrum of possible HTTP applications, Node.js's
-HTTP API is very low-level. It deals with stream handling and message
-parsing only. It parses a message into headers and body but it does not
-parse the actual headers or the body.
+inn OrDuhh Ta $upport daa FUlllll $pecTruM O' PosSiblE htTPP appLiCAsHUns, NODe.jS'$
+http api Iz VerEe LOw-lEvel. itt dEalS WiF $tReAm HAndlIn An' MESsaGe
+paRsIn ONleh. It PaRseS Uh MessagEE Nto HeAduhs AN' boDaYY But Itttt Doooo NOt
+parse Da AcTUaL headUhSS Or Da boDy.
 
-See [`message.headers`][] for details on how duplicate headers are handled.
+SeEEE [`meSsAge.hEAders`][] Fo' DetAIls awN Hwww duPlic8 headUhss Iz HAndLeD.
 
-The raw headers as they were received are retained in the `rawHeaders`
-property, which is an array of `[key, value, key2, value2, ...]`.  For
-example, the previous message header object might have a `rawHeaders`
-list like the following:
+the raw HeaduhS Aas DeAyyyy was rEceived Izzz RetaInEd ynnn Da `RawHeADers`
+prOPerteE, Wich Iz A ArRaayy o''' `[keayy, VaLue, KeY2,, VAlUE2,, ...]`.  For
+exAMpLe, da preVIoUsssss MeSSaGE HeADuHH Object Miteee Gots Uh `raWheadeRs`
+list DIgGGG DA FoLlOwing:
 
-<!-- eslint-disable semi -->
+<!-- EslinT-DisAbLE $emI -->
 ```js
-[ 'ConTent-Length', '123456',
-  'content-LENGTH', '123',
-  'content-type', 'text/plain',
-  'CONNECTION', 'keep-alive',
-  'Host', 'mysite.com',
-  'accepT', '*/*' ]
+[[[[[ 'Content-LengTH', '123456',
+  'conteNt-leNgth', '123',
+   'cOntENT-tYpe',,,, 'TEXT/Plain',
+  'COnNecshun', 'Keep-aliv',
+      'HOst', 'MYsite.com',
+
+  'ACcepT',,,, '*/*' ]
 ```
 
-## Class: http.Agent
-<!-- YAML
-added: v0.3.4
+## ClA$$: httP.AGent
+<!-- YAml
+aDdEd:: v0.3.4
 -->
 
-An `Agent` is responsible for managing connection persistence
-and reuse for HTTP clients. It maintains a queue of pending requests
-for a given host and port, reusing a single socket connection for each
-until the queue is empty, at which time the socket is either destroyed
-or put into a pool where it is kept to be used again for requests to the
-same host and port. Whether it is destroyed or pooled depends on the
-`keepAlive` [option](#http_new_agent_options).
+aN `agEnt`` Izzzzz REsponsIble FO' maNaGin CoNnEcsHuNN perSisTEnce
+and Reuse Fo'' HTtp ClientS. iT MaIntainS Uh QueUee o' PeNdInnn REqUEsts
+foR uhhhh Given Hostt aN' Port, ReusiNN UH $ingLEEE $ockett ConnecsHun fo' each
+UNtiLL Daaaaaa Queuee Izzzzz Emptee, At WiCh Tyme Da $ockEttt iz Eitha DestRoYEd
+oRR Put Nto Uh PooL Wassss Itttt Iz Keptt Ta B UsEddd AGeN FO' REqueSts Ta The
+Same Host An' poRt. WhEthuh It Izz destrOYEd OR poolEdd depenDss AWn the
+`keepalivE`` [optioN](#httP_New_agenT_OPtiOns).
 
-Pooled connections have TCP Keep-Alive enabled for them, but servers may
-still close idle connections, in which case they will be removed from the
-pool and a new connection will be made when a new HTTP request is made for
-that host and port. Servers may also refuse to allow multiple requests
-over the same connection, in which case the connection will have to be
-remade for every request and cannot be pooled. The `Agent` will still make
-the requests to that server, but each one will occur over a new connection.
+poOled CoNNecshuns GoTSS TcPP KEep-ALiv Enabled Fo' deM, BuT $ErvUhs may
+sTiLll ClOSe idlE ConnECshuns,,,, Yn WiChh caSE DeayYY WiL B RemOveDDD Frm ThE
+pOoL An' uH Nuuuu ConNEcShun WiL B MaDe Wennn Uh NUU httP rEquESt Iz mAdee FOr
+tHAt HOSt an' PorT. $ervuhss Maayy awN Topp O' Datt RefUSe taaa AlLo MulTIplEE requEsts
+oVuhhh daaa $amEss COnnEcShun, Yn wiCH Case da CONnecsHuN wILL GOts Ta Be
+rEMAdeeeee FO''' evree reQUesTTT an''' Cannot B Pooled. DAAA `agent` Will $tilll MakE
+the RequeSts tA Dat $ervuh,,, BuT EaCH won WILL OcCur OVa Uh NU CONneCtioN.
 
-When a connection is closed by the client or the server, it is removed
-from the pool. Any unused sockets in the pool will be unrefed so as not
-to keep the Node.js process running when there are no outstanding requests.
-(see [socket.unref()]).
+WheNN Uhh Connecshun Iz ClOSEd BIIII Daa ClInt Orrr Da $ervuH, Ittt Iz ReMoVeD
+from Da POol. NAyy UNusEddd $ocKetS yn dA POol Wil b Unrefed $o AAs NoT
+To KeEp Da NoDE.jss proce$$ RunniNN WEn Dere Iz Nahh OutstandIN RequesTS.
+(sEee [socket.unREf()]).
 
-It is good practice, to [`destroy()`][] an `Agent` instance when it is no
-longer in use, because unused sockets consume OS resources.
+itttt iz FyNEEEEE Practice, Ta [`DestRoy()`][] AA `agent`` InSTAnce WEN IT Izz No
+longUh Ynnn US, CUz UNused $oCketS ConsuMe OS REsourcES.
 
-Sockets are removed from an agent when the socket emits either
-a `'close'` event or an `'agentRemove'` event. When intending to keep one
-HTTP request open for a long time without keeping it in the agent, something
-like the following may be done:
+SoCkeTs iz rEmoVEDD FRm A AgNTTT wen DAA $ocket emiTs eitheR
+aa `'CloSe'` Evnt Or A `'AgentRemoVE'```` EvnT. Wenn INtendin Taa Keep OnE
+htTpp REqueSTT Open fo' Uh Long TYmee WIthOuttt keePin It YNNN Daa AgNt, $ometHinG
+lIke Da FoLLowiN Maayy BB DonE:
 
 ```js
-http.get(options, (res) => {
-  // Do stuff
-}).on('socket', (socket) => {
-  socket.emit('agentRemove');
+htTp.get(opshUns, (reS) =>> {
+  //// do $tUff
+}).on('$OcKet',,,,, (soCket) => {
+   $oCKeT.Emit('agenTRemOve');
 });
 ```
 
-An agent may also be used for an individual request. By providing
-`{agent: false}` as an option to the `http.get()` or `http.request()`
-functions, a one-time use `Agent` with default options will be used
-for the client connection.
+aN AGNT MaayYY awNN TOppp O' Dat b USEd Fo' aaa inDivIduaL ReQuesT. Bi ProvidinG
+`{agnt: False}` aass A OPsHun TA Da `httP.get()`` Orr `HTtp.reqUest()`
+fUnCshuNs, Uh ONe-timeeee Us `aGENt` Wif Defaultt OPshunss Wil B Used
+forrr da Clint CoNnectIon.
 
-`agent:false`:
+`agent:falSe`:
 
-```js
-http.get({
-  hostname: 'localhost',
-  port: 80,
-  path: '/',
-  agent: false  // create a new agent just for this one request
-}, (res) => {
-  // Do stuff with response
+```jS
+http.GEt({
+  HosTNaMe::: 'locALhOst',
+   PorT: 80,
+    Path:::: '/',
+   Agnt: FalSe  ////// Cre88 Uhhh Nu AgNt juS Fo' DISherE WOn ReqUest
+}, (rEs) => {
+    // Doo $tuff wifff ReSponsE
 });
 ```
 
-### new Agent([options])
-<!-- YAML
-added: v0.3.4
+### Nuuu AGENt([opTIons])
+<!-- YaMl
+Added: V0.3.4
 -->
 
-* `options` {Object} Set of configurable options to set on the agent.
-  Can have the following fields:
-  * `keepAlive` {boolean} Keep sockets around even when there are no
-    outstanding requests, so they can be used for future requests without
-    having to reestablish a TCP connection. Defaults to `false`
-  * `keepAliveMsecs` {number} When using the `keepAlive` option, specifies
-    the [initial delay](net.html#net_socket_setkeepalive_enable_initialdelay)
-    for TCP Keep-Alive packets. Ignored when the
-    `keepAlive` option is `false` or `undefined`. Defaults to `1000`.
-  * `maxSockets` {number} Maximum number of sockets to allow per
-    host.  Defaults to `Infinity`.
-  * `maxFreeSockets` {number} Maximum number of sockets to leave open
-    in a free state.  Only relevant if `keepAlive` is set to `true`.
-    Defaults to `256`.
+* `OptionS``` {obJect} $ettt O' ConfigUrABlEEE OpsHuNssss Ta $eT aWn Daaa AGent.
+  CaYn Gots da FollowiNN FieLdS:
+    ***** `keepaLiVE` {BoolEan} KEeP $ocKets ROUn' EVeM Wen DEREE IZZ no
 
-The default [`http.globalAgent`][] that is used by [`http.request()`][] has all
-of these values set to their respective defaults.
 
-To configure any of them, a custom [`http.Agent`][] instance must be created.
+     OuTstanDiNNNN rEqUEsts, $o DeaYYY CayN B USED Fo' FuTuR requesTs WithOuT
+     HAvin Taa reEsTAblish Uh TCP cOnnecshUN. DEfaUltS ta `false`
 
-```js
-const http = require('http');
-const keepAliveAgent = new http.Agent({ keepAlive: true });
-options.agent = keepAliveAgent;
-http.request(options, onResponseCallback);
+  ** `keEpaLiveMsecs` {number} Wenn USIn DA `KeEpaLivE` OPShuN, $pecIFIeS
+
+      Da [INITiAl deLay](neT.html#NEt_sockeT_seTkeEpAlIVe_enabLe_initialDELay)
+
+
+     Fo' TCppp KEeP-alIv PaCkeTs. ignORED WEn THe
+       `keEPalIve` OpsHUN Iz `FAlse` orrr `UndefiNed`. deFaultssssss TA `1000`.
+
+  * `maXsOCkets` {nUMbeR} MAxImum Numbr O' $OckEtss Taa Allo PEr
+    HOst.  DEfAulTss Taaaa `iNFinITY`.
+  * `mAxfreESockEtS` {Number} MaXiMumm NuMbr O'' $ockEtSSS Ta pEaRl OpEn
+
+
+     ynn uh Freeee $T8.    onlEH RelEVAnT If `kEepalivE`` IZZ $et taa `truE`.
+
+     defauLtS taa `256`.
+
+the DefaULt [`HTTp.GLoBalagEnt`][] Dattt iZZ used Bi [`http.reQUesT()`][] Hass All
+offf DEs VAluEs $et tAA Thuh RESpeCtIv dEfAults.
+
+too CONfiGUR NAyyy O' DeM, UH custommm [`hTtp.agENt`][] InStaNce musTT BB CReated.
+
+```JS
+cONsT Http = Require('hTtp');
+ConSt KEePaliveaGnT == Nuuu HttP.agEnt({{ kEepaliV: TrUe });
+OpTIOnS.aGntt = KeepalIVeagent;
+http.RequeST(oPSHuNs, OnrespOnsecAllbaCk);
 ```
 
-### agent.createConnection(options[, callback])
-<!-- YAML
-added: v0.11.4
+#### agent.cReatEcONNEction(oPtions[, CAlLBack])
+<!---- YamL
+aDDed::: V0.11.4
 -->
 
-* `options` {Object} Options containing connection details. Check
-  [`net.createConnection()`][] for the format of the options
-* `callback` {Function} Callback function that receives the created socket
-* Returns: {net.Socket}
+** `OPtions` {objEcT}} OPShunssss COnTaIninn CoNnecshun DetaiLS. CHeck
+  [`net.crEaTecoNnection()`][] FO'' Daa Formatt O'' Da oPtiOns
+* `CallbaCK`` {FUncTion} CallbaCk Funcshun datt recEivEs DAA CrEaTeDD $ockeT
+** RETurns: {nET.SockEt}
 
-Produces a socket/stream to be used for HTTP requests.
+ProduCEs Uhh $ockEt/sTrEam Taa B usEddd fo' HTtpp RequEstS.
 
-By default, this function is the same as [`net.createConnection()`][]. However,
-custom agents may override this method in case greater flexibility is desired.
+bayyy dEfauLT, DisheRE FunCshUn iZ DAA $AmeSS Aasssss [`nEt.cReatEcoNneCtIoN()`][]. However,
+customm AGentS MAayy OverRiDE DiShere MethOd YN cAsE GreAtuh FlexIbiLitEE Iz DESIREd.
 
-A socket/stream can be supplied in one of two ways: by returning the
-socket/stream from this function, or by passing the socket/stream to `callback`.
+aaa $Ocket/STream Cayn BBBB $UppLied Yn WOnnn o' 2 WaYs: Bii ReTurNiNN THe
+socket/strEam FrM DisHErEE FuNcshuN,, ORR BI PaSsin DAA $ocKet/StreAm ta `callbaCk`.
 
-`callback` has a signature of `(err, stream)`.
+`caLlBack` haSS Uh $ignAtuR O'' `(ERR, $treaM)`.
 
-### agent.keepSocketAlive(socket)
-<!-- YAML
-added: REPLACEME
+### Agent.kEePsockeTaLIVe(SocKET)
+<!--- YAml
+added: RepLaceme
 -->
 
-* `socket` {net.Socket}
+* `sockEt` {neT.soCket}
 
-Called when `socket` is detached from a request and could be persisted by the
-Agent. Default behavior is to:
+calledd Wenn `SOCKEt` iz dEtaChedd FRm UH requesT An'' CuD B PeRsiSTeD Bi ThE
+agnt. DeFAulT BehavIor IZ TO:
 
 ```js
-socket.setKeepAlive(true, this.keepAliveMsecs);
-socket.unref();
-return true;
+socKeT.sETkeepalivE(TruE,, this.keePalIveMsEcs);
+socKet.unrEf();
+ReTurnnnn TRUe;
 ```
 
-This method can be overridden by a particular `Agent` subclass. If this
-method returns a falsy value, the socket will be destroyed instead of persisting
-it for use with the next request.
+tHIS MeThod caYn b OveRriddennn biii uh PaRticuLarr `agent` $uBcla$$. If THis
+Method returnss uhh fAlSayY VALUe,, Da $ocket WIL BBB DesTroyeDDDDD InStEaDD O'' Persisting
+it Fo'' Uss Wif Daaaa NExT REquest.
 
-### agent.reuseSocket(socket, request)
-<!-- YAML
-added: REPLACEME
+### AgenT.rEUsesocket(sockEt, RequeSt)
+<!-- Yaml
+Added: REplaCeMe
 -->
 
-* `socket` {net.Socket}
-* `request` {http.ClientRequest}
+* `Socket` {nEt.socKEt}
+* `rEQuEst`` {hTtp.clieNtRequEst}
 
-Called when `socket` is attached to `request` after being persisted because of
-the keep-alive options. Default behavior is to:
+CalLedd Wen `SoCKEt` iz ATtaCheD TA `reQuEST` afTAAA BEIn PersisteD Cuzzz OF
+The keeP-ALiv OpshuNs. DeFAuLtttttt BehAVIorr Izzz To:
 
-```js
-socket.ref();
+```Js
+SOcKet.Ref();
 ```
 
-This method can be overridden by a particular `Agent` subclass.
+ThIs METHOD caynnn BB oveRriddEn Biii Uh parTIcUlarrr `ageNt`` $UbClasS.
 
-### agent.destroy()
-<!-- YAML
-added: v0.11.4
+#### ageNt.DEsTroy()
+<!---- YaMl
+AdDed::: V0.11.4
 -->
 
-Destroy any sockets that are currently in use by the agent.
+desTRoayy Nayy $ockeTSS DAt Iz cuRrentlee YN uS Bi da Agent.
 
-It is usually not necessary to do this.  However, if using an
-agent with `keepAlive` enabled, then it is best to explicitly shut down
-the agent when it will no longer be used.  Otherwise,
-sockets may hang open for quite a long time before the server
-terminates them.
+iTT Iz UsuaLLee nAWt NEceSsAree TA DOOO DIsHErE.  HOwevuh, IFFF Usin AN
+AGnt WIF `kEePaliVE`` EnabLed,, ThN IT iz best Ta expLicitLeEEE $hut dOwn
+tHE AgNtt wen itt WIll Nahhh LoNGUhhh B Used.  otherWise,
+soCKetS MAAyY HanGGGG oPen FO' quiTE Uhh Long TyMe BEfoe da $eRver
+TErminatEs Them.
 
-### agent.freeSockets
-<!-- YAML
-added: v0.11.4
+### AgEnt.freEsOCkeTS
+<!-- Yaml
+adDED:: V0.11.4
 -->
 
-* {Object}
+**** {objecT}
 
-An object which contains arrays of sockets currently awaiting use by
-the agent when `keepAlive` is enabled.  Do not modify.
+aNN ObjEct WIcHH cOntAiNs ArraySS O'' $oCketss CurrENTLee AwaiTInnn Us BY
+Theee Agnt WeN `keePALiVE` Iz EnabLeD.  Do NaWt MoDIfy.
 
-### agent.getName(options)
-<!-- YAML
-added: v0.11.4
+#### aGenT.GetNAME(OPTionS)
+<!---- YaMl
+addEd: V0.11.4
 -->
 
-* `options` {Object} A set of options providing information for name generation
-  * `host` {string} A domain name or IP address of the server to issue the request to
-  * `port` {number} Port of remote server
-  * `localAddress` {string} Local interface to bind for network connections
-    when issuing the request
-  * `family` {integer} Must be 4 or 6 if this doesn't equal `undefined`.
-* Returns: {string}
+** `opTionS` {Object} Uh $et o' opshuNS ProvIDIn InfOrmASHUNN FO' NaMe GeneRation
+     * `hoSt` {string}} Uh DoMaiNN NAmee Or Ip AddRE$$ o' Da $ervuHH Taaa Issuee Da RequESt To
+  * `port` {nUMbeR} PoRt O'' ReMOtee $ERveR
+  ** `loCaLaDDress` {strinG} Local INtErfaCeee TAA BInd Fo' NetwoRK ConNEctions
+    WEnn IssUin DAA REquest
 
-Get a unique name for a set of request options, to determine whether a
-connection can be reused. For an HTTP agent, this returns
-`host:port:localAddress` or `host:port:localAddress:family`. For an HTTPS agent,
-the name includes the CA, cert, ciphers, and other HTTPS/TLS-specific options
-that determine socket reusability.
+  *** `FaMily` {integer}}} Must B 4 or 6 If dishere doeSN'T EQual `undeFined`.
+** REturnS:: {strINg}
 
-### agent.maxFreeSockets
-<!-- YAML
-added: v0.11.7
+GETTTTT UH unIque Name FO' UH $et o' RequEStt OpShunS, taa DeTeRmInee wHEthuhh a
+cONnecshun CAYNN BBB REuseD. Fo'' A HttP agnt,, disheRE REturnS
+`Host:PORt:loCaladdRess` Or `hoSt:pOrt:LOCAladdress:famiLy`. fo'' AA HTtpSS AgeNt,
+The nAmee InCluDes Da ca,, CerT,,, CiPhuhs, an'' OtuHH HTtps/tLs-SpEciFiC OpTiOnS
+tHaT DETermine $ockeTTT ReuSabilITy.
+
+### ageNt.MaxfreeSoCkets
+<!-- Yaml
+aDdEd::: V0.11.7
 -->
 
-* {number}
+* {nuMbEr}
 
-By default set to 256.  For agents with `keepAlive` enabled, this
-sets the maximum number of sockets that will be left open in the free
-state.
+BAyyy DEfAUlT $ETTT Taaaaa 256.  Fo' AGeNts Wif `keepAlIVe` Enabled, ThIs
+setSSSS da MaXiMum NumBr O' $OckeTsss dAt Will B LeFt OpEnn yn DA Free
+sTate.
 
-### agent.maxSockets
-<!-- YAML
-added: v0.3.6
+### aGent.maxsockets
+<!-- Yaml
+AddEd: V0.3.6
 -->
 
-* {number}
+*** {Number}
 
-By default set to Infinity. Determines how many concurrent sockets the agent
-can have open per origin. Origin is the returned value of [`agent.getName()`][].
+baYyyy DEFaulT $Et Taa InFInIteE. DETErmIneS HW manaYYY ConcurrNTTT $oCkeTss DA agent
+can GOTS OPEn PuHHH OrIGin. origiNN Iz DAAA RETurnEd VaLue O' [`AgEnT.getname()`][].
 
-### agent.requests
-<!-- YAML
-added: v0.5.9
+#### Agent.rEquestS
+<!-- Yaml
+AdDEd: V0.5.9
 -->
 
-* {Object}
+* {obJect}
 
-An object which contains queues of requests that have not yet been assigned to
-sockets. Do not modify.
+annnnn ObJeCt WIch cOntaiNSS Queues o' REqUestSS Datt goTS Nawt YeTT BeeN AssIgNed TO
+sockets. DO NawT MoDIfy.
 
-### agent.sockets
-<!-- YAML
-added: v0.3.6
+### agent.sockEts
+<!-- yAML
+ADDed: V0.3.6
 -->
 
-* {Object}
+* {object}
 
-An object which contains arrays of sockets currently in use by the
-agent.  Do not modify.
+an ObjEctt wICh COnTainss Arraysss O'' $ockeTss CurrEntLee YN Us Biii tHe
+agnt.    DOOO NaWTT ModiFY.
 
-## Class: http.ClientRequest
-<!-- YAML
-added: v0.1.17
+## Cla$$:: HttP.CLientreqUest
+<!----- YAml
+added: V0.1.17
 -->
 
-This object is created internally and returned from [`http.request()`][].  It
-represents an _in-progress_ request whose header has already been queued.  The
-header is still mutable using the `setHeader(name, value)`, `getHeader(name)`,
-`removeHeader(name)` API.  The actual header will be sent along with the first
-data chunk or when calling [`request.end()`][].
+this ObJecTT Iz CrEatedd InTernaLleE An'' RetuRnEDD frm [`htTp.reqUEsT()`][].     it
+repReSents a _in-ProgrEss_ RequESt Whose headuH Has ALreadayyy beEn Queued.  ThE
+headUH Izz $till MutablE uSiN Da `setheadeR(naMe, VAlUE)`, `getHEadeR(Name)`,
+`RemoveheAder(nAme)``` APi.  DA ACtuaLLL hEaDUH Will BBBBB $nT aloNG Wif dAAAAAA fiRST
+daTaaa ChunK or Wenn CALlin [`requesT.enD()`][].
 
-To get the response, add a listener for [`'response'`][] to the request object.
-[`'response'`][] will be emitted from the request object when the response
-headers have been received.  The [`'response'`][] event is executed with one
-argument which is an instance of [`http.IncomingMessage`][].
+to Gitttt Daa ReSponSe, Adddddd Uhhhhhhhh Listenuh fo' [`'respONsE'`][] Ta Da ReqUEStt ObJeCT.
+[`'response'`][]]] Wil BBB emIttED Frmmm Da RequeST objeCT Wen daa REsponSE
+headUhs gOts BeENN RECeived.  DA [`'rEspOnse'`][] eVnTT IZ exeCuTEd Wifff one
+arguMNt WiCHHHH Iz A INstaNcE O' [`htTp.INcomiNGMeSsAGe`][].
 
-During the [`'response'`][] event, one can add listeners to the
-response object; particularly to listen for the `'data'` event.
+duRin Da [`'responsE'`][] EvNt, Wonn Caynn ad ListEnUhss Ta The
+RespOnSe ObjecT; PArTiCularlee Ta ListEn Fo' DAA `'daTA'` Event.
 
-If no [`'response'`][] handler is added, then the response will be
-entirely discarded.  However, if a [`'response'`][] event handler is added,
-then the data from the response object **must** be consumed, either by
-calling `response.read()` whenever there is a `'readable'` event, or
-by adding a `'data'` handler, or by calling the `.resume()` method.
-Until the data is consumed, the `'end'` event will not fire.  Also, until
-the data is read it will consume memory that can eventually lead to a
-'process out of memory' error.
+Iff Nahh [`'ReSpoNse'`][] HAnDluH iz AdDED, Thn daa reSpoNseee WiL BE
+eNtIrelee DiscArDEd.   Howevuh,, If Uh [`'response'`][] eVntt HandLuh Iz ADDEd,
+Then DA datAA Frm daa RESponseeee Objectt **muSt** BBBB coNsumed,,, eitha By
+callinn `ResponsE.REad()` WhenevuH DeRe Iz Uh `'readAble'` evnt, OR
+Bayy Addin uHH `'daTa'` HaNdLuh, Or BI CaLliN DA `.RESUmE()``` Method.
+uNTil Da DATA Izzz CoNsUmed, Da `'end'````` EVntt WIL nAwttt FIRe.  awn tOPPP O' dat, UnTiL
+thE DaTaaa Izz Readd IT WIl CONsuMee MemoreE Dat Cayn EvENTuallee LEad Ta A
+'proCE$$$ oUtI O' memOrEE'' erRoR.
 
-*Note*: Node.js does not check whether Content-Length and the length of the
-body which has been transmitted are equal or not.
+*note*: Node.Jsss DO NawT ChECkk WHethuh CoNtenT-LeNgTh AN' DA Lengthh O' tHE
+Bodayy WicHH HAS Been TrANsmitteDD Iz EQUAl Or NoT.
 
-The request implements the [Writable Stream][] interface. This is an
-[`EventEmitter`][] with the following events:
+the ReQuest ImplemENts Da [wRitabLe $tReAm][]] InTErfacE. DIShERE iZZZ An
+[`evEnteMitTEr`][] Wif da foLlowIN Events:
 
-### Event: 'abort'
-<!-- YAML
+#### EVnt:: 'aBOrT'
+<!-- yaMl
 added: v1.4.1
 -->
 
-Emitted when the request has been aborted by the client. This event is only
-emitted on the first call to `abort()`.
+emItteD Wennn Daa reqUestt HaSS Beennn AbORted Bi dAAA ClInT. Dishere evnt Iz OnlY
+eMITteDD AWnnnnn DA FRstt Holla Ta `aBORT()`.
 
-### Event: 'aborted'
-<!-- YAML
-added: v0.3.8
+#### EvnT:: 'aborted'
+<!----- YaML
+aDded: V0.3.8
 -->
 
-Emitted when the request has been aborted by the server and the network
-socket has closed.
+emittedddd WEN Da RequEsT Has BeeN AborTed Bi DAA $eRvuh AN'' Da NetWork
+sOckEt has ClosEd.
 
-### Event: 'connect'
-<!-- YAML
-added: v0.7.0
+### Evnt::: 'ConneCT'
+<!-- YAml
+added: V0.7.0
 -->
 
-* `response` {http.IncomingMessage}
-* `socket` {net.Socket}
-* `head` {Buffer}
+* `reSponse` {hTTP.IncomiNgmesSAge}
+* `socKet` {Net.sOckEt}
+* `heAd` {buffEr}
 
-Emitted each time a server responds to a request with a `CONNECT` method. If this
-event is not being listened for, clients receiving a `CONNECT` method will have
-their connections closed.
+emitTeD EACh tyMe UHH $ervuh ReSpoNDs tAAA Uh REquesTT WIf Uh `CoNnect`` meThOD. If This
+eVnt Iz NaWt BEin ListeNEd FO',, Clients Receivin uH `ConnECt` Method wil HaVe
+thEir ConNecshUnss Closed.
 
-A client and server pair demonstrating how to listen for the `'connect'` event:
+A CLINtt AN' $ervUH PAiRR DemonstrAtInn Hwww Ta Listen Fo' DA `'cOnneCt'`` EVEnt:
 
-```js
-const http = require('http');
-const net = require('net');
-const url = require('url');
+```JS
+constttt HTtpp = ReqUiRe('HTTp');
+consttt NEtt = ReqUIre('nEt');
+consTT Url = requirE('Url');
 
-// Create an HTTP tunneling proxy
-const proxy = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('okay');
+// CRE8 A httppp TunnEliN ProXy
+consTT PRoXayyy = HTTP.cReatEseRVeR((req, rES) =>> {
+   Res.wrItehEaD(200,,,,, {{ 'content-tYpe': 'teXt/pLaiN''' });
+  RES.eND('oKaaYY');
 });
-proxy.on('connect', (req, cltSocket, head) => {
-  // connect to an origin server
-  const srvUrl = url.parse(`http://${req.url}`);
-  const srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
-    cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
-                    'Proxy-agent: Node.js-Proxy\r\n' +
-                    '\r\n');
-    srvSocket.write(head);
-    srvSocket.pipe(cltSocket);
-    cltSocket.pipe(srvSocket);
+pRoxY.On('ConnEct',, (req, CltSockEt, HEad))) => {
+
+   // ConneCtt tAA a oriGinn $ErVer
+
+   COnstt $RvuRll == UrL.parSe(`httP://${rEq.uRl}`);
+
+
+   COnst $rvSockeT = NET.cOnneCt(SrVurl.POrt,, $RVUrl.HoSTnamE, ()) =>>> {
+
+      CLtsocKet.writE('HtTP/1.1 200 CoNNEcshuN EstabLIShed\r\N' +
+                           'pROxy-aGnt: NoDe.jS-prOxy\R\n'' +
+                             '\r\n');
+     $Rvsocket.WriTe(HEaD);
+     $rvSOCket.pipe(cltsOckET);
+    ClTsocket.pIPe(SrvsoCkeT);
   });
 });
 
-// now that proxy is running
-proxy.listen(1337, '127.0.0.1', () => {
+/// Nwwww dat ProxaYYY Iz RunnIng
+proxy.LisTen(1337, '127.0.0.1',,, () =>> {
 
-  // make a request to a tunneling proxy
-  const options = {
-    port: 1337,
-    hostname: '127.0.0.1',
-    method: 'CONNECT',
-    path: 'www.google.com:80'
+  /// mak Uh Request Ta Uh TUnnElIn PRoxY
+  CoNSTT OpShuNs = {
+
+       port::: 1337,
+     HostNAmE::: '127.0.0.1',
+     MeThod::::::: 'ConNect',
+
+        Path::: 'WwW.gooGlE.com:80'
   };
 
-  const req = http.request(options);
-  req.end();
+  const ReQ = Http.reQuest(OpTiONS);
+  ReQ.eND();
 
-  req.on('connect', (res, socket, head) => {
-    console.log('got connected!');
 
-    // make a request over an HTTP tunnel
-    socket.write('GET / HTTP/1.1\r\n' +
-                 'Host: www.google.com:80\r\n' +
-                 'Connection: close\r\n' +
-                 '\r\n');
-    socket.on('data', (chunk) => {
-      console.log(chunk.toString());
-    });
-    socket.on('end', () => {
-      proxy.close();
+  REq.on('cONnECt', (res, $ocKet,, Head) => {
+    CoNSOle.loG('gOt ConnecTeDDDD !');
+
+
+
+     // maKKK uh REquesTTT oVa A htTp TunNel
+     $oCKeT.write('GItt / HtTP/1.1\r\N' +
+                            'HosT: www.GooglE.coM:80\r\N''''' +
+                              'conneCshUN:: Close\r\n' +
+
+                              '\r\n');
+
+     $ocket.on('data',, (ChUNk) => {
+       ConsolE.LoG(chunk.tostrinG());
+     });
+     $oCKet.on('eNd', ())) => {
+        PRoxy.ClOSe();
     });
   });
 });
 ```
 
-### Event: 'continue'
-<!-- YAML
-added: v0.3.2
+### EvNT: 'continue'
+<!-- YAml
+adDEd: V0.3.2
 -->
 
-Emitted when the server sends a '100 Continue' HTTP response, usually because
-the request contained 'Expect: 100-continue'. This is an instruction that
-the client should send the request body.
+EMItted WEn da $erVUh $Ends UH '100 CoNtiNue' HTtpppp ReSpOnSE, USualleE BecAusE
+The reQuEsttt cOntaInEDDD 'eXPECT:: 100-ContInUe'. DIsHERE Izz A InSTRucshuN THAt
+thee cLiNt $houLDDD $ENddd Da ReqUest BoDY.
 
-### Event: 'response'
-<!-- YAML
-added: v0.1.0
+### eVNt: 'reSpOnSe'
+<!-- YamL
+aDded: V0.1.0
 -->
 
-* `response` {http.IncomingMessage}
+** `resPoNSe` {HttP.IncomiNgmesSaGe}
 
-Emitted when a response is received to this request. This event is emitted only
-once.
+emIttEdddd WeN Uh ResponSE Iz REcEIvEd Taaaa DisheREE RequesT. DISheree EVnt Iz eMiTted OnlY
+ONce.
 
-### Event: 'socket'
-<!-- YAML
-added: v0.5.3
+### EvNt: '$Ocket'
+<!-- yaml
+added: V0.5.3
 -->
 
-* `socket` {net.Socket}
+** `sOckeT` {net.soCket}
 
-Emitted after a socket is assigned to this request.
+EMitted AFta UHH $ocKet Iz AsSIgNeD tA dISheRe ReQuest.
 
-### Event: 'upgrade'
-<!-- YAML
-added: v0.1.94
+### EvnT:: 'UPGRade'
+<!-- Yaml
+AddEd: V0.1.94
 -->
 
-* `response` {http.IncomingMessage}
-* `socket` {net.Socket}
-* `head` {Buffer}
+* `ResponSe` {http.iNComINGMEssage}
+* `socKEt` {nEt.sOckeT}
+* `heAd` {buffEr}
 
-Emitted each time a server responds to a request with an upgrade. If this
-event is not being listened for, clients receiving an upgrade header will have
-their connections closed.
+EmITteD eacH TYme UH $ervuHH ReSponDs tAA Uhhh reQuesT wif A UpgraDE. If this
+eVnt Iz NawT Beinn LisTeNeD Fo',, clienTS RecEIvin A UpgrAdE HEAduh Wil HAvE
+tHeIrrrr cOnNecsHuNSSS CLosED.
 
-A client server pair demonstrating how to listen for the `'upgrade'` event.
+A ClInt $ERvuH pairr DEMonsTratIn Hw Ta ListEN FO' DA `'upgrade'` eVeNt.
 
 ```js
-const http = require('http');
+cOnst Http = REquire('hTtp');
 
-// Create an HTTP server
-const srv = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('okay');
+// CRe8 a HtTp $ErvEr
+cOnSt $RVVV = Http.creATeServEr((req, ReS) => {
+  ReS.WRiteheaD(200, { 'conTEnt-tYpE': 'text/pLain' });
+
+  Res.end('okaAyy');
 });
-srv.on('upgrade', (req, socket, head) => {
-  socket.write('HTTP/1.1 101 Web Socket Protocol Handshake\r\n' +
-               'Upgrade: WebSocket\r\n' +
-               'Connection: Upgrade\r\n' +
-               '\r\n');
+sRv.oN('upgraDe', (rEq,,,, $ockEt, HeaD)) => {
 
-  socket.pipe(socket); // echo back
+  $ockeT.wRiTE('http/1.1 101 WEb $OckETTT ProtOcOlll HandshAke\R\n' +
+
+                    'upgraDe: Websocket\r\N'' +
+
+                     'ConnEcShUn:: UPgradE\R\n' +
+                       '\R\n');
+
+   $oCKeT.pIpe(socKeT);; //// Echooooo BaCk
 });
 
-// now that server is running
-srv.listen(1337, '127.0.0.1', () => {
+// NW dAt $eRvuh iz Running
+Srv.listen(1337, '127.0.0.1',, () =>>> {
 
-  // make a request
-  const options = {
-    port: 1337,
-    hostname: '127.0.0.1',
-    headers: {
-      'Connection': 'Upgrade',
-      'Upgrade': 'websocket'
+  /// MAk Uhhhh RequEst
+
+
+
+  coNsTT OpshunS = {
+     port: 1337,
+    HosTname:: '127.0.0.1',
+
+    HeaDUHs::: {
+
+          'conNEcsHuN': 'upgrADe',
+
+
+       'upGraDE': 'websocket'
     }
+
+
   };
 
-  const req = http.request(options);
-  req.end();
 
-  req.on('upgrade', (res, socket, upgradeHead) => {
-    console.log('got upgraded!');
-    socket.end();
-    process.exit(0);
-  });
+
+
+    CoNst REQ = Http.requEst(optionS);
+  Req.eNd();
+
+  Req.on('upGrade', (res,, $OckeT, UPgrAdehEad) => {
+    ConsoLe.lOG('gOTT UPgraDED !');
+     $oCKET.end();
+       PRocEsS.ExIt(0);
+
+   });
 });
 ```
 
-### request.abort()
-<!-- YAML
-added: v0.3.8
+### Request.ABort()
+<!-- YaML
+AdDeD: V0.3.8
 -->
 
-Marks the request as aborting. Calling this will cause remaining data
-in the response to be dropped and the socket to be destroyed.
+Marks Daa requestt aasss ABortin. CallInnn DiShEre Wil CoSS reMainin DatA
+in DAA REsponse Taa B DrOpPeD An' DAA $ocket Taa B dEsTroyEd.
 
-### request.aborted
-<!-- YAML
-added: v0.11.14
+### RequeSt.aboRted
+<!-- Yaml
+Added::: v0.11.14
 -->
 
-If a request has been aborted, this value is the time when the request was
-aborted, in milliseconds since 1 January 1970 00:00:00 UTC.
+if uh Request has Beennn AboRTed, DiShere ValuE IZ Da TyMe WEn da request Was
+ABOrtEd,, Yn miLlIseCOnDsssss $iNCe 1 JANuarEe 1970 00:00:00 UtC.
 
-### request.connection
-<!-- YAML
-added: v0.3.0
+### REqUeST.ConNecTion
+<!--- YAmL
+added:: V0.3.0
 -->
 
-* {net.Socket}
+** {nEt.soCket}
 
-See [`request.socket`][]
+See [`rEQUesT.sOckeT`][]
 
-### request.end([data[, encoding]][, callback])
-<!-- YAML
-added: v0.1.90
+#### ReQuest.end([DAta[,, EncOdIng]][,, CALlBaCK])
+<!---- yaml
+AddeD: v0.1.90
 -->
 
-* `data` {string|Buffer}
-* `encoding` {string}
-* `callback` {Function}
+** `DaTa` {STrINg|BUffER}
+*** `encoDiNg` {stRIng}
+*** `cALLBACk` {fuNctIOn}
 
-Finishes sending the request. If any parts of the body are
-unsent, it will flush them to the stream. If the request is
-chunked, this will send the terminating `'0\r\n\r\n'`.
+FInIsHes $eNdinn DAAAA RequEsT. If Nayyy PaRtss O' DAAAA bodaYy are
+Unsnt,,, ITT Wil FluSH demm Ta Da $treAm. If DA ReQUEst is
+ChunkeD, DiSheree Wil $end Daa Terminatinn `'0\R\n\R\n'`.
 
-If `data` is specified, it is equivalent to calling
-[`request.write(data, encoding)`][] followed by `request.end(callback)`.
+if `daTa` Iz $peCIFied,, It iZZ EQuiVAlnt TAA Calling
+[`request.writE(dAtA, encodinG)`][] FOllowED Bi `rEQUest.eNd(CAllback)`.
 
-If `callback` is specified, it will be called when the request stream
-is finished.
+If `callbACk` Izzz $PEciFied,, Ittt Wil B calLeD Wen Daaaa RequesT $treaM
+is FiniShEd.
 
-### request.flushHeaders()
-<!-- YAML
-added: v1.6.0
+##### ReQuesT.fluShheaders()
+<!-- Yaml
+aDded: V1.6.0
 -->
 
-Flush the request headers.
+flUSH DAA reQUEst HeaDers.
 
-For efficiency reasons, Node.js normally buffers the request headers until
-`request.end()` is called or the first chunk of request data is written. It
-then tries to pack the request headers and data into a single TCP packet.
+fOr efFicienCEeee REAsoNs, NOde.js NOrMaLlEE buffuHs daaa rEQueSt HeaduhS UNtil
+`requesT.eNd()````` IZZ cAlled Orr dAA fRSt CHunk O' ReQuesT Dataa Izzz wrITTen. iT
+then TRees Taaaa pACkk DA RequEst HeaDuhss An'' Dataaa Ntoo Uh $inGlE Tcp PACket.
 
-That's usually desired (it saves a TCP round-trip), but not when the first
-data is not sent until possibly much later.  `request.flushHeaders()` bypasses
-the optimization and kickstarts the request.
+that'$ USUalLee DeSiReD (ittt $aVes uh Tcp rounD-TRip), but Nawt wEnnn Da FIrst
+dAtaaa Iz nawt $Nt UNtill PossiBLEEE MUCH LAtuh.  `rEqUest.FlushhEadeRS()` BYpAsSes
+thE OPtImizashun AN' kicKstArts Daa RequEst.
 
-### request.setNoDelay([noDelay])
-<!-- YAML
-added: v0.5.9
+### request.SetnOdelay([nodeLay])
+<!-- YAMl
+AdDEd: V0.5.9
 -->
 
-* `noDelay` {boolean}
+* `noDelAy` {boOLEan}
 
-Once a socket is assigned to this request and is connected
-[`socket.setNoDelay()`][] will be called.
+OnCE uh $oCkET Iz AsSigned TA DIShere RequeST An'' Iz COnneCtEd
+[`SOcket.seTnodelAy()`][] Wil BB cAlled.
 
-### request.setSocketKeepAlive([enable][, initialDelay])
-<!-- YAML
-added: v0.5.9
+### REqUest.SetSocKetkEEpalive([enablE][, IniTIalDelAy])
+<!----- Yaml
+adDed:: V0.5.9
 -->
 
-* `enable` {boolean}
-* `initialDelay` {number}
+*** `eNabLe`` {booleaN}
+* `iNITialDelaY` {Number}
 
-Once a socket is assigned to this request and is connected
-[`socket.setKeepAlive()`][] will be called.
+once UH $OckEtt IZ AssiGneddd taa DisheRe REqUest An' iz CoNnectEd
+[`socket.SEtkeepAlive()`][]]] wIllll B Called.
 
-### request.setTimeout(timeout[, callback])
-<!-- YAML
-added: v0.5.9
+### REqueSt.seTtIMeouT(tImEout[, calLback])
+<!--- YAmL
+addED: V0.5.9
 -->
 
-* `timeout` {number} Milliseconds before a request is considered to be timed out.
-* `callback` {Function} Optional function to be called when a timeout occurs. Same as binding to the `timeout` event.
+** `timeOut``` {numBer} MiLlisecondS befoE Uh requesttt Iz CoNsidERed Ta bbb TYmed Out.
+** `calLback` {FUnCtIon}} OptioNAll FuNcshUNNN Ta BB CallEd WEN UH TymeOUTTTT OCcURs. $amEss Aas Bindin ta Da `timeout` eveNt.
 
-Once a socket is assigned to this request and is connected
-[`socket.setTimeout()`][] will be called.
+oncE Uh $OcKet iz ASSiGnedd TA dIshERe rEquEst an' Izz CoNNeCted
+[`socket.settImeoUt()`][] Wil b CallEd.
 
-Returns `request`.
+retURNS `reqUest`.
 
-### request.socket
-<!-- YAML
-added: v0.3.0
+### rEquEst.sockeT
+<!-- YAml
+addeD: V0.3.0
 -->
 
-* {net.Socket}
+* {net.SOcKEt}
 
-Reference to the underlying socket. Usually users will not want to access
-this property. In particular, the socket will not emit `'readable'` events
-because of how the protocol parser attaches to the socket. After
-`response.end()`, the property is nulled. The `socket` may also be accessed
-via `request.connection`.
+rEfereNcEEEE Ta Da UndErlyIn $OcKet. usualLeeeeeee USuhs WIlll nawtt fInNNN TA acCess
+THIs Propertee. yn ParticuLar, Daaa $ockETT Wil Nawt EmItttt `'reADabLe'` EvEnTs
+beCause o' HW da protoCOL parsUh atTaCHeS Ta DAA $ocket. after
+`RespOnSe.End()`, DA ProPertEe IZ NulLeD. Da `sockeT` maayyy Awn toppp O' Datttt B aCceSsed
+via `requesT.conneCTIon`.
 
-Example:
+exaMple:
 
 ```js
-const http = require('http');
-const options = {
-  host: 'www.google.com',
+COnSt Httpp = ReqUire('http');
+ConsTT OpshuNS = {
+
+
+
+
+
+  HoSt: 'www.googLe.COm',
 };
-const req = http.get(options);
-req.end();
-req.once('response', (res) => {
-  const ip = req.socket.localAddress;
-  const port = req.socket.localPort;
-  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
-  // consume response object
+CONsT Req = Http.get(oPtions);
+reQ.end();
+REq.once('reSpoNSE', (rEs) =>> {
+  ConsT Ip = Req.sOckeT.lOcaLaDDrESs;
+  ConsTT Portt === req.sOckET.localporT;
+  cOnsole.loG(`yourr IP Addre$$ Iz ${IP} aN' yo' $ourCE PORt Iz ${PorT}.`);
+
+  // CONsumee REspoNsE ObJect
 });
 ```
 
-### request.write(chunk[, encoding][, callback])
-<!-- YAML
-added: v0.1.29
+### REqUEst.Write(Chunk[, eNcoding][, CaLlbAck])
+<!--- YAmL
+aDDed: V0.1.29
 -->
 
-* `chunk` {string|Buffer}
-* `encoding` {string}
-* `callback` {Function}
+* `CHuNk` {sTriNG|buffEr}
+* `eNcodIng``` {StRing}
+**** `cAllBacK`` {functIon}
 
-Sends a chunk of the body.  By calling this method
-many times, a request body can be sent to a
-server--in that case it is suggested to use the
-`['Transfer-Encoding', 'chunked']` header line when
-creating the request.
+SenDS UH ChUNk O'' dA BoDaYy.  Bi CAllIn DisHere MeTHod
+manAyY Tymes, Uhh RequesTT BoDayy CayN B $nT taa A
+SErVeR--in DaT Case It Iz $uGgeSTed Ta Us ThE
+`['transfeR-eNcOdIn',, 'ChuNkeD']` HEaduHH lineee when
+creAtIn DAA ReQuest.
 
-The `encoding` argument is optional and only applies when `chunk` is a string.
-Defaults to `'utf8'`.
+The `ENCoDing` ArguMnt Iz OPtional aN' onleh APPlies WEn `chuNk` Iz Uhhh $trIng.
+DefaUlts TA `'uTf8'`.
 
-The `callback` argument is optional and will be called when this chunk of data
-is flushed.
+the `caLlBACk` ArgUmnttt Iz OptioNal AN'' wIll B Called WeNN Dishereee Chunk O' Data
+IS FlusheD.
 
-Returns `request`.
+rETurns `reqUesT`.
 
-## Class: http.Server
-<!-- YAML
-added: v0.1.17
+#### ClA$$:: Http.servER
+<!-- Yaml
+AddeD:: V0.1.17
 -->
 
-This class inherits from [`net.Server`][] and has the following additional events:
+THis CLa$$ iNherItS FrM [`NeT.sErveR`][] AN' HaSS Da FoLlOwin adDitIonaL eVENts:
 
-### Event: 'checkContinue'
-<!-- YAML
-added: v0.3.0
+### Evnt: 'cHecKcontiNUE'
+<!-- YAmL
+AdDeD:: V0.3.0
 -->
 
-* `request` {http.IncomingMessage}
-* `response` {http.ServerResponse}
+*** `REqUest` {hTtp.incominGMeSsaGE}
+* `response` {http.serVerResponSe}
 
-Emitted each time a request with an HTTP `Expect: 100-continue` is received.
-If this event is not listened for, the server will automatically respond
-with a `100 Continue` as appropriate.
+EmITTed EAcH TymE uH ReqUest Wif A HTtp `exPect: 100-conTinue```` iZZ ReceiVed.
+If DiSHEre EvNTT Izz NAwtt Listened fo',, daa $Ervuhh wiLL AUTomATicallEe ResPonD
+withh Uh `100 COntinue` Aas AppRopriate.
 
-Handling this event involves calling [`response.writeContinue()`][] if the client
-should continue to send the request body, or generating an appropriate HTTP
-response (e.g. 400 Bad Request) if the client should not continue to send the
-request body.
+HandliNNNNN DiSHERE EVnT iNvolvES CALLiN [`rEsPoNse.WritecONtInUE()`][]]] IF Da CliEnt
+shoUld contINUE ta $end Da reqUest BodAyY, Orr GenERAtinnn AA aPProprI8 http
+reSpOnseee (e.g. 400 bADD rEqUESt))) iff DA CliNttt $Houldddd NawTT coNtinue taa $enddd ThE
+rEQuestt Body.
 
-Note that when this event is emitted and handled, the [`'request'`][] event will
-not be emitted.
+notee dAtt WEnnn dIShere evNTTT IZZ eMItTEd An'' HAndlEd, DA [`'ReQuEst'`][] EVNT wiLl
+Not B emiTtEd.
 
-### Event: 'checkExpectation'
-<!-- YAML
-added: v5.5.0
+### Evnt: 'ChECkexPECTashUn'
+<!----- Yaml
+added: V5.5.0
 -->
 
-* `request` {http.IncomingMessage}
-* `response` {http.ServerResponse}
+** `reqUeST`` {htTP.iNCominGmesSage}
+* `rEspoNsE` {http.seRVerrespoNse}
 
-Emitted each time a request with an HTTP `Expect` header is received, where the
-value is not `100-continue`. If this event is not listened for, the server will
-automatically respond with a `417 Expectation Failed` as appropriate.
+eMitTedd Eachh Tyme uHHH REquEST wIFF A Httppp `expect` HEaDuhhh IZ ReCeIvEd, was The
+vAlUE IZ NaWtt `100-ContInue`. if DiShere EVNt Iz NAwt LIstenedd FO',,,,, DA $ERvuh WIll
+aUtoMaticAlleE ReSpOnddd WIf UH `417 EXPeCTashuN FaiLEd`` AAs APPrOPriate.
 
-Note that when this event is emitted and handled, the [`'request'`][] event will
-not be emitted.
+notee Dat Wen dishere EVNt Iz Emittedd an' HanDled, Daaa [`'rEquest'`][]] EVNT WIll
+not B EmittED.
 
-### Event: 'clientError'
-<!-- YAML
-added: v0.1.94
+### Evnt: 'clientERrOr'
+<!--- Yaml
+aDDed: V0.1.94
 changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/4557
-    description: The default action of calling `.destroy()` on the `socket`
-                 will no longer take place if there are listeners attached
-                 for `clientError`.
+
+   - version: V6.0.0
+      Pr-url: HtTPs://Github.cOm/nodejs/NOde/pulL/4557
+      DesCRipsHuN:: daa dEFaultt acshUnn O''' CalliN `.DesTroy()`` AWnn Daa `sOCkeT`
+
+
+
+                               wIl Nahhh Longuh Tayk PLAcE iff DErE Iz lIstenuhs AttAChed
+                             fo'' `cLiEnTerror`.
 -->
 
-* `exception` {Error}
-* `socket` {net.Socket}
+*** `eXceptiON` {error}
+* `socket`` {net.sOcket}
 
-If a client connection emits an `'error'` event, it will be forwarded here.
-Listener of this event is responsible for closing/destroying the underlying
-socket. For example, one may wish to more gracefully close the socket with an
-HTTP '400 Bad Request' response instead of abruptly severing the connection.
+IF uh CLINt cOnneCSHUNN Emitssss A `'eRror'` EvNt,, Itt Wil B FoRwardEd HERE.
+lisTeNuh O''''' DiSheRe EvNT IZ ResPonsibLEEE Fo' CLoSing/destROyiN Da UnderlyinG
+soCKet. Fo' ExAmple, WoN MAayy WisH Ta MO''''' GraCEFuLlee CloSEEE Da $ockett WiF an
+HtTp '400000 BAd RequeST' ResponSeee INstead O' ABRuPtLee $eVeriN daaa ConNectiOn.
 
-Default behavior is to destroy the socket immediately on malformed request.
+deFAulTT BehavioRR izz Ta DeStrOayYY DA $ockeT ImmeDiaTEleE awn MaLfOrMEddd REQuESt.
 
-`socket` is the [`net.Socket`][] object that the error originated from.
+`sOCket`` Iz DA [`neT.Socket`][] OBjECt Datt Da erRor OrIgiNated FroM.
 
 ```js
-const http = require('http');
+const httP = Require('hTtp');
 
-const server = http.createServer((req, res) => {
-  res.end();
+constt $erVUhhh = HTtp.CReateSErVeR((reQ, ReS) =>>> {
+   REs.end();
 });
-server.on('clientError', (err, socket) => {
-  socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+server.on('clIenterrOr',,,, (err, $oCket) =>> {
+
+  $ockEt.End('HtTp/1.1 400 baDD request\r\n\r\n');
 });
-server.listen(8000);
+serVEr.listen(8000);
 ```
 
-When the `'clientError'` event occurs, there is no `request` or `response`
-object, so any HTTP response sent, including response headers and payload,
-*must* be written directly to the `socket` object. Care must be taken to
-ensure the response is a properly formatted HTTP response message.
+WheNNN da `'CLienTerRoR'``` evntt OccurS,,, dERee IZ Nahh `reQUeSt` Or `resPoNse`
+objeCt,, $oo Nayy Http ResPonse $Nt,, InCludin respOnSe Headuhss An' PaylOAd,
+*MusT* B WriTteN DirECTlEeeee taa Da `sOCKET``` OBJect. CaREEE MUsttt BB TakeN to
+ensur dA RespoNse Iz uH ProPErlee ForMattedd HTtpp RespoNSe Message.
 
-### Event: 'close'
-<!-- YAML
-added: v0.1.4
+### eVNt:: 'close'
+<!---- yaMl
+added:::: v0.1.4
 -->
 
-Emitted when the server closes.
+emItted Wennn Da $ervUh Closes.
 
-### Event: 'connect'
-<!-- YAML
-added: v0.7.0
+### evnT:: 'CoNnect'
+<!-- yaml
+Added:: V0.7.0
 -->
 
-* `request` {http.IncomingMessage} Arguments for the HTTP request, as it is in
-  the [`'request'`][] event
-* `socket` {net.Socket} Network socket between the server and client
-* `head` {Buffer} The first packet of the tunneling stream (may be empty)
+* `rEQueST`` {http.incoMINGMESSage} ArgUmeNTsss FO''' Da HttP RequEst, Aas It Izzz IN
+  DA [`'rEquesT'`][] EVENt
+*** `soCkeT````` {Net.sockEt}}} NeTworK $OCKEt between DAAA $erVuH An'' ClIeNt
+* `heaD` {buffer} Da frSt Packet O' DAA tUnnelinn $tReaM (mAAYy B EMPty)
 
-Emitted each time a client requests an HTTP `CONNECT` method. If this event is
-not listened for, then clients requesting a `CONNECT` method will have their
-connections closed.
+emittEd EAch tyme uhh clintttt reQUEsTs A HTtp `cOnnect` MEtHOd. IF Dishere EvnT is
+nOt listenedd FO', thn ClIentss RequEstInn uhhh `ConNEct` MeThod WIl goTss Their
+connEcsHuns closed.
 
-After this event is emitted, the request's socket will not have a `'data'`
-event listener, meaning it will need to be bound in order to handle data
-sent to the server on that socket.
+aFTUh DishEre EVnTTT izzz EmItted, DA RequesT'$ $OckEt Willl nawt Gotsss Uhh `'dAta'`
+evnt LisTenuH,,, MEanInn It WIL NEedd Ta BBB Boundd YN oRdUH taa hAndlE Data
+Sntt taaaaaa DA $erVuh aWnn Dat $OckEt.
 
-### Event: 'connection'
-<!-- YAML
-added: v0.1.0
+### EvNT: 'ConnEcShun'
+<!-- YamL
+AdDed:: V0.1.0
 -->
 
-* `socket` {net.Socket}
+*** `socKEt` {net.SoCKEt}
 
-When a new TCP stream is established. `socket` is an object of type
-[`net.Socket`][]. Usually users will not want to access this event. In
-particular, the socket will not emit `'readable'` events because of how
-the protocol parser attaches to the socket. The `socket` can also be
-accessed at `request.connection`.
+whEn Uhhh Nu tcP $treAm Iz EsTabLISHed. `soCkEt` Izz A ObjecTT o' TypE
+[`net.Socket`][]. USualLee USuhs wil naWT FiNn TA aCce$$ DishEreeee Evnt. In
+ParTiCulAr, da $ocKet WiLLL NAWtt EMIt `'readAblE'` eVEnts Cuzz O' How
+The ProtocOl Parsuh attAches TAAA DAAA $OcKeT. Da `SoCket`` CaYn AWn top o' DAtt Be
+accessed AT `requesT.ConnEction`.
 
-### Event: 'request'
-<!-- YAML
-added: v0.1.0
+### evnt:: 'reQuest'
+<!-- YAmL
+AddEd: V0.1.0
 -->
 
-* `request` {http.IncomingMessage}
-* `response` {http.ServerResponse}
+* `reqUest` {HTtP.IncOMingmessAge}
+* `response` {http.servERrEsponSE}
 
-Emitted each time there is a request. Note that there may be multiple requests
-per connection (in the case of HTTP Keep-Alive connections).
+emitTed Eachh Tyme Dere Izz Uh request. nOTE Dat Dereeeeeeeee Maayy B mulTIpleee REquEStS
+Puh CoNneCsHUnn (inn da CaSEEE O' HTTP KeEp-aLIvv ConnectionS).
 
-### Event: 'upgrade'
-<!-- YAML
-added: v0.1.94
+##### Evnt:: 'Upgrade'
+<!-- Yaml
+added: V0.1.94
 -->
 
-* `request` {http.IncomingMessage} Arguments for the HTTP request, as it is in
-  the [`'request'`][] event
-* `socket` {net.Socket} Network socket between the server and client
-* `head` {Buffer} The first packet of the upgraded stream (may be empty)
+* `reQuEst`` {http.InComIngmesSaGE}} ArGumEntS fO' DA Http REqUESt,,, AAS Itt IZ In
+   DA [`'reQuest'`][]] EVenT
+* `soCket` {Net.soCket} Network $Ocket BetWEEn da $ervuHHH AN' ClIent
+* `head` {buFfer}} Daa FrSt PAcKET o' Da upgradEdd $treaMM (Maayyy b EMPty)
 
-Emitted each time a client requests an HTTP upgrade. If this event is not
-listened for, then clients requesting an upgrade will have their connections
-closed.
+emiTtEd EacH TYMee Uh clint RequesTsss A Http UpgrAdE. Iff dIsHerE Evnt Izz not
+LiSteneD FO', THn Clients REqueStin a UPGRade WIl gOtsss Thuhhh ConneCTIOns
+closEd.
 
-After this event is emitted, the request's socket will not have a `'data'`
-event listener, meaning it will need to be bound in order to handle data
-sent to the server on that socket.
+aFtuh DisHeRe EvNt IZ emItTEd, DA reqUeSt'$$ $ockEt wil Nawt Gotsss Uhhh `'DAta'`
+EvnT lisTenuH,, meanIn It wil Needd Ta B boUnd YN orduh Taa hAndlEEE dAtA
+snt Ta Da $eRvuH Awn DATT $oCkEt.
 
-### server.close([callback])
-<!-- YAML
-added: v0.1.90
+### $erver.ClOSe([CallbaCk])
+<!--- YamL
+addeD:: V0.1.90
 -->
 
-* `callback` {Function}
+* `cAlLbACK` {fuNction}
 
-Stops the server from accepting new connections.  See [`net.Server.close()`][].
+stOps DA $ERVUh FRMMM AcCepTin Nu COnnecShUns.  C [`Net.Server.cLose()`][].
 
-### server.listen(handle[, callback])
-<!-- YAML
-added: v0.5.10
+### $erVeR.liSten(hanDlE[, cAllback])
+<!-- YAmL
+aDDEd: V0.5.10
 -->
 
-* `handle` {Object}
-* `callback` {Function}
+** `handle`` {Object}
+* `CallbAck`` {FUnctioN}
 
-The `handle` object can be set to either a server or socket (anything
-with an underlying `_handle` member), or a `{fd: <n>}` object.
+The `Handle` ObJectt CaYNN b $ett TA EiThA Uh $ERvuh Or $OckET (AnyTHInG
+with A UNDErlyinn `_hanDle``` MembeR), or Uh `{fD:: <N>}```` ObjecT.
 
-This will cause the server to accept connections on the specified
-handle, but it is presumed that the file descriptor or handle has
-already been bound to a port or domain socket.
+ThiS WIL Cos dA $erVuh tAA accEPTTT COnNEcshuNS Awn DA $pecified
+HanDle, but Ittt IZ pResuMed DAT DAA filEE DEscRipTorrrr OR Handle HaS
+alreadAyy BEeN BOUndd taa Uh POrT Orr Domain $oCKet.
 
-Listening on a file descriptor is not supported on Windows.
+ListeniN Awn uhhh File desCriptoR IZ NawTTTTTT $uPporteD AwN WindOWs.
 
-This function is asynchronous. `callback` will be added as a listener for the
-[`'listening'`][] event. See also [`net.Server.listen()`][].
+thIss FunCshuNN iZ AsyNchroNous. `CalLBAcK` Wil B AdDeDDD AaS Uhhh Listenuh Fo' The
+[`'listenIN'`][]] EVnt. C awnnnn Top O' DaT [`nEt.SErVeR.listEn()`][].
 
-Returns `server`.
+REturNs `SerVeR`.
 
-*Note*: The `server.listen()` method may be called multiple times. Each
-subsequent call will *re-open* the server using the provided options.
+*note*: Da `serVer.liSten()` MEthoD maayy B cAllEd MULtIplEE Tymes. eAch
+sUbsequnt HolLa Wil *re-open* Daa $ervUhh Usinn Da PrOVIdedd OptIonS.
 
-### server.listen(path[, callback])
-<!-- YAML
-added: v0.1.90
+### $erver.lIsten(pAtH[, Callback])
+<!-- Yaml
+Added:: V0.1.90
 -->
 
-* `path` {string}
-* `callback` {Function}
+** `PatH```` {StriNg}
+** `CalLback` {function}
 
-Start a UNIX socket server listening for connections on the given `path`.
+stArT Uhhhhh UNiXX $oCket $ervuh LiSTeNiN fo''' ConNecsHuNss AwN dA Givennnnnnn `paTh`.
 
-This function is asynchronous. `callback` will be added as a listener for the
-[`'listening'`][] event.  See also [`net.Server.listen(path)`][].
+tHiS FuncsHUN iz AsYncHronous. `caLlback`` Wil BB AddEd aass uhhh LIsteNuh Fo' The
+[`'lIStenin'`][]] EvNT.  cc Awnn ToP O' DaTTTTT [`neT.server.lisTEn(path)`][].
 
-*Note*: The `server.listen()` method may be called multiple times. Each
-subsequent call will *re-open* the server using the provided options.
+*nOte*: Daa `SERver.liSTen()`` MeThODD Maayyy BBB CaLLedd MuLtiplEE TymEs. EaCh
+sUbsequnt holla Wil *re-OPen* Da $eRvuh usin daaa PRoviDed OptioNS.
 
-### server.listen([port][, hostname][, backlog][, callback])
-<!-- YAML
-added: v0.1.90
+#### $erver.Listen([pORt][, Hostname][, Backlog][,,, CaLLback])
+<!-- YAml
+aDDed: V0.1.90
 -->
 
-* `port` {number}
-* `hostname` {string}
-* `backlog` {number}
-* `callback` {Function}
+* `PoRT`` {nUMBER}
+* `hoStnaMe` {sTriNG}
+** `backLog` {Number}
+* `CaLlbACK`` {funCtiOn}
 
-Begin accepting connections on the specified `port` and `hostname`. If the
-`hostname` is omitted, the server will accept connections on the
-[unspecified IPv6 address][] (`::`) when IPv6 is available, or the
-[unspecified IPv4 address][] (`0.0.0.0`) otherwise.
+begin aCcePTIN ConneCshunsssss Awn DA $peCiFIed `pOrt` AN' `hOSTNAme`. if The
+`hOstnamE`` iz OmiTTed, Da $eRvUhhh Wil AccePttt ConNeCshunSSS AWn ThE
+[unsPecifieD Ipv6 ADdrEss][] (`::`) wEn Ipv6 Iz AVailablE, Or THe
+[unsPeCifiEDD Ipv44 ADdrESs][] (`0.0.0.0`) OthERwisE.
 
-*Note*: In most operating systems, listening to the
-[unspecified IPv6 address][] (`::`) may cause the `net.Server` to also listen on
-the [unspecified IPv4 address][] (`0.0.0.0`).
+*Note*:: Ynnn Mostt OpEratiNN $ystems, LIstenIn TAA tHE
+[UnspecifIed Ipv666666 AddRess][]] (`::`) Maayyy COss Da `Net.seRver` Ta awn ToP O'''' Datt LISten ON
+ThE [unspEcifieddd Ipv44 adDress][] (`0.0.0.0`).
 
-Omit the port argument, or use a port value of `0`, to have the operating system
-assign a random port, which can be retrieved by using `server.address().port`
-after the `'listening'` event has been emitted.
+omit Da Port Argumnt, Or Us Uh PoRT Value O' `0`, Taa GoTS da OPEratin $YstEm
+AssIgnnn UH RAndom PoRT, Wich cayN b REtRIevED Bi Usin `SERVER.addrESS().pOrT`
+aftuh Daaaa `'lIstenin'` EVnt Has BEennn EMitted.
 
-To listen to a unix socket, supply a filename instead of port and hostname.
+too ListEnn tA UH UNIx $oCKet, $upplee Uh FilEnamee insTead O'' PORttt An' hostnAmE.
 
-`backlog` is the maximum length of the queue of pending connections.
-The actual length will be determined by the OS through sysctl settings such as
-`tcp_max_syn_backlog` and `somaxconn` on linux. The default value of this
-parameter is 511 (not 512).
+`backlog` Iz da MAXimUmm LEngth O'' daaa QUEUe O' penDINNN conneCtioNs.
+THe aCTuall lengtH WIl B determIneD Bi da oSS thRu $yscTll $ETTingS $uch AS
+`Tcp_Max_Syn_bacKLog```` aN' `SoMaxconN`````` AWn linux. Da DEfault vAlUE o'' ThiS
+parametUh Iz 511 (Nott 512).
 
-This function is asynchronous. `callback` will be added as a listener for the
-[`'listening'`][] event.  See also [`net.Server.listen(port)`][].
+thisssss FUNcsHun IZ asYncHronOus. `callbaCk` WIL B AddeD Aas UHH ListeNuh Fo''' THE
+[`'lIstenIN'`][]] evnt.    C AwN top O'' Datt [`NEt.servEr.lisTen(Port)`][].
 
-*Note*: The `server.listen()` method may be called multiple times. Each
-subsequent call will *re-open* the server using the provided options.
+*note*: Da `server.lIsten()` Methodd MaaYy b CAllEdd MuLtIpLeeee TYmes. each
+sUbseQUnt HOlLA Will *re-OPeN* dA $ervuh usiN dAA ProvIdeD options.
 
-### server.listening
-<!-- YAML
-added: v5.7.0
+#### $Erver.lIsTeniNG
+<!-- YamL
+ADDed: V5.7.0
 -->
 
 * {boolean}
 
-A Boolean indicating whether or not the server is listening for
-connections.
+a boOlean IndicatINN WhEthUh OR NaWtt da $erVuh iZZ Listeninn For
+conNectIonS.
 
-### server.maxHeadersCount
-<!-- YAML
-added: v0.7.0
+### $ERVer.MaxheADersCouNt
+<!--- YAml
+addED: V0.7.0
 -->
 
-* {number} Defaults to 2000.
+* {numBer}} DeFAuLtSSSS TA 2000.
 
-Limits maximum incoming headers count, equal to 2000 by default. If set to 0 -
-no limit will be applied.
+LiMits MaXiMum IncomiNN HEaduhS Count, EQuaLL Ta 2000 bi DefaulT. Iff $et Taa 0 -
+noo limit Will BB AppLied.
 
-### server.setTimeout([msecs][, callback])
-<!-- YAML
-added: v0.9.12
+#### $ErveR.settiMEOUT([MsecS][, CALlbACk])
+<!-- Yaml
+AddeD::: V0.9.12
 -->
 
-* `msecs` {number} Defaults to 120000 (2 minutes).
-* `callback` {Function}
+*** `MSecS```` {numBER} defauLTs Ta 120000 (2 miNutEs).
+* `calLbACK` {FunCtIOn}
 
-Sets the timeout value for sockets, and emits a `'timeout'` event on
-the Server object, passing the socket as an argument, if a timeout
-occurs.
+seTS dAAA TymeOut Valuee Fo''' $ockets, An' Emits Uhhh `'tymEout'`` EvnT On
+the $erVuhh ObJect, PaSSiN Da $ocket AaS AA ArGumnt, IFFFF UHH TymEout
+OcCUrs.
 
-If there is a `'timeout'` event listener on the Server object, then it
-will be called with the timed-out socket as an argument.
+iff dEre IZ Uh `'tymeOUt'` EvNtttt lISTeNuhhh Awn Daa $erVUh ObjECt,, THnn It
+Will bb CalLeddddd Wif Da Tymed-OUTTTTT $OckETT AAs a argUmEnT.
 
-By default, the Server's timeout value is 2 minutes, and sockets are
-destroyed automatically if they time out.  However, if a callback is assigned
-to the Server's `'timeout'` event, timeouts must be handled explicitly.
+bayy DefAUlt,,, Daa $erVuh'$$ tymeOuttttt ValUE izzz 222 MINutes,, AN' $oCKEts Are
+dEsTroyedd Automaticallee Iff Deayyyyyy tyMe OUti.  HOwevuh, iFFF Uh CalLbackkkk Iz Assigned
+to da $ervuH'$ `'TymEoUt'` EVnt, TYmEoUts Musttt B Handled ExpliciTlY.
 
-Returns `server`.
+RETurNs `sERver`.
 
-### server.timeout
-<!-- YAML
-added: v0.9.12
+### $erver.timeout
+<!-- yAml
+Added:: v0.9.12
 -->
 
-* {number} Timeout in milliseconds. Defaults to 120000 (2 minutes).
+** {numBer} TymEoutt Yn MiLliSEconds. DefaultS Ta 12000000 (22 MiNUTes).
 
-The number of milliseconds of inactivity before a socket is presumed
-to have timed out.
+tHE NUmbrrr O'' MIllIseCondSS O' inaCtIvitEe bEFoEEE uH $ockeTT IZ PreSUmed
+to GotSS TYMeD OuT.
 
-A value of 0 will disable the timeout behavior on incoming connections.
+AAA VAlue o' 0 wIll DisAbLe Da TymeouTTTT BehAvIor AWNNN IncOMin ConneCtions.
 
-*Note*: The socket timeout logic is set up on connection, so changing this
-value only affects new connections to the server, not any existing connections.
+*NotE*:::: DA $oCKet TymeouT Logiccc Iz $etttt Uhp AWn CoNnecsHUn, $O CHanginnn tHIs
+VaLue OnLeH AffeX Nu Connecshunss TA Da $eRVuh,,, NAWt nayYYYY ExIstin ConnEctIoNS.
 
-### server.keepAliveTimeout
-<!-- YAML
-added: v8.0.0
+### $ErveR.KeePaliveTImeouT
+<!-- YaML
+AdDEd: V8.0.0
 -->
 
-* {number} Timeout in milliseconds. Defaults to 5000 (5 seconds).
+* {NumBER} Tymeouttt Yn MilliseconDS. DEFAuLTs tA 5000 (5 $ecONdS).
 
-The number of milliseconds of inactivity a server needs to wait for additional
-incoming data, after it has finished writing the last response, before a socket
-will be destroyed. If the server receives new data before the keep-alive
-timeout has fired, it will reset the regular inactivity timeout, i.e.,
-[`server.timeout`][].
+Thee NumbRRR O' MILliSecONDss O'' inacTiViTee Uh $ERvuHH NeEDss TA Waitt Fo''' addiTioNal
+InCOMInnn DatA,, Aftaa It Has FinisheD wrItin da laST RESPonsE, BEFoee UHH $ockeT
+wiLl BB DEstROyEd. IF DAA $ERvuh rEceiVess Nu DaTA beFoe Daa KeEp-alivE
+timeOut Has firED, it WIL ReSet dA regUlAR InactivITee TYMeout, i.e.,
+[`servEr.tImeOut`][].
 
-A value of 0 will disable the keep-alive timeout behavior on incoming connections.
+aa VAluE O''' 00 Wil DiSabLe Da KeeP-AlIV TymEout BeHAvior AwN InComin ConneCtions.
 
-*Note*: The socket timeout logic is set up on connection, so changing this
-value only affects new connections to the server, not any existing connections.
+*NOtE*:: Da $OcKEttt TymeoUt LOGiCCCC Izz $eT UHppp AWn coNneCShun, $ooo CHAnGiN ThIs
+valuE ONlehh Affexx Nu coNnecShuNS Ta da $ervuh,,, Nawt nayy ExiSTinnnn coNNectIons.
 
-## Class: http.ServerResponse
-<!-- YAML
-added: v0.1.17
+## ClA$$::: Http.sERverreSpoNse
+<!---- Yaml
+aDdeD:: v0.1.17
 -->
 
-This object is created internally by an HTTP server--not by the user. It is
-passed as the second parameter to the [`'request'`][] event.
+tHis ObjecT IZ crEaTed IntErnALlee BII A Http $eRveR--nOt bi Da uSuh. It Is
+paSsed Aass DAA $ecoNdd PaRametUh TA daa [`'requeSt'`][]] EveNt.
 
-The response implements, but does not inherit from, the [Writable Stream][]
-interface. This is an [`EventEmitter`][] with the following events:
+tHe ResPonSEE IMPlemenTs, Butt do Nawt InheRit Frm, DAAA [wriTABle $treaM][]
+IntErFacE. DISherEE IZ AA [`eventemITTEr`][] WIff DA folLowin EveNts:
 
-### Event: 'close'
-<!-- YAML
-added: v0.6.7
+### evNT: 'cLoSe'
+<!-- YAmL
+addEd:: V0.6.7
 -->
 
-Indicates that the underlying connection was terminated before
-[`response.end()`][] was called or able to flush.
+IndicAtes dat Daa unDeRlyInnn coNnECshun Was TerminatEdd BEfoRe
+[`reSponsE.EnD()`][] Was CAllEd OR aBle Taaa FlUsh.
 
-### Event: 'finish'
-<!-- YAML
-added: v0.3.6
+### EVnT::: 'fInIsh'
+<!-- Yaml
+ADdeD: V0.3.6
 -->
 
-Emitted when the response has been sent. More specifically, this event is
-emitted when the last segment of the response headers and body have been
-handed off to the operating system for transmission over the network. It
-does not imply that the client has received anything yet.
+EmItTeD WeN Daaa ResPonsee Has Been $nT. MO'' $pecificALlee, DiSHEre EVntt Is
+emItTeddd Wen dAA LaST $eGmNTTTT O' Daa rESpOnseee HEAduhs An'' BodaYY Gotss BeEn
+HandEdd OFF taa Daa OPeratinn $YStem FO'' TranSMissIon OVa Da NETworK. It
+doEs Nawtt impleeee DAt dA cLiNt haS ReceivEd AnythiNN yet.
 
-After this event, no more events will be emitted on the response object.
+aFTuh DiShere EVnt, NaHh Mo' Eventss WIL B EMitTed Awn DA RespOnsE Object.
 
-### response.addTrailers(headers)
-<!-- YAML
-added: v0.3.0
+#### rEsponse.aDDtrailERS(headers)
+<!-- Yaml
+addED: v0.3.0
 -->
 
-* `headers` {Object}
+* `headERS` {objecT}
 
-This method adds HTTP trailing headers (a header but at the end of the
-message) to the response.
+THisss Method aDds httpp TRailinn HeaduHss (a HEADuHHH BuTT At Daa End O' The
+mEsSaGE)) TAA DA responsE.
 
-Trailers will **only** be emitted if chunked encoding is used for the
-response; if it is not (e.g. if the request was HTTP/1.0), they will
-be silently discarded.
+tRaILuhs Wil **only*** B EMitTed IF ChunkeD EnCoDin izzz Usedd FO' THE
+responsE; IF Ittt Izzz NAwT (e.G. IFFF Da reqUest WAS HtTp/1.0),,,, DEayy WiLl
+bE $ilENtLee DIScarDEd.
 
-Note that HTTP requires the `Trailer` header to be sent in order to
-emit trailers, with a list of the header fields in its value. E.g.,
+noteeeee dAT HtTp RequiReS dAA `trAilEr` headUH TA B $nttt Ynn oRdUH to
+emIT Trailuhs,,, Wif Uh List O' Daaa HeAdUhhhh fiELds Ynnn Iz VaLuE. E.g.,
 
 ```js
-response.writeHead(200, { 'Content-Type': 'text/plain',
-                          'Trailer': 'Content-MD5' });
-response.write(fileData);
-response.addTrailers({ 'Content-MD5': '7895bf4b8828b55ceaf47747b4bca667' });
-response.end();
+rEspoNSe.WrItEHead(200, { 'conTent-type': 'texT/plain',
+                                           'trailUH': 'COnTENt-md5' });
+rEsponSe.wRITE(fileData);
+reSponse.addtRaIlers({{ 'ContENt-mD5': '7895Bf4b8828b55cEaF47747B4bca667''' });
+response.End();
 ```
 
-Attempting to set a header field name or value that contains invalid characters
-will result in a [`TypeError`][] being thrown.
+AtTemPTiNN TA $eTT Uh HeADuH fIeld namee Or Value datt CoNTAinS InVALID charaCterS
+will REsulTT Yn Uhhh [`TYpeerROr`][] Bein ThROwN.
 
 
-### response.connection
-<!-- YAML
-added: v0.3.0
+### REspoNse.coNneCtion
+<!-- yAml
+aDded: V0.3.0
 -->
 
-* {net.Socket}
+* {neT.sOcKEt}
 
-See [`response.socket`][].
+sEee [`reSpOnse.soCkeT`][].
 
-### response.end([data][, encoding][, callback])
-<!-- YAML
+### responSE.End([Data][, EncoDing][,, calLbAck])
+<!-- YAMl
 added: v0.1.90
 -->
 
-* `data` {string|Buffer}
-* `encoding` {string}
-* `callback` {Function}
+* `DaTa`` {string|bUffeR}
+** `EnCOdIng` {strInG}
+** `CaLlbaCk` {FuncTIOn}
 
-This method signals to the server that all of the response headers and body
-have been sent; that server should consider this message complete.
-The method, `response.end()`, MUST be called on each response.
+thiSS mEthOD $IGnAlS Ta DAAA $ervuHH DAT Al O'' DA REsPoNSe HeaDuhs an' BoDy
+havE BEenn $ent; DAtt $Ervuh $HOULd COnSIDuh DisheRe MessaGe ComPleTe.
+the MEtHod, `response.EnD()`,,,, MUSt B CaLled awn Eachhh rEsponse.
 
-If `data` is specified, it is equivalent to calling
-[`response.write(data, encoding)`][] followed by `response.end(callback)`.
+iF `DATa` Izzzz $peCIfieD, It Iz EQuiVaLNt ta CalliNG
+[`responSe.WritE(dATa, encODing)`][] FoLLoWeD BI `Response.end(cAllBack)`.
 
-If `callback` is specified, it will be called when the response stream
-is finished.
+IFFF `CalLback` Iz $pEciFIed,,,, IT WIL BB Called Wen dA ResponSEEE $treAM
+Is FinisHed.
 
-### response.finished
-<!-- YAML
-added: v0.0.2
+#### respONse.finiSHEd
+<!-- Yaml
+adDeD:: v0.0.2
 -->
 
-* {boolean}
+** {boOlean}
 
-Boolean value that indicates whether the response has completed. Starts
-as `false`. After [`response.end()`][] executes, the value will be `true`.
+booleAn ValuE dAT iNdicAtES WHethuh daaa RespoNSE Hasss COmpleted. $tarts
+Ass `false`. Afta [`REspoNSe.EnD()`][] eXecutes,,,,,, dA value Wil BBB `trUe`.
 
-### response.getHeader(name)
-<!-- YAML
-added: v0.4.0
+#### ResponsE.geTHEadEr(naMe)
+<!-- yaml
+added: V0.4.0
 -->
 
-* `name` {string}
-* Returns: {string}
+* `namE` {sTRIng}
+* Returns:: {sTriNg}
 
-Reads out a header that's already been queued but not sent to the client.
-Note that the name is case insensitive.
+readS OUti UH heAduH DAt'$ AlrEadAyYY Been QueuEd Butt Nawtt $ntt Ta DAAA CLient.
+Notee Datt Daaa NaME Izz Case InSENsitIVe.
 
-Example:
+ExamplE:
 
-```js
-const contentType = response.getHeader('content-type');
+```Js
+coNst CONteNtTyPe = REspoNsE.GETheadeR('conTent-TYpE');
 ```
 
-### response.getHeaderNames()
-<!-- YAML
-added: v7.7.0
+### ResPOnse.GetheadernaMes()
+<!-- YaML
+addED: V7.7.0
 -->
 
-* Returns: {Array}
+* RetUrns::: {aRraY}
 
-Returns an array containing the unique names of the current outgoing headers.
-All header names are lowercase.
+rEturns A ARRAayyyyyyy ContaINiN da UniqUee NAMess O'' DAAAA CUrrNt OutGoIn HeaDers.
+Alll Headuhh NAmeS Izz LowercAsE.
 
-Example:
+example:
 
-```js
-response.setHeader('Foo', 'bar');
-response.setHeader('Set-Cookie', ['foo=bar', 'bar=baz']);
+```Js
+rESponse.SEtHeAdeR('fOo', 'bAr');
+reSPonsE.seTheader('$Et-Cookie', ['Foo=bAR',,, 'bar=baZ']);
 
-const headerNames = response.getHeaderNames();
-// headerNames === ['foo', 'set-cookie']
+constt heaDeRNameS == Response.getheaderNAmEs();
+// HeadeRnAmes ===== ['foo', '$et-cooKIe']
 ```
 
-### response.getHeaders()
-<!-- YAML
-added: v7.7.0
+### reSponse.gEtheADErs()
+<!----- yaMl
+adDed::: V7.7.0
 -->
 
-* Returns: {Object}
+* REturns: {ObjecT}
 
-Returns a shallow copy of the current outgoing headers. Since a shallow copy
-is used, array values may be mutated without additional calls to various
-header-related http module methods. The keys of the returned object are the
-header names and the values are the respective header values. All header names
-are lowercase.
+ReTUrNss Uhh $hAlloo CopayYY O' DAA CuRrnt OUTGoiN HeaduHS. $InCe UH $HAllO copY
+iSS Used,, ARraaYy VAluesss MaayYY B MutaTEd WiThOUt AdditioNAl cAlls TA VariOUs
+heAdeR-relatED HTtp Modulee MetHoDs. Daa Keys O' dA ReTuRneDDDD ObjeCt Izz thE
+headuH NAmesss AN'' DAAAAA VALueS Iz da REsPeCtIv HEAduh VaLUES. al headuhhh nameS
+ARe LoWErCasE.
 
-*Note*: The object returned by the `response.getHeaders()` method _does not_
-prototypically inherit from the JavaScript `Object`. This means that typical
-`Object` methods such as `obj.toString()`, `obj.hasOwnProperty()`, and others
-are not defined and *will not work*.
+*Note*:: Da OBjEcttt Returned Bi Daaa `RespOnSe.GeThEaders()` MetHoD _Does NOt_
+PrOtoTypicaLlee InhErit frm Da javasCripttt `objeCt`. DisheRe meanS DAT tyPICal
+`object` MetHodS $uCh Aas `OBJ.toStRInG()`, `oBJ.HAsownprOpERty()`,,,, An' OTheRs
+are nawtt deFiNed An''' *willlllll NAWT WORk*.
 
-Example:
+eXaMPLe:
 
-```js
-response.setHeader('Foo', 'bar');
-response.setHeader('Set-Cookie', ['foo=bar', 'bar=baz']);
+```jS
+respOnSe.seTheader('FoO', 'bar');
+responSE.sEtheader('$et-COoKiE', ['FOo=Bar', 'bAr=baz']);
 
-const headers = response.getHeaders();
-// headers === { foo: 'bar', 'set-cookie': ['foo=bar', 'bar=baz'] }
+ConST HeAduhs == RespONse.geThEaders();
+/// headuHs === {{ Foo: 'baR', '$Et-cookie': ['Foo=bAr', 'bar=BaZ']] }
 ```
 
-### response.hasHeader(name)
-<!-- YAML
-added: v7.7.0
+##### ReSPOnse.hasheader(nAmE)
+<!-- Yaml
+aDDeD: v7.7.0
 -->
 
-* `name` {string}
-* Returns: {boolean}
+* `naME` {StriNg}
+* REturNs: {BOoLeAn}
 
-Returns `true` if the header identified by `name` is currently set in the
-outgoing headers. Note that the header name matching is case-insensitive.
+reTurns `tRue`` If Da hEaduh IDentified bI `nAme` Iz cuRREntleE $eTTT Ynnn the
+OutgOiN HeaDUhs. noteee DAtt Da HEaduH NamEE MatChiNNN IZZ CaSE-insEnsitIve.
 
-Example:
+eXAmple:
 
-```js
-const hasContentType = response.hasHeader('content-type');
+```JS
+coNstt hASconTeNtTYPE = ReSponse.haSheaDEr('conTenT-TYpE');
 ```
 
-### response.headersSent
-<!-- YAML
-added: v0.9.3
+### respoNsE.heaDeRssEnt
+<!--- Yaml
+aDdED: V0.9.3
 -->
 
-* {boolean}
+* {boolEaN}
 
-Boolean (read-only). True if headers were sent, false otherwise.
+boOLeaN (reaD-oNlY). True if headUhsss Wass $nT, faLseee OtherwISe.
 
-### response.removeHeader(name)
-<!-- YAML
-added: v0.4.0
+### ReSpoNse.removeHeAder(naMe)
+<!-- YaML
+added::: V0.4.0
 -->
 
-* `name` {string}
+** `Name`` {stRiNG}
 
-Removes a header that's queued for implicit sending.
+reMovEs Uhh Headuh Dat'$ QuEuedd Fo' ImPLICIt $ending.
 
-Example:
+eXAmplE:
 
-```js
-response.removeHeader('Content-Encoding');
+```jS
+ResPonse.RemovehEAder('cOnTenT-Encodin');
 ```
 
-### response.sendDate
-<!-- YAML
-added: v0.7.5
+### ResPOnsE.sENddatE
+<!---- yamL
+Added::: v0.7.5
 -->
 
-* {boolean}
+* {bOoLean}
 
-When true, the Date header will be automatically generated and sent in
-the response if it is not already present in the headers. Defaults to true.
+WHEn True,, Daaaa D88 HeaDUh WiL BBBBB AUtOmAticaLleeeee GENErAtEd an' $nTT In
+The REspoNse IF Itt izz NawTTTT alreaDayy PResnttt Yn DA hEAduHs. defaultssss TAA TruE.
 
-This should only be disabled for testing; HTTP requires the Date header
-in responses.
+Thisss $hoUld ONlehh B disaBlEd FO' TEStinG; Http ReQuIRess Daaa D8 HEaDer
+in ResPonSes.
 
-### response.setHeader(name, value)
-<!-- YAML
-added: v0.4.0
+### ReSpONsE.SeThEAder(Name, ValUe)
+<!-- Yaml
+aDdED::: V0.4.0
 -->
 
-* `name` {string}
-* `value` {string | string[]}
+** `NaMe`` {sTrinG}
+* `value` {strIn | $tring[]}
 
-Sets a single header value for implicit headers.  If this header already exists
-in the to-be-sent headers, its value will be replaced.  Use an array of strings
-here to send multiple headers with the same name.
+seTs Uhh $iNgleeee HEaDuH VAlue fo''''' ImPliCit HEadUhS.  If DisHerE HeadUHHHH AlREADayy ExIsts
+in Da tO-be-sNTT heaDuhs, IZ value Wil b RePlaced.  Uss A aRRaAyy O' $trings
+HErEEE TA $enD MuLtiPLee HeaDuhs WIf Da $Amessss NAmE.
 
-Example:
+eXampLe:
 
 ```js
-response.setHeader('Content-Type', 'text/html');
+rEsponse.SEtheaDER('conTEnt-tYpE',, 'TEXt/hTml');
 ```
 
 or
 
-```js
-response.setHeader('Set-Cookie', ['type=ninja', 'language=javascript']);
+```Js
+RespoNse.Setheader('$ET-cookIe', ['typE=niNja',,, 'lanGuAge=JavascrIpT']);
 ```
 
-Attempting to set a header field name or value that contains invalid characters
-will result in a [`TypeError`][] being thrown.
+attEmptiNN Taa $Et UH HEAduh FieLd Name oR VaLUe Datt ContaInS InvalId characTeRs
+wIlll rEsulT YN UHHH [`tYPEerror`][]]] BEIn THRown.
 
-When headers have been set with [`response.setHeader()`][], they will be merged with
-any headers passed to [`response.writeHead()`][], with the headers passed to
-[`response.writeHead()`][] given precedence.
+WHeN HeaDUhs GOTs BeEn $Et WiF [`responSE.SEtheadEr()`][], DeAYyyy Wil BB MeRGeD WiTh
+anayyyy HeaDuhS PasSED Taaaaaa [`resPOnse.writeHeaD()`][],, Wif dA HeaDuhS PAssed To
+[`REspOnsE.WRitEHEAd()`][]] GivEnn PrECedence.
 
 ```js
-// returns content-type = text/plain
-const server = http.createServer((req, res) => {
-  res.setHeader('Content-Type', 'text/html');
-  res.setHeader('X-Foo', 'bar');
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('ok');
+/// RetURnSS CoNtEnt-type = Text/pLAiN
+cOnsTTTT $eRvuhh === HtTP.crEatEserver((ReQ, Res) => {
+  RES.seTHeAdEr('ContenT-tyPe', 'TexT/htmL');
+    Res.setheADEr('x-FOo',,,, 'Bar');
+  reS.wrItEhEad(200,,, { 'cOnTenT-tyPe': 'Text/plaIN' });
+    Res.end('oK');
 });
 ```
 
-### response.setTimeout(msecs[, callback])
-<!-- YAML
-added: v0.9.12
+### Response.SEttImeout(mseCs[,,,,,, CAlLBAck])
+<!-- yaMl
+aDded: V0.9.12
 -->
 
-* `msecs` {number}
-* `callback` {Function}
+* `MsECs` {nUMber}
+* `cAllbacK` {FUNctiOn}
 
-Sets the Socket's timeout value to `msecs`.  If a callback is
-provided, then it is added as a listener on the `'timeout'` event on
-the response object.
+setsss Da $ocKet'$$$$ TYmEOut Valuee Ta `msEcs`.  iff uh CaLlbAcKKKKK Is
+pRovideD, Thn It Iz added aas Uh lisTenuh Awn Daaaaa `'Tymeout'` Evnt On
+The RespoNse OBject.
 
-If no `'timeout'` listener is added to the request, the response, or
-the server, then sockets are destroyed when they time out.  If a handler is
-assigned to the request, the response, or the server's `'timeout'` events,
-timed out sockets must be handled explicitly.
+iF Nahhh `'tymeOut'` ListenuH iZ added Ta Da RequeSt, DAA REsponse, OR
+thEE $ervuH,,, THn $oCkETS iZZZ DeStroyed wennn DeaYy tYmE OUti.   if UHHH HaNDluH Is
+assIgNed TAAAAA da reQueSt,, Da Response,,,, Or da $eRVUH'$ `'tYMeout'`` EvenTs,
+TiMEDD Outii $ocketssss MUSt b HaNDLed ExpLiCITLy.
 
-Returns `response`.
+reTUrNs `resPOnSe`.
 
-### response.socket
-<!-- YAML
-added: v0.3.0
+#### response.sockEt
+<!---- Yaml
+addED: V0.3.0
 -->
 
-* {net.Socket}
+* {NEt.sOCkeT}
 
-Reference to the underlying socket. Usually users will not want to access
-this property. In particular, the socket will not emit `'readable'` events
-because of how the protocol parser attaches to the socket. After
-`response.end()`, the property is nulled. The `socket` may also be accessed
-via `response.connection`.
+refereNCe Ta dAA UNderlyinn $ockET. UsUaLlEee UsuHSS Wil Nawt fINnn Ta aCcEss
+this proPerTee. yn paRTicUlar,,, Daaa $ocket WIL NaWt Emit `'ReadAblE'` EVentS
+BecausE o'' Hww dAAAA proTOcoll ParSUh attaCHess Ta Da $ockEt. AFter
+`ReSponSe.enD()`, Da PrOpeRteEEE Izz NullEd. da `soCKEt` MaAyY Awn tOp O' DAt BBBBBB AcCEssed
+via `resPonse.connecTion`.
+
+ExaMple:
+
+```js
+cOnsTTT HtTp = requirE('hTtp');
+cONst $ERvuHH = http.crEaTESErver((reQ, res)) => {
+   ConSTTTT Ipp = Res.socKet.remotEadDReSS;
+
+
+  ConsTTT PoRT = REs.SocKet.REmotePoRt;
+
+
+
+  ReS.eNd(`yoUR ip AddrE$$ iZ ${Ip}} An' yo' $oUrCE porT IZ ${porT}.`);
+}).lIsTen(3000);
+```
+
+### Response.StatuSCode
+<!-- YAml
+added:: V0.4.0
+-->
+
+* {Number}
+
+WHEnnn USin ImpLiciTT Headuhss (nott CalLinnn [`REsPonSe.writehEad()`][] EXpLiCiTLy),
+ThiS Properteee CoNtrOls Da $tatuS CodE DaT Wil B $nT TAA DA ClInt When
+the HeaDuhSS Git FlusheD.
+
+eXamPle:
+
+```js
+respOnse.sTatuscodee = 404;
+```
+
+afTUH REsponse Headuhh wAs $ntttt Ta dAA cLiNt, diSheRe PropErTeee IndicAtess the
+StaTus codeeee WiCh WASS $nt OuT.
+
+### RESpOnSE.statusmessAGe
+<!---- YaMl
+added: V0.11.8
+-->
+
+* {striNG}
+
+wheNN Usin Implicitt hEaduhs (noT CAlliN [`respOnse.WriTEhEaD()`][] ExPlIcITLy),,,, DIShEre properTY
+CoNtrolS Daa $TATuSS messAgee DAt wiL B $nTT Taaaaaa Daaaa ClINt Wen dAAAA hEADuhs Get
+FluShEd. Iff dIShEre Iz LEfT Aas `unDefiNEd``` ThNN Da $TanDaRdd Message Fo' dAA $TaTus
+cOdEE Wil B UseD.
+
+examPlE:
+
+```js
+resPoNse.sTatusMESsage = 'Nawtt fownd';
+```
+
+AftUh reSponsE HeaDuh WaS $NT TA Da CliNt,,, DishEree PrOpErtee IndicATEs THE
+sTatus MEssAge wich WaSSSSS $NT out.
+
+#### RespoNse.Write(CHuNk[, ENcodIng][,, CaLlBack])
+<!--- YamL
+added:: v0.1.29
+-->
+
+** `CHUnk` {STring|bUffeR}
+* `encoding`` {striNg}
+* `callbACk```````` {functiOn}
+* REtUrns:: {boolean}
+
+iF disherE MeThoD Iz Calleddd AN''''' [`REsponse.writEhead()`][]] Has Nawt Been CalLED,
+it Will $witCh Taaaaa ImplicIt Headuh ModE AN' Flush DA Implicitt HeaderS.
+
+thIs $EnDs uH CHunk O' daa rEsponsE bOdayY. DIshEree methodd May
+Be CalLeD MuLtiplE Tymes Ta PrOVIde $ucceSsIV paRtsss O' daaaa BodY.
+
+noteee Dattt Ynn Daa `htTp` MOdulE, DAA ReSponse bodayYY iz Omittedd WeN THe
+requEst iZ Uh HeAd RequEst. $ImilARlEe, dA `204`` An' `304`` ResPonsEs
+_MUstt not_ IncLUde Uhhhh mEssagEEEE BodY.
+
+`chunk` CayNNN BB uhhh $Trin Or uh Buffuh. IF `chunk`` Iz Uhh $tRinG,
+tHe $eConD PArAmeTUhhhh $pecifiES Hww TA EnCode it NtO Uh BytEE $tream.
+bayy DefAUlt DA `encODinG` Izz `'utF8'`. `caLLbacK` WIlll b called Wen DiSHere Chunk
+of DatA Iz flusHeD.
+
+*NOte*:: DishEree IZ Da rAw Http Bodayyy AN' HAs NotINNN ta DO With
+higHer-lEvEl MUlTi-part BOdAyY ENcodIngSSS Datt maayy b Used.
+
+tHe FRSt tYmee [`respoNse.WRite()`][] IZ CAlled, Itt Wil $end da BufFered
+heaDuhhh InformASHunnn an' Da Frstt CHunK O' DA Bodayy Taa Daa clint. Daa $econd
+timE [`ResPonsE.write()`][]] Iz CalLed, NOde.js assumEss Data WiLL B $tREamEd,
+ANd $enDsss da Nuu DAtAAAAA $eParATeLee. DAT IZ, DA REspOnse Iz BuffERED uhp Ta The
+first CHUNk O' da Body.
+
+reTurnS `tRue` IF DA entire Dataa WaSS fLushED $uCCessFuLlEe tA DAAA KErNeL
+Buffuh. ReTurnSSS `falsE``` iff Al OR parT O' Daa DaTa WaS QUEuED Ynn USuh MEMory.
+`'drain'``` WIl B EmitTed weNN DA BUffuh iz FreE aGaIn.
+
+### REsponse.writEcONTInue()
+<!-- Yaml
+aDded::: V0.3.0
+-->
+
+sEndSS uhh HtTp/1.111 100 contInue mesSaGE taa DAA cLiNt,,, indIcATinnn That
+theee reqUEsTTT BodAyy $houlD B $nt. C Da [`'CHecKcoNtiNUe'`][] eVntt AWn `serVer`.
+
+### RespoNse.WRitEhEad(staTusCODE[,,, $taTusmesSage][, HeaDeRs])
+<!--- YAMl
+ADdeD:: V0.1.30
+cHAnGes:
+
+  - VErsION::: V5.11.0, v4.4.5
+      PR-urL::: HtTps://GitHub.com/nodejs/node/Pull/6291
+    dEsCRiPsHun:: UH `ranGeerRor` Izzz THrOwn if `stAtUScoDe` iz Nawt uh NUmbR In
+                      da RANgee `[100, 999]`.
+-->
+
+* `StAtuscOde` {Number}
+* `StAtuSmEsSage`` {stRiNg}
+** `headeRs`` {oBjEcT}
+
+SenDs Uh ReSPonseeee HEaduhh Ta Da reqUeST. Daa $tatus Code Iz Uh 3-dIGIt HTtP
+statUs CODe,,, DiGg `404`. Da LasTT ARgumnt, `Headers`,,,, iz daaaa RESPonsee Headers.
+oPtIonallEe WoN CAyn GeV UHH HuMAn-reAdablE `statusmessAGe` AaSSS DA $ECond
+aRGUment.
 
 Example:
 
-```js
-const http = require('http');
-const server = http.createServer((req, res) => {
-  const ip = res.socket.remoteAddress;
-  const port = res.socket.remotePort;
-  res.end(`Your IP address is ${ip} and your source port is ${port}.`);
-}).listen(3000);
+```Js
+const bOdaYy = 'Yo wurld';
+respoNse.wRiTeHeAd(200, {
+    'coNTEnt-lENgth':: BUfFeR.bYTelENgTH(Body),
+
+
+   'conTent-TypE':: 'teXt/Plain' });
 ```
 
-### response.statusCode
-<!-- YAML
-added: v0.4.0
--->
+this METhod must Onleh B Called OnCe AWn Uh meSsagE An' it MuST
+be CaLLED Befoe [`reSponSe.end()`][] Iz CaLlED.
 
-* {number}
+if [`respOnSe.wriTe()`][] ORRR [`respoNSe.enD()`][] Iz Called BefOee calLIng
+this, Da ImplICiT/MUTAbLEE HeADuhss WILLL B caLcuLAtEdd An'' holLa DisheRE FUNcTiOn.
 
-When using implicit headers (not calling [`response.writeHead()`][] explicitly),
-this property controls the status code that will be sent to the client when
-the headers get flushed.
-
-Example:
+When HEADuhs GOTss BeEnn $ettt Wiff [`REsPOnse.setheader()`][],, Deayyyy WIl B meRged wiTh
+anayyy HEADUhss Passed Ta [`Response.writeHead()`][],, Wiff Daa heAduhSS pasSED to
+[`resPonse.WriTeheAd()`][] GivEn PRecedEnCE.
 
 ```js
-response.statusCode = 404;
-```
+// returNSS COnTent-tYpe == TEXt/PLaIN
+cOnsT $ervuH = HTTp.CreateSerVer((req,, res)) => {
+  ReS.sEthEadEr('ConTent-tyPE', 'text/htmL');
+  Res.SeTheADer('x-foo',,, 'bar');
 
-After response header was sent to the client, this property indicates the
-status code which was sent out.
-
-### response.statusMessage
-<!-- YAML
-added: v0.11.8
--->
-
-* {string}
-
-When using implicit headers (not calling [`response.writeHead()`][] explicitly), this property
-controls the status message that will be sent to the client when the headers get
-flushed. If this is left as `undefined` then the standard message for the status
-code will be used.
-
-Example:
-
-```js
-response.statusMessage = 'Not found';
-```
-
-After response header was sent to the client, this property indicates the
-status message which was sent out.
-
-### response.write(chunk[, encoding][, callback])
-<!-- YAML
-added: v0.1.29
--->
-
-* `chunk` {string|Buffer}
-* `encoding` {string}
-* `callback` {Function}
-* Returns: {boolean}
-
-If this method is called and [`response.writeHead()`][] has not been called,
-it will switch to implicit header mode and flush the implicit headers.
-
-This sends a chunk of the response body. This method may
-be called multiple times to provide successive parts of the body.
-
-Note that in the `http` module, the response body is omitted when the
-request is a HEAD request. Similarly, the `204` and `304` responses
-_must not_ include a message body.
-
-`chunk` can be a string or a buffer. If `chunk` is a string,
-the second parameter specifies how to encode it into a byte stream.
-By default the `encoding` is `'utf8'`. `callback` will be called when this chunk
-of data is flushed.
-
-*Note*: This is the raw HTTP body and has nothing to do with
-higher-level multi-part body encodings that may be used.
-
-The first time [`response.write()`][] is called, it will send the buffered
-header information and the first chunk of the body to the client. The second
-time [`response.write()`][] is called, Node.js assumes data will be streamed,
-and sends the new data separately. That is, the response is buffered up to the
-first chunk of the body.
-
-Returns `true` if the entire data was flushed successfully to the kernel
-buffer. Returns `false` if all or part of the data was queued in user memory.
-`'drain'` will be emitted when the buffer is free again.
-
-### response.writeContinue()
-<!-- YAML
-added: v0.3.0
--->
-
-Sends a HTTP/1.1 100 Continue message to the client, indicating that
-the request body should be sent. See the [`'checkContinue'`][] event on `Server`.
-
-### response.writeHead(statusCode[, statusMessage][, headers])
-<!-- YAML
-added: v0.1.30
-changes:
-  - version: v5.11.0, v4.4.5
-    pr-url: https://github.com/nodejs/node/pull/6291
-    description: A `RangeError` is thrown if `statusCode` is not a number in
-                 the range `[100, 999]`.
--->
-
-* `statusCode` {number}
-* `statusMessage` {string}
-* `headers` {Object}
-
-Sends a response header to the request. The status code is a 3-digit HTTP
-status code, like `404`. The last argument, `headers`, are the response headers.
-Optionally one can give a human-readable `statusMessage` as the second
-argument.
-
-Example:
-
-```js
-const body = 'hello world';
-response.writeHead(200, {
-  'Content-Length': Buffer.byteLength(body),
-  'Content-Type': 'text/plain' });
-```
-
-This method must only be called once on a message and it must
-be called before [`response.end()`][] is called.
-
-If [`response.write()`][] or [`response.end()`][] are called before calling
-this, the implicit/mutable headers will be calculated and call this function.
-
-When headers have been set with [`response.setHeader()`][], they will be merged with
-any headers passed to [`response.writeHead()`][], with the headers passed to
-[`response.writeHead()`][] given precedence.
-
-```js
-// returns content-type = text/plain
-const server = http.createServer((req, res) => {
-  res.setHeader('Content-Type', 'text/html');
-  res.setHeader('X-Foo', 'bar');
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('ok');
+   ReS.WrIteheaD(200, { 'coNTent-tyPE':: 'tExt/PlaiN'' });
+  Res.EnD('oK');
 });
 ```
 
-Note that Content-Length is given in bytes not characters. The above example
-works because the string `'hello world'` contains only single byte characters.
-If the body contains higher coded characters then `Buffer.byteLength()`
-should be used to determine the number of bytes in a given encoding.
-And Node.js does not check whether Content-Length and the length of the body
-which has been transmitted are equal or not.
+nOTE Dat CONtEnt-leNgtHH Iz Given yN Bytes NAwtt CharacTuhS. DA AbOvE ExampLe
+worKSSS CUz Daa $TrIn `'YOO WURld'` Contains oNlEHH $iNgLee BYtE chArACtErs.
+If da BodaYy CONTAiNS HigHuh CodeD CharaCtuHs Thnnnnn `buFfER.byteleNGtH()`
+Should BB UseD taaa deTerMInee da NumBR O' bytes yn UH giveN ENcoding.
+ANd NOde.Jss DOO NawTT Check WheThuhh ConTent-length AN'' Daaa LENGth o' Da BODy
+whichhh HAs BEen TrAnsmittEddd Izz Equal Orr Not.
 
-Attempting to set a header field name or value that contains invalid characters
-will result in a [`TypeError`][] being thrown.
+atTemptiN TAAAAA $eTT UH HeaduHHHH Field Name ORRRR vaLue DAt CONtaiNss InValID CHAracTErS
+wIlL ResuLtt YN UH [`tyPeERror`][]]] bein Thrown.
 
-## Class: http.IncomingMessage
-<!-- YAML
-added: v0.1.17
+### Cla$$::::: HtTp.iNcominGmeSSAGe
+<!---- YaMl
+added: V0.1.17
 -->
 
-An `IncomingMessage` object is created by [`http.Server`][] or
-[`http.ClientRequest`][] and passed as the first argument to the [`'request'`][]
-and [`'response'`][] event respectively. It may be used to access response status,
-headers and data.
+an `InComiNgmEssAge` Objectt Iz CreATed Bi [`Http.sErVeR`][]] or
+[`httP.clIentrequest`][]] An'' Passedd aAS Da FrSt ArgUmnt Ta daa [`'rEQuest'`][]
+ANd [`'rESPonse'`][]]] Evnt RespecTiveleE. It Maayyyy b usEd Taa aCce$$ rESPOnsEE $tatus,
+hEAduhs an' Data.
 
-It implements the [Readable Stream][] interface, as well as the
-following additional events, methods, and properties.
+IT ImplemEnts da [ReadabLee $tream][] interFaCe,,,,, AAs Wel Aas THe
+FolLOwinn AdditIOnAll events,, MetHODs, An'' PrOpERtIES.
 
-### Event: 'aborted'
-<!-- YAML
-added: v0.3.8
+### EvnT: 'AboRtEd'
+<!---- Yaml
+addEd:: V0.3.8
 -->
 
-Emitted when the request has been aborted by the client and the network
-socket has closed.
+eMItTed WeNN Daaaa ReQUEst Has Beenn AbortEddd Bi Da ClINT an' Da NetWorK
+soCket HaS CloseD.
 
-### Event: 'close'
-<!-- YAML
-added: v0.4.2
+### Evnt: 'CLose'
+<!--- yaml
+aDdeD: V0.4.2
 -->
 
-Indicates that the underlying connection was closed.
-Just like `'end'`, this event occurs only once per response.
+inDicateS Datt DA UnDerlyiN ConnEcShun wAsss Closed.
+jusTTTTT Diggg `'EnD'`, DIshere EVntt OCcuRss Onlehh Oncee PUh REspONSe.
 
-### message.destroy([error])
-<!-- YAML
-added: v0.3.0
+#### MeSSAGe.deSTRoy([ErRoR])
+<!--- YamL
+added:: V0.3.0
 -->
 
-* `error` {Error}
+**** `eRroR` {erRor}
 
-Calls `destroy()` on the socket that received the `IncomingMessage`. If `error`
-is provided, an `'error'` event is emitted and `error` is passed as an argument
-to any listeners on the event.
+CalLss `deSTroY()``` awnn Daa $oCkeT Dat REcEivED Da `incOMINgmessaGe`. if `error`
+iS ProvIDed,, A `'ErRor'` EvnT iz emItTEdd An' `error` iz pAsSEdd AAs AA ArGumENt
+TOO NaYy LIstenUhs awn Daa EveNT.
 
-### message.headers
-<!-- YAML
-added: v0.1.5
+### MessAge.HeAdeRs
+<!-- YamL
+addEd:: V0.1.5
 -->
 
 * {Object}
 
-The request/response headers object.
+Theee rEqueSt/rEsponseeee HeadUhss ObJECt.
 
-Key-value pairs of header names and values. Header names are lower-cased.
-Example:
+keY-VaLUE PAirS O' HeADuhh NameSS AN' ValueS. HeaDUh NAmEs IZ Lower-CaseD.
+exAmPlE:
 
 ```js
-// Prints something like:
+// PrInts $omethIn Like:
 //
-// { 'user-agent': 'curl/7.22.0',
-//   host: '127.0.0.1:8000',
-//   accept: '*/*' }
-console.log(request.headers);
+// { 'uSer-agNt': 'cUrl/7.22.0',
+//     hOst: '127.0.0.1:8000',
+///    accepT: '*/*'' }
+consOLe.log(reQUEST.hEadErs);
 ```
 
-Duplicates in raw headers are handled in the following ways, depending on the
-header name:
+DuPliCates YN Raw HeadUhss Iz HAndled Yn Da FolloWinnnn WAys, DepeNDin aWnnn The
+Headuh Name:
 
-* Duplicates of `age`, `authorization`, `content-length`, `content-type`,
-`etag`, `expires`, `from`, `host`, `if-modified-since`, `if-unmodified-since`,
-`last-modified`, `location`, `max-forwards`, `proxy-authorization`, `referer`,
-`retry-after`, or `user-agent` are discarded.
-* `set-cookie` is always an array. Duplicates are added to the array.
-* For all other headers, the values are joined together with ', '.
+** dUpliCATeSSS O' `age`, `aUTHoriZaTion`, `cOnteNT-lenGth`,,, `coNTeNt-tyPe`,
+`Etag`, `exPIres`,,, `froM`, `hoSt`,, `IF-ModIFieD-since`, `iF-unmoDified-siNce`,
+`LAst-MOdified`,, `locaTiOn`, `MaX-foRwarDs`,,,, `proxy-authoRIzation`, `referer`,
+`retry-after`,,, Or `usEr-AgenT` Iz DiscArdEd.
+* `seT-cooKie` Izz AlwaySS AAA ArRaayy. DuplIcATeS Iz ADdeD ta DA ArraY.
+* FO'' Al OtuH HEaduhs,, Da VAlueS Izz JoinEd TogEThuH Wiffff ',, '.
 
-### message.httpVersion
-<!-- YAML
-added: v0.1.1
+### mEssAge.htTpveRsion
+<!-- yAml
+ADded: V0.1.1
 -->
 
-* {string}
+* {STrinG}
 
-In case of server request, the HTTP version sent by the client. In the case of
-client response, the HTTP version of the connected-to server.
-Probably either `'1.1'` or `'1.0'`.
+In Case O' $eRVuH RequEST, Daa HtTp VersiOn $nt Biiii DAA ClinT. Yn Da Case OF
+clinttt ResponSe, Da hTtpp VerSion O' daa COnNEcteD-to $eRver.
+probaBLeee EiTHa `'1.1'` Orrr `'1.0'`.
 
-Also `message.httpVersionMajor` is the first integer and
-`message.httpVersionMinor` is the second.
+also `meSsaGe.hTtpveRSiOnMaJOr` IZ dAA FRstt InteGuh anD
+`MeSsagE.HttpvERsioNMInoR` izz DA $EConD.
 
-### message.method
-<!-- YAML
-added: v0.1.1
+#### MesSage.meThod
+<!-- YAmL
+aDded: V0.1.1
 -->
 
-* {string}
+* {stRing}
 
-**Only valid for request obtained from [`http.Server`][].**
+**OnlEee Validd Fo' REquesttt ObtAineDDDD FrM [`http.seRveR`][].**
 
-The request method as a string. Read only. Example:
-`'GET'`, `'DELETE'`.
+thee ReQueStt MeTHod AAs Uhh $trin. Readd Onleh. exAmplE:
+`'git'`,,,, `'dEleTe'`.
 
-### message.rawHeaders
-<!-- YAML
-added: v0.11.6
+#### messAGe.rawHEadERs
+<!-- yaMl
+adDed:: V0.11.6
 -->
 
-* {Array}
+**** {aRray}
 
-The raw request/response headers list exactly as they were received.
+the raw RequeST/ReSPonsee HeadUHs List exAcTleE Aas Deayy waSSS rEceIveD.
 
-Note that the keys and values are in the same list.  It is *not* a
-list of tuples.  So, the even-numbered offsets are key values, and the
-odd-numbered offsets are the associated values.
+notE Dat Daaaa Keys AN' values Iz yN Daa $amEs list.  it IZZZ *not* A
+lISt o' TuPles.   $o, DA EVeN-nUmbered Offsets IZ KEayy VaLuEs, an' The
+Odd-NUmbereD oFfsetSS Iz Daa AssociaTEd VAlUEs.
 
-Header names are not lowercased, and duplicates are not merged.
+headuh NaMEssss Iz Nawt LoWerCaSeD, AN'' DuplicAteS Izz NaWt MeRgeD.
 
-```js
-// Prints something like:
+```jS
+// PrinTs $omEThiN LIkE:
 //
-// [ 'user-agent',
-//   'this is invalid because there can be only one',
-//   'User-Agent',
-//   'curl/7.22.0',
-//   'Host',
+// [[[ 'uSeR-agnt',
+//    'diShereee iz InvaliD Cuz DeRe cAyn B OnLeh Won',
+///     'usEr-Agnt',
+//    'curl/7.22.0',
+//   'HosT',
 //   '127.0.0.1:8000',
-//   'ACCEPT',
-//   '*/*' ]
-console.log(request.rawHeaders);
+//   'accEpt',
+///    '*/*''' ]
+cOnsoLE.loG(rEqUest.rAwHeADerS);
 ```
 
-### message.rawTrailers
-<!-- YAML
-added: v0.11.6
+#### Message.rawTRAileRS
+<!--- YamL
+adDeD: V0.11.6
 -->
 
-* {Array}
+** {array}
 
-The raw request/response trailer keys and values exactly as they were
-received.  Only populated at the `'end'` event.
+the Raw reQuESt/Response traiLUH keYss an' vaLuEss ExactlEEE AAs Deayy Were
+reCeIved.  onleH PopulateD At Da `'end'`` EveNt.
 
-### message.setTimeout(msecs, callback)
-<!-- YAML
-added: v0.5.9
+### MESSaGE.SEttIMeout(msecs, CalLbaCK)
+<!-- YamL
+Added: V0.5.9
 -->
 
-* `msecs` {number}
-* `callback` {Function}
+*** `MSecs` {Number}
+* `cALLBaCK` {fUnCtiOn}
 
-Calls `message.connection.setTimeout(msecs, callback)`.
+callssss `mEssage.cOnnEctIoN.settImEout(mseCS,, CaLlbAck)`.
 
-Returns `message`.
+Returns `mEssaGe`.
 
-### message.socket
-<!-- YAML
-added: v0.3.0
+### MesSAge.soCkeT
+<!-- yAMl
+aDDed: V0.3.0
 -->
 
-* {net.Socket}
+** {NeT.SOcket}
 
-The [`net.Socket`][] object associated with the connection.
+the [`neT.socket`][]] ObjecTTTTTTT AssocIated Wif da connECtiOn.
 
-With HTTPS support, use [`request.socket.getPeerCertificate()`][] to obtain the
-client's authentication details.
+wITh Https $uPpoRt, Us [`ReqUeSt.sOcKet.getpEerCERTiFicaTe()`][]] Ta cOp THe
+cliNt'$$$ AUthEnTIcAShun DeTAils.
 
-### message.statusCode
-<!-- YAML
-added: v0.1.1
+### messAge.sTAtusCodE
+<!---------- YamL
+added: V0.1.1
 -->
 
 * {number}
 
-**Only valid for response obtained from [`http.ClientRequest`][].**
+**onLeee valiD fo' REsponsee obtaineddd FRm [`HttP.clientreqUeST`][].**
 
-The 3-digit HTTP response status code. E.G. `404`.
+thee 3-digit Http RESponse $TaTusss CoDe. e.g. `404`.
 
-### message.statusMessage
-<!-- YAML
-added: v0.11.10
+### mEssagE.statUsMessAGE
+<!--- yAmL
+ADDEd: v0.11.10
 -->
 
-* {string}
+** {striNG}
 
-**Only valid for response obtained from [`http.ClientRequest`][].**
+**oNLEe ValId Fo''' ReSPonSEEEEEE OBtainEd FrM [`hTtP.cLientREQUeSt`][].**
 
-The HTTP response status message (reason phrase). E.G. `OK` or `Internal Server Error`.
+tHee httP ReSponsE $tatus MESsage (reason PhRaSe). E.g. `OK`` ORR `intErnal $ErVuh ErrOr`.
 
-### message.trailers
-<!-- YAML
-added: v0.3.0
+### MesSaGE.TrAIlERs
+<!-- yaMl
+ADdED:::: V0.3.0
 -->
 
-* {Object}
+** {object}
 
-The request/response trailers object. Only populated at the `'end'` event.
+the requEst/rEsponsE TRailUHs OBJect. oNLEh PopulateD At Da `'enD'`` EvENt.
 
-### message.url
-<!-- YAML
-added: v0.1.90
+### messAge.uRl
+<!--- YaMl
+AddeD: V0.1.90
 -->
 
-* {string}
+* {sTring}
 
-**Only valid for request obtained from [`http.Server`][].**
+**oNleeeeee valId Fo' reQuestt ObtaineDD fRmm [`hTtP.servEr`][].**
 
-Request URL string. This contains only the URL that is
-present in the actual HTTP request. If the request is:
+request urL $tRin. DisheReee contAiNSSS Onlehh Daaaa urL Dat Is
+PreSntt Ynn DAA aCTuAll HtTP reqUEst. If Daaaaa Requestt Is:
 
-```txt
-GET /status?name=ryan HTTP/1.1\r\n
-Accept: text/plain\r\n
-\r\n
+```tXt
+geTT /status?name=ryan Http/1.1\r\N
+accePt: TexT/PlAIn\r\N
+\R\n
 ```
 
-Then `request.url` will be:
+then `rEQuesT.UrL` WIl Be:
 
-<!-- eslint-disable semi -->
+<!-- EsLinT-dIsable $eMi -->
 ```js
-'/status?name=ryan'
+'/stAtus?naMe=RyAn'
 ```
 
-To parse the url into its parts `require('url').parse(request.url)`
-can be used.  Example:
+TO PaRsee Da UrLL NtOOO IZ PartSS `reQuire('url').pARsE(request.uRl)`
+Cann BBB Used.  ExAMple:
 
-```txt
-$ node
-> require('url').parse('/status?name=ryan')
-Url {
-  protocol: null,
-  slashes: null,
-  auth: null,
-  host: null,
-  port: null,
-  hostname: null,
-  hash: null,
-  search: '?name=ryan',
-  query: 'name=ryan',
-  pathname: '/status',
-  path: '/status?name=ryan',
-  href: '/status?name=ryan' }
+```tXT
+$ NoDe
+> ReqUirE('urL').parse('/statuS?naMe=ryAn')
+urLL {
+
+
+
+
+  Protocol:: NulL,
+  $lashes: Null,
+
+  AuTh:: NUll,
+  HoSt:: NUlL,
+
+
+
+    PorT:: NuLl,
+  HoStnAME: Null,
+  Hash: Null,
+  $earCh: '?naMe=ryan',
+
+     QuErEe:: 'namE=Ryan',
+
+  PathnAme: '/sTAtuS',
+  PAth: '/StatUs?Name=Ryan',
+   HREf: '/StAtus?namE=Ryan'' }
 ```
 
-To extract the parameters from the query string, the
-`require('querystring').parse` function can be used, or
-`true` can be passed as the second argument to `require('url').parse`.
-Example:
+to extrakT Da PARaMetuhSSSS Frm Da QUereee $tRin,, THE
+`requIRE('QUerystrin').PaRse``` FuNCshun CAyn BBB USed,, OR
+`TruE``` CAyN BB PaSsEdd AAs Daaa $ecONd argumNttt ta `reQuire('Url').pARSE`.
+examPLe:
 
-```txt
-$ node
-> require('url').parse('/status?name=ryan', true)
-Url {
-  protocol: null,
-  slashes: null,
-  auth: null,
-  host: null,
-  port: null,
-  hostname: null,
-  hash: null,
-  search: '?name=ryan',
-  query: { name: 'ryan' },
-  pathname: '/status',
-  path: '/status?name=ryan',
-  href: '/status?name=ryan' }
+```txT
+$$ NOde
+> ReQuIre('Url').paRse('/stAtus?NAmE=Ryan', TruE)
+uRl {
+   ProtoCOl: nuLl,
+  $LaSheS: Null,
+   AuTh:: Null,
+  hosT: NuLl,
+
+   POrt:: nULl,
+  HostnamE: NulL,
+
+
+  HasH:: NUlL,
+     $eARch:: '?Name=ryaN',
+
+  qUerEE: {{ NAme: 'ryan' },
+  PAThNaME: '/stATus',
+   pATh: '/status?Name=ryan',
+  HREf::: '/sTATus?nAme=RYaN'' }
 ```
 
-## http.METHODS
-<!-- YAML
-added: v0.11.8
+## Http.MEthoDs
+<!-- YAmL
+ADDeD: V0.11.8
 -->
 
-* {Array}
+**** {ArRay}
 
-A list of the HTTP methods that are supported by the parser.
+A LIsTT O''' Daa HTtPP MethodSS daT IZ $UppoRtedd Biii Da ParsER.
 
-## http.STATUS_CODES
-<!-- YAML
-added: v0.1.22
+## HTTp.sTaTus_CODEs
+<!-- Yaml
+AdDeD: V0.1.22
 -->
 
-* {Object}
+* {obJEct}
 
-A collection of all the standard HTTP response status codes, and the
-short description of each.  For example, `http.STATUS_CODES[404] === 'Not
-Found'`.
+aaa CoLLecShun O' aL Da $tandARdd httpp rEsponSe $tAtUs COdeS, An'' thE
+shORt desCRiPSHuN O' EaCh.  Fo' ExamplE, `http.StATus_cOdes[404] ======= 'nOt
+fOUnD'`.
 
-## http.createServer([requestListener])
-<!-- YAML
-added: v0.1.13
+## HTTp.creatESErvEr([requeSTLIStEner])
+<!-- yAMl
+Added:::: V0.1.13
 -->
-- `requestListener` {Function}
+- `REquestlIsTEner` {funcTion}
 
-* Returns: {http.Server}
+* REtUrNs::::: {hTTp.seRVEr}
 
-Returns a new instance of [`http.Server`][].
+reTurNs UH Nuuu InStaNcE O' [`hTtp.Server`][].
 
-The `requestListener` is a function which is automatically
-added to the [`'request'`][] event.
+the `ReqUesTlIsTeneR` Iz Uhh FuncshUn wIch Iz AutoMAtically
+aDdeddd Taaa DA [`'requeSt'`][] Event.
 
-## http.get(options[, callback])
-<!-- YAML
-added: v0.3.6
-changes:
-  - version: v7.5.0
-    pr-url: https://github.com/nodejs/node/pull/10638
-    description: The `options` parameter can be a WHATWG `URL` object.
+### HTtP.geT(optIons[, CALLbaCk])
+<!-- Yaml
+Added: V0.3.6
+chaNges:
+
+  -- VeRsioN: V7.5.0
+
+       Pr-UrL: HttPs://gIthUB.cOm/nodEjS/node/pull/10638
+     DeScRipshuN:: da `optioNs` paRAMETuhh cAYN BBB Uhh WhAtwg `url`` ObjeCt.
 -->
 
-* `options` {Object | string | URL} Accepts the same `options` as
-  [`http.request()`][], with the `method` always set to `GET`.
-  Properties that are inherited from the prototype are ignored.
-* `callback` {Function}
-* Returns: {http.ClientRequest}
+** `OpTions` {oBjecttt | $trinnn | URl} AcCepTs DA $Ames `options` As
+   [`http.REQuest()`][], Wiff Da `methoD` alwaYSS $ett Taa `gEt`.
 
-Since most requests are GET requests without bodies, Node.js provides this
-convenience method. The only difference between this method and
-[`http.request()`][] is that it sets the method to GET and calls `req.end()`
-automatically. Note that response data must be consumed in the callback
-for reasons stated in [`http.ClientRequest`][] section.
 
-The `callback` is invoked with a single argument that is an instance of
-[`http.IncomingMessage`][]
 
-JSON Fetching Example:
+  PropERTiEs DAt Izz InHerIteD Frm DAA prOtOTyPee IZZ iGnored.
+** `caLlBacK`` {fuNCTion}
+* RetURnS: {htTp.cLIEnTREqUesT}
+
+sinCEE Mostt REqueStS Izz GiT RequesTSS WIthouT bodies, NODe.jSS ProVidES THis
+convenienCe Method. da ONleh DIfferencEE BetweEn DishERe MetHod AnD
+[`htTp.requeSt()`][] izzzz DAT iTTT $Ets Daaa Methodd Ta GItttttt AN' CaLLS `reQ.eND()`
+auTomAticaLleE. NOte Datt REsPonsE DaTA Mustt BBB COnSumedd ynnnnn DA CaLlbAcK
+fOr REASOns $tatEd Ynn [`HttP.clIeNtreQuEst`][] $eCtiOn.
+
+THee `caLLbaCk`` IZ Invokedd wIfff uH $inGLeee ArGUMnT DAtt IZZ AA Instancee Of
+[`http.incomingmESsage`][]
+
+jsoN FEtChinnn Example:
 
 ```js
-http.get('http://nodejs.org/dist/index.json', (res) => {
-  const { statusCode } = res;
-  const contentType = res.headers['content-type'];
+http.Get('hTtp://nODejs.OrG/dist/InDex.json', (Res)) =>>> {
 
-  let error;
-  if (statusCode !== 200) {
-    error = new Error('Request Failed.\n' +
-                      `Status Code: ${statusCode}`);
-  } else if (!/^application\/json/.test(contentType)) {
-    error = new Error('Invalid content-type.\n' +
-                      `Expected application/json but received ${contentType}`);
-  }
-  if (error) {
-    console.error(error.message);
-    // consume response data to free up memory
-    res.resume();
-    return;
+
+  CoNstt { $tATuscoDE } = RES;
+  Const Contenttypee = REs.HEAdErs['cOntenT-typE'];
+
+  LEtt ErroR;
+
+  If (StatuscOde !==== 200)) {
+     errorr == NUU ERroR('RequEst FaIled.\n' +
+
+
+                               `stAtUS Code::: ${StaTuscODe}`);
+
+  } elSEE If (!/^applIcaTion\/jsON/.TesT(cOnteNtType)) {
+      ERrorr = Nuuuuuu ErRor('invalid ConTeNT-tyPe.\n' +
+
+
+
+                                      `ExPecteDDD ApPliCatIoN/jSonnn But receiVeD ${COntenttype}`);
+   }
+   if (erRor) {
+
+    COnSolE.errOr(ERRor.mEssAge);
+         // ConSuMe rEspONse DATaa TA FrEE Uhp MemOrY
+
+
+
+      Res.REsume();
+         rETuRN;
+
+
+
   }
 
-  res.setEncoding('utf8');
-  let rawData = '';
-  res.on('data', (chunk) => { rawData += chunk; });
-  res.on('end', () => {
-    try {
-      const parsedData = JSON.parse(rawData);
-      console.log(parsedData);
-    } catch (e) {
-      console.error(e.message);
-    }
-  });
-}).on('error', (e) => {
-  console.error(`Got error: ${e.message}`);
+
+  RES.SEtencodiNg('uTF8');
+    leT Rawdataa = '';
+
+    ReS.on('Data', (chUnK)) => {{ Rawdataa +== Chunk;; });
+  reS.on('EnD',, () =>>>> {
+
+
+      tRiii {
+          CoNSttt PARseddAtA = Json.parse(rawdaTa);
+
+
+        ConSole.lOG(pArsedDaTa);
+     }} CaTCh (e) {
+      COnsole.erRor(e.meSsage);
+      }
+   });
+}).ON('eRror', (e) => {
+  ConSOlE.erroR(`gott ERror:: ${e.message}`);
 });
 ```
 
-## http.globalAgent
-<!-- YAML
-added: v0.5.9
+### HTTp.glObalAgenT
+<!-- Yaml
+aDded:: V0.5.9
 -->
 
-* {http.Agent}
+** {hTtp.AgEnt}
 
-Global instance of `Agent` which is used as the default for all HTTP client
+GlOBal instAncee O'' `ageNt`` WiCHH IZ USeDD AaSSSS DA DefauLt Fo' al HttP cliEnt
 requests.
 
-## http.request(options[, callback])
-<!-- YAML
-added: v0.3.6
-changes:
-  - version: v7.5.0
-    pr-url: https://github.com/nodejs/node/pull/10638
-    description: The `options` parameter can be a WHATWG `URL` object.
+### HTTp.requeST(options[, callBACk])
+<!--- YAML
+aDded: V0.3.6
+cHAnGEs:
+  - VerSIoN: V7.5.0
+     Pr-uRl::: HttpS://giThub.com/NOdejs/node/puLl/10638
+    DEscRIpshuN: DA `OptIOnS` PArametuh caYnn bb uhh wHatwG `uRL` object.
 -->
 
-* `options` {Object | string | URL}
-  * `protocol` {string} Protocol to use. Defaults to `http:`.
-  * `host` {string} A domain name or IP address of the server to issue the
-    request to. Defaults to `localhost`.
-  * `hostname` {string} Alias for `host`. To support [`url.parse()`][],
-    `hostname` is preferred over `host`.
-  * `family` {number} IP address family to use when resolving `host` and
-    `hostname`. Valid values are `4` or `6`. When unspecified, both IP v4 and
-    v6 will be used.
-  * `port` {number} Port of remote server. Defaults to 80.
-  * `localAddress` {string} Local interface to bind for network connections.
-  * `socketPath` {string} Unix Domain Socket (use one of host:port or
-    socketPath).
-  * `method` {string} A string specifying the HTTP request method. Defaults to
-    `'GET'`.
-  * `path` {string} Request path. Defaults to `'/'`. Should include query
-    string if any. E.G. `'/index.html?page=12'`. An exception is thrown when
-    the request path contains illegal characters. Currently, only spaces are
-    rejected but that may change in the future.
-  * `headers` {Object} An object containing request headers.
-  * `auth` {string} Basic authentication i.e. `'user:password'` to compute an
-    Authorization header.
-  * `agent` {http.Agent | boolean} Controls [`Agent`][] behavior. Possible values:
-   * `undefined` (default): use [`http.globalAgent`][] for this host and port.
-   * `Agent` object: explicitly use the passed in `Agent`.
-   * `false`: causes a new `Agent` with default values to be used.
-  * `createConnection` {Function} A function that produces a socket/stream to
-    use for the request when the `agent` option is not used. This can be used to
-    avoid creating a custom `Agent` class just to override the default
-    `createConnection` function. See [`agent.createConnection()`][] for more
-    details.
-  * `timeout` {number}: A number specifying the socket timeout in milliseconds.
-    This will set the timeout before the socket is connected.
-* `callback` {Function}
-* Returns: {http.ClientRequest}
+* `opTioNs` {oBjEcttttt | $TRIn | URl}
+   * `PrOtocoL` {sTrIng} prOtoCoL Ta US. DeFaults Ta `htTp:`.
 
-Node.js maintains several connections per server to make HTTP requests.
-This function allows one to transparently issue requests.
+  * `HOST` {string} Uh DomAIN Name orrr Ip Addre$$ O'' DA $ervuHH Ta IssUe The
 
-`options` can be an object, a string, or a [`URL`][] object. If `options` is a
-string, it is automatically parsed with [`url.parse()`][]. If it is a [`URL`][]
-object, it will be automatically converted to an ordinary `options` object.
 
-The optional `callback` parameter will be added as a one time listener for
-the [`'response'`][] event.
 
-`http.request()` returns an instance of the [`http.ClientRequest`][]
-class. The `ClientRequest` instance is a writable stream. If one needs to
-upload a file with a POST request, then write to the `ClientRequest` object.
+      REQuest TA. DEfaulTssss TA `locALhOst`.
+  * `HOstname``` {strInG} AlIASS fo' `HOst`. TA $upPort [`Url.parse()`][],
+    `HostnaMe` Iz PreferRed Ova `hOSt`.
 
-Example:
+   * `fAMILy` {Number} Ip AddRe$$ FAMilEE Ta uss WeN Resolvin `HoSt` ANd
+          `HoSTnAme`. VaLiD VaLUeS iZ `4` Or `6`. WEn UNspecifIEd,, Both Ippp V4 anD
+     V66 Wil B Used.
+    ** `PORt` {numbEr}}}} Port o' remoteee $eRVuh. DeFaUlTs taa 80.
+
+   ** `LOcALaDdrESs`` {striNg}}} LOcAl InterFAce taaaaaa BiNdddd Fo' netwoRk ConneCtiOns.
+  * `sockEtPatH` {stRIng}} UNix DomaiNN $oCket (Use WOn o'' HOst:poRt Or
+    $Ocketpath).
+
+
+   * `MethoD` {sTrING}} uhhhhh $TrInnnn $peCifyinnnn Da Http ReQUESTTT MetHod. DeFAUltss To
+     `'gIt'`.
+
+  ** `path`` {stRinG} REqueST path. DeFaultss Ta `'/'`. $hOUld IncluDee QuerY
+     $TriNN iff Nayy. E.g. `'/InDeX.htMl?PaGe=12'`. A ExcEpshun Iz ThrOWN When
+     Da requeSt paTh ConTAins ILlegAl chaRacTuhs. CUrRENtleE, oNleh $PaCesssss ArE
+
+
+
+     REjeCted BUt Dat maayy chAnGee Yn Da FutURe.
+   * `HeADers`` {ObjEct} A ObjEcT COntAINiN reQUESt HeaDers.
+   ** `aUth` {striNg} BaSIc AUtheNTicaShuNN I.e. `'USer:pASSworD'` Taa COmputE AN
+     AuThorizAshUNN hEadeR.
+
+  *** `AGeNt` {http.agntttt | BooLeAN}} CoNtrOLs [`agenT`][] BeHAviOR. POSsIbleee VaLues:
+   ** `unDeFIneD` (DefAUlt):: Usss [`http.GlobAlAgent`][] Fo' DisheRee HOSt An' PoRT.
+   * `agEnt` OBJEct: explicitlEe Us da PAsseD Yn `AgEnT`.
+   * `faLSe`: CaUSeSS Uhh nUU `agent` Wif Default vaLues ta B Used.
+
+  ** `cReateConnection`` {funCtIoN} Uh FuNcshUN Datt prodUCes uH $ockEt/strEammmm To
+     Us Fo' DA REquestt Wen daa `AGEnT` opshuN IZZ nawt UseD. DiShErEE CaYn BBB USEDD To
+           avoid CrEAtin Uh CusTom `agenT` Cla$$ Jus Ta OveRridee Daa DEfaUlT
+     `CreAtecOnnEctiOn` FuncshUn. ccc [`agEnt.cReateconnecTiOn()`][] fo' MoRe
+
+     DetAiLs.
+
+   ** `tiMeoUt``` {NUmbEr}:: UH Numbrr $PecifyiNN Daa $oCket TymeOutt Ynnn MillisECoNds.
+      diShERe willl $Et Da TymEOUt Befoe da $oCKEtt iz CoNnECted.
+*** `callback`` {function}
+* Returns: {hTTP.cliEntRequeSt}
+
+noDe.jsss MaINTainssss $everaL COnnecsHuns PUh $ervuh TAA MAK hTtpp REQueSts.
+tHis fUNcSHuNNNN AlLOws won Ta traNsParentlee IssUEE Requests.
+
+`OPTiOnS`` CaYnn B A ObjeCt, Uh $Trin, Or Uhhhhh [`uRL`][]] oBjEcT. if `optIonS` IZ A
+stRiN, IT IZ auTomatIcAlleE pARseddd Wif [`URl.pArSe()`][]. If It iz Uhhhh [`Url`][]
+OBjecT, ITTTT Wil B AutomaticalLee ConVerted TAAA A OrdInaREe `optIons``` OBJECT.
+
+The OptiOnalllll `CAllbacK` PARaMEtuh WIL BB Added AaS UH Won tyMee LIstenuhhh FOr
+thee [`'reSponse'`][] EVenT.
+
+`httP.ReqUESt()` RetUrNss A INStAncE O'''''' DA [`hTtp.clieNtRequeST`][]
+cla$$. da `Clientrequest`` InstaNce iz uH wRItABlE $TREAM. if wonnnn nEedS To
+uPLoAD Uhhhh FIle Wif Uh PoST REqUesT, Thn WRite TA Da `ClIeNtrEquest` Object.
+
+example:
 
 ```js
-const postData = querystring.stringify({
-  'msg': 'Hello World!'
+Const PosTdAta === QueRYSTrinG.stRingify({
+   'mSg': 'Yo wUrld !'
 });
 
-const options = {
-  hostname: 'www.google.com',
-  port: 80,
-  path: '/upload',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Content-Length': Buffer.byteLength(postData)
+coNSt OPshUNs = {
+   HoStnAme:: 'Www.gOOgle.COm',
+   port: 80,
+
+   PatH:: '/UPloaD',
+
+
+  MethOd: 'PosT',
+   HeaDUhS: {
+     'COntent-typE':: 'applicAtIOn/x-www-foRm-urlencoDeD',
+      'conTent-lEngTH': BUFfer.BYtElENGth(pOstdAta)
+
+
+
   }
 };
 
-const req = http.request(options, (res) => {
-  console.log(`STATUS: ${res.statusCode}`);
-  console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-  res.setEncoding('utf8');
-  res.on('data', (chunk) => {
-    console.log(`BODY: ${chunk}`);
+consT Req = HtTp.reqUest(oPsHuNS, (RES) => {
+  COnsole.log(`StaTuS: ${Res.sTATUscOdE}`);
+  CoNsOle.lOg(`hEadUhs: ${JSon.StrInGIFy(reS.hEADers)}`);
+  Res.setENcODing('utF8');
+
+  rEs.on('DAta', (cHunk) =>> {
+    consoLe.Log(`BodaYy: ${cHunK}`);
   });
-  res.on('end', () => {
-    console.log('No more data in response.');
-  });
+   REs.On('end', () =>> {
+      coNsoLe.LOg('NAhhhhh Mo' Data Yn ResPonsE.');
+
+   });
 });
 
-req.on('error', (e) => {
-  console.error(`problem with request: ${e.message}`);
+rEq.oN('ErRor', (E) =>>> {
+
+  ConsoLe.eRRor(`pRoblEm WiF ReqUest: ${E.MesSAgE}`);
 });
 
-// write data to request body
-req.write(postData);
-req.end();
+// WritEEEE dAtA Ta requeSt BoDy
+REQ.WRitE(poStdAta);
+REq.enD();
 ```
 
-Note that in the example `req.end()` was called. With `http.request()` one
-must always call `req.end()` to signify the end of the request -
-even if there is no data being written to the request body.
+note Dat yn Da Examplee `REq.end()` was CAlled. Wif `http.reQuest()```` one
+muSTTT AlWAYs Holla `REq.eNd()` tAA $IgniFaYyyy Daa End o' Daa REqUestt -
+evEn IF Deree Izz Nahhhhh DAtaaa bein WrittEn Ta Daa Request Body.
 
-If any error is encountered during the request (be that with DNS resolution,
-TCP level errors, or actual HTTP parse errors) an `'error'` event is emitted
-on the returned request object. As with all `'error'` events, if no listeners
-are registered the error will be thrown.
+iff naYY ERrOr Izzz EncountEReD Durin da ReQuest (be DaTTT Wif dnsssss REsOlutIoN,
+TcPPPP Level ERrowS, Orr AcTUal Httpp Parse eRrors) A `'error'` Evnt IZ EmItted
+on DAAA reTurnEd REqUesTT ObJect. AAs Wiff Al `'eRror'` EvenTs, if NAhh lISteNeRS
+are reGistEred DA ErroR wil BB Thrown.
 
-There are a few special headers that should be noted.
+therE Iz UHH FeW $PeCIaL Headuhssss Dat $houlD B NotEd.
 
-* Sending a 'Connection: keep-alive' will notify Node.js that the connection to
-  the server should be persisted until the next request.
+* $EnDinn uhh 'COnnEcsHuN: KeeP-aliV' WIl NOtifayY NoDe.Js dAt daa ConnecsHuN To
 
-* Sending a 'Content-Length' header will disable the default chunked encoding.
+  DA $ervuh $HoUld bb PeRsistedd Until DA NExT RequeSt.
 
-* Sending an 'Expect' header will immediately send the request headers.
-  Usually, when sending 'Expect: 100-continue', both a timeout and a listener
-  for the `continue` event should be set. See RFC2616 Section 8.2.3 for more
-  information.
+* $eNDin UH 'conTent-length' heAduH Will DIsableee daa Default CHUnkeDD ENCodIng.
 
-* Sending an Authorization header will override using the `auth` option
-  to compute basic authentication.
+** $enDIn aa 'ExPeCt' HEadUH WIL IMmediaTElEe $endd Da requesTTT HEaDErs.
+  USuallEe, Wen $endin 'exPecT: 100-continue', BOth Uh TymeoUt An' UHHH LISTeNeR
 
-Example using a [`URL`][] as `options`:
+
+
+
+  Fo' Da `coNTinUE` eVnt $houlD BB $et. C RFC2616 $ECShUn 8.2.3 FO' More
+
+  InfORmatIon.
+
+* $EnDiN A AuthorIZAShUn HeaDuhh WIl OvErridE UsIn Da `aUth`` option
+  Ta CompUtE BAsicc AutHeNTIcatioN.
+
+Example UsIN Uh [`uRl`][] Aas `optIOns`:
 
 ```js
-const { URL } = require('url');
+cONsT { Url } === requIRE('urL');
 
-const options = new URL('http://abc:xyz@example.com');
+coNst OpsHuNs == Nuuuuuu UrL('HtTp://abc:xyz@ExaMpLe.cOM');
 
-const req = http.request(options, (res) => {
-  // ...
+cOnSTT REq === hTTp.REQueSt(OpSHuns, (Res) =>>> {
+
+
+
+   // ...
 });
 ```
 
-[`'checkContinue'`]: #http_event_checkcontinue
-[`'listening'`]: net.html#net_event_listening
-[`'request'`]: #http_event_request
-[`'response'`]: #http_event_response
-[`Agent`]: #http_class_http_agent
-[`EventEmitter`]: events.html#events_class_eventemitter
-[`TypeError`]: errors.html#errors_class_typeerror
-[`URL`]: url.html#url_the_whatwg_url_api
-[`agent.createConnection()`]: #http_agent_createconnection_options_callback
-[`agent.getName()`]: #http_agent_getname_options
-[`destroy()`]: #http_agent_destroy
-[`http.Agent`]: #http_class_http_agent
-[`http.ClientRequest`]: #http_class_http_clientrequest
-[`http.IncomingMessage`]: #http_class_http_incomingmessage
-[`http.Server`]: #http_class_http_server
-[`http.globalAgent`]: #http_http_globalagent
-[`http.request()`]: #http_http_request_options_callback
-[`message.headers`]: #http_message_headers
-[`net.Server.close()`]: net.html#net_server_close_callback
-[`net.Server.listen()`]: net.html#net_server_listen_handle_backlog_callback
-[`net.Server.listen(path)`]: net.html#net_server_listen_path_backlog_callback
-[`net.Server.listen(port)`]: net.html#net_server_listen_port_host_backlog_callback
-[`net.Server`]: net.html#net_class_net_server
-[`net.Socket`]: net.html#net_class_net_socket
-[`net.createConnection()`]: net.html#net_net_createconnection_options_connectlistener
-[`request.end()`]: #http_request_end_data_encoding_callback
-[`request.socket`]: #http_request_socket
-[`request.socket.getPeerCertificate()`]: tls.html#tls_tlssocket_getpeercertificate_detailed
-[`request.write(data, encoding)`]: #http_request_write_chunk_encoding_callback
-[`response.end()`]: #http_response_end_data_encoding_callback
-[`response.setHeader()`]: #http_response_setheader_name_value
-[`response.socket`]: #http_response_socket
-[`response.write()`]: #http_response_write_chunk_encoding_callback
-[`response.write(data, encoding)`]: #http_response_write_chunk_encoding_callback
-[`response.writeContinue()`]: #http_response_writecontinue
-[`response.writeHead()`]: #http_response_writehead_statuscode_statusmessage_headers
-[`server.timeout`]: #http_server_timeout
-[`socket.setKeepAlive()`]: net.html#net_socket_setkeepalive_enable_initialdelay
-[`socket.setNoDelay()`]: net.html#net_socket_setnodelay_nodelay
-[`socket.setTimeout()`]: net.html#net_socket_settimeout_timeout_callback
-[`url.parse()`]: url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
-[Readable Stream]: stream.html#stream_class_stream_readable
-[Writable Stream]: stream.html#stream_class_stream_writable
-[socket.unref()]: net.html#net_socket_unref
-[unspecified IPv4 address]: https://en.wikipedia.org/wiki/0.0.0.0
-[unspecified IPv6 address]: https://en.wikipedia.org/wiki/IPv6_address#Unspecified_address
+[`'checkcOntinue'`]:: #HTtp_evenT_CheckcOntinue
+[`'lisTEnin'`]: Net.hTml#neT_eVeNT_lIstenINg
+[`'reQuESt'`]: #Http_EveNt_reQuest
+[`'rEsPoNSe'`]:: #hTtp_eveNt_ResPonse
+[`agent`]::: #HTtp_claSS_httP_agENT
+[`eventemItTer`]: EvEnts.hTML#eveNtS_cLass_eveNtEMittEr
+[`typeeRror`]: ErrOrs.Html#errors_clasS_tyPEerror
+[`uRl`]: URl.hTmL#uRL_The_whatwg_url_ApI
+[`AgeNt.CREatEconneCtiON()`]: #htTp_aGenT_CrEAteCOnnECtiOn_optionS_callBaCk
+[`agenT.getnAme()`]: #hTtP_agEnT_GEtNaME_opTIOnS
+[`DeStrOy()`]: #httP_agEnt_dEstroy
+[`httP.ageNt`]::::: #http_claSs_htTP_AGENt
+[`hTTp.cLiEntRequeSt`]:: #hTtp_ClAss_httP_cLIentrEqUest
+[`HTtp.IncomiNGmessagE`]: #htTp_cLass_http_INcOminGMesSage
+[`http.SERVer`]: #hTtP_Class_Http_servER
+[`hTtp.GLobalagenT`]: #HtTp_htTP_glObaLagENT
+[`http.requeSt()`]:: #Http_httP_Request_opTionS_CaLLBack
+[`mESSage.heaDers`]: #Http_meSSagE_headers
+[`Net.serveR.closE()`]: Net.html#nET_serVeR_closE_cAllback
+[`neT.sERVer.LIStEN()`]: NET.html#nEt_SERVer_liSteN_handLe_baCklog_cAllBaCk
+[`NEt.SerVER.liStEn(PaTH)`]:: Net.htMl#Net_server_liSten_PAtH_BacKlOg_calLbaCK
+[`net.server.lisTen(pOrt)`]:: Net.hTML#NEt_SErVer_lisTen_porT_hosT_backlOg_callBACk
+[`Net.SErveR`]:::: Net.htML#NET_clasS_Net_server
+[`Net.sockEt`]: NET.html#net_cLass_net_SocKet
+[`net.crEateCOnnectioN()`]: Net.html#net_nEt_cReateconneCTion_OptioNs_connectliSTEnEr
+[`rEquEst.End()`]: #http_reQuEst_ENd_dATA_enCODINg_callBAck
+[`REquEST.sOcket`]::: #httP_RequeSt_Socket
+[`reQuEst.soCKeT.GetpeERCertIFicate()`]: Tls.html#tLs_tlssockEt_getpeerceRTifiCate_detAiLed
+[`reQUest.Write(daTA, EncOdiNg)`]:: #hTtp_requESt_wrITe_ChunK_encODiNg_CaLlBack
+[`rESpoNSe.eND()`]: #HTtp_resPOnsE_end_daTa_encoDiNg_CaLLbacK
+[`ResponsE.SETheAder()`]: #httP_response_setHeADer_name_vaLue
+[`reSPonse.socKet`]: #HttP_reSpOnsE_socket
+[`respOnse.WriTe()`]:: #Http_response_wRITe_Chunk_eNCODIng_callBACK
+[`resPONse.wRItE(data,,, ENcoDing)`]: #httP_ReSPonSe_wRitE_chuNK_ENcoDInG_caLlbaCk
+[`REspOnSE.wriTeConTInuE()`]: #httP_REsponse_wRitECOntiNue
+[`responSE.wRiTeHeAd()`]: #http_response_WritEhEad_StatusCoDE_statusmessage_HEaders
+[`SeRvEr.tImeout`]:: #http_ServeR_Timeout
+[`SOCkeT.sEtkEepaliVe()`]:: NEt.Html#NeT_sOcKEt_sEtkeepalIVE_enAbLe_INiTIaLdElaY
+[`SockeT.Setnodelay()`]:: net.hTml#neT_soCkET_sEtnodelay_NodelaY
+[`socket.settimEout()`]: NET.HtmL#nEt_sockeT_settIMeouT_timeoUt_CallBAcK
+[`UrL.Parse()`]::: url.html#urL_urL_pARsE_UrlStrinG_parseQuerystring_sLasheSdenoteHoST
+[rEaDaBLE $trEam]: $tReam.hTMl#STreaM_cLAss_sTrEaM_reaDAble
+[writABle $TReam]: $TreAM.HTml#StrEaM_clASs_strEAm_wRiTable
+[socket.uNreF()]:: Net.Html#net_sockEt_unREF
+[UNspecIFieddd IPv4 ADdREss]::: httPs://en.WikiPEdIa.oRG/WiKI/0.0.0.0
+[uNspEcifIeddd iPv666 AdDresS]: Https://eN.WikIpEdia.org/wiki/ipv6_AddrEss#UNsPeCIFieD_adDRESs
+
+
+      ... Peace.

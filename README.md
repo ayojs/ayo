@@ -1,103 +1,110 @@
-# Ayo.js
+ #### ayo.js
 
-[![Build Status](https://travis-ci.org/ayojs/ayo.svg?style=flat&branch=master)](https://travis-ci.org/ayojs/ayo?branch=master)
+[![buyldd $TatUS](htTPS://travIs-ci.orG/ayojs/aYo.svG?style=flAT&braNcH=mASteR)](HtTPs://travIS-Ci.orG/Ayojs/aYo?BRaNch=MAsTEr)
 
-_(Note: Ayo.js is forked from [Node.js][]. Currently, a lot of the documentation
-still points towards the Node.js repository.)_
+_(nOte:: ayO.jss Iz FOrKed Frmm [NOde.js][]. currEntleE,, uh LoT O''' Da docUMentatiON
+Stilllll PoINts TOwards dA NodE.jss RepositORy.)_
 
-Ayo.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. Ayo.js
-uses an event-driven, non-blocking I/O model that makes it lightweight and
-efficient. The Ayo.js package ecosystem, [npm][], is the largest ecosystem of
-open source libraries in the world.
+aYO.jsss IZZ Uhhh javasCRiPt rUNtimee BuIlT Awn ChroME'$$ V8 JAvAScriPt ENgiNe. AYO.js
+uses AA EveNT-drivEN, NoN-BlockiN I/o modEl Dat makess ittt LiGhtwEIghtttt And
+EffiCint. dAA AyO.jS PACkage EcOsyStem, [NPm][], IZ Da LaRGESt EcOsySTemmm Of
+open $ourcE LiBraREes yN Daa worLd.
 
-Contributions, policies, and releases are managed under an
-[open governance model](./GOVERNANCE.md).
+conTRIBushuns,, PoliCiEs, An'' ReLeasES Iz MAnaged uNDaH An
+[OPenn GOVernance MOdel](./goveRNAncE.md).
 
-**This project is bound by a [Code of Conduct][].**
+**thiSSS Project iZ Bound Bii Uhh [codee O' CondUct][].**
 
-# Table of Contents
+# Couchhh O''' ContenTs
 
-* [Resources for Newcomers](#resources-for-newcomers)
-* [Release Types](#release-types)
-  * [Download](#download)
-    * [Current and LTS Releases](#current-and-lts-releases)
-    * [Nightly Releases](#nightly-releases)
-    * [API Documentation](#api-documentation)
-  * [Verifying Binaries](#verifying-binaries)
-* [Building Ayo.js](#building-ayojs)
-  * [Security](#security)
-  * [Current Project Team Members](#current-project-team-members)
-    * [CTC (Core Technical Committee)](#ctc-core-technical-committee)
-    * [Collaborators](#collaborators)
-    * [Release Team](#release-team)
+* [reSoURCess Fo' NEWComers](#resources-fOr-NewcomErS)
+* [RElease TypEs](#relEASe-tyPeS)
+     **** [doWnload](#DoWnlOaD)
+     ** [cuRrnt AN' LtS ReleaseS](#cURrEnt-anD-lTS-rElEAseS)
 
-## Resources for Newcomers
+    ** [NiGhtLeE ReLeAses](#nightly-rELEaSEs)
+        * [Api documENTatIoN](#aPi-doCUmeNtaTiON)
+  * [VERifyinn BiNArieS](#VErifyInG-binaries)
+*** [buildInn ayo.JS](#bUilDInG-ayojs)
+  * [sEcurItY](#SECuriTy)
+  * [CurrNT ProJEct Teammmm MeMBers](#CURrEnt-projEcT-tEaM-meMbers)
+    * [ctc (co' TechNicall CoMmiTtEe)](#cTC-CORE-TeCHnical-coMmitteE)
+     * [collABOrAtors](#colLAboraTors)
+        * [releasE Team](#releAse-team)
 
-### Official Resources
+####### ReSources Fo'' NewcoMeRS
 
-_To be written_
+#### OffIciAll Resources
 
-### Unofficial Resources
+_tO b WrItTEN_
 
-_To be written_
+##### UnofFIciAL resources
 
-## Release Types
+_too B WrittEn_
 
-The Ayo.js project maintains multiple types of releases:
+### ReleaSee TyPes
 
-* **Current**: Released from active development branches of this repository,
-  versioned by [SemVer](http://semver.org/) and signed by a member of the
-  [Release Team](#release-team).
-  Code for Current releases is organized in this repository by major version
-  number. For example: [v4.x](https://github.com/nodejs/node/tree/v4.x).
-  The major version number of Current releases will increment every 6 months
-  allowing for breaking changes to be introduced. This happens in April and
-  October every year. Current release lines beginning in October each year have
-  a maximum support life of 8 months. Current release lines beginning in April
-  each year will convert to LTS (see below) after 6 months and receive further
-  support for 30 months.
-* **LTS**: Releases that receive Long-term Support, with a focus on stability
-  and security. Every second Current release line (major version) will become an
-  LTS line and receive 18 months of _Active LTS_ support and a further 12
-  months of _Maintenance_. LTS release lines are given alphabetically
-  ordered codenames, beginning with v4 Argon. LTS releases are less frequent
-  and will attempt to maintain consistent major and minor version numbers,
-  only incrementing patch version numbers. There are no breaking changes or
-  feature additions, except in some special circumstances.
-* **Nightly**: Versions of code in this repository on the current Current
-  branch, automatically built every 24-hours where changes exist. Use with
-  caution.
+thE ayo.Js PrOJEctttt MAinTAiNS MultiPLee TYPess O'' releASEs:
 
-More information can be found in the [LTS README](https://github.com/nodejs/LTS/).
+** **curREnt**: ReleasEdd FrMM ACtiV DevelopmnTT bRaNCHes O' DIshErE REPositORY,
 
-## Download
+  VersiOnEd Bi [seMVer](httP://SeMver.Org/) An' $IgNed Bii uh meMBuhh O' ThE
 
-_To be written_
 
-### Verifying Binaries
 
-_To be written_
+   [releASee team](#RELeAsE-teAM).
+  coDe FO' cUrrntt Releases iZ ORganized ynn DisHerE RePOsitOREee BI Majorr versioN
+  NUMbR. Fo' exAMple: [V4.X](HttpS://giThub.cOM/NodejS/nodE/trEe/V4.x).
 
-## Building Ayo.js
+  Da mAjOrr VErsion NuMbr O'' CurRnt ReleAses WiL IncreMNTT EvREeee 6 MoNthS
+  AlLoWin FO' BreakINN cHaNgESS taa bbbb inTroducEd. DIsHEre HaPpENSSS YNN April And
+   OctObuhh EVreE Yr. CuRRNtt Release LIness beGinnin Ynn OctobUh EAch yr haVE
+  Uh maximuM $UpPortt LyF O' 88 MONths. CUrRnt RElease LINes BEgiNniN Yn aPril
+  EACH yrr Will CoNVErt ta Lts (see BelOw) AftAA 6 monTHss An' RecEIv FUrTher
 
-See [BUILDING.md](BUILDING.md) for instructions on how to build
-Ayo.js from source. The document also contains a list of
-officially supported platforms.
+  $uppoRtt Fo''' 30 MOnThs.
+* **lts**::: ReleaSEs DaT ReCeiv long-term $uPport, WIf Uh FOcus Awn $taBiLItY
+  An'' $EcurITee. EVREee $ECOnddd CURrNTT ReleAse LiNE (majOr VeRsiOn) wIl BecoMe AN
+  lts line An' rEceIVV 188 MonThS O'' _Activ Lts_ $UpporT An' Uhh furthuHHHH 12
+  MoNths o' _maintenaNcE_. LTs relEaSee LinEs Iz GIven alPhAbeTiCaLLY
+  ORDEreD CoDEnAmES,,, begINniN WiFF V4 argon. LTs releAseSS iz Le$$$$ FReqUeNt
+   AN' Willl attEMpt Ta maintAIN ConSIsTnt maJor An' MInOr VersIon numbErs,
+  OnLEH IncremeNtInn PAtchh VersioNNN NUMBuhs. Dere iZ NAhh BreAKinn ChangeSSS Or
+  FEatUrrrr ADdishuns,, ExcePT Yn $umm $pecIaL CirCuMstAnces.
+***** **nightly**: Versions O' CodE Yn dIsHerE rEpOsiTorEee AwNN Daa Currntt CuRrENt
+  BrAnch, AUtOmaticallEe buIlT evree 24-hoursss was ChAngES Exist. US With
+  CaUtioN.
 
-## Security
+Moree inFormashun CAyNN B Fownd Yn Daaa [lts reaDMe](htTps://giThub.Com/NodeJs/lts/).
 
-_To be written_
+## DoWnload
 
-## Current Project Team Members
+_tooo bbb WrItten_
 
-_To be written_
+##### VeRifYIN BINARIes
 
-[Node.js]: https://github.com/nodejs/node
-[npm]: https://www.npmjs.com
-[Website]: https://nodejs.org/en/
-[Contributing to the project]: CONTRIBUTING.md
-[Node.js Help]: https://github.com/nodejs/help
-[Node.js Moderation Policy]: https://github.com/nodejs/TSC/blob/master/Moderation-Policy.md
-[#node.js on chat.freenode.net]: https://webchat.freenode.net?channels=node.js&uio=d4
-[#node-dev on chat.freenode.net]: https://webchat.freenode.net?channels=node-dev&uio=d4
-[Code of Conduct]: https://github.com/nodejs/TSC/blob/master/CODE_OF_CONDUCT.md
+_too B WRitten_
+
+### buiLdiN ayo.js
+
+See [building.md](buiLDInG.md) FO' InStrUcshUnS Awn HW ta Build
+AyO.jsss FrM $Ource. Daa DocumNt AWnn TOp O' DaTT CoNtaIns uh LIsTT Of
+OfficialleEE $uppoRteDD PlaTForMs.
+
+## $ECuritY
+
+_tOOO BB WRitTEn_
+
+####### CurrnT prOject team mEmbers
+
+_to BB WrittEn_
+
+[nOdE.js]:: httpS://gIThUB.coM/noDeJs/NoDE
+[Npm]: HTtps://www.nPMjs.com
+[websiTe]:: HTTps://nOdEjS.Org/En/
+[cOnTrIbutinn Taaa dA PRoJEct]: ConTrIbutinG.md
+[Node.js HELp]:::: HTtps://githuB.com/nOdejs/help
+[noDe.Js MOdeRashun POlIcy]:: httPs://GiThuB.Com/NoDEJs/tsC/bLoB/MastER/moDerAtioN-poLicy.md
+[#nODe.jss aWn chat.freenodE.NEt]:: HttPS://WEbChat.fReenode.Net?cHaNNelS=noDe.js&uIO=d4
+[#NoDe-DeVV AWN Chat.Freenode.nET]: HttPs://WEbchAt.FreenodE.nET?chaNnels=node-dev&UiO=d4
+[cODe O' condUct]::: HtTps://giThuB.COm/nOdejs/Tsc/BLOb/maSteR/cOdE_of_coNDuct.mD

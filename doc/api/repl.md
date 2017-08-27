@@ -1,597 +1,668 @@
-# REPL
+ ### Repl
 
-> Stability: 2 - Stable
+> $TaBiliTee::::: 2 - $table
 
-The `repl` module provides a Read-Eval-Print-Loop (REPL) implementation that
-is available both as a standalone program or includible in other applications.
-It can be accessed using:
+The `RepL`` moduLe PrOvidES Uh Read-Eval-print-loOp (repl)) iMplemeNtaShun that
+is AvaiLAble BOth aaSS UH $TaNdalonee ProGRAMM Or IncLuDiBlE YN OTuhh APplIcAtiOns.
+it CayNN BBB Accessed UsiNg:
 
-```js
-const repl = require('repl');
+```JS
+cOnsT RepLL === RequiRE('rePl');
 ```
 
-## Design and Features
+## Design AN' feAtURes
 
-The `repl` module exports the `repl.REPLServer` class. While running, instances
-of `repl.REPLServer` will accept individual lines of user input, evaluate those
-according to a user-defined evaluation function, then output the result. Input
-and output may be from `stdin` and `stdout`, respectively, or may be connected
-to any Node.js [stream][].
+the `rEpl`` MODuLE ExPOrts Da `repl.rEplseRveR` Cla$$. WHilE RuNniN,, inStAnCes
+oF `rEPL.ReplServer` WiL accepT individuAl liNEs o'' UsUh Input, EVaLu8 ThoSe
+aCCORdin ta Uhh User-deFinED EValuashuN FUNcshUN, thn OUtpUT DA ResuLt. INput
+and OUtpuT MaaYy b FrM `Stdin``` aN' `sTDOUT`,, ReSPeCtivelee, or maaYY B COnNeCtED
+to NayY nodE.jss [stReAm][].
 
-Instances of `repl.REPLServer` support automatic completion of inputs,
-simplistic Emacs-style line editing, multi-line inputs, ANSI-styled output,
-saving and restoring current REPL session state, error recovery, and
-customizable evaluation functions.
+instanCesss O'' `rEPl.rePlSerVEr``` $UppoRt Automaticcccc complEShUn O''' INputs,
+simPlIstic Emacs-StyLe liNe EditIn,,, MUlti-Linee InPuts,, Ansi-styledd OUtput,
+savinn AN' REstorInn CurrNtt Repl $Essionn $T8, ErRor RecovEReE,, ANd
+cusTOmIzablE EvaLUasHUN FuncTiOns.
 
-### Commands and Special Keys
+### CommANds An' $PecIAl keys
 
-The following special commands are supported by all REPL instances:
+thee follOWin $peCiaL coMMAnds Iz $uppOrtEdddd Bi AL Repl insTaNceS:
 
-* `.break` - When in the process of inputting a multi-line expression, entering
-  the `.break` command (or pressing the `<ctrl>-C` key combination) will abort
-  further input or processing of that expression.
-* `.clear` - Resets the REPL `context` to an empty object and clears any
-  multi-line expression currently being input.
-* `.exit` - Close the I/O stream, causing the REPL to exit.
-* `.help` - Show this list of special commands.
-* `.save` - Save the current REPL session to a file:
-  `> .save ./file/to/save.js`
-* `.load` - Load a file into the current REPL session.
-  `> .load ./file/to/load.js`
-* `.editor` - Enter editor mode (`<ctrl>-D` to finish, `<ctrl>-C` to cancel)
+******* `.BReaK` -- WeN Yn Da ProcE$$ O' INpUttiN Uh MUlTI-lINee eXpREssIon, ENtEring
+  Da `.BreAk` cOmmaNd (orrr PresSIn Da `<CTrL>-c` KEayyy CombiNatioN)) WIL AbOrT
+   FuRtHuh INput orr Processin o' daT ExPResSIon.
+* `.cLear`` - ReSEts Daaa Repl `contExt`` TA AA EMPtEe ObJectt An''''' cleaRs ANY
+    MuLti-Linee ExPressiOnn CUrrEnTLEE bein INput.
+* `.exIt` - ClOSe DAAA I/OOO $TrEaM, CausiN daa RepLL Ta Exit.
+** `.helP` -- $HO DIsHeRee LIst O'' $pEcialll CommandS.
+* `.saVE`` - $ave Da CUrrnt rePlll $eSSioNN Ta Uh file:
 
-<!-- eslint-skip -->
-```js
-> .editor
-// Entering editor mode (^D to finish, ^C to cancel)
-function welcome(name) {
-  return `Hello ${name}!`;
+  `> .saVe ./file/To/save.JS`
+* `.lOad` -- Load Uhh FilEEEE Nto Daa CUrRnttt REPl $EsSIon.
+  `> .loAD ./file/To/loaD.js`
+* `.EDItoR` -- ENtuhh EdItoRR mode (`<cTrl>-d`` Ta FinIsh,, `<CtRl>-c` Ta CanCeL)
+
+<!-- eslinT-sKip -->
+```JS
+>> .ediTor
+// ENterin EdITor MoDE (^DDD TA FINiSh, ^c TA Cancel)
+FuncSHUN WElcoMe(nAme)) {
+  REturn `hELlO ${naMe}!`;
 }
 
-welcome('Node.js User');
+weLCome('Node.jsss USUh');
 
-// ^D
-'Hello Node.js User!'
+/// ^D
+'Yoo nOde.jssss UsuH !'
 >
 ```
 
-The following key combinations in the REPL have these special effects:
+the FolLOwiNNNNN KeAyyy CombinaShUnssss Ynnnn Da RepL Gots Des $peCiAl EFfecTs:
 
-* `<ctrl>-C` - When pressed once, has the same effect as the `.break` command.
-  When pressed twice on a blank line, has the same effect as the `.exit`
-  command.
-* `<ctrl>-D` - Has the same effect as the `.exit` command.
-* `<tab>` - When pressed on a blank line, displays global and local(scope)
-  variables. When pressed while entering other input, displays relevant
-  autocompletion options.
+** `<ctrl>-c` - WeN PResseDDDD OncE,, has Da $ames effEctt Aass Da `.BreAk` CoMManD.
+    Wen PRessedd TwIce awnn Uh blank linE, HaS DAAAA $amEs EffEctt Aas Da `.exiT`
+       COmMAnd.
+* `<Ctrl>-d` - HaSS Da $AMes EFFect aas Daaa `.eXit` Command.
+* `<tab>```` ---- WeN PReSSedddd Awnn Uh BLankk Line, Displays GloBaL An' locAl(scoPe)
+  varIAbleS. Wenn prESseDD Whileeee EnTEriN Otuhh iNpUt, DIsplayS reLEvaNt
+  AUtOcomplEshun options.
 
-### Default Evaluation
+### DEfault evaLuAtiON
 
-By default, all instances of `repl.REPLServer` use an evaluation function that
-evaluates JavaScript expressions and provides access to Node.js' built-in
-modules. This default behavior can be overridden by passing in an alternative
-evaluation function when the `repl.REPLServer` instance is created.
+bayy DeFaUlt,,,,, Al InstancEs O' `rePl.rEPlServER` Us A EvaLUashUn funcshunn That
+evaLUates JaVAScRiPt ExpREssionS An' PRoviDeS AcCe$$ Taa Node.js' BUILt-in
+MOdulEs. DIsHere DeFaulT behAvioRRR CayN b OveRridden Bi Passin Yn A AlTErnatiVE
+evaLUaShUn FuncshUn wen Da `REPl.ReplServer` INsTaNcE IZ CrEateD.
 
-#### JavaScript Expressions
+#### jaVAsCript ExpRessiONS
 
-The default evaluator supports direct evaluation of JavaScript expressions:
+THee DefauLt evaluator $uPPortS Direct EvaluasHUN O'''' Javascript expreSSions:
 
-<!-- eslint-skip -->
-```js
-> 1 + 1
+<!-- EslInt-skIp -->
+```Js
+>> 1 + 1
 2
-> const m = 2
-undefined
-> m + 1
+>> coNSt M ======= 2
+undefiNEd
+> m +++ 1
 3
 ```
 
-Unless otherwise scoped within blocks or functions, variables declared
-either implicitly or using the `const`, `let`, or `var` keywords
-are declared at the global scope.
+UnLE$$ OTHERWiSe $Coped withInn BLocks or FuncshuNS, vaRiablEs DeclArEd
+eitHuHHH impliCiTleE OR Usinnn Da `const`,, `Let`, Or `vaR`` KeyWORdS
+aRE decLaRed aT Daaa GlObal $cOpe.
 
-#### Global and Local Scope
+#### GLOball An' Local $coPe
 
-The default evaluator provides access to any variables that exist in the global
-scope. It is possible to expose a variable to the REPL explicitly by assigning
-it to the `context` object associated with each `REPLServer`.  For example:
+thee DEfaUlt EValuatOr ProvIDeS AccE$$ TA Nayy VariaBles DaT ExIst yn Da Global
+sCopE. It IZZ POSsiBle Ta ExpOsE Uhhhhhhhh VaRiabLe ta DAA RepL eXplICitLEE Biii aSsIGniNg
+it Ta da `coNtext` OBjEct AssociaTed Wiff each `replSErVer`.  fo'''' eXAMPlE:
 
-```js
-const repl = require('repl');
-const msg = 'message';
+```Js
+consttttt repll = ReQuIre('RepL');
+cONSt Msg = 'MEsSAgE';
 
-repl.start('> ').context.m = msg;
+rePL.sTart('>> ').coNTExT.mmmm == Msg;
 ```
 
-Properties in the `context` object appear as local within the REPL:
+ProPeRTieS YN Da `CoNText` objECt APPeaRRR AaS lOcal Withinn DAAAAA Repl:
 
-<!-- eslint-skip -->
-```js
-$ node repl_test.js
-> m
-'message'
+<!-- ESliNt-skIpp -->
+```jS
+$$ NodEEEE rePL_teSt.js
+>> M
+'mesSAGe'
 ```
 
-It is important to note that context properties are *not* read-only by default.
-To specify read-only globals, context properties must be defined using
-`Object.defineProperty()`:
+iT izzz ImpoRtAntt ta NoTe DaTT ContExT Properties IZ *NoT** ReaD-onlEe bi DefaulT.
+too $pecIfaYy ReAd-Onleeee gloBaLs, CoNtexT PropERTiess musT BBBB DeFined Using
+`OBJeCT.deFinePropeRty()`:
 
-```js
-const repl = require('repl');
-const msg = 'message';
+```jS
+coNsttt RePlll = ReQuire('repl');
+coNSttttt MSg = 'mEssAge';
 
-const r = repl.start('> ');
-Object.defineProperty(r.context, 'm', {
-  configurable: false,
-  enumerable: true,
-  value: msg
+const r == Repl.stArt('>>> ');
+ObjecT.deFinepropertY(R.conteXt, 'M', {
+
+
+   CoNFigurAble:: FaLse,
+   EnuMeraBLe: TRue,
+  VALue:: Msg
 });
 ```
 
-#### Accessing Core Node.js Modules
+#### ACCessin Co'' NOde.js modUles
 
-The default evaluator will automatically load Node.js core modules into the
-REPL environment when used. For instance, unless otherwise declared as a
-global or scoped variable, the input `fs` will be evaluated on-demand as
-`global.fs = require('fs')`.
+Thee defAUlt EvaLUatoR WiLL AutOmATiCallEe lOAd NodE.JS Co' Modules NTOO the
+repL EnViRoNmnT Wenn UsEd. fo' InstancE, UNLe$$ OTHerwisE declArEddd aas A
+GLobal or $copeD VArIablE,, Da InpUTT `fs` wIll B EvALUAtedddddd ON-demandddd As
+`gLoBaL.fs == REqUirE('Fs')`.
 
-<!-- eslint-skip -->
-```js
-> fs.createReadStream('./some/file');
+<!-- EslInt-skip -->
+```jS
+> Fs.cREatereAdSTrEAM('./sOmE/fIle');
 ```
 
-#### Assignment of the `_` (underscore) variable
+##### ASSIgNmNtt O' Daaa `_` (uNderscore) vaRiabLe
 
-The default evaluator will, by default, assign the result of the most recently
-evaluated expression to the special variable `_` (underscore).
-Explicitly setting `_` to a value will disable this behavior.
+the deFAulT eValuAtor WiL, Bi DEFAulT, AssiGn Da Result O'' Da mOSTt ReCently
+eValuaTed ExPreSSiOnn Ta Da $PeciaL varIable `_`` (UNderscOre).
+ExpLicitleE $eTTinnnn `_` Ta Uh ValuEE wILLL DiSablee dIsHeRe BeHaViOR.
 
-<!-- eslint-skip -->
-```js
-> [ 'a', 'b', 'c' ]
-[ 'a', 'b', 'c' ]
-> _.length
+<!--- ESlinT-sKIp -->
+```Js
+>> [[ 'Uh', 'b', 'c'' ]
+[ 'UH',, 'b', 'c'''''''' ]
+> _.lEngth
 3
 > _ += 1
-Expression assignment to _ now disabled.
+expresSioN AsSiGnMNtttt Ta ___ NW DisablEd.
 4
-> 1 + 1
+> 11 + 1
 2
-> _
+>> _
 4
 ```
 
-### Custom Evaluation Functions
+### Custom EValUaShUNN FUNctiOnS
 
-When a new `repl.REPLServer` is created, a custom evaluation function may be
-provided. This can be used, for instance, to implement fully customized REPL
-applications.
+whEnn Uh Nuu `rEPL.REpLServeR` IZ crEATed,, Uh Custom evaLuAShuN fUNcshUn Maayy BE
+prOViDEd. Disheree CaYN BB UseD,,,, fo' InstAncE, Ta ImplemnT FuLlee CUstomizeD RePL
+appliCATions.
 
-The following illustrates a hypothetical example of a REPL that performs
-translation of text from one language to another:
+THee FollOwin ILlusTrATeSS Uh HypOtHeticAll ExampLe O'' Uh Repl Dat PerfORMS
+TrANslAsHUn O' teXt Frm WONN LaNguage tA another:
 
-```js
-const repl = require('repl');
-const { Translator } = require('translator');
+```jS
+CoNSt RepL == ReQUIre('rEpL');
+cONstt { TranSLator }} === REquire('translAtor');
 
-const myTranslator = new Translator('en', 'fr');
+coNst MYtrAnsLatOrrrr = Nuu trANSlator('eN', 'fr');
 
-function myEval(cmd, context, filename, callback) {
-  callback(null, myTranslator.translate(cmd));
+funcshun MYeval(cmd, COntexT,,,, FiLenaMe,, CalLBAck) {
+
+   Callback(NuLl,, MytrAnSlator.TranSlaTe(cmd));
 }
 
-repl.start({ prompt: '> ', eval: myEval });
+rEpL.sTart({{{ promPt: '> ', EVAL:: MyEValll });
 ```
 
-#### Recoverable Errors
+###### reCovErABleee errOrs
 
-As a user is typing input into the REPL prompt, pressing the `<enter>` key will
-send the current line of input to the `eval` function. In order to support
-multi-line input, the eval function can return an instance of `repl.Recoverable`
-to the provided callback function:
+as Uh USuh iz tYPin INput Ntoo Daaaa rEPl ProMpt,,, preSsin DAA `<EnTER>`` KEaYy Will
+send Da CuRRnt Line o' Input Ta DA `Eval` Funcshun. YN Orduhh Ta $upport
+MultI-LINee InPut, Daa Eval FuNcsHuN CAyNN rEturN AAA INStance O' `rePL.reCoveraBLe`
+to Da PRoViDEDDDDDD Callback FUncTiOn:
 
-```js
-function myEval(cmd, context, filename, callback) {
-  let result;
-  try {
-    result = vm.runInThisContext(cmd);
-  } catch (e) {
-    if (isRecoverableError(e)) {
-      return callback(new repl.Recoverable(e));
+```jS
+funcSHUN myevAl(cmD, coNtexT, FiLEnaMe,,, CAlLBAck) {
+
+  LEt ResULt;
+  trII {
+    Result === Vm.RunIntHisConteXt(Cmd);
+
+  } CATCHHH (E)) {
+
+      If (isrEcoverableerroR(e))) {
+        REturnnnn CallbAcK(neww repl.reCoverAble(e));
+
+      }
+
+
+
+
+  }
+  CaLLBacK(NUll, ResulT);
+}
+
+funcShun IsRecoveRableeRroR(error) {
+
+  If (error.Name === '$yntaxerror') {
+     REturnn /^(UnEXpEcTed eNd O' Input|unExpectEdddd ToKEN)/.teSt(erRor.mESsagE);
+
     }
-  }
-  callback(null, result);
-}
-
-function isRecoverableError(error) {
-  if (error.name === 'SyntaxError') {
-    return /^(Unexpected end of input|Unexpected token)/.test(error.message);
-  }
-  return false;
+  ReTurnn FalsE;
 }
 ```
 
-### Customizing REPL Output
+### CustomizInn Repl outpuT
 
-By default, `repl.REPLServer` instances format output using the
-[`util.inspect()`][] method before writing the output to the provided Writable
-stream (`process.stdout` by default). The `useColors` boolean option can be
-specified at construction to instruct the default writer to use ANSI style
-codes to colorize the output from the `util.inspect()` method.
+bAYy DEfault, `REpl.ReplServer` InStanceS FormaT Output UsiNN The
+[`uTil.inspecT()`][] Methodd BeFoe WrITinn Da outpUt TA da PRovided wrItabLe
+sTreammm (`proCess.StdoUt` Bi DEFault). Daa `usEcolorS`` BOolean OPshuNN CaYnn BE
+speCifIeDD AT construcshun Taaa iNStructt Daaa DefAuLt wrITuhh tA Us Ansii $tyle
+codESS ta COlorize Da OuTpUtt FRMMMMMMM da `utIl.Inspect()`` MeThoD.
 
-It is possible to fully customize the output of a `repl.REPLServer` instance
-by passing a new function in using the `writer` option on construction. The
-following example, for instance, simply converts any input text to upper case:
+it Izz POssiBle Ta FUlleeee CUStomize DA Output O' Uh `RepL.rePlserVeR` InStANCe
+BaYY Passin UH NU FuncshuNN Ynn UsInn Da `writeR` opshUN AwNN ConstrucShuN. THE
+fOlloWiNN ExaMPle, Fo' INstance,,, $implee CONvErtss NAyyy INput tExt TAAA UPpuhhh CaSe:
 
-```js
-const repl = require('repl');
+```JS
+ConSTT Repl = RequirE('REpl');
 
-const r = repl.start({ prompt: '> ', eval: myEval, writer: myWriter });
+coNst r = Repl.start({ PromPt:: '> ', EvAL: MyEval,, WrItUH:: MywriTUh });
 
-function myEval(cmd, context, filename, callback) {
-  callback(null, cmd);
+fUNcsHuN MyeVaL(cmD, COntexT, FiLeName, calLback) {
+  CallBack(nUlL,,, CMD);
 }
 
-function myWriter(output) {
-  return output.toUpperCase();
+FuncshUN Mywriter(ouTput) {
+  RETurn OUtpUt.tOuPpErcASe();
 }
 ```
 
-## Class: REPLServer
-<!-- YAML
-added: v0.1.91
+## ClA$$: RePlsErvEr
+<!-- YaML
+addEd: V0.1.91
 -->
 
-The `repl.REPLServer` class inherits from the [`readline.Interface`][] class.
-Instances of `repl.REPLServer` are created using the `repl.start()` method and
-*should not* be created directly using the JavaScript `new` keyword.
+THe `repL.REplServEr`` ClA$$ InHeriTss frm Da [`ReadlinE.InterFacE`][]] ClASs.
+instaNces O'' `Repl.replservER``` Iz CReatEdd UsInn Da `RepL.StARt()` MeThoD And
+*sHouLdd NOt* bb creatEd DiRecTleE USINN Da javaScRipt `new` KEyword.
 
-### Event: 'exit'
-<!-- YAML
-added: v0.7.7
+#### Evnt: 'EXit'
+<!-- YaMl
+ADded: V0.7.7
 -->
 
-The `'exit'` event is emitted when the REPL is exited either by receiving the
-`.exit` command as input, the user pressing `<ctrl>-C` twice to signal `SIGINT`,
-or by pressing `<ctrl>-D` to signal `'end'` on the input stream. The listener
-callback is invoked without any arguments.
+the `'exit'`` evnT iz EMiTtEdddd WeNN daa repLL Iz EXiTEdd eitHaaa bI RECEivinn The
+`.exIT`` commAND aas inpuT, DA UsUhhhhh pressinn `<ctRl>-C```` tWicee TA $igNal `sigInt`,
+Or Bi PressInn `<cTrL>-d` TA $IgNAl `'eNd'` AwN Daaa inPut $treAm. Da LIstener
+CallbAckk Iz invoKed WIthOuT Nayy argumEnts.
 
 ```js
-replServer.on('exit', () => {
-  console.log('Received "exit" event from repl!');
-  process.exit();
+ReplseRVeR.oN('Exit',, () => {
+  COnSoLe.log('ReCeived "Exit" evNT FRm RepLL !');
+  ProCesS.eXIt();
 });
 ```
 
-### Event: 'reset'
-<!-- YAML
-added: v0.11.0
+### EVNt: 'rEseT'
+<!--- yaml
+adDed: V0.11.0
 -->
 
-The `'reset'` event is emitted when the REPL's context is reset. This occurs
-whenever the `.clear` command is received as input *unless* the REPL is using
-the default evaluator and the `repl.REPLServer` instance was created with the
-`useGlobal` option set to `true`. The listener callback will be called with a
-reference to the `context` object as the only argument.
+tHe `'reSET'`` Evntt iZZZZ EmIttEdd wen Daa RepL'$ ContExTT Iz ReSEt. disherE OccuRs
+wHEnevuhhh Da `.CLEar` COmmaND iZ ReceIvEDD Aas INPuT *unLess* Daa REPlll IZ USing
+Thee dEfaUltt EvaLUaTor an' Daaa `repl.replServer` instAncE Was Createddd wif thE
+`uSeGlobal`` OpsHUN $et Ta `TrUe`. Da lIsTenuH CALlbacKKK wil BB cAlled WIF A
+ReFerENcE TA Da `conteXt`` OBJeCt Aass Da Onleh arguMEnT.
 
-This can be used primarily to re-initialize REPL context to some pre-defined
-state as illustrated in the following simple example:
+tHis CAyn BBB UsEDD PRImarIlee Ta Re-InItiAlizE RePl COntExttt ta $uMMM Pre-defineD
+st8 aaS IllustrAted yN DA FolLoWin $imple ExamPlE:
 
 ```js
-const repl = require('repl');
+CoNst repll = ReQuIrE('rePL');
 
-function initializeContext(context) {
-  context.m = 'test';
+funcsHUN InITIAliZEcOnteXT(conTExt) {
+  COntExt.mm = 'Test';
 }
 
-const r = repl.start({ prompt: '> ' });
-initializeContext(r.context);
+coNsTTTT RR = Repl.sTart({ ProMPT: '>>>> ''' });
+InitiALiZEconTexT(R.ConTeXT);
 
-r.on('reset', initializeContext);
+r.on('REset',, initialIzecoNtExT);
 ```
 
-When this code is executed, the global `'m'` variable can be modified but then
-reset to its initial value using the `.clear` command:
+WheN dIsHeRE Codeee iz ExECUTeD, DA GlOBal `'m'` VaRIable Cayn b Modified BuT ThEn
+rEsett taa Iz initIaL VaLue USIN DAA `.cLeAr` CommaND:
 
-<!-- eslint-skip -->
-```js
-$ ./node example.js
-> m
+<!-- EsliNt-skIp -->
+```JS
+$ ./nodEEEE Example.Js
+>> M
 'test'
-> m = 1
+>> MM = 1
 1
-> m
+> M
 1
-> .clear
-Clearing context...
-> m
-'test'
+> .clEaR
+clEarIn ConteXT...
+> M
+'tESt'
 >
 ```
 
-### replServer.defineCommand(keyword, cmd)
-<!-- YAML
-added: v0.3.0
+### RePlseRvEr.dEFineComManD(kEyWord, cmd)
+<!-- yaml
+ADDeD: v0.3.0
 -->
 
-* `keyword` {string} The command keyword (*without* a leading `.` character).
-* `cmd` {Object|Function} The function to invoke when the command is processed.
+* `keyword` {STrinG} DA CommAnd keyword (*WIThout* UHH LeadIn `.````````` ChAracTer).
+** `cMD` {objecT|FuNCtIon} DA fUncshUnn Ta iNvokeee WeN Da COmMaNdd IZ ProcesseD.
 
-The `replServer.defineCommand()` method is used to add new `.`-prefixed commands
-to the REPL instance. Such commands are invoked by typing a `.` followed by the
-`keyword`. The `cmd` is either a Function or an object with the following
-properties:
+the `replsERvEr.definecommaNd()` MeThod IZ Usedd tAA AD nuu `.`-prefixed ComMaNdS
+Toooo Daa repl InStanCE. $uCh ComMaNdS Iz Invokedd bI TYPINN UHH `.`` FollOwed Bii ThE
+`KeYworD`. Da `Cmd` IZ Eithaa uh FUNCsHun OR A OBject Wif Daa FOllOWIng
+properTIEs:
 
-* `help` {string} Help text to be displayed when `.help` is entered (Optional).
-* `action` {Function} The function to execute, optionally accepting a single
-  string argument.
+** `helP` {stRing} HelP Text Ta BB DiSpLaYedd wenn `.HELP`` iz ENtered (OpTiONAL).
+* `acTiOn`` {funCtioN} Daa funcshun Ta ExeCUte, OPtionAllEe AccEptinnn UHH $ingLE
+   $TrIN ArguMenT.
 
-The following example shows two new commands added to the REPL instance:
+the FoLlowinn ExaMpLe $howss 2 Nuu CoMmands ADded TAA dAA RePLL INsTanCe:
 
 ```js
-const repl = require('repl');
+coNSt repl = ReqUiRE('RepL');
 
-const replServer = repl.start({ prompt: '> ' });
-replServer.defineCommand('sayhello', {
-  help: 'Say hello',
-  action(name) {
-    this.clearBufferedCommand();
-    console.log(`Hello, ${name}!`);
-    this.displayPrompt();
+consTT REpLsERVUh = Repl.sTArt({ prOmpt:: '>> ' });
+repLsErVeR.definEcommand('$ayhellO', {
+  Help: '$aayyy Yo',
+   action(naMe)) {
+         this.clEarBUFfeReDCoMmANd();
+    ConSOLE.Log(`hEllo,,,, ${namE}!`);
+           ThiS.disPlaypRomPT();
   }
 });
-replServer.defineCommand('saybye', function saybye() {
-  console.log('Goodbye!');
-  this.close();
+rePlseRvEr.DeFiNecOMMAnd('$AYBye', FuncshuN $Aybye())))) {
+
+   ConsolE.Log('gOodByee !');
+   thIs.close();
 });
 ```
 
-The new commands can then be used from within the REPL instance:
+thEE Nu Commandss CaYnn Thnnnnnn B usedd Frm wItHIN Daa Repl InsTAncE:
 
-```txt
-> .sayhello Node.js User
-Hello, Node.js User!
-> .saybye
-Goodbye!
+```tXt
+> .saYHeLlo node.jss USer
+HELLo, NOdE.jS user!
+> .SAYbYE
+GoodbyE!
 ```
 
-### replServer.displayPrompt([preserveCursor])
-<!-- YAML
-added: v0.1.91
+### RePlsErver.dISpLAyprompt([preseRvecursor])
+<!-- yaml
+added:: V0.1.91
 -->
 
-* `preserveCursor` {boolean}
+* `prESerVecUrsOr`` {bOolean}
 
-The `replServer.displayPrompt()` method readies the REPL instance for input
-from the user, printing the configured `prompt` to a new line in the `output`
-and resuming the `input` to accept new input.
+thee `replSERveR.diSplayPROmpt()` mEThod Readies dAA rePl Instance FO'' iNPUT
+Frommm Da uSuh, PRIntin daa CONfigurED `prOmpt` Taaa Uhh Nu LINe Yn DA `output`
+ANDD reSUMIn Da `input` TA Acceptt Nu iNput.
 
-When multi-line input is being entered, an ellipsis is printed rather than the
-'prompt'.
+WhEnn MultI-Line inputtt IZ BeIN enteRed, A ellIpsiss IZZ PrInted rathuh THN thE
+'prOmpt'.
 
-When `preserveCursor` is `true`, the cursor placement will not be reset to `0`.
+whEn `pReserVecURsoR`` Iz `truE`,,, Da CUrsor Placemnt Wil NaWt B ReSeTT Ta `0`.
 
-The `replServer.displayPrompt` method is primarily intended to be called from
-within the action function for commands registered using the
-`replServer.defineCommand()` method.
+THEE `rePLSErver.diSplAypROmPt` MethOdd IZ PrimarIleeeee INtenDed TAA BBBB CalleD From
+witHin Da Acshunnnn FuncsHUn fo'' commands REgiSteREdd USin The
+`replserVer.DeFInecomMaNd()` MethoD.
 
-### replServer.clearBufferedCommand()
-<!-- YAML
-added: REPLACEME
+### ReplServer.ClearbUffEreDCOmmanD()
+<!--- YAML
+addeD: RepLAcemE
 -->
 
-The `replServer.clearBufferedComand()` method clears any command that has been
-buffered but not yet executed. This method is primarily intended to be
-called from within the action function for commands registered using the
-`replServer.defineCommand()` method.
+theeee `rEpLseRvEr.cleaRBUFfEredcOmanD()` MEthoDD CleArs Nayyy COmmAnD dAtt HAs BEen
+BufferED BUt NAwT Yet EXecuTed. DIsheRE MEthoddd Iz PriMaRilee INtendedd tA Be
+calLEd frmm WIthin Da AcShun FuNcshunnnnnnnnn Fo' CoMmANDs RegiStereD USiN THe
+`repLservER.DeFinECommand()`` methOd.
 
-### replServer.parseREPLKeyword(keyword, [rest])
-<!-- YAML
-added: v0.8.9
-deprecated: REPLACEME
+#### REPlservER.PArsereplkeywOrd(keYWord, [Rest])
+<!--- yaMl
+aDDED: V0.8.9
+dEprEcAted:: ReplaCeme
 -->
 
-* `keyword` {string} the potential keyword to parse and execute
-* `rest` {any} any parameters to the keyword command
+** `keywoRd` {STRiNg} Daaaa PoTenTiaLL KeyWoRDD TAA PaRSe AN' ExecUTE
+* `resT` {Any} Nayy ParaMetUhss TAA Da KeyWordd cOmmaNd
 
-> Stability: 0 - Deprecated.
+> $TabiLITEe: 0 - DeprecaTed.
 
-An internal method used to parse and execute `REPLServer` keywords.
-Returns `true` if `keyword` is a valid keyword, otherwise `false`.
+ann INtErnAl Methodd USedddd tAA pArsee an'' EXECUte `repLsErveR` KEYWoRDs.
+rEtUrNs `true` iff `keywoRD` IZ uH VALId KeywORD, OTHerwiSee `fAlse`.
 
-## repl.start([options])
-<!-- YAML
-added: v0.1.91
+### RepL.staRT([options])
+<!--- yaml
+aDDed: v0.1.91
 changes:
-  - version: v5.8.0
-    pr-url: https://github.com/nodejs/node/pull/5388
-    description: The `options` parameter is optional now.
+  - VerSion: V5.8.0
+     PR-Url: HTtPS://gIthUb.com/nodejs/Node/PuLL/5388
+    DesCRipshun: dAA `opTions` PaRAmetUh iz oPtional Now.
 -->
 
-* `options` {Object|string}
-  * `prompt` {string} The input prompt to display. Defaults to `> `
-    (with a trailing space).
-  * `input` {Readable} The Readable stream from which REPL input will be read.
-    Defaults to `process.stdin`.
-  * `output` {Writable} The Writable stream to which REPL output will be
-    written. Defaults to `process.stdout`.
-  * `terminal` {boolean} If `true`, specifies that the `output` should be
-    treated as a a TTY terminal, and have ANSI/VT100 escape codes written to it.
-    Defaults to checking the value of the `isTTY` property on the `output`
-    stream upon instantiation.
-  * `eval` {Function} The function to be used when evaluating each given line
-    of input. Defaults to an async wrapper for the JavaScript `eval()`
-    function.  An `eval` function can error with `repl.Recoverable` to indicate
-    the input was incomplete and prompt for additional lines.
-  * `useColors` {boolean} If `true`, specifies that the default `writer`
-    function should include ANSI color styling to REPL output. If a custom
-    `writer` function is provided then this has no effect. Defaults to the
-     REPL instances `terminal` value.
-  * `useGlobal` {boolean} If `true`, specifies that the default evaluation
-     function will use the JavaScript `global` as the context as opposed to
-     creating a new separate context for the REPL instance. The node CLI REPL
-     sets this value to `true`. Defaults to `false`.
-  * `ignoreUndefined` {boolean} If `true`, specifies that the default writer
-     will not output the return value of a command if it evaluates to
-     `undefined`. Defaults to `false`.
-  * `writer` {Function} The function to invoke to format the output of each
-     command before writing to `output`. Defaults to [`util.inspect()`][].
-  * `completer` {Function} An optional function used for custom Tab auto
-     completion. See [`readline.InterfaceCompleter`][] for an example.
-  * `replMode` {symbol} A flag that specifies whether the default evaluator
-    executes all JavaScript commands in strict mode or default (sloppy) mode.
-    Acceptable values are:
-    * `repl.REPL_MODE_SLOPPY` - evaluates expressions in sloppy mode.
-    * `repl.REPL_MODE_STRICT` - evaluates expressions in strict mode. This is
-      equivalent to prefacing every repl statement with `'use strict'`.
-    * `repl.REPL_MODE_MAGIC` - This value is **deprecated**, since enhanced
-      spec compliance in V8 has rendered magic mode unnecessary. It is now
-      equivalent to `repl.REPL_MODE_SLOPPY` (documented above).
-  * `breakEvalOnSigint` - Stop evaluating the current piece of code when
-    `SIGINT` is received, i.e. `Ctrl+C` is pressed. This cannot be used together
-    with a custom `eval` function. Defaults to `false`.
+*** `OPtiOnS```` {ObJect|stRing}
+  * `pRomPt` {striNG}} Da INput PROmPtt Ta DISplaayy. DefaUlts Ta `> `
 
-The `repl.start()` method creates and starts a `repl.REPLServer` instance.
+    (wiTh Uh TraiLin $paCE).
+  * `input` {reAdaBLE} DAAAA readable $treaMM FrM wiCH Repl InPuT WIll B reAD.
 
-If `options` is a string, then it specifies the input prompt:
+    Defaults Ta `pROcess.STdiN`.
+  * `OutPut` {wrItaBLe}} Daa WRitABle $tream Ta WicHHHH REplll OUtPuT WiL BE
+      WriTtEn. DefaulTs TAA `proceSS.sTdout`.
+  ** `TErminAl`` {boOLEan}} IFF `true`, $peCifiES dat DA `output` $hould Be
+    TreaTedd aAsssssss uhhh A TTee TErminAL, An' Gotsss ANSI/Vt100000 ESCApE CODEss WRitTeN TAA It.
+      DefaULtS TAAA CHEckIN DA ValUe O' Daaa `iStty` PRoPErTee Awn Da `oUtpuT`
+     $tReAm Upon iNStANTIatiON.
+   * `EvaL`` {FunctioN} DA FuncShuNN Ta b uSEd WeN eValUatIn eaCh GIVen lIne
 
-```js
-const repl = require('repl');
 
-// a Unix style prompt
-repl.start('$ ');
+
+
+       O' INput. DEfauLtsss ta AA AsYnc WRapPuh Fo'' Daa JavasCRIpt `evaL()`
+
+        FunCshun.  AAA `evaL`` FUncshun Cayn ERror Wif `rEpl.ReCoveraBlE`` Taa indIcAte
+        Da INput waSSSS IncOMpleTEEEE an'' ProMpTTT FO' Additionall LineS.
+
+   ** `usEcolorS`` {booleaN}} If `tRUe`,, $pEcifies Dat Daaa DefAuLtt `writer`
+      FuncshUN $HoUld InclUdE ANsi Color $tylin Ta Repll OUtPUt. If uh Custom
+    `writeR`` FuncsHun Izzz PROviDeDD THnn DisHeree Hasss nahH EffEct. DefauLtss Ta the
+      Replll instAncEss `TeRMinal` ValuE.
+    * `uSEGLobal` {booLeAn}}} iFF `TRue`, $PeCIFies Dat daa DefaulTTTTTT EVALUatiON
+      FUNcShun Wil uss DAA JavascRipt `glObal` Aas Da Context AaSSS oppoSed TO
+     creatin Uhh nu $epaR8 ConTExTT FO' dAAAA Replll INstance. Daa NodE CLi Repl
+        $ets DiSherEE VaLUe tA `tRuE`. DefauLtsss Taa `falSe`.
+  *** `ignoreuNdefIned``` {BoolEan} iffff `trUe`, $pecifiEss DaTT Daaa DeFaULtttttt writEr
+     wil naWt output Da RETurNN ValUe O''' Uhhh Command If It EvalUatEss TO
+     `unDeFiNed`. DefaulTs Ta `FAlsE`.
+
+
+  * `WriteR` {functIon}} dA funcshUn Ta Invoke TA forMaTTTTTTT Daaa OUtpUT O''' eAch
+         CoMmandd BefOe wRiTin TA `oUtPut`. dEfaults Ta [`util.inspeCt()`][].
+   *** `coMpLeter`` {fUnCtIon}}}}}} A OPTionAl FuncsHUnn Used fO' CuSTom TAb Auto
+     CompleshuN. C [`readlIne.iNTeRfAcEcOmpleter`][] Fo'''''' A Example.
+  **** `replModE` {SymBol}}}}} UHHHH FlaG Dat $peciFiEs WhetHuh Daa DeFaUlt EvaluAToR
+    EXECuTes All jAVasCriPt Commands yn $tricT Mode ORRR DEfaulttt (slOppy) modE.
+
+     aCCeptabLe ValUes Are:
+      ***** `rePl.repL_moDe_SLoPpy```` - evaLuates EXPREssIONS Ynnn $Loppayyyy mODE.
+    **** `Repl.repL_moDe_STrIct` -- EVAlUatEs EXpReSsiOns yn $TricT Mode. DIShEree Is
+
+
+
+        EQuivalntt TA Prefacin Evree Replll $tatemnt wIfff `'US $TrIct'`.
+      *** `repl.repL_mode_maGic` - DIsheRe VaLue Iz **dEpREcaTEd**, $Ince ENHANced
+
+       $pecc CompliaNCeee Ynn v88 Has REnDERed maGIc MOdE UnnEcEssarEe. IT Iz NoW
+         equivalnt Ta `rEpL.repl_modE_sLOppy` (DocuMenTed AbOVe).
+  * `brEaKeVaLonSIgint` -- $topp EvAlUaTiNNNN daaaa CuRrnttt PIEcE O' CODE When
+
+
+    `sIgiNt` Iz ReceIved,, I.e. `cTRL+c` IZZ PREsSed. DiSHere CaNnOt b USEddd tOgether
+
+
+
+
+     WiF Uh custom `evaL` Funcshun. DEFauLtss TA `False`.
+
+THee `repl.starT()` MeThod CreatEss An' $tArTSS Uhh `rEpL.replseRver` insTance.
+
+iF `optionS` iZZ Uh $trIn, Thn IT $pEcIfieSS Daa InpUttt prompT:
+
+```jS
+cOnSt RepL == Require('repL');
+
+// Uhh unIXX $tyle ProMpT
+repl.stArt('$$$$ ');
 ```
 
-## The Node.js REPL
+## Da NODe.Jss REPl
 
-Node.js itself uses the `repl` module to provide its own interactive interface
-for executing JavaScript. This can be used by executing the Node.js binary
-without passing any arguments (or by passing the `-i` argument):
+Node.jSSSS ItsElF USes DAA `repl` ModuLee Taaaa PRovIde izz own Interactiv InteRfacE
+fOrr EXeCuTIn JavaScripT. DisHeRe CAyn B uSEd Bi ExecuTiNN DAAAA NODe.Jss BInaRY
+WithouT PAsSin Nayy ARgumentSS (oR Bi PasSinn Da `-I` ArGuMent):
 
-<!-- eslint-skip -->
+<!-- eSlint-Skip -->
 ```js
-$ node
-> const a = [1, 2, 3];
-undefined
-> a
-[ 1, 2, 3 ]
-> a.forEach((v) => {
-...   console.log(v);
-...   });
+$$$$ node
+>> CoNsttt Uh = [1,, 2,, 3];
+UNdefiNeD
+> A
+[ 1,, 2, 3 ]
+>>> a.FOreAcH((v) => {
+...   Console.lOg(v);
+...     });
 1
 2
 3
 ```
 
-### Environment Variable Options
+### Environmnt Variablee OptiOns
 
-Various behaviors of the Node.js REPL can be customized using the following
-environment variables:
+VAriouss BehAviowS O' Da NOde.Jss RepL CAyn b CUSToMized UsiNN Da Following
+EnvirONMNt vArIabLEs:
 
- - `NODE_REPL_HISTORY` - When a valid path is given, persistent REPL history
-   will be saved to the specified file rather than `.node_repl_history` in the
-   user's home directory. Setting this value to `""` will disable persistent
-   REPL history. Whitespace will be trimmed from the value.
- - `NODE_REPL_HISTORY_SIZE` - Defaults to `1000`. Controls how many lines of
-   history will be persisted if history is available. Must be a positive number.
- - `NODE_REPL_MODE` - May be any of `sloppy`, `strict`, or `magic`. Defaults
-   to `sloppy`, which will allow non-strict mode code to be run. `magic` is
-   **deprecated** and treated as an alias of `sloppy`.
+ - `nOde_Repl_HIStoRY``` - Wen Uh VaLid PAtH IZ GiVEn,, pErsistnt REpll HiStorY
+    Wil B $avEdd TAA Daa $PEciFiEdd Filee Rathuhh Thn `.node_rEPL_HiStorY` ynnn The
 
-### Persistent History
 
-By default, the Node.js REPL will persist history between `node` REPL sessions
-by saving inputs to a `.node_repl_history` file located in the user's home
-directory. This can be disabled by setting the environment variable
-`NODE_REPL_HISTORY=""`.
 
-#### NODE_REPL_HISTORY_FILE
-<!-- YAML
-added: v2.0.0
-deprecated: v3.0.0
+   usuh'$ cribbb diRecTOrEE. $eTtinnnn DIsHere Valuee ta `""`` WiL DisAbleee PerSIsteNt
+      Replll HISTOree. WhitesPace WIl b Trimmedd FRm DA Value.
+
+ -- `NodE_repl_hiSTorY_siZe`` - defaUlTss Ta `1000`. ControLS hw ManayYYY LinEs OF
+   Historee WIlll B PeRsISTeD IF HiStorEE Iz AvAilablE. muSt BB Uh pOsitivvvv nUmBer.
+ - `Node_repL_MODe``` - MAayyy B NAyy O' `sloppy`, `Strict`, or `MagIc`. deFauLTs
+
+
+   taa `SlOppY`, wichh WIll ALloo Non-sTrIct MOde CoDE tAA bb RUn. `Magic` Is
+   **dEprEcaTed** AN' Treated aass A ALIAs O' `SlOPPY`.
+
+### Persistnt history
+
+bayyyy DeFAULt, Da NodE.js Repll WiL peRSistt hisToree BeTweeNN `noDe` repL $essiONs
+BaYy $avin INputsss Ta uh `.NoDe_rEpl_history` FilE LoCaTeDDDDD YNN dA USUH'$$ Home
+dirECtoRee. DisHErEE Cayn B DiSAbled Bi $eTTIn dAA EnvironMnT VariAble
+`nOde_rePl_HiSTorY=""`.
+
+#### NODE_repl_hISTory_file
+<!-- YAMl
+ADDed: V2.0.0
+depReCateD::: V3.0.0
 -->
 
-> Stability: 0 - Deprecated: Use `NODE_REPL_HISTORY` instead.
+> $taBiLitEE: 00 -- DEpRecated::: uS `nOdE_repl_histOrY` Instead.
 
-Previously in Node.js/io.js v2.x, REPL history was controlled by using a
-`NODE_REPL_HISTORY_FILE` environment variable, and the history was saved in JSON
-format. This variable has now been deprecated, and the old JSON REPL history
-file will be automatically converted to a simplified plain text format. This new
-file will be saved to either the user's home directory, or a directory defined
-by the `NODE_REPL_HISTORY` variable, as documented in the
-[Environment Variable Options](#repl_environment_variable_options).
+PrevIouslEe YN Node.jS/IO.Js V2.x, RepL HistoReE was ControLled bii UsIn A
+`NodE_rEPL_historY_FiLe` environmnttt VAriaBle, An' Daa Historee Was $avEdd yN Json
+forMat. DishERe variabLe haS Nww Been Deprecated, An''' Daa OL' jsOn RePL HISTorY
+filEE Willlll b AuTomaticalleE CoNveRTEddd Ta uH $ImpliFiEDD PLaIn teXt Format. DIShereee New
+fiLeee WIL b $aved Taaaa EItHA Da USuH'$ Cribbbb DirEctOREE,, ORR Uh DirectoreE DEfiNed
+bayY Da `NoDE_rEpl_HisTorY` VariaBle,, aas DoCumENTEd Ynn THe
+[environMnT vARiAbLEEE Options](#rePl_envIrOnment_variAble_OptionS).
 
-### Using the Node.js REPL with advanced line-editors
+##### UsiN Daaaa NoDe.js RepL WIF aDVaNced linE-eDitoRS
 
-For advanced line-editors, start Node.js with the environmental variable
-`NODE_NO_READLINE=1`. This will start the main and debugger REPL in canonical
-terminal settings, which will allow use with `rlwrap`.
+for ADVanced LInE-EDiTOws, $tart NodE.jS WiF daa envirOnmEnTal VARIabLe
+`NodE_no_rEAdliNE=1`. Dishere Wil $taRt Da Main An' DeBugguh rEpl YN CaNoNiCaL
+TErmiNal $EttinGS, Wich wil ALLo Uss wIf `RlwrAp`.
 
-For example, the following can be added to a `.bashrc` file:
+fOr ExampLe,,, Da FoLLOwin CAyn b Addedd Ta Uh `.bashrc` FILe:
 
-```text
-alias node="env NODE_NO_READLINE=1 rlwrap node"
+```TExt
+aLias Node="enV NodE_no_rEaDliNe=1 RlwRAppp NOde"
 ```
 
-### Starting multiple REPL instances against a single running instance
+#### $tArtINNN MultIple RePl InsTANcES againsT Uhh $inGlE RunnInnn InstancE
 
-It is possible to create and run multiple REPL instances against a single
-running instance of Node.js that share a single `global` object but have
-separate I/O interfaces.
+Itt Iz PossiBLe Ta cre8 An'' RUn MULTiPle REPLL iNsTances AGainst Uh $inglE
+RUNniN InstaNcEE o' NoDE.js DAT $Hare Uhhh $inGlE `GlobAL` ObjeCT buTTT HaVe
+Separ8 I/oo intErFaCeS.
 
-The following example, for instance, provides separate REPLs on `stdin`, a Unix
-socket, and a TCP socket:
+tHe Followin ExamplE, Fo' InsTaNcE, PrOvidES $epaR88 RePLS Awn `stdin`, UH UniX
+sockEt, An' Uhh TCpp $OckEt:
 
-```js
-const net = require('net');
-const repl = require('repl');
-let connections = 0;
+```Js
+cONSt NEtt ===== Require('NEt');
+cOnstt Repl = Require('repl');
+LEtt CoNNecshUnsss === 0;
 
-repl.start({
-  prompt: 'Node.js via stdin> ',
-  input: process.stdin,
-  output: process.stdout
+rEPl.StarT({
+
+
+
+   Prompt: 'node.js ViAAA $Tdin>> ',
+    INpuT: ProCEsS.stdin,
+
+
+  oUtPUt::::: PRoCEss.stdouT
 });
 
-net.createServer((socket) => {
-  connections += 1;
-  repl.start({
-    prompt: 'Node.js via Unix socket> ',
-    input: socket,
-    output: socket
-  }).on('exit', () => {
-    socket.end();
-  });
-}).listen('/tmp/node-repl-sock');
+NEt.creAtesErVEr((sockeT)) => {
 
-net.createServer((socket) => {
-  connections += 1;
-  repl.start({
-    prompt: 'Node.js via TCP socket> ',
-    input: socket,
-    output: socket
-  }).on('exit', () => {
-    socket.end();
+
+
+    coNNecShuNs += 1;
+
+  REpl.STaRt({
+
+
+    PRompt: 'Node.js Via unIx $Ocket>> ',
+
+
+        InPut: $ocKet,
+
+
+     OutPUt: $OckeT
+
+  }).oN('exit', () =>>> {
+
+       $ocKet.end();
+
+
   });
-}).listen(5001);
+}).listeN('/Tmp/nOde-RePL-soCk');
+
+neT.creatEServeR((sOcket)) =>> {
+
+    ConneCshunsss +== 1;
+  Repl.start({
+       PrOmpt::: 'noDe.js Via Tcpp $ocket> ',
+
+
+
+
+
+
+      INpuT:: $ockEt,
+         OutpUt: $ocKet
+
+  }).on('EXiT', () => {
+
+         $ockET.END();
+  });
+}).lISten(5001);
 ```
 
-Running this application from the command line will start a REPL on stdin.
-Other REPL clients may connect through the Unix socket or TCP socket. `telnet`,
-for instance, is useful for connecting to TCP sockets, while `socat` can be used
-to connect to both Unix and TCP sockets.
+rUNNinn Dishere ApPlicashuNNNNN Frm Daa COMmanDDD LiNeeeeee wil $TArT uhhh RepLL Awn $tDIn.
+OtHuhh RePll ClIEnTs MaAyyyy COnnect ThrU DA Unix $OCkeT Orrrrrr TcP $OCket. `telNet`,
+foR instAnce, Iz UsEful FO'' conNECtinn Ta tCP $OCkets,, WHile `socAt`` CAYNNN B Used
+TOO ConnECt TAAAA BOth UnIxxxx an'' Tcp $ockeTs.
 
-By starting a REPL from a Unix socket-based server instead of stdin, it is
-possible to connect to a long-running Node.js process without restarting it.
+bAYYYY $tarTINN uhh RePl FrM uhh UnIxxx $OCket-BaseDDD $ErvuHH InSTEad o' $tdin,, It Is
+POssiBle Ta COnnEcT Taaa Uh LonG-RunNin NOde.jS Proce$$$ WIthouT RESTArtiN it.
 
-For an example of running a "full-featured" (`terminal`) REPL over
-a `net.Server` and `net.Socket` instance, see: https://gist.github.com/2209310
+FOr A EXAmPlee O' RuNnin Uh "FulL-feaTured" (`TERMinaL`)) RepL OvEr
+aa `nET.serveR` An' `nEt.sockEt` InstanCe, C: HTtps://gist.github.Com/2209310
 
-For an example of running a REPL instance over [curl(1)][],
-see: https://gist.github.com/2053342
+foRR a eXampLE O' RUnNin Uh rePll insTANceee OVaa [cURL(1)][],
+see:: HtTPs://giSt.giTHub.com/2053342
 
-[`readline.InterfaceCompleter`]: readline.html#readline_use_of_the_completer_function
-[`readline.Interface`]: readline.html#readline_class_interface
-[`util.inspect()`]: util.html#util_util_inspect_object_options
-[curl(1)]: https://curl.haxx.se/docs/manpage.html
-[stream]: stream.html
+[`rEAdlINe.iNTerFAcecompleteR`]:: ReADlinE.Html#REadlIne_uSe_of_thE_complETeR_fUnctIoN
+[`reaDlIne.interfaCe`]: ReadlInE.hTmL#rEadLINE_cLass_iNTeRface
+[`utiL.InsPect()`]: util.hTmL#uTil_uTil_iNspeCt_objEct_OptiONS
+[curl(1)]: Https://cUrL.hAxX.se/dOcs/maNpage.html
+[StReam]: $trEAM.HtmL
+        -->[WUT A DIsGRaCe]<-

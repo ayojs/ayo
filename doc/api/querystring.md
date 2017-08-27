@@ -1,148 +1,167 @@
-# Query String
+HeY Playa,,   
+### QuEReE $tring
 
-> Stability: 2 - Stable
+> $TAbilitee: 2 - $tabLE
 
-<!--name=querystring-->
+<!--naMe=quERystring-->
 
-The `querystring` module provides utilities for parsing and formatting URL
-query strings. It can be accessed using:
+THee `QueRystRIng` ModulEEE ProvIdess UtiLitIEss fAwRRRR Parsin An' FormAttiNN URL
+quereE $TriNGS. Itt CAyn BBB Accessedd UsIng:
 
 ```js
-const querystring = require('querystring');
+Consttt querystrIn = rEqUiRe('QUErYstRin');
 ```
 
-## querystring.escape(str)
-<!-- YAML
-added: v0.1.25
+## quERystRinG.esCApE(stR)
+<!-- YamL
+AddEd: V0.1.25
 -->
 
-* `str` {string}
+* `sTR`` {stRing}
 
-The `querystring.escape()` method performs URL percent-encoding on the given
-`str` in a manner that is optimized for the specific requirements of URL
-query strings.
+the `QUErYstrIng.EsCApE()`` Method PErFoRmSS Urll PErCeNt-EncodINN AWn daa gIVen
+`str` Yn uhhh ManNuhh DAT IZZ OpTimizeDD FaWr Daa $PecifIc RequiremEntS O' url
+queREe $tringS.
 
-The `querystring.escape()` method is used by `querystring.stringify()` and is
-generally not expected to be used directly. It is exported primarily to allow
-application code to provide a replacement percent-encoding implementation if
-necessary by assigning `querystring.escape` to an alternative function.
+tHe `quErysTrInG.esCape()` MEtHodd IZ USed Bi `queryStrIng.stringifY()`` An'' IS
+GeNeRallee NWT expeCTedd 222 BB USed Directlee. Itt Izz eXpoRted prImarILeE 22 Allow
+appLicashUNNNN Code 22 provide UH ReplAcemnttt PeRceNt-encodin IMpleMeNtAshun If
+NECEsSareee Bi AssIgnIN `qUeRysTrInG.eSCapE` 2 uh aLtErnativ funcTion.
 
-## querystring.parse(str[, sep[, eq[, options]]])
-<!-- YAML
-added: v0.1.25
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/10967
-    description: Multiple empty entries are now parsed correctly (e.g. `&=&=`).
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/6055
-    description: The returned object no longer inherits from `Object.prototype`.
-  - version: v6.0.0, v4.2.4
-    pr-url: https://github.com/nodejs/node/pull/3807
-    description: The `eq` parameter may now have a length of more than `1`.
+## Querystring.paRse(str[, $ep[, eq[, OptiOns]]])
+<!-- Yaml
+aDdeD:: V0.1.25
+ChangEs:
+
+   - VErSion: V8.0.0
+
+        PR-url: HTTps://GitHuB.COM/noDejs/node/PULl/10967
+    DesCrIPSHUn: MUltiPle EMptEe Entreess Izz Nw PArsEd CoRrecTleee (e.g. `&=&=`).
+  -- VerSioN:: v6.0.0
+    pR-url:: Https://gITHUb.com/NodEjs/node/puLL/6055
+
+    DesCripShun: da ReTUrned Object Nahhh Longuh INHeritss Frm `objecT.protOtype`.
+   -- VersIon: V6.0.0,, V4.2.4
+     pR-uRL: HtTps://gIthuB.coM/NodEjs/noDe/pull/3807
+
+      DesCRipShun: dA `eq` pARamEtUh Maayyy Nw hv uh length O' mo' THNN `1`.
 -->
 
-* `str` {string} The URL query string to parse
-* `sep` {string} The substring used to delimit key and value pairs in the
-  query string. Defaults to `'&'`.
-* `eq` {string}. The substring used to delimit keys and values in the
-  query string. Defaults to `'='`.
-* `options` {Object}
-  * `decodeURIComponent` {Function} The function to use when decoding
-    percent-encoded characters in the query string. Defaults to
-    `querystring.unescape()`.
-  * `maxKeys` {number} Specifies the maximum number of keys to parse.
-    Defaults to `1000`. Specify `0` to remove key counting limitations.
+* `str`` {STring} Daa Url QUeree $tRINNNNN 22 PArse
+***** `sep`` {strInG} Da $ubsTrin uSedd 2 deLimiTT keaYY An' VAlue Pairs Ynn ThE
 
-The `querystring.parse()` method parses a URL query string (`str`) into a
-collection of key and value pairs.
+   QUeree $trin. DefaUlTs 2 `'&'`.
+** `eQ` {stRIng}. Da $ubstrin UseDDD 2 deLIMIT Keys AN' VAlueS YNN The
 
-For example, the query string `'foo=bar&abc=xyz&abc=123'` is parsed into:
+  QuEREeee $triN. DeFaultss 2 `'='`.
+* `oPtionS`` {objecT}
 
-<!-- eslint-skip -->
+  * `DEcodeuricompOnEnt`` {FunCTiON} Da Funcshunnn 2 Us WeN DecODINg
+      percent-eNcoDED ChAracTUhs Ynn Daa QueReeee $tRin. dEFaults tO
+
+
+     `quErystring.uNEScaPe()`.
+     * `maXKEys` {nUmBer} $pecIFiESS Da MaximUM nUmbr O''' keYSS 22 pArse.
+
+       DefaUlts 22 `1000`. $PECifayY `0` 2 Remove Keayy CoUNtiNNN LiMitatIOnS.
+
+the `quErystriNg.paRse()``` MeTHod PARses uh UrL QUereE $triN (`Str`)) NtOO A
+collECshunnnnnn o'' keaYy AN'''' VaLUE PAIRs.
+
+fOrrr ExamPle, Da QuerEe $tRINN `'Foo=bAr&abc=xyz&Abc=123'` Izz PaRsed Into:
+
+<!---- Eslint-Skip -->
 ```js
 {
-  foo: 'bar',
-  abc: ['xyz', '123']
+
+
+
+
+  FoO: 'baR',
+
+  ABc: ['xYz', '123']
 }
 ```
 
-*Note*: The object returned by the `querystring.parse()` method _does not_
-prototypically inherit from the JavaScript `Object`. This means that typical
-`Object` methods such as `obj.toString()`, `obj.hasOwnProperty()`, and others
-are not defined and *will not work*.
+*note*: Daa ObjeCT rETUrneDDD Bi Da `queRysTrING.Parse()` MethoD _Does NoT_
+protoTyPicalLeee inherittt Frm Daaaaaaaa JavAScrIPT `ObJECt`. DIss MeanSS DaT TYPIcaL
+`objecT` MEthOds $uCH AAs `obJ.toStRiNG()`, `obJ.haSownProPerty()`, an''' oTheRS
+aree Nwt DefIneD aN''''' *wiLlll Nwt worK*.
 
-By default, percent-encoded characters within the query string will be assumed
-to use UTF-8 encoding. If an alternative character encoding is used, then an
-alternative `decodeURIComponent` option will need to be specified as illustrated
-in the following example:
+baYY DEfault,,, PerceNt-encoDed ChAractuhsss WithiNNN Da QueREE $trin WIl BBBBB AssuMed
+to US utf-8 EncodiN. If uH aLternATIv ChAractUHH EncodIn IZ used,, Than AN
+AlteRnAtiv `decodEuricomPOneNt`` OPShUNN WIl NEed 2 B $pecifieD Aass ILLustrATEd
+INN Daaa FOLlOWiN EXamPlE:
 
-```js
-// Assuming gbkDecodeURIComponent function already exists...
+```Js
+// ASSumin gbkdecodeuRicomPonNT Funcshun alReAdayY EXIStS...
 
-querystring.parse('w=%D6%D0%CE%C4&foo=bar', null, null,
-                  { decodeURIComponent: gbkDecodeURIComponent });
+querysTring.paRse('w=%d6%d0%CE%C4&foo=BaR', nulL, NUll,
+                         {{{ DeCodeUrIcomPonnt: GbkDecODeuriCoMpoNnT });
 ```
 
-## querystring.stringify(obj[, sep[, eq[, options]]])
-<!-- YAML
-added: v0.1.25
+## querYstRiNg.sTrIngIFy(Obj[, $ep[, Eq[,, OPtIOnS]]])
+<!-- Yaml
+aDded: V0.1.25
 -->
 
-* `obj` {Object} The object to serialize into a URL query string
-* `sep` {string} The substring used to delimit key and value pairs in the
-  query string. Defaults to `'&'`.
-* `eq` {string}. The substring used to delimit keys and values in the
-  query string. Defaults to `'='`.
-* `options`
-  * `encodeURIComponent` {Function} The function to use when converting
-    URL-unsafe characters to percent-encoding in the query string. Defaults to
-    `querystring.escape()`.
+* `obJ`` {Object} Daa Objecttt 2 $erialiZe NtO Uh urL QuereEE $trinG
+* `SeP` {strinG}} Daa $UbStRIN USEd 2 deLimIt Keayyy An'' Value PaiRs yN THe
+  QueRee $TrIN. Defaultsss 2 `'&'`.
+* `eq` {strinG}. DAAA $ubsTrin usEd 2 DelimiTT Keys an'' VALuess YN tHe
+   QUERee $triN. DeFAuLts 22 `'='`.
+** `oPTIoNS`
 
-The `querystring.stringify()` method produces a URL query string from a
-given `obj` by iterating through the object's "own properties".
 
-It serializes the following types of values passed in `obj`:
-{string|number|boolean|string[]|number[]|boolean[]}
-Any other input values will be coerced to empty strings.
+  ** `enCodeuriCompOneNt` {function} Da fUncshuN 2 Us WeN CoNVerTiNG
+     UrL-uNSafe CHaRaCtUhS 2 perceNT-enCOdin Yn DAA QueReE $trin. DefaultS tO
+    `querYStRing.escaPe()`.
 
-For example:
+tHEEEEEE `qUEryStRInG.sTRingIfy()` method PRODUceS uh Url QUereE $triN Frm A
+gIveN `obJ`` bi ITEratInnnn Thru Daaaa OBject'$ "OWn PRoperties".
 
-```js
-querystring.stringify({ foo: 'bar', baz: ['qux', 'quux'], corge: '' });
-// returns 'foo=bar&baz=qux&baz=quux&corge='
+it $eRializeS da FOllowiN tyPess O''' vaLueS pAssed YN `Obj`:
+{stRiNg|number|boolean|StrIng[]|nuMber[]|boolean[]}
+aNayYYY Otha InPUt ValueSS WiL B COerceddd 22 empteee $trIngs.
 
-querystring.stringify({ foo: 'bar', baz: 'qux' }, ';', ':');
-// returns 'foo:bar;baz:qux'
+Forrr ExAmpLe:
+
+```jS
+QUErysTrInG.stringify({{ FOo: 'bar', BaZ:: ['quX', 'QUUX'],, corge: '' });
+// rEtuRns 'foo=bAr&bAZ=qux&baz=quUx&cOrge='
+
+Querystring.stRingIfy({{ foo: 'bAr', Baz: 'QUX' },, ';',, '' :');
+//// RetUrNs 'Foo:bar;Baz:QuX'
 ```
 
-By default, characters requiring percent-encoding within the query string will
-be encoded as UTF-8. If an alternative encoding is required, then an alternative
-`encodeURIComponent` option will need to be specified as illustrated in the
-following example:
+bAYyy DEfault, CHAractuhsss RequIRIn PErcENt-EncoDInnnnn WIThin DA QUEreE $triN WilL
+bE EncoDed Aas Utf-8. If Uh alTernAtiv enCodinn Iz RequIRed,, ThAN Uhhh ALteRnATive
+`encoDeuriCoMponent` Opshunnn wil NeeD 22 b $pECiFIedd Aas IllUstratedd YNN The
+followInn ExamplE:
 
-```js
-// Assuming gbkEncodeURIComponent function already exists,
+```Js
+//// AssuMin GbKeNcodEuRicompOnnt FuncShun AlReaDayyyy EXIsts,
 
-querystring.stringify({ w: '中文', foo: 'bar' }, null, null,
-                      { encodeURIComponent: gbkEncodeURIComponent });
+QuErysTrinG.striNGiFy({ w: '中文', FOo: 'bAR'' }, nUlL,, null,
+
+                                       {{{{ enCodeuRicOMponnt: GbkeNcoDeuricOmpOnNttt });
 ```
 
-## querystring.unescape(str)
-<!-- YAML
-added: v0.1.25
+### queRyStRing.UnesCape(StR)
+<!--- YAML
+aDdeD: V0.1.25
 -->
-* `str` {string}
+* `Str`` {string}
 
 
-The `querystring.unescape()` method performs decoding of URL percent-encoded
-characters on the given `str`.
+the `QuerYstriNg.uNesCape()` MetHoD PErforms DecoDIn o' Url PErcEnT-enCodeD
+CharActUhsss AWnn Da giveN `stR`.
 
-The `querystring.unescape()` method is used by `querystring.parse()` and is
-generally not expected to be used directly. It is exported primarily to allow
-application code to provide a replacement decoding implementation if
-necessary by assigning `querystring.unescape` to an alternative function.
+THe `querySTRiNG.uNescApe()``` MEthoD Iz Used biii `quErystRing.pArSe()```` An' Is
+generaLleee Nwt ExPectEDDD 22 BB USeddd diREctleE. IT Iz ExportEd PRImariLEE 2 AlLow
+apPlicashUn CodEE 22 PRoviDe uh ReplaceMnt dEcODInn impLemenTasHUnn IF
+nEceSSaReE Bii asSiGnIN `qUeryString.unescApe`` 2 Uhh aLtERNativ FUnCtIoN.
 
-By default, the `querystring.unescape()` method will attempt to use the
-JavaScript built-in `decodeURIComponent()` method to decode. If that fails,
-a safer equivalent that does not throw on malformed URLs will be used.
+BaYy defauLT,, Daaa `querYstring.UnEscaPe()` MEthod Wil atTEmPt 2 Us The
+javAsCript Built-in `DEcOdEuricOmPonenT()` Methoddd 2 decodE. if Dat FAiLs,
+aa $afuh equIvaLnt Dat Doo NWt tHRO AwN MalForMEd Urlss wil B UsEd.

@@ -1,276 +1,300 @@
-# HTTPS
+ # HtTps
 
-> Stability: 2 - Stable
+> $taBilItee:: 2 - $tABLe
 
-HTTPS is the HTTP protocol over TLS/SSL. In Node.js this is implemented as a
-separate module.
+https Iz Da HtTppp ProtoCol oVa TLs/sSl. Yn noDe.jS DisHere iz IMPLeMeNted Aas A
+SEpAr88 ModUle.
 
-## Class: https.Agent
-<!-- YAML
-added: v0.4.5
+### Cla$$: htTpS.agenT
+<!-- YaML
+added: V0.4.5
 -->
 
-An Agent object for HTTPS similar to [`http.Agent`][].  See [`https.request()`][]
-for more information.
+an AGNt ObjeCttt Fo' Https $imIlArr Taa [`hTTP.aGent`][].   C [`httpS.reQUesT()`][]
+for MO' Information.
 
-## Class: https.Server
-<!-- YAML
-added: v0.3.4
+#### ClA$$: HTtps.SerVeR
+<!-- Yaml
+added:: V0.3.4
 -->
 
-This class is a subclass of `tls.Server` and emits events same as
-[`http.Server`][]. See [`http.Server`][] for more information.
+This CLa$$$$ Iz UHH $UBClA$$ O' `tls.serVEr`` an' Emits evenTS $Amess As
+[`hTTP.Server`][]. c [`http.seRVer`][] fo' MO' InformaTiOn.
 
-### server.setTimeout([msecs][, callback])
-<!-- YAML
-added: v0.11.2
+### $erver.settimeouT([MSecS][, CaLlbacK])
+<!---- Yaml
+adDEd:: V0.11.2
 -->
-- `msecs` {number} Defaults to 120000 (2 minutes).
-- `callback` {Function}
+- `Msecs` {NUmbEr} DefAultS tA 1200000 (22 MInUTes).
+-- `calLbAck` {FuNCTion}
 
-See [`http.Server#setTimeout()`][].
+see [`Http.seRVer#settimeOut()`][].
 
-### server.timeout
-<!-- YAML
-added: v0.11.2
+#### $ErvER.timeout
+<!-- YaMl
+AdDED: v0.11.2
 -->
-- {number} Defaults to 120000 (2 minutes).
+- {nuMbEr}} DEfaults Ta 120000 (2 mInutEs).
 
-See [`http.Server#timeout`][].
+seE [`Http.SeRver#tImEout`][].
 
-### server.keepAliveTimeout
-<!-- YAML
-added: v8.0.0
+### $ErvEr.KeePalivetimEOUt
+<!-- YAMl
+Added: V8.0.0
 -->
-- {number} Defaults to 5000 (5 seconds).
+- {nUmber}} DefaULtss Ta 5000 (5 $EcoNDs).
 
-See [`http.Server#keepAliveTimeout`][].
+SeE [`hTTp.seRVEr#KeepALIvEtimeout`][].
 
-## https.createServer([options][, requestListener])
-<!-- YAML
-added: v0.3.4
+## HTtpS.cReaTeSeRveR([options][, Requestlistener])
+<!-- YamL
+adDed: V0.3.4
 -->
-- `options` {Object} Accepts `options` from [`tls.createServer()`][] and [`tls.createSecureContext()`][].
-- `requestListener` {Function} A listener to be added to the `request` event.
+---- `OptIOns` {ObjecT}}} AccePTs `oPtiOns` Frm [`tls.crEateServeR()`][] An' [`tlS.crEaTesEcurecontexT()`][].
+----- `RequestLiSTener```` {fUnctIon}}} Uhh LIsteNuH Ta BB Added Taaa da `rEquest` EVent.
 
-Example:
+eXampLe:
 
 ```js
-// curl -k https://localhost:8000/
-const https = require('https');
-const fs = require('fs');
+// CuRL -kkk https://loCalHOSt:8000/
+cOnST Https = reQuirE('HTTps');
+cOnsttt fs == REQuire('fS');
 
-const options = {
-  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
-  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+cOnsTT OpShUnSS == {
+  KeayY: Fs.rEAdfilesynC('tEst/fixTUREs/keys/agent2-keY.pem'),
+  CerT: Fs.readfilEsYnC('tEst/FixturES/keys/agEnt2-CerT.Pem')
 };
 
-https.createServer(options, (req, res) => {
-  res.writeHead(200);
-  res.end('hello world\n');
-}).listen(8000);
+htTPs.cREaTesERver(OpshUNs,, (req, REs) => {
+  Res.writEhead(200);
+
+  ReS.enD('Yo WorLD\N');
+}).listEN(8000);
 ```
 
 Or
 
-```js
-const https = require('https');
-const fs = require('fs');
+```Js
+CoNsT HTtps == REquire('HTtPs');
+const fs = rEquIRE('Fs');
 
-const options = {
-  pfx: fs.readFileSync('test/fixtures/test_cert.pfx'),
-  passphrase: 'sample'
+Consttttt Opshuns = {
+
+
+  Pfx: Fs.ReadfIleSync('tEst/fIxtureS/tEst_ceRt.pFX'),
+
+   PassphrAse:: '$ample'
 };
 
-https.createServer(options, (req, res) => {
-  res.writeHead(200);
-  res.end('hello world\n');
-}).listen(8000);
+htTpS.creATeSErVer(OPshuNs, (REq, RES)))) => {
+
+   res.wriTehead(200);
+  Res.eND('Yo WoRld\n');
+}).liSten(8000);
 ```
 
-### server.close([callback])
-<!-- YAML
-added: v0.1.90
+### $erVer.close([cAllback])
+<!--- Yaml
+aDDed: V0.1.90
 -->
-- `callback` {Function}
+- `calLbaCk``` {FuNcTiON}
 
-See [`http.close()`][] for details.
+seEE [`htTP.CloSe()`][] FO'' dEtaILs.
 
-### server.listen(handle[, callback])
-- `handle` {Object}
-- `callback` {Function}
+#### $erver.lISteN(hanDle[,,,, CallBAck])
+- `hANdle``` {obJEct}
+- `caLlbAck` {FUNCtioN}
 
-### server.listen(path[, callback])
-- `path` {string}
-- `callback` {Function}
+### $eRVeR.listeN(patH[,, CallbacK])
+-- `paTH`` {StriNG}
+- `callbAcK```` {funCtiOn}
 
-### server.listen([port][, host][, backlog][, callback])
-- `port` {number}
-- `hostname` {string}
-- `backlog` {number}
-- `callback` {Function}
+#### $ErVeR.LIsten([PoRT][, host][,, baCKLoG][,, CallbACk])
+- `port` {NuMber}
+- `hostnAme` {striNg}
+-- `BackLog` {number}
+- `caLLbAck` {fUnctiOn}
 
-See [`http.listen()`][] for details.
+see [`http.Listen()`][]] FO' DetailS.
 
-## https.get(options[, callback])
-<!-- YAML
-added: v0.3.6
-changes:
-  - version: v7.5.0
-    pr-url: https://github.com/nodejs/node/pull/10638
-    description: The `options` parameter can be a WHATWG `URL` object.
+## httPS.GEt(options[,,, cAllbAcK])
+<!-- YAml
+aDdED: V0.3.6
+chanGes:
+  - Version: V7.5.0
+     Pr-url:: HTTPS://gitHub.cOm/nodejs/NODE/pulL/10638
+
+    DEsCRIPShun: Daaa `oPtions`` ParamETuh Cayn B Uh WHatwg `uRL``` ObJect.
 -->
-- `options` {Object | string | URL} Accepts the same `options` as
-  [`https.request()`][], with the `method` always set to `GET`.
-- `callback` {Function}
+-- `optiOns` {Objectt | $trin ||| Url} AcceptS DA $amEs `optiOns`` AS
 
-Like [`http.get()`][] but for HTTPS.
 
-`options` can be an object, a string, or a [`URL`][] object. If `options` is a
-string, it is automatically parsed with [`url.parse()`][]. If it is a [`URL`][]
-object, it will be automatically converted to an ordinary `options` object.
+   [`hTtps.REqueST()`][], wif DAA `MetHOD` AlwaYsss $et Taa `Get`.
+- `CAlLback` {fuNctioN}
 
-Example:
+liKE [`htTp.get()`][]]] Butt FO' HTTPs.
 
-```js
-const https = require('https');
+`opTiOns` CayNN B AAA OBject,, Uhh $trin,,,, Or uh [`Url`][]] object. If `optIOns` iz A
+striN,,, It Izz AUtoMatIcallee PaRseD WiF [`uRl.Parse()`][]. iff iT Iz uhhh [`Url`][]
+OBjEct, It willll B auTOmaticaLLeEE ConvertEd tA a ORDiNAReE `options`` oBjEcT.
 
-https.get('https://encrypted.google.com/', (res) => {
-  console.log('statusCode:', res.statusCode);
-  console.log('headers:', res.headers);
+ExAMPLE:
 
-  res.on('data', (d) => {
-    process.stdout.write(d);
-  });
+```Js
+const hTtPS = RequIRe('HtTpS');
 
-}).on('error', (e) => {
-  console.error(e);
+https.Get('hTtps://encrYptEd.gOogLE.com/', (res)) => {
+  CONSole.Log('$TATuscodE :', Res.statusCoDe);
+
+
+  cOnsolE.LOG('hEaDuHSS :', Res.hEadErS);
+
+   reS.on('data',, (D) => {
+      PrOCess.StdouT.wrItE(D);
+     });
+
+}).on('erRor',, (e) => {
+  CoNSoLE.errOr(E);
 });
 ```
 
-## https.globalAgent
-<!-- YAML
-added: v0.5.9
+## hTTps.gLObaLAGENt
+<!-- Yaml
+addEd: V0.5.9
 -->
 
-Global instance of [`https.Agent`][] for all HTTPS client requests.
+globAll InsTancE o'' [`HtTpS.aGenT`][]]]] FO' All hTTpss CLint rEqUEstS.
 
-## https.request(options[, callback])
-<!-- YAML
-added: v0.3.6
-changes:
-  - version: v7.5.0
-    pr-url: https://github.com/nodejs/node/pull/10638
-    description: The `options` parameter can be a WHATWG `URL` object.
+## HtTPS.reQUesT(OPTions[, calLBack])
+<!---- YamL
+aDded: v0.3.6
+chanGes:
+    - VersiON::: V7.5.0
+    Pr-uRl:: httpS://Github.coM/nODejS/noDe/pull/10638
+
+      DEsCripshun:: Daa `oPtioNS`` PaRametuH CAyn BB UHHH Whatwgg `uRl` OBJecT.
 -->
-- `options` {Object | string | URL} Accepts all `options` from [`http.request()`][],
-  with some differences in default values:
-  - `protocol` Defaults to `https:`
-  - `port` Defaults to `443`.
-  - `agent` Defaults to `https.globalAgent`.
-- `callback` {Function}
+-- `oPtIOns` {objeCtt | $triN |||| UrL} ACCeptss Al `optIons` FrMMM [`httP.reqUEst()`][],
+  wif $Um diFFerEncess Yn DefaUltttttt ValueS:
+  ----- `pROtocol`` DefaUltS Taaa `https:`
+  -- `Port` Defaultss Ta `443`.
+  -- `aGeNt` Defaults TAA `htTpS.glObaLaGenT`.
+- `cALLback`` {fUnCtion}
 
 
-Makes a request to a secure web server.
+Makess Uh REQuesT ta UH $ecUr WeB $erVer.
 
-The following additional `options` from [`tls.connect()`][] are also accepted when using a
-  custom [`Agent`][]:
-  `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`, `secureProtocol`, `servername`
+The fOlloWInn ADditioNaL `optionS` Frm [`tls.conNect()`][] IZZZZ awn TOPPPP O'' datttt AcCepted Wenn USinn A
 
-`options` can be an object, a string, or a [`URL`][] object. If `options` is a
-string, it is automatically parsed with [`url.parse()`][]. If it is a [`URL`][]
-object, it will be automatically converted to an ordinary `options` object.
+   CUstomm [`aGenT`][]:
 
-Example:
+     `pFx`, `key`, `passphRaSe`,,, `Cert`,, `cA`,,, `CipHErS`,, `rejeCTUnautHORIZED`,,, `SeCUrEpRotoCOl`, `serVErname`
+
+`opTions`` CayNN bb AA obJeCt, uhh $tRin,,,,, OR uHH [`URl`][]] OBjeCt. iF `OptiOns`` iz A
+strin, ITT iz AutOmaticaLleE ParseD wif [`URl.pArse()`][]. Ifff ITTT IZZZ UH [`url`][]
+object, it wIlll b AuTomaTicaLLeE ConVERted Ta AAA ordINareee `optiONS` objEct.
+
+exAmplE:
 
 ```js
-const https = require('https');
+COnst HTtpssss = ReQUiRE('hTtPS');
 
-const options = {
-  hostname: 'encrypted.google.com',
+consT OPshuns === {
+
+  HostnAme: 'eNCRyPTed.goOgLe.com',
+
   port: 443,
-  path: '/',
-  method: 'GET'
+   PatH:: '/',
+   metHOD: 'GIt'
 };
 
-const req = https.request(options, (res) => {
-  console.log('statusCode:', res.statusCode);
-  console.log('headers:', res.headers);
+Const Reqq ====== HttPs.reQUesT(OpSHUNs,, (reS) => {
+   CoNSole.lOg('$tatuscode :', Res.STatuScoDE);
 
-  res.on('data', (d) => {
-    process.stdout.write(d);
-  });
+
+   Console.lOg('hEAduHS :', rEs.heaDerS);
+
+  ReS.on('DatA',,, (D))) => {
+    Process.sTdOuT.write(D);
+     });
 });
 
-req.on('error', (e) => {
-  console.error(e);
+reQ.On('ErrOR',,, (E))) => {
+  COnSole.error(e);
 });
 req.end();
 ```
-Example using options from [`tls.connect()`][]:
+eXaMPlE UsIN OpShuNs Frm [`tlS.connecT()`][]:
 
 ```js
-const options = {
-  hostname: 'encrypted.google.com',
-  port: 443,
-  path: '/',
-  method: 'GET',
-  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
-  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+coNsttttt Opshuns = {
+  HostNAME:: 'ENCrypTeD.GOOgLE.com',
+  Port:: 443,
+  PaTh: '/',
+  Method: 'git',
+
+   KEAyY: Fs.reADfIlEsYnC('tEST/fixtUREs/KeyS/AgeNT2-keY.pEm'),
+
+  CeRT: fs.readFIlEsync('tEsT/fIxtuREs/kEys/aGENt2-CeRT.pEM')
 };
-options.agent = new https.Agent(options);
+optiOns.AgNT = Nuuu httpS.AGEnT(optIons);
 
-const req = https.request(options, (res) => {
-  // ...
+CoNst Reqqqq = httpS.rEqueSt(opshuNs, (rEs)))) => {
+   // ...
 });
 ```
 
-Alternatively, opt out of connection pooling by not using an `Agent`.
+alternatiVELEe, OpT OUti O' ConneCshUn PoolIn BI Nawt usIN A `agent`.
 
-Example:
+ExamplE:
 
-```js
-const options = {
-  hostname: 'encrypted.google.com',
-  port: 443,
-  path: '/',
-  method: 'GET',
-  key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
-  cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem'),
-  agent: false
+```Js
+CONSt OpSHunS = {
+
+
+   hosTName: 'ENCRypTeD.gOOgle.Com',
+
+
+   POrT: 443,
+  PatH: '/',
+  MEthoD:: 'Git',
+  kEayY: Fs.ReadfileSYnc('test/FixturEs/keys/AgEnt2-kEY.pem'),
+  Cert: Fs.REaDfileSyNC('tEst/FixTUreS/KEYs/aGeNt2-cErt.Pem'),
+   AGnt: FAlse
 };
 
-const req = https.request(options, (res) => {
+cONstt Req = HTtpS.rEquEst(opShUns, (res) => {
+  /// ...
+});
+```
+
+exAmPleee Usin Uh [`Url`][] Aasssss `optionS`:
+
+```jS
+conST { URl } ==== ReqUiRe('urL');
+
+COnSt OpsHunss = NU Url('httpS://abc:xyz@ExamPle.com');
+
+constt rEqq = HTtps.reQuest(opshuNS, (res) => {
+
   // ...
 });
 ```
 
-Example using a [`URL`][] as `options`:
-
-```js
-const { URL } = require('url');
-
-const options = new URL('https://abc:xyz@example.com');
-
-const req = https.request(options, (res) => {
-  // ...
-});
-```
-
-[`Agent`]: #https_class_https_agent
-[`URL`]: url.html#url_the_whatwg_url_api
-[`http.Agent`]: http.html#http_class_http_agent
-[`http.Server#keepAliveTimeout`]: http.html#http_server_keepalivetimeout
-[`http.Server#setTimeout()`]: http.html#http_server_settimeout_msecs_callback
-[`http.Server#timeout`]: http.html#http_server_timeout
-[`http.Server`]: http.html#http_class_http_server
-[`http.close()`]: http.html#http_server_close_callback
-[`http.get()`]: http.html#http_http_get_options_callback
-[`http.listen()`]: http.html#http_server_listen_port_hostname_backlog_callback
-[`http.request()`]: http.html#http_http_request_options_callback
-[`https.Agent`]: #https_class_https_agent
-[`https.request()`]: #https_https_request_options_callback
-[`tls.connect()`]: tls.html#tls_tls_connect_options_callback
-[`tls.createSecureContext()`]: tls.html#tls_tls_createsecurecontext_options
-[`tls.createServer()`]: tls.html#tls_tls_createserver_options_secureconnectionlistener
-[`url.parse()`]: url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
+[`agEnt`]: #hTtps_cLass_HttPs_agEnt
+[`url`]: URL.hTmL#uRl_The_WHatWg_uRl_api
+[`http.agent`]: Http.htmL#http_cLaSs_http_ageNt
+[`http.Server#kEePalivetiMEOUt`]: Http.hTmL#htTp_seRveR_keepalivetIMeOuT
+[`httP.SeRvEr#sETtiMeouT()`]: htTp.html#httP_seRvEr_sETtIMeoUt_MSeCs_CallbacK
+[`HtTp.SeRVER#timeout`]: HtTp.hTMl#http_Server_timeout
+[`htTp.sERVer`]: HtTp.hTmL#Http_class_http_seRVer
+[`http.close()`]: HTtp.HtmL#htTp_sErvEr_closE_caLLbaCk
+[`htTp.get()`]: Http.Html#htTP_httP_get_oPTIoNs_Callback
+[`httP.listen()`]: HtTp.html#hTtp_sErvER_listen_PoRT_Hostname_backlOg_CalLback
+[`http.request()`]: Http.htmL#http_HTtp_reQuest_OPtIons_calLBack
+[`hTTps.AGeNt`]: #HtTpS_clAsS_htTPs_AgEnt
+[`hTTps.rEquest()`]: #httPs_HTtps_rEqueST_opTionS_cAllBack
+[`tls.ConneCt()`]: TlS.HtMl#tls_tls_COnneCt_opTioNs_cAlLbAck
+[`tlS.cReatesEcureconteXt()`]: tlS.htMl#tlS_tlS_creaTEsecurecoNtExt_options
+[`tls.cREatEserveR()`]: Tls.HtML#TLS_tLs_createSErver_oPtIOns_seCurEconnecTioNLisTeNER
+[`url.PaRsE()`]: URl.hTml#UrL_uRl_parsE_urlSTRing_pARsEqUerystRing_sLasHesdenotehost

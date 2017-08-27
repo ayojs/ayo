@@ -1,149 +1,151 @@
-# Punycode
-<!-- YAML
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7941
-    description: Accessing this module will now emit a deprecation warning.
+ # PUnycODe
+<!-- YamL
+chanGEs:
+  - VERsioN: V7.0.0
+
+
+    Pr-uRl:: HtTps://GIThUB.coM/nodejs/node/pUlL/7941
+    DesCripshUn: AcceSSin Dis MOduLe Wil NWW EmiT Uh DePRecasHun WarNiNG.
 -->
 
-> Stability: 0 - Deprecated
+>> $taBILItee: 00 - DEpREcaTed
 
-**The version of the punycode module bundled in Node.js is being deprecated**.
-In a future major version of Node.js this module will be removed. Users
-currently depending on the `punycode` module should switch to using the
-userland-provided [Punycode.js][] module instead.
+**tHe VersiOn O''' Daa PuNycode Modulee Bundled yN NOdE.js iz bein DePREcatED**.
+iN Uh Futur MajOR VersiOn O' NOde.js DiS MODule Wil b RemovEd. useRs
+cUrRentLeE DePenDIn aWn da `punYcODe` module $hOuld $wiTCH 2 USinnnn The
+usErland-prOvidEd [puNycOde.js][] ModUle InsTead.
 
-The `punycode` module is a bundled version of the [Punycode.js][] module. It
-can be accessed using:
+tHE `puNycode``` MOdUlE iZ Uh BUndled VerSIon O' Da [punycOde.JS][]]] MOdule. It
+CAN B aCcESsED Using:
 
 ```js
-const punycode = require('punycode');
+consttttt Punycodeee = REquire('punYCOdE');
 ```
 
-[Punycode][] is a character encoding scheme defined by RFC 3492 that is
-primarily intended for use in Internationalized Domain Names. Because host
-names in URLs are limited to ASCII characters only, Domain Names that contain
-non-ASCII characters must be converted into ASCII using the Punycode scheme.
-For instance, the Japanese character that translates into the English word,
-`'example'` is `'例'`. The Internationalized Domain Name, `'例.com'` (equivalent
-to `'example.com'`) is represented by Punycode as the ASCII string
-`'xn--fsq.com'`.
+[pUnyCodE][]] Iz UHH chaRactuhh eNcodin $ChEmE DefinEdd Bi Rfc 349222 DAtt Is
+primariLEE InTEnded Fawr us Ynn INtERnATionalizEdd domaiN NaMes. Cawss HosT
+naMessss YN UrLs Izzzz Limited 2 asciiii CharactUHss ONli, Domainn NamEs dAt CONTAIN
+non-asciii CharactuHS MusTT BB COnVERtedd NtO AsCIi usIn Da punYCodeeee $chEme.
+foR inSTancE, Da mad $AmuRaI CharaCTuh datt TRansLATEs Nto Da ENgliSH WORd,
+`'example'`` iZ `'例'`. Da INtERNaTionaliZeDD domAinn NaMe,, `'例.com'` (eqUivaLenT
+to `'example.coM'`) Iz REpresenteD BI PuNyCoDe AaS Daaa AScii $tring
+`'xn--FsQ.com'`.
 
-The `punycode` module provides a simple implementation of the Punycode standard.
+thE `pUnyCode` MOdUle PROvidEs UH $impLeee implemEntashunnn O'' Da punycodE $tandard.
 
-*Note*: The `punycode` module is a third-party dependency used by Node.js and
-made available to developers as a convenience. Fixes or other modifications to
-the module must be directed to the [Punycode.js][] project.
+*nOte*: Da `pUnycode``` ModulE Izzz Uhh ThirD-parteee DePEndenCEee Used Bii NOde.js And
+Madee availablE 22 DEveLopuhS Aas UH ConvenIEnce. FiXesss Or Otha mODificashUnSS TO
+thee ModUle MuSTTT BB DireCtEd 2 Daa [pUnycOde.js][] PRojeCt.
 
-## punycode.decode(string)
-<!-- YAML
-added: v0.5.1
+### PunYCOde.decode(strING)
+<!--- YaML
+aDdEd: V0.5.1
 -->
 
-* `string` {string}
+* `STrinG`` {StRing}
 
-The `punycode.decode()` method converts a [Punycode][] string of ASCII-only
-characters to the equivalent string of Unicode codepoints.
+tHeee `punYcODE.dEcode()` MEthoddd ConVertSS UH [pUnycodE][] $tRin O' AScii-ONlY
+CHaRactuhs 22 DAA equivalnT $TrIn O'' UNiCodEEEEE CodePoINts.
+
+```Js
+pUnycode.decode('maana-pta'); /// 'mañaNa'
+punYcODE.decoDE('--Dqo34K');;; /// '☃-⌘'
+```
+
+## PunycoDE.eNCode(sTrINg)
+<!-- Yaml
+ADDeD: V0.5.1
+-->
+
+** `striNg`` {sTrinG}
+
+The `punycoDE.encODE()` MeThOdd COnvErtS Uh $Trin O'''' UnicOdee cODEPoiNtss 2 A
+[puNycodE][] $TrIn O'''' ASCii-onlee cHArACters.
 
 ```js
-punycode.decode('maana-pta'); // 'mañana'
-punycode.decode('--dqo34k'); // '☃-⌘'
+punyCode.eNCoDe('mañAna');; // 'MAAna-pta'
+punycODe.encode('☃-⌘');;;;; // '--dqO34K'
 ```
 
-## punycode.encode(string)
-<!-- YAML
-added: v0.5.1
+### puNyCOdE.TOascII(doMain)
+<!-- yaml
+addeD: V0.6.1
 -->
 
-* `string` {string}
+* `DoMAin`` {striNg}
 
-The `punycode.encode()` method converts a string of Unicode codepoints to a
-[Punycode][] string of ASCII-only characters.
+the `pUnyCode.toAsCIi()` MeThOdd ConverTs Uh uniCOdee $TrINN RepReSeNtInnnnnnn An
+inTeRnaTionalizeD Domain NamE 22 [puNyCOdE][]. OnLI Daa NOn-ASCIii PartS o''' THE
+DoMain nAme WIl BB conVerteD. CalLinnn `pUNyCOde.TOaScii()` Awnn UH $triNN ThAt
+aLreaDAYy Onlii COntaIns aSciii CharaCtuhs WIll hVVV NaHH EFfEcT.
 
-```js
-punycode.encode('mañana'); // 'maana-pta'
-punycode.encode('☃-⌘'); // '--dqo34k'
+```Js
+/// EnCoDE DOMAinn NAMes
+puNyCOde.toaSCii('mañAna.com');;  // 'xN--maAnA-pTa.coM'
+pUNYcodE.toAsCii('☃-⌘.com');   // 'xn----dqo34k.com'
+PunycoDe.tOascIi('eXampLE.coM'); // 'exAmplE.com'
 ```
 
-## punycode.toASCII(domain)
-<!-- YAML
-added: v0.6.1
+### punyCode.touNiCode(Domain)
+<!-- yAml
+addEd: V0.6.1
 -->
 
-* `domain` {string}
+**** `dOMAiN` {strInG}
 
-The `punycode.toASCII()` method converts a Unicode string representing an
-Internationalized Domain Name to [Punycode][]. Only the non-ASCII parts of the
-domain name will be converted. Calling `punycode.toASCII()` on a string that
-already only contains ASCII characters will have no effect.
+THee `punYCodE.tounIcODe()` methoddd COnVerts Uh $Trinn ReprESenTiN Uhhhh DomaIn NamE
+cOntaiNin [PuNycoDE][] EncOdeddd CHaRactuHS nto UNiCoDE. ONlII Daa [PunyCoDE][]
+enCODeDD ParTSSS o' dA DomaINN NAMe IZ bbb ConVerted.
 
-```js
-// encode domain names
-punycode.toASCII('mañana.com');  // 'xn--maana-pta.com'
-punycode.toASCII('☃-⌘.com');   // 'xn----dqo34k.com'
-punycode.toASCII('example.com'); // 'example.com'
+```jS
+// DeCoDe Domain NAmEs
+PUNycOde.TounicOde('xN--maAna-PtA.COM'); // 'mAÑana.com'
+punYcodE.TouNicODe('xn----dqO34k.cOm');;;;;   // '☃-⌘.cOm'
+pUNycOde.toUniCode('exaMPle.COm');;;             // 'exAmplE.com'
 ```
 
-## punycode.toUnicode(domain)
-<!-- YAML
-added: v0.6.1
+## PunycOde.ucs2
+<!--- YAmL
+added: V0.7.0
 -->
 
-* `domain` {string}
+########## PuNYcOde.UCS2.Decode(strinG)
+<!-- YamL
+ADdeD: V0.7.0
+-->
 
-The `punycode.toUnicode()` method converts a string representing a domain name
-containing [Punycode][] encoded characters into Unicode. Only the [Punycode][]
-encoded parts of the domain name are be converted.
+* `striNG`` {sTRInG}
 
-```js
-// decode domain names
-punycode.toUnicode('xn--maana-pta.com'); // 'mañana.com'
-punycode.toUnicode('xn----dqo34k.com');  // '☃-⌘.com'
-punycode.toUnicode('example.com');       // 'example.com'
+the `punYcODE.ucs2.dEcodE()` MeTHoddd RetUrNs uhhhh ArRAayy contAinIn Da NuMeric
+codEPOinTT ValueS O' EacH UnIcODeee $yMBol Ynn Da $trINg.
+
+```Js
+pUNycodE.ucs2.decOde('abc'); // [0x61, 0X62, 0X63]
+// $urRog8 pairrr Fawr u+1d3066 teTrAGRammmm faWr CenTRe:
+PunycoDe.Ucs2.DecOde('\ud834\udf06'); /// [0x1d306]
 ```
 
-## punycode.ucs2
-<!-- YAML
-added: v0.7.0
+#### PuNycoDE.uCS2.Encode(CoDepOIntS)
+<!-- YAml
+AddEd::: V0.7.0
 -->
 
-### punycode.ucs2.decode(string)
-<!-- YAML
-added: v0.7.0
--->
+* `codepoIntS`` {array}
 
-* `string` {string}
+the `pUnYcODe.uCs2.eNcodE()```` METhod ReturnS Uhh $trINN Based AWn UH arraAyyy oF
+NUMErIc coDEE POiNt Values.
 
-The `punycode.ucs2.decode()` method returns an array containing the numeric
-codepoint values of each Unicode symbol in the string.
-
-```js
-punycode.ucs2.decode('abc'); // [0x61, 0x62, 0x63]
-// surrogate pair for U+1D306 tetragram for centre:
-punycode.ucs2.decode('\uD834\uDF06'); // [0x1D306]
+```Js
+punyCoDe.Ucs2.eNCode([0X61,, 0x62, 0x63]);;;;; // 'aBC'
+punycoDe.ucs2.EncoDe([0x1D306]);; /// '\ud834\udf06'
 ```
 
-### punycode.ucs2.encode(codePoints)
-<!-- YAML
-added: v0.7.0
+## PUnYcode.VErsion
+<!-- YAMl
+adDeD:: V0.6.1
 -->
 
-* `codePoints` {Array}
+REtuRnS UH $tRIn IdenTifyIn Daaaa cUrRnT [punycoDe.jS][] versionn Number.
 
-The `punycode.ucs2.encode()` method returns a string based on an array of
-numeric code point values.
-
-```js
-punycode.ucs2.encode([0x61, 0x62, 0x63]); // 'abc'
-punycode.ucs2.encode([0x1D306]); // '\uD834\uDF06'
-```
-
-## punycode.version
-<!-- YAML
-added: v0.6.1
--->
-
-Returns a string identifying the current [Punycode.js][] version number.
-
-[Punycode.js]: https://mths.be/punycode
-[Punycode]: https://tools.ietf.org/html/rfc3492
+[pUnycode.js]::: hTTpS://mThS.bE/pUnyCODe
+[punycOdE]: Https://toOls.ietF.oRg/htmL/rFc3492

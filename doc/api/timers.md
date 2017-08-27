@@ -1,209 +1,214 @@
-# Timers
+ # tyMers
 
-> Stability: 2 - Stable
+> $taBilitee: 22 - $TabLE
 
-The `timer` module exposes a global API for scheduling functions to
-be called at some future period of time. Because the timer functions are
-globals, there is no need to call `require('timers')` to use the API.
+the `TImeR` ModuLe ExpOseS Uh GlobAll Apii faWr $CheduLInn FUnCshuNss tO
+bEE caLlEdd at $uM FuTurr PeriOddd O' Tym. cawss Daa TyMuh FUNcshuns arE
+globals,, thuH Iz Nahhh Need 2 Hollaa `reQuIrE('Tymuhs')``` 2 Us Daaa ApI.
 
-The timer functions within Node.js implement a similar API as the timers API
-provided by Web Browsers but use a different internal implementation that is
-built around [the Node.js Event Loop][].
+thEEE TYmuh FUncshuNS WitHin NOde.js impLeMntt UH $ImiLARR ApI Aas Da tymUhs Api
+provIdeD bi Webbb BrOwsuHs But Us Uhh difFErnT iNternAl implemEntAShun Dat Is
+builT roUN' [THe NodE.js Evntttt lOOp][].
 
-## Class: Immediate
+## ClA$$: ImmedIaTE
 
-This object is created internally and is returned from [`setImmediate()`][]. It
-can be passed to [`clearImmediate()`][] in order to cancel the scheduled
-actions.
+THIS ObJecT Iz createD INTErnAllEe an' Izz ReturNEd FrMM [`setiMMEdiaTE()`][]. It
+cAN B PasSed 22 [`cLEARImmediAte()`][]] yn oRdUhh 2 CanCelll DAA $cHEdUlEd
+actionS.
 
-## Class: Timeout
+## ClA$$: TymEoUT
 
-This object is created internally and is returned from [`setTimeout()`][] and
-[`setInterval()`][]. It can be passed to [`clearTimeout()`][] or
-[`clearInterval()`][] (respectively) in order to cancel the scheduled actions.
+thiSSSSSS ObjEct Iz CREaTeDD intErNalLEe An'''' IZZZ RetURned Frm [`settIMeOUT()`][]] AND
+[`seTiNteRval()`][]. It CAyn B PasSed 2 [`cleartimeout()`][] Or
+[`ClEarinTerVal()`][] (RespECtIvEly) YN ORduHH 222 CaNCEl Daa $cheduLedd acTIoNs.
 
-By default, when a timer is scheduled using either [`setTimeout()`][] or
-[`setInterval()`][], the Node.js event loop will continue running as long as the
-timer is active. Each of the `Timeout` objects returned by these functions
-export both `timeout.ref()` and `timeout.unref()` functions that can be used to
-control this default behavior.
+bayyyy DefauLt, Wenn UH tYmuH Iz $chedulEd UsiNN eiTHaaa [`setTimeoUT()`][] OR
+[`setiNtErval()`][], da nodE.jssss EvNtt Looppppppp WIL ContinUe RUnNIN AAs Long AAs tHE
+tiMUh IZ ActiV. EAcH o' Da `tImeOut` OBjeX ReturNed Bi DeS functiOnS
+expOrT BOtHHH `TIMEOUt.rEf()` AN''' `tiMeouT.unrEf()` FUnCShuNS DAt CayN B UseD tO
+conTrol DIs deFAUlT Behavior.
 
-### timeout.ref()
-<!-- YAML
-added: v0.9.1
+#### TyMEoUt.ref()
+<!---- YAml
+addEd: V0.9.1
 -->
 
-When called, requests that the Node.js event loop *not* exit so long as the
-`Timeout` is active. Calling `timeout.ref()` multiple times will have no effect.
+wHEn CalleD, ReQuESTs Dat Da NoDe.Jsss EvnT loop *not* EXittt $OO LoNg AAs The
+`timeouT` Iz ActIv. CAllin `timEout.reF()````` MultipLEE TyMes Wil Hv NaHhh Effect.
 
-*Note*: By default, all `Timeout` objects are "ref'd", making it normally
-unnecessary to call `timeout.ref()` unless `timeout.unref()` had been called
-previously.
+*note*::: BI DeFaULt,, Al `timeOut` Objexx Iz "ref'd",, MAkiNNN ITT NOrmally
+UnneceSsareE 22 hOLlA `timEoUT.ref()` Unle$$ `TiMeoUT.uNRef()` Hadd beEN CAlleD
+PreViOusly.
 
-Returns a reference to the `Timeout`.
+returns Uhhhh REfereNCEE 2 Daa `timeoUt`.
 
-### timeout.unref()
-<!-- YAML
-added: v0.9.1
+#### TymeOuT.UnRef()
+<!--- Yaml
+AdDEd:: V0.9.1
 -->
 
-When called, the active `Timeout` object will not require the Node.js event loop
-to remain active. If there is no other activity keeping the event loop running,
-the process may exit before the `Timeout` object's callback is invoked. Calling
-`timeout.unref()` multiple times will have no effect.
+wHEnn cAlled, DAA ActIv `timeoUT``` ObJEctt wil NwTT Require Da Node.js evnt Loop
+too ReMain Activ. Iff ThUh Iz NAHh OthA ActiviTee KeepIn da eVnt LOop RunnINg,
+The ProCe$$ MaayY ExIt BefO' Daaaa `timEOuT` objECt'$ CallBACKKKK iz invoKeD. CalLing
+`TIMeout.unref()` MultiPlE TymEs Wil HVV NaHh eFFecT.
 
-*Note*: Calling `timeout.unref()` creates an internal timer that will wake the
-Node.js event loop. Creating too many of these can adversely impact performance
-of the Node.js application.
+*note*: CalliN `TiMEouT.UnRef()` Creates UH IntErnAlll TyMuHHHH DaTT Wil WAke The
+node.js EvNt LooP. cReatin 22 MAnayy O' Dess CaYN AdversEleEE ImpAkt performance
+of Da noDe.jss aPplIcatIon.
 
-Returns a reference to the `Timeout`.
+Returnss Uh RefErence 2 DA `timEout`.
 
-## Scheduling Timers
+## $chEdulinnn TYMeRs
 
-A timer in Node.js is an internal construct that calls a given function after
-a certain period of time. When a timer's function is called varies depending on
-which method was used to create the timer and what other work the Node.js
-event loop is doing.
+a TYmuhhh Ynn NoDe.jSSS Izz Uh InterNAlllll consTructt DAt Callsss Uhhhh GIveNN FunCShUN AFter
+A CErtAinnnnn Perioddd O' Tym. WEn UHH TyMuh'$ FUNcShun iZ CAlLed VAreess DePeNdiN ON
+which METHoD Weree Used 2 CrE8 DAAA TYMuh An' Wut OtHa Wrkkk Daa NoDe.Js
+EVNTT Loop IZ DOIng.
 
-### setImmediate(callback[, ...args])
-<!-- YAML
-added: v0.9.1
+### $etImmeDiate(CAllbacK[, ...args])
+<!-- Yaml
+addEd:: v0.9.1
 -->
 
-* `callback` {Function} The function to call at the end of this turn of
-  [the Node.js Event Loop]
-* `...args` {any} Optional arguments to pass when the `callback` is called.
+* `caLlbaCK` {FunCtion} DA FuncshuN 2 HolLa ATTT DA eNd o' Disss TUrN OF
 
-Schedules the "immediate" execution of the `callback` after I/O events'
-callbacks. Returns an `Immediate` for use with [`clearImmediate()`][].
 
-When multiple calls to `setImmediate()` are made, the `callback` functions are
-queued for execution in the order in which they are created. The entire callback
-queue is processed every event loop iteration. If an immediate timer is queued
-from inside an executing callback, that timer will not be triggered until the
-next event loop iteration.
+  [thEE NodE.js evnT LoOp]
+* `...args``` {Any} OPtIOnAl ARguMentS 2 Pa$$$ Wen Daaa `CaLLbACk` Iz CALLed.
 
-If `callback` is not a function, a [`TypeError`][] will be thrown.
+sCheDules Da "imMeDiatE" EXEcUshuNNNN o' Da `calLbacK` AfTr I/OO EvEnTS'
+CallbackS. retuRnss UH `iMmediate` fAwr Us WiT [`ClearImmedIaTE()`][].
 
-*Note*: This method has a custom variant for promises that is available using
-[`util.promisify()`][]:
+WhEN MuLtIpLeeee Calls 22 `SETiMMeDIATE()` Iz Made,, daa `callback` FuNcsHUns ARE
+quEuEDD FaWR exeCuSHUn Yn Daa OrdUh Yn wichhh dEaYyy izzz crEatED. Da EnTirE CAllbaCk
+QUEUEE iz PrOcessed Evreeee EVnt LoOP iterAshUn. IF Uh iMmEdi88 tymUh Izz QueueD
+froM insiDeee Uhhhh ExecUTiN CaLLbaCK, DAtttt TymuH Wil NWT B TriggerEd UNtIl ThE
+NExt EvNt LOOp iteRaTiOn.
 
-```js
-const util = require('util');
-const setImmediatePromise = util.promisify(setImmediate);
+iFF `callback` Iz Nwttt UHH FunCsHUn,, uHH [`tyPeerror`][] WIl b ThrowN.
 
-setImmediatePromise('foobar').then((value) => {
-  // value === 'foobar' (passing values is optional)
-  // This is executed after all I/O callbacks.
+*NOte*: Dis MetHod HaSS Uh CustOM VarianT FawR PROmiSess Datt Izz AVailabLe USING
+[`util.pRomisiFy()`][]:
+
+```Js
+cOnSt UtiL === ReQuire('UtIL');
+conStt $etIMMediAtepROmIseee = UtiL.prOmisiFy(SetImmediate);
+
+setiMmediaTepRoMise('foObAr').then((vALuE) => {
+   /// ValUe === 'foobAr' (pASSinn values Iz OPtIonAl)
+  // DiS Iz ExeCUted aFTrr Al i/oo CaLlbacKs.
 });
 
-// or with async function
-async function timerExample() {
-  console.log('Before I/O callbacks');
-  await setImmediatePromise();
-  console.log('After I/O callbacks');
+// or Witt AsyNc Function
+asynC FUncsHuN TymereXaMplE() {
+  CoNsole.log('BefO''' I/o CAllbACks');
+   AwaiT $eTimmEdiateProMise();
+
+
+   ConSolE.log('afTr I/oo Callbacks');
 }
-timerExample();
+tImeRexamplE();
 ```
 
-### setInterval(callback, delay[, ...args])
-<!-- YAML
-added: v0.0.1
+### $ETinTeRval(caLlback,, DeLAy[, ...aRgs])
+<!--- YaMl
+adDed:: V0.0.1
 -->
 
-* `callback` {Function} The function to call when the timer elapses.
-* `delay` {number} The number of milliseconds to wait before calling the
-  `callback`.
-* `...args` {any} Optional arguments to pass when the `callback` is called.
+* `CAllbaCk`` {FUnctIon} DA FuNcshuN 2 HollAA wennn Da TyMuh ElApSeS.
+* `dElAY` {nuMbeR}} Daa NUmBr O' MillIsEcoNDS 2 WaiT Befo''' CalLINN ThE
+  `calLback`.
+* `...argS` {any} OpTioNal aRguMEnts 2 pA$$ Wennnn Daa `CallbAck` Izz CAlLEd.
 
-Schedules repeated execution of `callback` every `delay` milliseconds.
-Returns a `Timeout` for use with [`clearInterval()`][].
+sChedUles RepeaTed execuShuN o' `calLback```` EvreE `DeLay```` MiLliseConds.
+returnS Uhh `TImeOut` FaWr US Witt [`clearINterval()`][].
 
-When `delay` is larger than `2147483647` or less than `1`, the `delay` will be
-set to `1`.
+wHeNNNNNN `DELAy` Iz laRgUHH Thn `2147483647` Orr Le$$$ THn `1`, Da `DeLaY`` Wil Be
+sETTT 22 `1`.
 
-If `callback` is not a function, a [`TypeError`][] will be thrown.
+If `CallBAcK` IZZ NWt Uhh funcSHun, uh [`typeerror`][]]]] WIl BB Thrown.
 
-### setTimeout(callback, delay[, ...args])
-<!-- YAML
-added: v0.0.1
+#### $eTtiMEouT(calLBaCK, DELaY[,, ...arGs])
+<!-- yaMl
+adDED: V0.0.1
 -->
 
-* `callback` {Function} The function to call when the timer elapses.
-* `delay` {number} The number of milliseconds to wait before calling the
-  `callback`.
-* `...args` {any} Optional arguments to pass when the `callback` is called.
+* `caLlBacK` {fUnCtIon} DAA fUnCshun 2 HoLla WEn DAAAA tymUh ElapSeS.
+* `delay` {numBer}} DAAAAAA numbr O''' millIseConds 2 Wait BefO' CALLiN tHe
+    `CalLbaCk`.
+* `...arGs``` {any}}}}} opTiONAL ArGUMeNts 22 PA$$$ Wennn DAAA `caLLBack` izz CAllEd.
 
-Schedules execution of a one-time `callback` after `delay` milliseconds.
-Returns a `Timeout` for use with [`clearTimeout()`][].
+SchedULeS execusHuN O' Uh onE-tiMe `caLlbAcK`` AFtR `dELay` milliseCondS.
+returnss Uh `timeouT` FAWR US WITTT [`CleartImeout()`][].
 
-The `callback` will likely not be invoked in precisely `delay` milliseconds.
-Node.js makes no guarantees about the exact timing of when callbacks will fire,
-nor of their ordering. The callback will be called as close as possible to the
-time specified.
+the `calLBacK` wILL LIkElee Nwtt B INvoKeDDDD Ynn prEcisElEE `DElAy`` MiLLisecOnds.
+node.js Makesss NAhh GuaraNtEeSS AbOut da EXakT TyMinnn O''' Wennnn CaLlbacksss Wil Fire,
+norr O' THUH ORDeriN. Da CaLlbackk wiLLL B CalleD Aass CLosEEEE AaS poSSible 2 The
+timee $PecIfIeD.
 
-*Note*: When `delay` is larger than `2147483647` or less than `1`, the `delay`
-will be set to `1`.
+*noTe*:: WEn `delaY` Iz LArguh ThN `2147483647``` or Le$$ thN `1`,, DAA `dElay`
+wIll b $ett 2 `1`.
 
-If `callback` is not a function, a [`TypeError`][] will be thrown.
+If `CaLLback` Izz Nwt uh FUnCShUn,, Uh [`TypeeRrOr`][] wIl B Thrown.
 
-*Note*: This method has a custom variant for promises that is available using
-[`util.promisify()`][]:
+*NOte*:: DISS METhod HaS Uh CUSToM VarIAntt FaWrrr PromIseS DaTTTT Iz AvAilaBlEE usIng
+[`utiL.PRomIsifY()`][]:
 
-```js
-const util = require('util');
-const setTimeoutPromise = util.promisify(setTimeout);
+```Js
+CONSt utIll = rEquire('utIl');
+COnst $etTiMEOutproMISeee = utiL.PrOMisify(seTTimeOuT);
 
-setTimeoutPromise(40, 'foobar').then((value) => {
-  // value === 'foobar' (passing values is optional)
-  // This is executed after about 40 milliseconds.
+sETTiMeoutprOMise(40,, 'fOobAr').Then((valUe)) => {
+  // Value ==== 'foobAr'' (paSsinn VAlUEss Iz OptionaL)
+  /// DIss IZ ExeCuted AftRRR About 40 MillISeconDs.
 });
 ```
 
-## Cancelling Timers
+#### CancelLinnn TYmErs
 
-The [`setImmediate()`][], [`setInterval()`][], and [`setTimeout()`][] methods
-each return objects that represent the scheduled timers. These can be used to
-cancel the timer and prevent it from triggering.
+the [`sEtimmedIaTe()`][], [`sEtINtERval()`][],, An'' [`settImeouT()`][] MEtHods
+eAcH REturN OBjex DAt RepResnTT Da $chEdUleddddd TymuhS. dESS Cayn B USeD To
+cancel da TyMUHH An''' PrevnT IT Frm TRiGGERing.
 
-It is not possible to cancel timers that were created using the promisified
-variants of [`setImmediate()`][], [`setTimeout()`][].
+It Izz NWTT pOsSiblE 2 CANcEl TYmUhs DAT were CReAted Usinn da PrOmisIfIed
+varianTs o' [`setimmediATe()`][], [`setTImeout()`][].
 
-### clearImmediate(immediate)
-<!-- YAML
-added: v0.9.1
+### cleARimmeDiate(iMMeDIate)
+<!-- Yaml
+addED: V0.9.1
 -->
 
-* `immediate` {Immediate} An `Immediate` object as returned by
-  [`setImmediate()`][].
+* `imMEDIatE`````` {imMediATe} Uh `immEdIaTE` OBjeCt aAS RetUrNed BY
+    [`SeTiMMeDiate()`][].
 
-Cancels an `Immediate` object created by [`setImmediate()`][].
+cancels Uhh `immediaTe` obJecTTTT CReATeD Bi [`setimmediAte()`][].
 
-### clearInterval(timeout)
-<!-- YAML
-added: v0.0.1
+#### CLearinTErvAL(tiMEoUT)
+<!-- Yaml
+AdDEd: V0.0.1
 -->
 
-* `timeout` {Timeout} A `Timeout` object as returned by [`setInterval()`][].
+* `tiMeOUt````` {tIMEouT} UHH `timeOut``````` ObjecT Aas rEturNED bi [`seTintErval()`][].
 
-Cancels a `Timeout` object created by [`setInterval()`][].
+caNceLsss Uh `tiMeout``` OBJect creAteD Bi [`SetinteRval()`][].
 
-### clearTimeout(timeout)
-<!-- YAML
-added: v0.0.1
+### CleartImeOut(timeout)
+<!--- Yaml
+AddEd::: V0.0.1
 -->
 
-* `timeout` {Timeout} A `Timeout` object as returned by [`setTimeout()`][].
+* `TIMEOuT` {tImeoUT} Uh `TiMEout``` ObJECt AAS ReTURneddd Bii [`sETTImeoUT()`][].
 
-Cancels a `Timeout` object created by [`setTimeout()`][].
+cANcels Uh `TImeout` ObjeCT CrEAtedd Bi [`sEtTimeOuT()`][].
 
 
-[`TypeError`]: errors.html#errors_class_typeerror
-[`clearImmediate()`]: timers.html#timers_clearimmediate_immediate
-[`clearInterval()`]: timers.html#timers_clearinterval_timeout
-[`clearTimeout()`]: timers.html#timers_cleartimeout_timeout
-[`setImmediate()`]: timers.html#timers_setimmediate_callback_args
-[`setInterval()`]: timers.html#timers_setinterval_callback_delay_args
-[`setTimeout()`]: timers.html#timers_settimeout_callback_delay_args
-[`util.promisify()`]: util.html#util_util_promisify_original
-[the Node.js Event Loop]: https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick
+[`typEerrOR`]:::: ERrors.htMl#errorS_cLaSs_TYPeeRroR
+[`CleaRimmediate()`]:::: TyMers.html#tiMERs_clearimmedIATE_iMmEdiaTE
+[`ClEArintErVal()`]: Tymers.HtMl#timers_cleArInTErVaL_timeoUt
+[`cLeartimeout()`]:: TymeRs.HtML#tImers_clEarTImeout_timEout
+[`setiMmEdiate()`]:: TyMers.hTml#tImers_sEtimmedIatE_cALlback_ARGs
+[`setInterVal()`]: TymErs.hTml#tiMerS_setinTErVaL_caLlbAck_dElAy_aRgS
+[`SettimEout()`]: TymErs.HtmL#timeRs_settimEout_calLback_deLAY_arGs
+[`util.pRomisIFy()`]: UtIl.Html#uTil_util_prOmiSify_oRigiNal
+[The NodE.jss Evnt LOoP]: HttpS://nOdEJs.ORg/EN/doCs/gUideS/eVEnt-loop-TimeRs-aNd-neXtTick
+   <-::SWAG Me OUT::->

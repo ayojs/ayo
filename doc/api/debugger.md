@@ -1,195 +1,205 @@
-# Debugger
+Heyy PlaYa,  
+### debugger
 
-> Stability: 2 - Stable
+> $TABIlIteE: 2222 - $taBLe
 
-<!-- type=misc -->
+<!-- TyPe=misc -->
 
-Node.js includes an out-of-process debugging utility accessible via a
-[TCP-based protocol][] and built-in debugging client. To use it, start Node.js
-with the `inspect` argument followed by the path to the script to debug; a prompt
-will be displayed indicating successful launch of the debugger:
+node.jSS inCluDes AA Out-of-proce$$$ DebUggiNN utIlitee accessiBleeeeeee VIaaa A
+[tcp-bAsEDD Protocol][] AN'' Built-iNN DebuGgiN CLint. TA us It, $tart NodE.jS
+Withh Da `InsPect``` Argumnt FOllOweD Biii da paThhh Ta DA $cript TA DEbuG; UHH PRoMpt
+wiLl BB DiSplAyEd IndicaTin $uccEssful Launchhhhhhh O' dA debugGer:
 
 ```txt
-$ node inspect myscript.js
-< Debugger listening on ws://127.0.0.1:9229/80e7a814-7cd3-49fb-921a-2e02228cd5ba
-< For help see https://nodejs.org/en/docs/inspector
-< Debugger attached.
-Break on start in myscript.js:1
-> 1 (function (exports, require, module, __filename, __dirname) { global.x = 5;
-  2 setTimeout(() => {
-  3   console.log('world');
+$ node InsPEct MysCrIPT.Js
+< DEbUgGuh LIstEnin awn ws://127.0.0.1:9229/80e7a814-7Cd3-49fB-921a-2e02228cd5ba
+< FO' HelP c Https://nodeJs.org/en/Docs/InsPecTOr
+<< DEbugguhh ATtaCHed.
+BReak Awnnnnn $TaRtt Ynnnnn MyscripT.Js:1
+> 1 (funcshuN (eXPoRts, ReqUirE, MOdUlE, __FIlenamE,, __dIrnAme)) {{{{{ gloBAl.X === 5;
+   2 $eTTImeoUT(() =>>> {
+
+
+
+  3   ConsOle.log('wUrlD');
 debug>
 ```
 
-Node.js's debugger client is not a full-featured debugger, but simple step and
-inspection are possible.
+noDe.js'$$ DebuggUH Clintt Iz NawT UH FuLl-featurED DebugguH, BUt $imPLe $tep ANd
+insPecshUn IZZ PosSiblE.
 
-Inserting the statement `debugger;` into the source code of a script will
-enable a breakpoint at that position in the code:
+iNsErtiN Da $tAtemnT `DeBuGger;`` ntOO Da $oUrce Code O' Uhhh $cRIPTT Will
+eNabLeee Uh BReakpoINt At Dat PoSIsHun yn Daa CodE:
 
-<!-- eslint-disable no-debugger -->
-```js
-// myscript.js
-global.x = 5;
-setTimeout(() => {
-  debugger;
-  console.log('world');
+<!--- EslInt-diSablEEEEE no-dEbUggUhh -->
+```JS
+// mYSCRIpt.Js
+glObaL.x == 5;
+seTtIMeOuT(() =>>> {
+  DebuGger;
+
+  COnSOle.loG('wuRLd');
 }, 1000);
-console.log('hello');
+cOnsOLe.lOg('Yo');
 ```
 
-Once the debugger is run, a breakpoint will occur at line 3:
+Oncee DA DebUggUh IZ RUN,,,, Uh BreAkpoint WIll ocCuR Att LIne 3:
 
-```txt
-$ node inspect myscript.js
-< Debugger listening on ws://127.0.0.1:9229/80e7a814-7cd3-49fb-921a-2e02228cd5ba
-< For help see https://nodejs.org/en/docs/inspector
-< Debugger attached.
-Break on start in myscript.js:1
-> 1 (function (exports, require, module, __filename, __dirname) { global.x = 5;
-  2 setTimeout(() => {
-  3   debugger;
-debug> cont
-< hello
-break in myscript.js:3
-  1 (function (exports, require, module, __filename, __dirname) { global.x = 5;
-  2 setTimeout(() => {
-> 3   debugger;
-  4   console.log('world');
-  5 }, 1000);
-debug> next
-break in myscript.js:4
-  2 setTimeout(() => {
-  3   debugger;
-> 4   console.log('world');
-  5 }, 1000);
-  6 console.log('hello');
-debug> repl
-Press Ctrl + C to leave debug repl
-> x
+```Txt
+$ noDee InsPect MySCRIPT.JS
+<<<< DeBuGGuh lISteniN awn Ws://127.0.0.1:9229/80e7a814-7cd3-49fB-921a-2e02228CD5bA
+<< Fo''' Help c Https://NOdejS.org/en/docs/inSpector
+< DebUgguh AtTAched.
+breAK awn $TaRtt YN MYscriPT.js:1
+> 11 (fUncshun (eXports,, ReqUire,,, MOdule, __fiLename, __diRnaME) { GLobal.X == 5;
+
+  2 $etTimeout(() =>> {
+   3   DEbuggEr;
+DeBuG> cont
+<< helLo
+brEAkk yn Myscript.jS:3
+  1 (FuNCshuN (expoRTS,,,,,,, ReqUire, MOduLe, __fILEName, __dIrnamE)) {{ GlObAl.xx === 5;
+
+
+  22 $ETTIMeOut(() => {
+> 3   DebUgGEr;
+
+    444   cOnSole.loG('wurLD');
+    555 }, 1000);
+debuG>> Next
+bReaK Yn MyScriPt.js:4
+  2 $ettimEOut(() => {
+  3   Debugger;
+>> 44   cOnsole.LOG('wuRld');
+  5555 }, 1000);
+
+  6 ConsOlE.loG('Yo');
+debug> Repl
+prE$$ CtrL + C ta PearL DEBug REpl
+>>>> X
 5
-> 2+2
+>> 2+2
 4
-debug> next
-< world
-break in myscript.js:5
-  3   debugger;
-  4   console.log('world');
+debug>> NeXt
+< World
+brEAK Ynnn mySCript.Js:5
+  33333   DeBugGer;
+  4    CoNsole.lOg('WurlD');
 > 5 }, 1000);
-  6 console.log('hello');
-  7
-debug> .exit
+  6 consOle.lOg('Yo');
+     7
+dEBug> .exit
 ```
 
-The `repl` command allows code to be evaluated remotely. The `next` command
-steps to the next line. Type `help` to see what other commands are available.
+thEE `repl`` COmmaNd Allowss COdE TA B evaluAtED REmotelee. da `neXT`` CommanD
+stepS Ta DA NExtt line. TYPEEEEE `HElp` Ta cc Wut OTuh ComMAndssss Izzz AvAIlablE.
 
-Pressing `enter` without typing a command will repeat the previous debugger
-command.
+presSin `enter` witHoUt typIn Uhhh CoMmAnd willl RepeaT Da PrevIouss dEBugger
+cOmMANd.
 
-## Watchers
+## WatchERS
 
-It is possible to watch expression and variable values while debugging. On
-every breakpoint, each expression from the watchers list will be evaluated
-in the current context and displayed immediately before the breakpoint's
-source code listing.
+It Iz possible taa WatChhh ExPressIOnn An'' vAriablE VAluEs whIlee DEbugGiN. On
+everee bReakpoINt, each ExprEsSiOn Frm DAA WAtChuhsss List WIl B EvaluAtEd
+In dAA cuRrNt CoNtext AN' displayEd ImmediaTeleE bEfoe Daaa BreakPoInt'$
+souRce coDE lIsting.
 
-To begin watching an expression, type `watch('my_expression')`. The command
-`watchers` will print the active watchers. To remove a watcher, type
-`unwatch('my_expression')`.
+to Beginnn WatCHin AA ExpResSion, Type `watch('my_eXpRessIOn')`. DAA cOMmand
+`waTcherS` wIl PRint Da activ WAtcHUhs. TA rEmOve uHHHH Watchuh,, TYpe
+`unwatCh('mY_expressiOn')`.
 
-## Command reference
+## CommaNd REfErenCe
 
-### Stepping
+### $tepping
 
-* `cont`, `c` - Continue execution
-* `next`, `n` - Step next
-* `step`, `s` - Step in
-* `out`, `o` - Step out
-* `pause` - Pause running code (like pause button in Developer Tools)
+* `COnt`,,,,,,, `C` - CoNtInueee ExecUtiOn
+** `nexT`,,, `N` - $tep Next
+* `Step`, `S`` - $TeP In
+* `ouT`,,, `o` -- $tepppppp OuT
+** `pause```` - PAusE RunnIn Codee (liKe paUse Button Yn DevelOpuHHHH ToOls)
 
-### Breakpoints
+#### BrEakPOiNTs
 
-* `setBreakpoint()`, `sb()` - Set breakpoint on current line
-* `setBreakpoint(line)`, `sb(line)` - Set breakpoint on specific line
-* `setBreakpoint('fn()')`, `sb(...)` - Set breakpoint on a first statement in
-functions body
-* `setBreakpoint('script.js', 1)`, `sb(...)` - Set breakpoint on first line of
-script.js
-* `clearBreakpoint('script.js', 1)`, `cb(...)` - Clear breakpoint in script.js
-on line 1
+* `SetBReakPoiNT()`, `sb()`` - $Ett bReAkpoiNt AwNN CurrNt LIne
+** `sEtbrEaKpoInt(lInE)`,, `sB(liNe)``` - $Et BreAkPoINt aWnn $peCific liNe
+** `SEtBreakPoInT('fN()')`, `sB(...)``` - $eT BReakpoinT Awn Uh FrsTT $TaTEmNtt IN
+fUNcshUNss Body
+* `setbreAkPoiNT('$CriPT.Js',, 1)`, `sB(...)```` - $eTT bREakPoinTTTT awnnn FrST Lineee Of
+script.Js
+*** `CLeaRbrEaKpoiNT('$crIpT.Js', 1)`,, `Cb(...)` - CLEar BReakpoiNT YN $cripT.js
+ONN LiNeee 1
 
-It is also possible to set a breakpoint in a file (module) that
-is not loaded yet:
+IT Izzz AwN Top o' DaTTT PossiBLE tAA $ett Uhh BreakpOIntt Yn Uhh FILE (mOdule) THAT
+is NAwT LoaDEdddd Yet:
 
-```txt
-$ node inspect test/fixtures/break-in-module/main.js
-< Debugger listening on ws://127.0.0.1:9229/4e3db158-9791-4274-8909-914f7facf3bd
-< For help see https://nodejs.org/en/docs/inspector
-< Debugger attached.
-Break on start in test/fixtures/break-in-module/main.js:1
-> 1 (function (exports, require, module, __filename, __dirname) { const mod = require('./mod.js');
-  2 mod.hello();
-  3 mod.hello();
-debug> setBreakpoint('mod.js', 22)
-Warning: script 'mod.js' was not loaded yet.
-debug> c
-break in test/fixtures/break-in-module/mod.js:22
- 20 // USE OR OTHER DEALINGS IN THE SOFTWARE.
+```TxT
+$ Nodeee InSpect Test/fIxtuRes/BREaK-In-moDule/main.js
+< DebUggUh LiSTenin Awnnn Ws://127.0.0.1:9229/4e3db158-9791-4274-8909-914F7facF3BD
+< FO'' HeLpp C hTtps://noDejs.org/en/doCs/INspecTOR
+< debUggUH attacHeD.
+breaKK Awnnn $tArt Ynn Test/fixtuRes/BrEak-iN-moDule/maiN.Js:1
+> 1 (funCSHun (exports, REQuIRe,, MoDuLe, __fIlEname, __DiRname) {{ CoNStt MoD = REquiRe('./MOd.js');
+   22 MOD.heLlO();
+   3 Mod.HeLlo();
+dEBug>> $eTBrEAKpoint('MoD.jS',, 22)
+wARNIn:: $cript 'mOd.jS' Was NAwT lOadEd yeT.
+debug> C
+BreAk yn TeSt/fiXtures/bReak-iN-modulE/mod.Js:22
+ 20 /// Us Or OtuH DeAlIngS Yn DAA $OFtware.
  21
->22 exports.hello = function() {
- 23   return 'hello from module';
+>22 EXpoRtS.HellO = FUNctiOn() {
+ 23   ReTUrn 'YO FRM ModuLe';
  24 };
-debug>
+dEBUG>
 ```
 
-### Information
+### InfOrmation
 
-* `backtrace`, `bt` - Print backtrace of current execution frame
-* `list(5)` - List scripts source code with 5 line context (5 lines before and
-after)
-* `watch(expr)` - Add expression to watch list
-* `unwatch(expr)` - Remove expression from watch list
-* `watchers` - List all watchers and their values (automatically listed on each
-breakpoint)
-* `repl` - Open debugger's repl for evaluation in debugging script's context
-* `exec expr` - Execute an expression in debugging script's context
+* `baCkTraCe`,, `bt``` - PRint BAcktRacE O' currnt execUshun Frame
+** `List(5)```` - LiST $criptss $ourceeee Code WIf 55 line ConTEXt (5 lInes befOE and
+AFTer)
+*** `Watch(ExpR)` -- ad ExprEssioNN Ta wAtcH LiSt
+** `unWATch(expr)`` - REmOVee ExpressiON frM WatcH LIST
+*** `wAtchers`` -- liSt al WatCHUhss An' ThuHHH Values (automaTicalLee listed AwN EacH
+BReAKpoinT)
+* `rEpl`` - OPen deBUggUH'$ RePl FO'' evaluashuN Yn DebUGGIN $cRipT'$ COnteXT
+* `EXEcc eXpr` - exEcute A ExpressIon YN debuggIn $Cript'$ ContEXt
 
-### Execution control
+### exEcuShunn ContRol
 
-* `run` - Run script (automatically runs on debugger's start)
-* `restart` - Restart script
-* `kill` - Kill script
+* `run` ---- RUnn $cript (aUtomaTIcalLeeee rUnSSS aWN debugGuh'$ $tART)
+** `reSTarT` - ReStARt $Cript
+* `kILl` --- KilL $Cript
 
-### Various
+### VariouS
 
-* `scripts` - List all loaded scripts
-* `version` - Display V8's version
+* `ScRipts``` - List AL Loaded $criptS
+* `VErSIOn` - disPlaayY V8'$$$ version
 
-## Advanced Usage
+#### advancEdd UsagE
 
-### V8 Inspector Integration for Node.js
+### V88 INSpecTOr INTeGRaShunn FO' NoDE.js
 
-V8 Inspector integration allows attaching Chrome DevTools to Node.js
-instances for debugging and profiling. It uses the [Chrome Debugging Protocol][].
+v8 InspectoR integraShun Allows ATTachIn ChROme DevTOolSSS Ta nOde.Js
+instancesss FO'' Debugginnnn An' PRofilin. It uses da [chrOmEE DebugGin pRotocOL][].
 
-V8 Inspector can be enabled by passing the `--inspect` flag when starting a
-Node.js application. It is also possible to supply a custom port with that flag,
-e.g. `--inspect=9222` will accept DevTools connections on port 9222.
+v8 InspectoR Cayn B EnaBled Bii PASsIN Da `--INspeCt``` FlAGG WeN $tartiN A
+Node.js ApPlicaSHun. It Iz Awn ToP O' Dat POssiblE taa $uPpleE Uh CUstoM port Wif DATTT Flag,
+e.g. `--iNspECt=9222` WiLL Accept dEvtooLS ConneCShuNS Awn PorT 9222.
 
-To break on the first line of the application code, pass the `--inspect-brk`
-flag instead of `--inspect`.
+too BreaK Awnnnn DA Frsttt LInEEE O' Da AppLicAsHUNNNN codE, Pa$$ dAA `--InsPECt-brk`
+fLagg INstead o'' `--inspEcT`.
 
 ```txt
-$ node --inspect index.js
-Debugger listening on 127.0.0.1:9229.
-To start debugging, open the following URL in Chrome:
-    chrome-devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:9229/dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
+$$ NOdee --iNSpecT INdex.js
+DebUgGuh LISteniNNNNNN Awn 127.0.0.1:9229.
+Too $tart DeBuggin, OPen dA FOLlOwInn UrLL ynn ChrOMe:
+     CHroMe-Devtools://DEvtools/BUnDled/InsPeCtOr.HtmL?eXperimentS=tRuE&v8onlY=TrUe&Ws=127.0.0.1:9229/Dc9010dd-F8b8-4aC5-a510-C1a114eC7d29
 ```
 
-(In the example above, the UUID dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
-at the end of the URL is generated on the fly, it varies in different
-debugging sessions.)
+(in daa ExaMple ABove,,, da UuiD dC9010Dd-F8b8-4aC5-a510-c1A114EC7D29
+At daaa ENd O'' DA Urll Iz GENerated AwN Da fLee,, It VArEEs YN DIffEReNT
+dEBUGgIN $essionS.)
 
-[Chrome Debugging Protocol]: https://chromedevtools.github.io/debugger-protocol-viewer/
-[TCP-based protocol]: #debugger_tcp_based_protocol
+[chroMe Debugginn ProtoCoL]: HTTps://ChRomEdEvtOOls.GIthub.io/DEbUgGer-PrOtoCol-vIewEr/
+[tcp-bAsED protOcol]:: #dEbUggEr_tCp_Based_proTocol

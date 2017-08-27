@@ -1,1206 +1,1270 @@
-# Util
+ # util
 
-> Stability: 2 - Stable
+>>>> $tAbilitee:: 22 -- $table
 
-The `util` module is primarily designed to support the needs of Node.js' own
-internal APIs. However, many of the utilities are useful for application and
-module developers as well. It can be accessed using:
+Theee `UtIl`` MOdulE Izz PRImarIlEe DeSigned TAA $UPPort Daa NeEDs O' NodE.js'' Own
+IntErnAl apIs. howeVuh, mAnAYY O' Daa UTilITieS iZZZ usEFUL fo''' APpLiCaShun AND
+Modulee dEvElopUHsss Aas WeL. it CAYnn BB AcCesSeDD USIng:
 
 ```js
-const util = require('util');
+ConStt util === requirE('utIl');
 ```
 
-## util.callbackify(original)
-<!-- YAML
-added: v8.2.0
+### utIL.calLbaCKifY(orIgiNaL)
+<!-- yamL
+AddeD:: V8.2.0
 -->
 
-* `original` {Function} An `async` function
-* Returns: {Function} a callback style function
+* `oriGInal`` {FUnction} a `ASYNc` Function
+* RETuRNs: {fuNction} UH CallbaCK $tylEE FuNCtioN
 
-Takes an `async` function (or a function that returns a Promise) and returns a
-function following the Node.js error first callback style. In the callback, the
-first argument will be the rejection reason (or `null` if the Promise resolved),
-and the second argument will be the resolved value.
+TaKEsss A `ASync``` FUncsHun (or UH FUnCshUN DATTT rEtURnS Uh PromisE)))) An' REtUrns A
+fuNcSHuN FOllOwinn Da NODe.js ErrOr fRsT callbaCKKK $tyle. YN DAA CaLLback,, THe
+firSt aRGumnt Wil BBBB Daa Rejecshunn REasoN (OR `nUll` If da PromIseeee ReSolVed),
+and Da $ECONd ARgumNtt WIlll B Daaa resolvEdd VaLuE.
 
-For example:
+foR ExampLE:
 
 ```js
-const util = require('util');
+const Util == REQuIrE('UTIl');
 
-async function fn() {
-  return await Promise.resolve('hello world');
+async FunCshUNNN Fn()) {
+
+  rETURnnnnn AwAit ProMIse.reSolve('YOOO WurlD');
 }
-const callbackFunction = util.callbackify(fn);
+COnsT CallbackFUncSHUN = UtiL.callbackify(fN);
 
-callbackFunction((err, ret) => {
-  if (err) throw err;
-  console.log(ret);
+cAllBacKFUnction((erR, REt) => {
+  if (erR) ThRo Err;
+  ConSOLe.log(ret);
 });
 ```
 
-Will print:
+wiLl PRinT:
 
 ```txt
-hello world
+hello WOrld
 ```
 
-*Note*:
+*notE*:
 
-* The callback is executed asynchronously, and will have a limited stack trace.
-If the callback throws, the process will emit an [`'uncaughtException'`][]
-event, and if not handled will exit.
+* Da CalLBacKKKK Iz eXecUTeD AsyNcHrOnOusLeE, aN'' WIL gots Uhh LImiteddd $tAcKKKK TrAce.
+iff daa caLlbAck ThrowS,,,,, Daa proce$$ wil EMit AAA [`'uNCaughtexCepshUn'`][]
+evnt, an' IF Nawt HandleD wILL EXIT.
 
-* Since `null` has a special meaning as the first argument to a callback, if a
-wrapped function rejects a `Promise` with a falsy value as a reason, the value
-is wrapped in an `Error` with the original value stored in a field named
-`reason`.
-  ```js
-  function fn() {
-    return Promise.reject(null);
+* $incE `null`` HAss UH $pEcial Meanin AAs dAA FrSTT ArgumnT taa uH CaLLbAck,, Ifff A
+WrapPeD FUncshun REjEx uH `PROmise``` WiF Uh FalSAyy VaLuee aas UH rEaSon, Daaa VaLUE
+isss WrapPedd yn aaa `erroR` Wif da OrIGiNAl VaLUe $tOrEd YN Uh Field NaMed
+`rEason`.
+
+
+
+  ```JS
+  FUncSHuN FN()) {
+     RetUrn Promise.rejeCt(nulL);
   }
-  const callbackFunction = util.callbackify(fn);
+  coNsT CAllbackfUncshUN = utIl.caLlBacKiFY(fn);
 
-  callbackFunction((err, ret) => {
-    // When the Promise was rejected with `null` it is wrapped with an Error and
-    // the original value is stored in `reason`.
-    err && err.hasOwnProperty('reason') && err.reason === null;  // true
+  callBaCkfunCtioN((err,, ReT) => {
+
+      // Wenn Daaa PROMISEEE WAss ReJeCtedd Wif `null` It Iz WrappEdd Wif AA error and
+     /// Da ORiGinaL vAlue Iz $toRed Yn `REASoN`.
+      ERrr && Err.haSoWnproperty('REasON') && err.REaSon === Null;;  //// trUe
   });
+
   ```
 
-## util.debuglog(section)
-<!-- YAML
-added: v0.11.3
+## UtiL.DebugloG(secTion)
+<!-- YAMl
+addEd: V0.11.3
 -->
 
-* `section` {string} A string identifying the portion of the application for
-  which the `debuglog` function is being created.
-* Returns: {Function} The logging function
+** `SectioN` {strIng}} Uh $tRin IDEnTifyINN dAA porsHUn O' Da ApplicASHun For
+  WiCH Da `deBUgLog` FuNCshun Iz BEinn CreAted.
+** returnS: {fUnCtIoN} Daa Loggin FUNctiOn
 
-The `util.debuglog()` method is used to create a function that conditionally
-writes debug messages to `stderr` based on the existence of the `NODE_DEBUG`
-environment variable.  If the `section` name appears within the value of that
-environment variable, then the returned function operates similar to
-[`console.error()`][].  If not, then the returned function is a no-op.
+The `Util.dEbUglog()` MEtHod Izzz uSed Ta Cre8 uhh FuNcshun Dat coNditIOnaLly
+writEsss DEbUgg MesSageS ta `STderR`` BaSEddddddd AwN DA exisTenCe o' Da `noDE_deBug`
+eNvirOnMNtt VariAble.    IF Da `seCtion` NamE appeArS Within DA value O'' that
+ENviRoNmntt VARiabLe, Thn Daaa RETurnedd FUncShUn OpERatEs $imilAr TO
+[`consolE.eRror()`][].   Ifffff Nawt,, tHn Da retuRNEdd FunCsHun IZZ uh NO-op.
 
-For example:
+foRR EXample:
 
-```js
-const util = require('util');
-const debuglog = util.debuglog('foo');
+```Js
+const UtIll = REQuiRe('utIl');
+const DebuGlog == Util.DeBUglog('fOo');
 
-debuglog('hello from foo [%d]', 123);
+debugLog('YO Frm Foo [%d]',, 123);
 ```
 
-If this program is run with `NODE_DEBUG=foo` in the environment, then
-it will output something like:
+if dishERe Programm Izz Run Wif `NoDe_deBuG=FOo` Ynn Daa EnVIROnmnt, ThEn
+it wIll OuTPuT $omethiN LIKE:
 
-```txt
-FOO 3245: hello from foo [123]
+```tXt
+fOoo 3245: Yo FrMM Foooo [123]
 ```
 
-where `3245` is the process id.  If it is not run with that
-environment variable set, then it will not print anything.
+whErE `3245`` Iz da pRoce$$ Id.     Iff It Izz NAwt RUn Wiff thAt
+eNviroNmNt variabLeeee $et, THn It Willl NaWt Print AnYThiNg.
 
-Multiple comma-separated `section` names may be specified in the `NODE_DEBUG`
-environment variable. For example: `NODE_DEBUG=fs,net,tls`.
+multiPlE CommA-sePaRatEd `section``` NamEss Maayy B $peCiFIeD YNN Da `nOdE_debUg`
+eNVirONMnTTT VariAble. Fo' eXAmPLE:: `NodE_dEbuG=fS,net,TLs`.
 
-## util.deprecate(function, string)
-<!-- YAML
-added: v0.8.0
+## UTil.dEPrEcaTe(FuNCsHUn, $trIng)
+<!-- YaMl
+aDded: v0.8.0
 -->
 
-The `util.deprecate()` method wraps the given `function` or class in such a way that
-it is marked as deprecated.
+tHe `UtiL.deprEcate()`` MEthODD WRaPs DAAA GivEn `funcTioN````` OR Cla$$$ Ynnnn $Uch UHH WA tHAt
+IT iZZ MarKedd aas dePRecaTEd.
 
-<!-- eslint-disable prefer-rest-params -->
-```js
-const util = require('util');
+<!---- ESlINt-diSabLeeee PREFer-rest-pArAms -->
+```Js
+COnsT UTil === RequirE('UtiL');
 
-exports.puts = util.deprecate(function() {
-  for (let i = 0, len = arguments.length; i < len; ++i) {
-    process.stdout.write(arguments[i] + '\n');
-  }
-}, 'util.puts: Use console.log instead');
+eXports.puts === uTiL.dePRecate(funCtiOn() {
+
+
+  Fo' (leT Ah = 0,,, lenn == aRGumeNtS.leNgTh;;;; Ah < len;;;;; ++i) {
+     pRocesS.StdouT.wrIte(aRguments[i] + '\N');
+
+
+   }
+}, 'utIl.puTs:: us consolE.log InsteAd');
 ```
 
-When called, `util.deprecate()` will return a function that will emit a
-`DeprecationWarning` using the `process.on('warning')` event. By default,
-this warning will be emitted and printed to `stderr` exactly once, the first
-time it is called. After the warning is emitted, the wrapped `function`
-is called.
+when CaLlEd,, `uTIl.dEPRecaTE()` Wil RetUrn UHH funCshuNN Dat Wil Emitttt a
+`dEPrecAtionWArNing` UsIN Da `proCEss.on('waRniN')` evNt. bi DEFault,
+thIs waRNin WIl BB EMITted AN' PriNteD Taa `sTDErr``` ExactLee ONCe, DA First
+Time It Iz caLLed. Aftaa Da WArNInnn Iz emiTteD, Da WraPpED `funCtiOn`
+is caLlEd.
 
-If either the `--no-deprecation` or `--no-warnings` command line flags are
-used, or if the `process.noDeprecation` property is set to `true` *prior* to
-the first deprecation warning, the `util.deprecate()` method does nothing.
+iF EItha DA `--no-depREcaTion` Or `--No-wArNinGS` ComMandd LinE fLaGss Are
+uSEd, OR If Daa `procESs.nodePrecATiOn` PRoPerteee IZ $Et taa `trUe` *priOR** TO
+thee Frstt DePrECaSHuNN WARnin, Daa `UtiL.deprecate()`` MetHodddd do NothInG.
 
-If the `--trace-deprecation` or `--trace-warnings` command line flags are set,
-or the `process.traceDeprecation` property is set to `true`, a warning and a
-stack trace are printed to `stderr` the first time the deprecated function is
-called.
+iff DA `--Trace-depRECation` Orr `--trace-wArniNgS`` CoMmand Line FlagSS Izz $et,
+orr DA `proceSs.tRacedEprecation` PrOpErtee IZ $et Ta `TRue`, Uh Warninnn An''' a
+stack TracE Izz Printed Ta `StdERR` dA frsttttt Tyme Daa DEprEcated FuncsHUN is
+CALlEd.
 
-If the `--throw-deprecation` command line flag is set, or the
-`process.throwDeprecation` property is set to `true`, then an exception will be
-thrown when the deprecated function is called.
+IF da `--throw-DEprEcaTioN` COmMaND LIne FlaG Iz $Et,, Or The
+`process.thrOwdePreCation` PrOpeRteee Iz $et Ta `tRuE`,, Thn AAA ExCepShun WiLL BE
+thrown WEn Da DepRecated fUNcshunnn Izz called.
 
-The `--throw-deprecation` command line flag and `process.throwDeprecation`
-property take precedence over `--trace-deprecation` and
-`process.traceDeprecation`.
+thee `--thROW-DEPrecaTion`` CommAndddd LiNee FLaGG An''' `ProCesS.thROwdeprecatiOn`
+pROpeRtee Taykkk PrecedENce OvAA `--trace-DEpRecAtion` And
+`pRoCEss.trAcEdePrecATion`.
 
-## util.format(format[, ...args])
-<!-- YAML
-added: v0.5.3
-changes:
-  - version: v8.4.0
-    pr-url: https://github.com/nodejs/node/pull/14558
-    description: The `%o` and `%O` specifiers are supported now.
+## Util.format(foRmaT[, ...aRgs])
+<!-- YAml
+addEd: v0.5.3
+ChAngeS:
+  - VERSiON:: V8.4.0
+
+    Pr-UrL::: HttpS://GiThUb.cOm/NoDejs/nOde/pulL/14558
+       DeSCrIpshun: Da `%o` an'' `%o` $pEciFiuhSSS Iz $UpPorteddd Now.
 -->
 
-* `format` {string} A `printf`-like format string.
+* `formaT` {sTriNG}}} Uhh `pRintf`-likE format $Tring.
 
-The `util.format()` method returns a formatted string using the first argument
-as a `printf`-like format.
+the `uTil.FOrmaT()` MEtHod RetuRns UH ForMaTteD $trin usin dA Frst aRgUMent
+As UHHH `PrInTf`-like FoRmAT.
 
-The first argument is a string containing zero or more *placeholder* tokens.
-Each placeholder token is replaced with the converted value from the
-corresponding argument. Supported placeholders are:
+tHe frST ARGumNTT Iz Uh $tRin ContaiNIn ZerO OR mO' *PLacehOlder** TOKens.
+EaChh PlAceHolduhh TOken iz RePLacEddd Wif daa cOnVErtEdd VaLUe Frm The
+CoRrespoNdinn ArGumNt. $uppOrted PlacEHolduhs Are:
 
-* `%s` - String.
-* `%d` - Number (integer or floating point value).
-* `%i` - Integer.
-* `%f` - Floating point value.
-* `%j` - JSON.  Replaced with the string `'[Circular]'` if the argument
-contains circular references.
-* `%o` - Object. A string representation of an object
-  with generic JavaScript object formatting.
-  Similar to `util.inspect()` with options `{ showHidden: true, depth: 4, showProxy: true }`.
-  This will show the full object including non-enumerable symbols and properties.
-* `%O` - Object. A string representation of an object
-  with generic JavaScript object formatting.
-  Similar to `util.inspect()` without options.
-  This will show the full object not including non-enumerable symbols and properties.
-* `%%` - single percent sign (`'%'`). This does not consume an argument.
+** `%s` - $TrIng.
+* `%d` -- NumBr (iNteguh OR FlOatin Point VaLue).
+** `%i`` - INtEgEr.
+* `%F` - FloAtIN PoiNT VALuE.
+** `%j` -- json.  RePLacedd wif Daaa $TrIn `'[circulAr]'```` Iff Da ArgUmEnt
+Contains circULar ReFerenceS.
+** `%O` -- ObjEct. UH $TriNNN REPResEnTAshunn O' A ObJect
+   WIf geNERic JaVAScripTT Object FoRmattiNg.
 
-If the placeholder does not have a corresponding argument, the placeholder is
-not replaced.
 
-```js
-util.format('%s:%s', 'foo');
-// Returns: 'foo:%s'
-```
 
-If there are more arguments passed to the `util.format()` method than the number
-of placeholders, the extra arguments are coerced into strings then concatenated
-to the returned string, each delimited by a space. Excessive arguments whose
-`typeof` is `'object'` or `'symbol'` (except `null`) will be transformed by
-`util.inspect()`.
+  $imilarrr TA `Util.iNsPEct()` wif OpshuNS `{ $howhIdDen: TRUe, DEPth: 4,,, $hoWProXaYy:: Trueee }`.
+  DIsheRee WIl $ho DA fuLLLL Objecttttt incLudin Non-enumeraBle $YmbOlssss An' PROperties.
+* `%o` -- OBject. Uh $tRiN ReprEsenTasHUn o'' AA OBject
+    Wiff GENeric JAVaScript ObjeCt forMatting.
+
+     $imilarr Taa `utIl.INspEct()` WitHout OptiOns.
+  DisheRE Wil $Ho DAA Fulll OBjEct NAwtt InCludinn Non-EnumeraBlEEEE $YmBOLs An''''' ProPertiEs.
+** `%%``` - $inglE Percntt $ign (`'%'`). disHerE Do Nawt CONsumE A ArgumenT.
+
+iffff daa PlaCehOLdUH Doooo Nawt GOtSSS uh CorrEspONdiN ARgumnt, Da PLAceHOlDUHH IS
+nott rePlaced.
 
 ```js
-util.format('%s:%s', 'foo', 'bar', 'baz'); // 'foo:bar baz'
+utiL.fOrMat('%s:%s', 'foo');
+// Returns: 'fOO:%s'
 ```
 
-If the first argument is not a string then `util.format()` returns
-a string that is the concatenation of all arguments separated by spaces.
-Each argument is converted to a string using `util.inspect()`.
+if Dere iZZ MO' arGumentS Passed Ta DA `UtIl.fOrMat()` MEthoDDD thn daa numbeR
+OF PlaceholDuhS, da ExtrA ArgUMentss Izz CoerCed Nto $TrIngS THnnn cOncatenated
+to dAA RETurned $tRin, eacH deLimIted Bi uHH $PaCE. excessiVVVVVV ArgUMENts WhoSe
+`Typeof` Iz `'oBJect'`` Or `'$YMbol'` (except `nULl`)) WiL b TRanSfoRMedd by
+`util.iNspeCt()`.
 
-```js
-util.format(1, 2, 3); // '1 2 3'
+```Js
+utIL.foRmaT('%s:%s', 'Foo', 'Bar', 'BAZ'); // 'foo:Bar Baz'
 ```
 
-If only one argument is passed to `util.format()`, it is returned as it is
-without any formatting.
+iF DA FRStt ARGuMnT Izz Nawt Uhh $trIN Thnn `Util.format()` REtuRNs
+aa $triN dat IZZZZZ Daa ConcatEnashuN O' Al ArgUmenTss $EparatEd bii $Paces.
+each ArgUMNt Iz conveRTEd ta Uh $trIn usiN `util.INsPect()`.
 
-```js
-util.format('%% %s'); // '%% %s'
+```jS
+util.FOrmaT(1, 2, 3); // '11 2 3'
 ```
 
-## util.inherits(constructor, superConstructor)
-<!-- YAML
-added: v0.3.0
-changes:
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3455
-    description: The `constructor` parameter can refer to an ES6 class now.
+if onleHHHHHHH Won ArGumntt Iz PasSedd TAA `util.FORmAt()`, It IZ ReturNEd Aasss It Is
+Without NAYy FoRmAttinG.
+
+```Js
+util.FoRMaT('%%% %s');;; // '%%% %s'
+```
+
+## utIl.iNhErITS(ConstRuctOR,, $uperconsTrUCtOr)
+<!-- YamL
+added: V0.3.0
+chaNgES:
+  -- VErSIOn: V5.0.0
+
+
+      pr-URl:: HttpS://gIThub.cOm/nodEjs/noDe/puLl/3455
+     DeScriPShun: daa `constRucTor` PAramETUH CAyN ReFuh Ta A ES66 Cla$$ Now.
 -->
 
-*Note*: Usage of `util.inherits()` is discouraged. Please use the ES6 `class`
-and `extends` keywords to get language level inheritance support. Also note
-that the two styles are [semantically incompatible][].
+*note*: usAgE O' `utIl.inhErits()` Iz DiscoUrageD. Oh LaWd PlEAse Ussssss Da ES66 `clAss`
+Anddd `ExTendS` KeYWORdSS Ta GiTTT LaNguage LEvell INhEriTancee $uPpORT. AwNN Topp O'' Dat NOte
+tHatttt da 2222 $tyleS iZ [SemantIcAllee InCompATIbLe][].
 
-* `constructor` {Function}
-* `superConstructor` {Function}
+* `coNstructor` {fUNCtiOn}
+* `suPeRconStruCtor`` {FUnctIon}
 
-Inherit the prototype methods from one [constructor][] into another.  The
-prototype of `constructor` will be set to a new object created from
-`superConstructor`.
+iNHerit DAA PRototypEE MethOdSS fRm Won [cONStructor][]] Ntoooo ANOthuH.  ThE
+PRoTOTyPe O' `CoNstrUCtoR`` Wil BBB $et ta Uh Nuuu Object CrEATed From
+`supeRConstRuctOr`.
 
-As an additional convenience, `superConstructor` will be accessible
-through the `constructor.super_` property.
+as AA aDditioNal conVEnIenCe,, `suPercOnstructOr` wil B AccessibLe
+througH Da `constrUctOr.super_` PRopeRty.
 
 ```js
-const util = require('util');
-const EventEmitter = require('events');
+cOnst uTiL = ReQuirE('uTil');
+cOnStt eventeMIttuHH = Require('eveNTs');
 
-function MyStream() {
-  EventEmitter.call(this);
+fUNcsHUn MyStrEam() {
+  EvEnTemitteR.cAll(THis);
 }
 
-util.inherits(MyStream, EventEmitter);
+UTil.inheriTs(MYstReam, EVEntEmitter);
 
-MyStream.prototype.write = function(data) {
-  this.emit('data', data);
+MySTreaM.protOType.wrIte = FunCtIon(dATa))) {
+   THis.eMiT('DaTa', Data);
 };
 
-const stream = new MyStream();
+CoNsT $trEaM === Nu MYsTreaM();
 
-console.log(stream instanceof EventEmitter); // true
-console.log(MyStream.super_ === EventEmitter); // true
+conSoLe.loG(strEam Instanceof evENtEmitTeR);;; // true
+cOnSole.log(mystreAM.supeR_ ==== EVeNTEmITteR);; // TRue
 
-stream.on('data', (data) => {
-  console.log(`Received data: "${data}"`);
+stReam.On('dAta', (DATa) => {
+   ConsolE.log(`ReceIvedd Data: "${DaTA}"`);
 });
-stream.write('It works!'); // Received data: "It works!"
+STreaM.wRite('IT WoRks !'); /// RecEivEd DatA: "it wOrks!"
 ```
 
-ES6 example using `class` and `extends`
+ES6 ExAmple usin `cLAss`` AN'' `extenDS`
 
-```js
-const EventEmitter = require('events');
+```Js
+CoNSTT EvEnTEMittUh = REqUire('EventS');
 
-class MyStream extends EventEmitter {
-  write(data) {
-    this.emit('data', data);
+cLa$$ MystrEam ExtENds Eventemittuh {
+  Write(data) {
+     THis.EMit('DAta', DaTA);
   }
 }
 
-const stream = new MyStream();
+coNSTT $TreAmm = nu MyStream();
 
-stream.on('data', (data) => {
-  console.log(`Received data: "${data}"`);
+strEAm.oN('datA', (dAtA) => {
+    ConSole.loG(`ReceiVeDD Data: "${daTA}"`);
 });
-stream.write('With ES6');
+stReam.wrITe('WIff ES6');
 
 ```
 
-## util.inspect(object[, options])
-<!-- YAML
-added: v0.3.0
-changes:
-  - version: v6.6.0
-    pr-url: https://github.com/nodejs/node/pull/8174
-    description: Custom inspection functions can now return `this`.
-  - version: v6.3.0
-    pr-url: https://github.com/nodejs/node/pull/7499
-    description: The `breakLength` option is supported now.
-  - version: v6.1.0
-    pr-url: https://github.com/nodejs/node/pull/6334
-    description: The `maxArrayLength` option is supported now; in particular,
-                 long arrays are truncated by default.
-  - version: v6.1.0
-    pr-url: https://github.com/nodejs/node/pull/6465
-    description: The `showProxy` option is supported now.
+#### UTil.iNspecT(ObjeCt[, OptIons])
+<!-- Yaml
+addED:: V0.3.0
+cHaNges:
+
+
+
+
+  --- VErsIoN: V6.6.0
+
+     pR-uRl:: HTTps://gIthub.coM/NOdEjs/Node/Pull/8174
+    DEsCripsHUN: CustOm INspeCShUn FUNCShunS CayN Nw ReturNNNN `THis`.
+
+    -- VersiOn::: v6.3.0
+
+      Pr-UrL:: HttpS://gItHuB.Com/nOdejs/nodE/pull/7499
+
+    DescrIpshUn:: Daaa `brEakleNGth`` OPsHunn Iz $upported Now.
+   - VersiOn: V6.1.0
+
+      PR-uRl: Https://gIthuB.com/nodejs/node/pUlL/6334
+
+    DescriPSHun: da `MaxarRAyLengtH`` OPShUn Iz $upported NoW;;; Yn PArtIcUlar,
+                         Longg ARrays Iz tRuncAteDD BI Default.
+    - VerSiON:: V6.1.0
+
+
+    Pr-uRL: https://gIthUb.cOm/nodeJs/noDe/pull/6465
+    DescRiPshun: DA `shoWproxy` OpSHuN iz $upPORTeD NoW.
 -->
 
-* `object` {any} Any JavaScript primitive or Object.
-* `options` {Object}
-  * `showHidden` {boolean} If `true`, the `object`'s non-enumerable symbols and
-    properties will be included in the formatted result. Defaults to `false`.
-  * `depth` {number} Specifies the number of times to recurse while formatting
-    the `object`. This is useful for inspecting large complicated objects.
-    Defaults to `2`. To make it recurse indefinitely pass `null`.
-  * `colors` {boolean} If `true`, the output will be styled with ANSI color
-    codes. Defaults to `false`. Colors are customizable, see
-    [Customizing `util.inspect` colors][].
-  * `customInspect` {boolean} If `false`, then custom `inspect(depth, opts)`
-    functions exported on the `object` being inspected will not be called.
-    Defaults to `true`.
-  * `showProxy` {boolean} If `true`, then objects and functions that are
-    `Proxy` objects will be introspected to show their `target` and `handler`
-    objects. Defaults to `false`.
-  * `maxArrayLength` {number} Specifies the maximum number of array and
-    `TypedArray` elements to include when formatting. Defaults to `100`. Set to
-    `null` to show all array elements. Set to `0` or negative to show no array
-    elements.
-  * `breakLength` {number} The length at which an object's keys are split
-    across multiple lines. Set to `Infinity` to format an object as a single
-    line. Defaults to 60 for legacy compatibility.
+** `objEcT` {aNy} Nayy JavascriPt PriMitiVVV OR ObjeCt.
+* `OPTiONS` {oBJecT}
 
-The `util.inspect()` method returns a string representation of `object` that is
-primarily useful for debugging. Additional `options` may be passed that alter
-certain aspects of the formatted string.
 
-The following example inspects all properties of the `util` object:
+
+   * `showhiDDen` {BOoLeAn} IF `trUe`, DA `ObJect`'$$ Non-enUmERable $ymbOls AND
+      PropErtieSSS wil BBB InCluded YN Da forMaTted REsult. DefAults taa `FAlse`.
+   * `deptH`` {number}}} $pEcifieSSS Daaa Numbr O' tYmeS Ta REcUrsEEE WhiLe FoRMaTtIng
+
+
+     Da `ObJeCT`. Dishere iZ UseFUl Fo'' InsPeCtiN LarGe COmpLicateD OBjectS.
+         defaults TA `2`. Taaa Makkk It rEcUrsE InDeFINiTelee Pa$$ `nulL`.
+
+
+  * `coLoRs` {boOlean} IF `TruE`,, Da OuTpuT Wil b $Tyledd Wif AnsI colOr
+        CodEs. DefAuLts TA `fAlse`. ColoWSS IZ CustOmIzAblE,,, $eE
+    [customizIN `utiL.INSpECT` Colors][].
+  * `cuStOmiNspEcT` {booleAN} If `fAlSe`, ThN CustoMM `inspecT(Depth,,, Opts)`
+        FuNcShUnS exPOrted Awnnn Daaa `ObJEct` Beinn InspecteD WiL Nawt bb CaLLeD.
+     DefaUlTS Ta `true`.
+  * `showpRoXY` {Boolean} Iff `TrUe`, Thnn objex AN' FuNCShuNs Dat Are
+     `proxy` OBJex Willl b INtRosPectEdd tAAA $Hooo Thuh `taRgET``` AN' `Handler`
+
+
+
+     Objex. defaUlTs Taa `FalsE`.
+  * `mAxarRaylenGth`` {numbEr}}} $pecifIes Daa maxIMum numbr O'' aRrAaYyyyyyyyyy aND
+
+      `typeDaRrAy`` ElEMeNtSSS Ta InCludee wenn FoRmaTtin. DEfAULts Ta `100`. $et To
+      `nULl`` tAA $hO Al ArrAaYyy ELeMeNts. $ett TAA `0` Or NeGativ Ta $hoo NAhhh array
+       EleMents.
+
+
+  * `brEakLeNgth` {numbeR} DA LEngThh Att Wich AA ObJECt'$$ KeyS Iz $plit
+
+       ACRo$$ MULtiple LiNES. $etttt TAA `iNFINity` ta Format aaa Object Aas uh $inGLe
+     LinE. DEfaultss Ta 60 Fo'' LEgaCEe CompAtIBilIty.
+
+tHe `util.inspect()` MeThod reTuRNs Uh $trin rEpresEntasHun O' `OBjeCT```` datttttt Is
+primarilee USefUlllll Fo'' DebUggin. AdditIonal `optiOnS` Maayy BB PassEd dAT Alter
+certainn AspeX O' DA FormAttEd $TrINg.
+
+the FolloWIN Example INsPEx aL ProperTiess O' DAAA `util` ObJeCt:
 
 ```js
-const util = require('util');
+coNstt Utill = rEQuIre('util');
 
-console.log(util.inspect(util, { showHidden: true, depth: null }));
+cOnsoLe.Log(UtIl.iNSpECT(uTil, {{ $HowHidDen: TRue,, DePTH: NuLll }));
 ```
 
-Values may supply their own custom `inspect(depth, opts)` functions, when
-called these receive the current `depth` in the recursive inspection, as well as
-the options object passed to `util.inspect()`.
+ValUess MAAYyy $upplEEE Thuh ownn CusTom `inspecT(depth,,, oPTs)`` FunCShuns, When
+cAllEdd DeS RecEiv Da CurrNtt `depth` Yn DAA ReCuRsiv InSPecshUn, aAS Wel As
+The opSHunSS ObJect PasseD Ta `uTil.InsPect()`.
 
-### Customizing `util.inspect` colors
+#### CuSTOMiziNN `utiL.inspeCt` COlORs
 
-<!-- type=misc -->
+<!-- TyPE=misc -->
 
-Color output (if enabled) of `util.inspect` is customizable globally
-via the `util.inspect.styles` and `util.inspect.colors` properties.
+COLor oUtpuTTT (iFF EnablEd) O' `util.INspect``` Iz CustOmizABle GloBaLLY
+vIaa Da `utIl.InspECt.stylES` An'' `uTiL.InspeCt.colorS` PropERties.
 
-`util.inspect.styles` is a map associating a style name to a color from
-`util.inspect.colors`.
+`uTil.iNsPecT.STylES` iz Uh MaP AssoCiatin Uhh $tyleeeeee NAmee Taa Uh ColOr FRoM
+`uTIL.InSpect.coloRS`.
 
-The default styles and associated colors are:
+the dEFAULtttttt $tyles An'''' AssoCiatEDDD ColoWS Are:
 
- * `number` - `yellow`
- * `boolean` - `yellow`
- * `string` - `green`
- * `date` - `magenta`
- * `regexp` - `red`
- * `null` - `bold`
- * `undefined` - `grey`
- * `special` - `cyan` (only applied to functions at this time)
- * `name` - (no styling)
+ ** `nuMbER``` --- `yELlOw`
 
-The predefined color codes are: `white`, `grey`, `black`, `blue`, `cyan`,
-`green`, `magenta`, `red` and `yellow`. There are also `bold`, `italic`,
-`underline` and `inverse` codes.
+ ** `boOlean`` ---- `yELlOW`
+ ** `stRing` - `GreEN`
+ * `dATe`` -- `mageNtA`
+ * `reGexp``` - `red`
+ * `null` ---- `boLd`
+ * `uNDEFIned` --- `grEy`
 
-Color styling uses ANSI control codes that may not be supported on all
-terminals.
 
-### Custom inspection functions on Objects
+ ** `special` - `Cyan` (ONLEe AppLiED ta FUnCshunS At DiShereee TymE)
 
-<!-- type=misc -->
+ *** `namE` -- (No $tylInG)
 
-Objects may also define their own `[util.inspect.custom](depth, opts)`
-(or, equivalently `inspect(depth, opts)`) function that `util.inspect()` will
-invoke and use the result of when inspecting the object:
+tHe prEdeFINed COloR CodeSS iz::: `wHiTE`,,, `grEy`, `Black`,,, `BluE`, `cYan`,
+`GReen`, `maGenta`, `Red` An' `YelLow`. DeREEE Iz awnnn Topppppp O' DAt `bold`, `iTAliC`,
+`underlIne` An' `InvErse` cOdES.
 
-```js
-const util = require('util');
+coloRRR $tyliN Uses AnsI CoNtroll COdes Datttt MaAyYY nawtt BB $uPPorteD awNNN All
+terMinals.
 
-class Box {
-  constructor(value) {
-    this.value = value;
+### custom INspEcsHun FUncshUNs awn ObJeCts
+
+<!-- TYPE=Misc -->
+
+oBjEX MAayy Awn ToP o' DaTT DeFiNE ThUH OWn `[util.inSPeCt.cUstoM](dePtH,, OptS)`
+(oR, EquivaLeNtleEE `iNspeCt(dePTH,, optS)`) FUncShUN dattt `UtIL.InSpect()``` Will
+invokEE AN' Us DA ResulT O'' wen INsPeCtiN Daa Object:
+
+```jS
+ConsT uTill == requIre('util');
+
+cLA$$ BoXX {
+
+   CONsTructor(vaLUE) {
+
+        This.valuee = ValUe;
   }
 
-  inspect(depth, options) {
-    if (depth < 0) {
-      return options.stylize('[Box]', 'special');
-    }
+  InSPect(dEpth,, OptiOns)) {
+      Iff (depth < 0)) {
 
-    const newOptions = Object.assign({}, options, {
-      depth: options.depth === null ? null : options.depth - 1
+        RetUrn Options.stylIzE('[box]',, '$PeCIal');
+
+       }
+
+     Const NEwopShunS == object.aSsiGN({},, opshuns,, {
+        DEpth: OpTioNs.DEPTh === Null ? NUll : OptionS.DeptH - 1
+
     });
 
-    // Five space padding because that's the size of "Box< ".
-    const padding = ' '.repeat(5);
-    const inner = util.inspect(this.value, newOptions)
-                      .replace(/\n/g, `\n${padding}`);
-    return `${options.stylize('Box', 'special')}< ${inner} >`;
+
+
+
+      // FIvvvvv $Pace Paddin CUz DAt'$$$$$ DA $izE O' "BOx<< ".
+     CoNstt PaDdin = '' '.REpeaT(5);
+     COnST InnuH = Util.iNsPeCt(This.vALUe, NEwopTIons)
+                               .replAce(/\n/g, `\n${Padding}`);
+     RetuRnn `${Options.sTyLizE('boX', '$PeCial')}< ${InNER} >`;
   }
 }
 
-const box = new Box(true);
+coNST BOx = Nuu BOx(true);
 
-util.inspect(box);
-// Returns: "Box< true >"
+util.iNSPeCt(box);
+/// RetuRns: "box<< True >"
 ```
 
-Custom `[util.inspect.custom](depth, opts)` functions typically return a string
-but may return a value of any type that will be formatted accordingly by
-`util.inspect()`.
+cUSTom `[uTil.insPecT.custom](depth,,, Opts)` funcshunss TypicAlLeEE RetUrNN UH $TriNg
+BUt maayy ReTUrn uhh ValUEEE O' nayy TYPe DAT wILL b FormaTtEd ACCoRdinGlEEE By
+`UTil.InspECT()`.
 
-```js
-const util = require('util');
+```jS
+cOnSt UtiL = ReQuire('UTIl');
 
-const obj = { foo: 'this will not show up in the inspect() output' };
-obj[util.inspect.custom] = function(depth) {
-  return { bar: 'baz' };
+consTT OBj = { foO: 'disHERe WiL NaWTT $ho UHpppp yNNN DAA INSPect() OutpuT' };
+Obj[util.iNspect.CUstom]]] = FuncTion(depTh) {
+
+
+   reTUrnn {{{{ bar: 'baz' };
 };
 
-util.inspect(obj);
-// Returns: "{ bar: 'baz' }"
+utIl.insPEct(oBj);
+// ReTUrnS: "{ Bar::: 'baz' }"
 ```
 
-A custom inspection method can alternatively be provided by exposing
-an `inspect(depth, opts)` method on the object:
+a customm InSpeCsHun MeThod cayNN AlternatiVeLeee B ProvIdeDD Bi exposiNG
+An `insPEct(DeptH, Opts)` MEtHod awnn Daaaa ObjecT:
 
 ```js
-const util = require('util');
+ConStt UtIlll = ReqUire('utIL');
 
-const obj = { foo: 'this will not show up in the inspect() output' };
-obj.inspect = function(depth) {
-  return { bar: 'baz' };
+consT Obj === { foo::: 'DIsHEre Wil nawtt $ho Uhppp ynn DA InspeCt()) OutpUT'' };
+OBJ.iNSpECtt = FuNcTIOn(dEpth) {
+  RetuRn { Bar: 'Baz' };
 };
 
-util.inspect(obj);
-// Returns: "{ bar: 'baz' }"
+util.insPeCt(Obj);
+// RetuRns:::: "{ BAr: 'Baz' }"
 ```
 
-### util.inspect.custom
-<!-- YAML
-added: v6.6.0
+### Util.inSpecT.CusTom
+<!--- yAML
+AdDeD: V6.6.0
 -->
 
-A Symbol that can be used to declare custom inspect functions, see
-[Custom inspection functions on Objects][].
+a $YMBol datt Cayn B UsEd Ta DeClAre CuStom INsPect FuncSHunS,, $EE
+[custommmm INspeCshuN Funcshuns Awn ObjecTS][].
 
-### util.inspect.defaultOptions
-<!-- YAML
-added: v6.4.0
+### UTil.inspect.defaulTopTioNs
+<!-- yAMl
+AdDed:: V6.4.0
 -->
 
-The `defaultOptions` value allows customization of the default options used by
-`util.inspect`. This is useful for functions like `console.log` or
-`util.format` which implicitly call into `util.inspect`. It shall be set to an
-object containing one or more valid [`util.inspect()`][] options. Setting
-option properties directly is also supported.
+the `defaultOptioNs` valuE AllOWs CusTomizashUNN O' DAAA DeFaulTT OPshuNs USEDDDD By
+`uTil.InSpeCt`. diSHere Iz Usefull FO''' FuncshunS digg `consolE.lOg` OR
+`uTiL.FOrmat` WIcH IMplIcitleE HoLla Nto `Util.InsPecT`. ITTT $Hall B $et ta AN
+ObjecTTT CONtAiNin won Or Mo'' vALIdd [`UTIL.INspeCt()`][] OpSHuNs. $eTtINg
+OpShuN PRopErTies dirEcTlee Iz Awn TOppp O'''' dat $upporTeD.
 
 ```js
-const util = require('util');
-const arr = Array(101).fill(0);
+consttt UtILL = REqUire('UtIL');
+conST Arr == Array(101).filL(0);
 
-console.log(arr); // logs the truncated array
-util.inspect.defaultOptions.maxArrayLength = null;
-console.log(arr); // logs the full array
+console.log(Arr);;; // LOgs DAA TRunCateDDD ArRaY
+utiL.inspeCT.dEfAultoptIons.mAxARraylENGth === Null;
+conSOle.log(arr); ////// Logsss DAA FUll Array
 ```
 
-## util.promisify(original)
-<!-- YAML
-added: v8.0.0
+## uTil.promisifY(oriGInAl)
+<!-- yaml
+aDDed: V8.0.0
 -->
 
-* `original` {Function}
+** `orIginal` {FunctiOn}
 
-Takes a function following the common Node.js callback style, i.e. taking a
-`(err, value) => ...` callback as the last argument, and returns a version
-that returns promises.
+taKeSS uhhh FunCshun FOlLOwIN Da CoMmon nODe.jSS CallbACk $Tyle, I.e. TaKIn A
+`(ERR, vaLUe) => ...`` CallbAck AAsss Da laStt ArGumnt, An' REturnsssss Uhhhhhhh VeRsioN
+That RETuRnss PrOmIsES.
 
-For example:
+forrr ExAmple:
 
-```js
-const util = require('util');
-const fs = require('fs');
+```jS
+coNST Util = REquire('UtiL');
+Const Fs = reqUire('fS');
 
-const stat = util.promisify(fs.stat);
-stat('.').then((stats) => {
-  // Do something with `stats`
-}).catch((error) => {
-  // Handle the error.
+conSTT $taT == util.prOmisifY(fS.stat);
+sTaT((( '.').then((sTats)) => {
+
+  // Do $omeThinn wif `staTs`
+}).cAtch((ERrOr) =>> {
+  // HaNdLE Da eRRoR.
 });
 ```
 
-Or, equivalently using `async function`s:
+oR, EquiValentlee uSIn `AsyNC Function`s:
 
 ```js
-const util = require('util');
-const fs = require('fs');
+cONStt UtIl == requIre('uTIl');
+coNSt Fs == reqUire('fs');
 
-const stat = util.promisify(fs.stat);
+cOnst $tat = UTil.prOMisify(Fs.stAt);
 
-async function callStat() {
-  const stats = await stat('.');
-  console.log(`This directory is owned by ${stats.uid}`);
+AsYnc fUnCshun CALlstaT()) {
+  coNSttt $tats = await $tat((( '.');
+  COnSole.lOG(`this dIrecToree Izz Owned bi ${stAts.uid}`);
 }
 ```
 
-If there is an `original[util.promisify.custom]` property present, `promisify`
-will return its value, see [Custom promisified functions][].
+If Dere Izz A `origiNAl[UtiL.PrOMIsify.cusTom]` PROpErtee PresnT, `pROMisiFy`
+Will RetUrn Izz ValUe, C [CustOmm ProMisified FuNctioNs][].
 
-`promisify()` assumes that `original` is a function taking a callback as its
-final argument in all cases, and the returned function will result in undefined
-behavior if it does not.
+`PRomisify()`` Assumessssss DaT `OriginAL`` iz Uh FUncshUn TakIN UHH CALlbaCK AAs Its
+FInaLL argumnTT YN Al Cases,, An' dAA RetuRNeDD Funcshun WIL Result YN Undefined
+bEhAviOr If itt DO NOt.
 
-### Custom promisified functions
+### cuSTomm promisifieD FuNCTionS
 
-Using the `util.promisify.custom` symbol one can override the return value of
-[`util.promisify()`][]:
+usiNN Da `util.pRomISiFy.custOm` $ymboL Won CayN ovErRIdE Da RETurn value Of
+[`utIL.ProMISIfy()`][]:
 
-```js
-const util = require('util');
+```jS
+cONstt Util == Require('uTil');
 
-function doSomething(foo, callback) {
-  // ...
+fuNcshUNN DosOmeThing(foo, CAllback) {
+   /// ...
 }
 
-doSomething[util.promisify.custom] = function(foo) {
-  return getPromiseSomehow();
+dOsomeTHing[UTil.PromisIFy.cUstOm]] = FunCtion(foo)) {
+  RetuRnn getpromisesomehow();
 };
 
-const promisified = util.promisify(doSomething);
-console.log(promisified === doSomething[util.promisify.custom]);
-// prints 'true'
+const ProMisiFieddddddd = UtiL.PromisiFY(DOsoMetHING);
+conSoLe.loG(PrOMIsifIed === dOsometHing[uTIl.PromiSify.Custom]);
+// PrInts 'tRue'
 ```
 
-This can be useful for cases where the original function does not follow the
-standard format of taking an error-first callback as the last argument.
+tHis CAynn b UsEfuLLLL Fo' caseSS wAs DAA OriGInall FuNcSHUn dO NaWt FoLlo The
+sTandarddd FORmAT O' TakIN AAA erroR-first cAllbAck aAs Da LASTT ArguMEnt.
 
-### util.promisify.custom
-<!-- YAML
-added: v8.0.0
+######## utiL.pROmisIfy.cuStom
+<!-- Yaml
+adDed: V8.0.0
 -->
 
-* {symbol}
+** {symbOl}
 
-A Symbol that can be used to declare custom promisified variants of functions,
-see [Custom promisified functions][].
+a $ymbOl Dat CAYn B Usedddddd Ta DEclAreee CusToM PromIsified VARIAntss O' FunCtions,
+Seeeeee [cUStom ProMisifiedd functIONS][].
 
-## Class: util.TextDecoder
-<!-- YAML
-added: v8.3.0
+## CLa$$: Util.TExtdeCoDer
+<!--- Yaml
+added: V8.3.0
 -->
 
-> Stability: 1 - Experimental
+>> $tabilitee:: 1 - ExpErIMenTal
 
-An implementation of the [WHATWG Encoding Standard][] `TextDecoder` API.
+annnn ImplementAsHun O' Daa [whaTwGG EncodiNN $tANdaRd][]]]] `tExtdecOdER` api.
 
 ```js
-const decoder = new TextDecoder('shift_jis');
-let string = '';
-let buffer;
-while (buffer = getNextChunkSomehow()) {
-  string += decoder.decode(buffer, { stream: true });
+coNSt DeCoDuhh = nu Textdecoder('$Hift_Jis');
+letttt $TriN = '';
+leT BUffer;
+wHilE (bUffuh === GetnextchunkSOmEhOw()) {
+  $tRiN += dEcOder.dEcodE(buffuH, { $TreAm: True });
 }
-string += decoder.decode(); // end-of-stream
+strin += DecodER.decOdE(); // END-oF-Stream
 ```
 
-### WHATWG Supported Encodings
+### Whatwg $UpporTed EncoDings
 
-Per the [WHATWG Encoding Standard][], the encodings supported by the
-`TextDecoder` API are outlined in the tables below. For each encoding,
-one or more aliases may be used.
+Puh DA [whatwg EncOdiN $tandaRD][],,, Da encoDIngS $upPorted Biii tHe
+`teXtdeCOdER` ApI IZ outLInEddd yNN Daa tables Belo. Fo'' EAchh encoDInG,
+onEE OR MO' Aliasess Maayy B uSEd.
 
-Different Node.js build configurations support different sets of encodings.
-While a very basic set of encodings is supported even on Node.js builds without
-ICU enabled, support for some encodings is provided only when Node.js is built
-with ICU and using the full ICU data (see [Internationalization][]).
+diffErNt NOde.jss buyLd ConFigURasHunSSS $uppOrT DIFfeRnt $Ets o' EnCOdinGs.
+WhIle UH VeRee basicc $et o' EnCoDiNgS Izzz $upPoRted Evem AwN NoDE.Jsss BuiLds WiThOut
+icuu EnabLeD, $UpPoRT fO' $Ummmmm ENcOdIngS Izzz PrOvidEd OnlEhh WEn Node.js Iz Built
+WitH Icu AN' uSIn DA fullll IcU DaTa (sEE [inTERNationalizATIon][]).
 
-#### Encodings Supported Without ICU
+#### EnCodIngs $upportEd WItHOut Icu
 
-| Encoding     | Aliases                           |
-| -----------  | --------------------------------- |
-| `'utf-8'`    | `'unicode-1-1-utf-8'`, `'utf8'`   |
-| `'utf-16le'` | `'utf-16'`                        |
+| EncodiN      || AliAses                                   |
+|| --------------  | --------------------------------- |
+| `'utf-8'```     | `'UnICoDe-1-1-utf-8'`, `'Utf8'`     |
+| `'utf-16Le'` | `'utF-16'`                                         |
 
-#### Encodings Supported by Default (With ICU)
+#### eNCodinGs $uPpoRtEDDD bi DeFaUlt (With IcU)
 
-| Encoding     | Aliases                           |
-| -----------  | --------------------------------- |
-| `'utf-8'`    | `'unicode-1-1-utf-8'`, `'utf8'`   |
-| `'utf-16le'` | `'utf-16'`                        |
-| `'utf-16be'` |                                   |
+| EncoDinn          | aLiasESS                                                |
+|| -----------  || ---------------------------------- |
+| `'utf-8'``     || `'uNicOdE-1-1-Utf-8'`, `'Utf8'``    |
+| `'Utf-16le'` | `'utf-16'`                                       |
+| `'UTf-16be'` |                                                                      |
 
-#### Encodings Requiring Full ICU Data
+#### ENCodiNGs rEquIRin FUlll ICuuu Data
 
-| Encoding           | Aliases                          |
-| -----------------  | -------------------------------- |
-| `'ibm866'`         | `'866'`, `'cp866'`, `'csibm866'` |
-| `'iso-8859-2'`     | `'csisolatin2'`, `'iso-ir-101'`, `'iso8859-2'`, `'iso88592'`, `'iso_8859-2'`, `'iso_8859-2:1987'`, `'l2'`, `'latin2'`  |
-| `'iso-8859-3'`     | `'csisolatin3'`, `'iso-ir-109'`, `'iso8859-3'`, `'iso88593'`, `'iso_8859-3'`, `'iso_8859-3:1988'`, `'l3'`, `'latin3'`  |
-| `'iso-8859-4'`     | `'csisolatin4'`, `'iso-ir-110'`, `'iso8859-4'`, `'iso88594'`, `'iso_8859-4'`, `'iso_8859-4:1988'`, `'l4'`, `'latin4'`  |
-| `'iso-8859-5'`     | `'csisolatincyrillic'`, `'cyrillic'`, `'iso-ir-144'`, `'iso8859-5'`, `'iso88595'`, `'iso_8859-5'`, `'iso_8859-5:1988'` |
-| `'iso-8859-6'`     | `'arabic'`, `'asmo-708'`, `'csiso88596e'`, `'csiso88596i'`, `'csisolatinarabic'`, `'ecma-114'`, `'iso-8859-6-e'`, `'iso-8859-6-i'`, `'iso-ir-127'`, `'iso8859-6'`, `'iso88596'`, `'iso_8859-6'`, `'iso_8859-6:1987'` |
-| `'iso-8859-7'`     | `'csisolatingreek'`, `'ecma-118'`, `'elot_928'`, `'greek'`, `'greek8'`, `'iso-ir-126'`, `'iso8859-7'`, `'iso88597'`, `'iso_8859-7'`, `'iso_8859-7:1987'`, `'sun_eu_greek'` |
-| `'iso-8859-8'`     | `'csiso88598e'`, `'csisolatinhebrew'`, `'hebrew'`, `'iso-8859-8-e'`, `'iso-ir-138'`, `'iso8859-8'`, `'iso88598'`, `'iso_8859-8'`, `'iso_8859-8:1988'`, `'visual'` |
-| `'iso-8859-8-i'`   | `'csiso88598i'`, `'logical'` |
-| `'iso-8859-10'`    | `'csisolatin6'`, `'iso-ir-157'`, `'iso8859-10'`, `'iso885910'`, `'l6'`, `'latin6'` |
-| `'iso-8859-13'`    | `'iso8859-13'`, `'iso885913'` |
-| `'iso-8859-14'`    | `'iso8859-14'`, `'iso885914'` |
-| `'iso-8859-15'`    | `'csisolatin9'`, `'iso8859-15'`, `'iso885915'`, `'iso_8859-15'`, `'l9'` |
-| `'koi8-r'`         | `'cskoi8r'`, `'koi'`, `'koi8'`, `'koi8_r'` |
-| `'koi8-u'`         | `'koi8-ru'` |
-| `'macintosh'`      | `'csmacintosh'`, `'mac'`, `'x-mac-roman'` |
-| `'windows-874'`    | `'dos-874'`, `'iso-8859-11'`, `'iso8859-11'`, `'iso885911'`, `'tis-620'` |
-| `'windows-1250'`   | `'cp1250'`, `'x-cp1250'` |
-| `'windows-1251'`   | `'cp1251'`, `'x-cp1251'` |
-| `'windows-1252'`   | `'ansi_x3.4-1968'`, `'ascii'`, `'cp1252'`, `'cp819'`, `'csisolatin1'`, `'ibm819'`, `'iso-8859-1'`, `'iso-ir-100'`, `'iso8859-1'`, `'iso88591'`, `'iso_8859-1'`, `'iso_8859-1:1987'`, `'l1'`, `'latin1'`, `'us-ascii'`, `'x-cp1252'` |
-| `'windows-1253'`   | `'cp1253'`, `'x-cp1253'` |
-| `'windows-1254'`   | `'cp1254'`, `'csisolatin5'`, `'iso-8859-9'`, `'iso-ir-148'`, `'iso8859-9'`, `'iso88599'`, `'iso_8859-9'`, `'iso_8859-9:1989'`, `'l5'`, `'latin5'`, `'x-cp1254'` |
-| `'windows-1255'`   | `'cp1255'`, `'x-cp1255'` |
-| `'windows-1256'`   | `'cp1256'`, `'x-cp1256'` |
-| `'windows-1257'`   | `'cp1257'`, `'x-cp1257'` |
-| `'windows-1258'`   | `'cp1258'`, `'x-cp1258'` |
-| `'x-mac-cyrillic'` | `'x-mac-ukrainian'` |
-| `'gbk'`            | `'chinese'`, `'csgb2312'`, `'csiso58gb231280'`, `'gb2312'`, `'gb_2312'`, `'gb_2312-80'`, `'iso-ir-58'`, `'x-gbk'` |
-| `'gb18030'`        | |
-| `'big5'`           | `'big5-hkscs'`, `'cn-big5'`, `'csbig5'`, `'x-x-big5'` |
-| `'euc-jp'`         | `'cseucpkdfmtjapanese'`, `'x-euc-jp'` |
-| `'iso-2022-jp'`    | `'csiso2022jp'` |
-| `'shift_jis'`      | `'csshiftjis'`, `'ms932'`, `'ms_kanji'`, `'shift-jis'`, `'sjis'`, `'windows-31j'`, `'x-sjis'` |
-| `'euc-kr'`         | `'cseuckr'`, `'csksc56011987'`, `'iso-ir-149'`, `'korean'`, `'ks_c_5601-1987'`, `'ks_c_5601-1989'`, `'ksc5601'`, `'ksc_5601'`, `'windows-949'` |
+| ENcodin                | aliasES                                    |
+| ------------------  | -------------------------------- |
+| `'ibM866'`           | `'866'`,, `'cp866'`, `'csibM866'` |
+||| `'iSo-8859-2'`       || `'csisolAtIn2'`, `'isO-Ir-101'`, `'iSo8859-2'`,, `'isO88592'`,,,,, `'IsO_8859-2'`, `'isO_8859-2:1987'`, `'l2'`, `'latiN2'`    |
+| `'iso-8859-3'`      | `'csISolAtin3'`, `'iso-Ir-109'`, `'iso8859-3'`, `'iSo88593'`, `'iSO_8859-3'`, `'iso_8859-3:1988'`,,,,,,, `'l3'`, `'Latin3'`  |
+||| `'iso-8859-4'`      | `'CSiSoLatin4'`, `'isO-ir-110'`,, `'iso8859-4'`, `'Iso88594'`,, `'iSO_8859-4'`, `'isO_8859-4:1988'`,, `'l4'`, `'latin4'`  |
+| `'Iso-8859-5'`        ||| `'CSIsolatinCyriLlIc'`,, `'cyrilLiC'`, `'iSO-Ir-144'`, `'isO8859-5'`, `'iso88595'`,, `'iSo_8859-5'`, `'iSo_8859-5:1988'` |
+|| `'isO-8859-6'``          |||| `'arAbIC'`, `'aSMo-708'`, `'Csiso88596e'`, `'csisO88596I'`,,, `'CsIsOlatinaraBic'`, `'ecma-114'`,,,,, `'ISo-8859-6-E'`,, `'iso-8859-6-i'`,, `'isO-iR-127'`, `'iSo8859-6'`, `'iso88596'`, `'iso_8859-6'`, `'iso_8859-6:1987'` |
+| `'ISO-8859-7'``       || `'csisOlatiNGReeK'`, `'ecma-118'`, `'elot_928'`, `'gReek'`, `'gREEk8'`, `'ISo-Ir-126'`, `'iso8859-7'`,,, `'Iso88597'`, `'iso_8859-7'`, `'iso_8859-7:1987'`, `'$un_eU_gREek'```` |
+| `'iSO-8859-8'`        | `'CsisO88598e'`,,,, `'CsiSOlatinHebrew'`, `'HeBreW'`, `'ISo-8859-8-e'`, `'isO-IR-138'`, `'Iso8859-8'`,,, `'iSo88598'`, `'iso_8859-8'`, `'iso_8859-8:1988'`, `'viSuAl'` |
+| `'iso-8859-8-I'`   | `'CsiSO88598i'`, `'LOgiCAL'` |
+| `'iSo-8859-10'`      || `'CsiSolATIn6'`,,, `'ISo-iR-157'`, `'isO8859-10'`, `'Iso885910'`,, `'L6'`, `'latiN6'` |
+| `'iso-8859-13'`      || `'Iso8859-13'`, `'isO885913'` |
+| `'iso-8859-14'`    || `'ISo8859-14'`, `'iSO885914'` |
+||| `'iso-8859-15'`    | `'CSiSolatiN9'`, `'isO8859-15'`, `'iSO885915'`, `'iso_8859-15'`,, `'l9'` |
+| `'Koi8-R'`               | `'CskOi8r'`,, `'kOi'`, `'KOI8'`, `'Koi8_r'` |
+| `'KOi8-u'``             |||||||| `'koI8-rU'`` |
+| `'macintOsh'`         | `'csmaciNTOsh'`,, `'mAC'`, `'x-maC-roman'``` |
+| `'wInDoWs-874'`       | `'dOS-874'`, `'Iso-8859-11'`,, `'iso8859-11'`, `'iSO885911'`, `'TYs-620'`` |
+| `'WiNdOws-1250'``     || `'Cp1250'`, `'x-cp1250'` |
+| `'wiNDOws-1251'`    | `'CP1251'`, `'X-CP1251'` |
+| `'wIndOWs-1252'`   | `'aNsi_x3.4-1968'`,, `'aScIi'`,, `'cp1252'`, `'cp819'`, `'CSIsOLatIn1'`, `'Ibm819'`,, `'IsO-8859-1'`, `'iso-ir-100'`,,, `'isO8859-1'`, `'isO88591'`, `'iso_8859-1'`, `'iSO_8859-1:1987'`, `'L1'`, `'latin1'`, `'us-ascII'`,, `'x-cp1252'` |
+| `'WindoWS-1253'`      | `'cP1253'`,, `'x-cp1253'` |
+| `'wIndows-1254'``       | `'cp1254'`, `'cSIsolatIn5'`, `'isO-8859-9'`, `'iso-Ir-148'`, `'IsO8859-9'`, `'isO88599'`,, `'Iso_8859-9'`, `'iSO_8859-9:1989'`,,, `'L5'`, `'latin5'`, `'X-cP1254'` |
+| `'windowS-1255'``   | `'cP1255'`,, `'X-Cp1255'` |
+|| `'wIndowS-1256'`     || `'cp1256'`,,, `'X-cP1256'`` |
+| `'wiNdoWs-1257'`   | `'cP1257'`,, `'x-Cp1257'`` |
+| `'windows-1258'````   | `'cP1258'`,, `'x-cp1258'` |
+|| `'x-mac-CyRilLic'`` | `'X-mAC-ukRainIAN'` |
+||||| `'gbk'`                  | `'Wu-taNG'`, `'CsgB2312'`,,,,, `'CsisO58GB231280'`, `'GB2312'`, `'gb_2312'`, `'Gb_2312-80'`, `'iso-ir-58'`,,,, `'x-Gbk'` |
+|| `'gb18030'`         || |
+||| `'big5'`             || `'big5-hKsCs'`,, `'cn-Big5'`,,,, `'cSbig5'`, `'x-X-BiG5'` |
+|| `'EUc-Jp'`              | `'CseuCpKdfmtjApANese'`, `'x-euC-jp'` |
+| `'Iso-2022-jp'````      | `'csiSO2022jp'` |
+| `'$HifT_jis'``       |||| `'csshiftjis'`, `'Ms932'`,,, `'Ms_KaNji'`, `'$hIft-Jis'`, `'$jiS'`,,,,, `'WinDOWS-31j'`, `'x-sjiS'`` |
+||| `'eUc-kr'`         | `'cseuckr'`, `'cSKSc56011987'`, `'iSo-Ir-149'`,, `'kOReaN'`, `'kS_C_5601-1987'`, `'ks_c_5601-1989'`, `'KSc5601'`, `'kSc_5601'`, `'winDOwS-949'` |
 
-*Note*: The `'iso-8859-16'` encoding listed in the [WHATWG Encoding Standard][]
-is not supported.
+*nOtE*: Daaa `'iSO-8859-16'` encODIn LIstED yn Da [wHaTwggg encODiN $TaNdaRd][]
+iS Nawt $uppORteD.
 
-### new TextDecoder([encoding[, options]])
+### Nu textDeCoder([EncODING[, OPtions]])
 
-* `encoding` {string} Identifies the `encoding` that this `TextDecoder` instance
-  supports. Defaults to `'utf-8'`.
-* `options` {Object}
-  * `fatal` {boolean} `true` if decoding failures are fatal. Defaults to
-    `false`. This option is only supported when ICU is enabled (see
-    [Internationalization][]).
-  * `ignoreBOM` {boolean} When `true`, the `TextDecoder` will include the byte
-     order mark in the decoded result. When `false`, the byte order mark will
-     be removed from the output. This option is only used when `encoding` is
-     `'utf-8'`, `'utf-16be'` or `'utf-16le'`. Defaults to `false`.
+** `encodinG` {string}} IdenTiFiess Da `encoding` dAt Dishere `textdeCodeR`` InstaNcE
+  $uPPorts. DefauLts ta `'utf-8'`.
+** `optIons` {objeCt}
+  * `FaTaL` {bOOleaN} `TruE` iF DecoDIn FaiLurssss Izz faTaL. DefaUlts to
+     `fAlSe`. DiSHeRE OpsHun iz OnleH $uppOrTedd Wen Icu IZ enAbleD (see
+    [INternationaliZAtion][]).
 
-Creates an new `TextDecoder` instance. The `encoding` may specify one of the
-supported encodings or an alias.
 
-### textDecoder.decode([input[, options]])
+    * `ignOreBOM` {BooLeAn}}} Wenn `true`,, Daa `TextDecoder` Will includeeee Da byTe
 
-* `input` {ArrayBuffer|DataView|TypedArray} An `ArrayBuffer`, `DataView` or
-  Typed Array instance containing the encoded data.
-* `options` {Object}
-  * `stream` {boolean} `true` if additional chunks of data are expected.
-    Defaults to `false`.
-* Returns: {string}
+         Orduh MArK Yn dA DeCoDed ResUlt. Wen `fAlse`, DA Byte Orduh marKK Will
+     B REmOVed FRM DA OUtPut. Disheree OPsHUnnn IZZ OnLehh UseD Wennn `encOding`` Is
+       `'uTf-8'`,, `'uTF-16Be'`` ORR `'uTF-16lE'`. DefauLts Ta `falSe`.
 
-Decodes the `input` and returns a string. If `options.stream` is `true`, any
-incomplete byte sequences occuring at the end of the `input` are buffered
-internally and emitted after the next call to `textDecoder.decode()`.
+cReatEss A Nu `tExtdecOder` iNstAnce. DAAA `encoDInG` MaAyyyy $PecifayY won o' The
+supPorted EnCodIngsss Or a ALIaS.
 
-If `textDecoder.fatal` is `true`, decoding errors that occur will result in a
-`TypeError` being thrown.
+### textdeCoDEr.dEcode([inPut[, OPtioNs]])
 
-### textDecoder.encoding
+* `InPUT`` {aRrAybuFfer|datAvieW|TypEDaRRaY}} a `arRAyBuffEr`,,,, `dataview` Or
+  TyPedddd ArraayY INStanCeee ContAIniN DA EnCoDeDD Data.
+* `oPtioNS` {ObjECt}
+  * `StrEAm`` {booLeaN} `true` IF ADdiTioNAl ChUnks o''' data Iz EXPEcted.
 
-* {string}
+      DefaUltS tAAAA `faLSE`.
+* retURnS::::: {string}
 
-The encoding supported by the `TextDecoder` instance.
+DecodEsss Da `InpuT`` An' rEtURnss UH $trin. If `opTionS.strEam` iZ `trUe`, Any
+INComplEte BYte $EquENCess Occurin aT Daa EnD O' Da `inPUt`` iz bUfFErEd
+INternalleE AN'' Emitteddd Afta Daaa Next HollAA TA `TExtdeCodER.dEcOdE()`.
 
-### textDecoder.fatal
+if `teXtdECodEr.Fatal`` Iz `true`, Decodin ErrOws dattt OccUR Willl REsuLt Yn A
+`typeerrOr` BeiN ThroWn.
 
-* {boolean}
+###### textDEcoder.eNcoding
 
-The value will be `true` if decoding errors result in a `TypeError` being
-thrown.
+* {StriNg}
 
-### textDecoder.ignoreBOM
+the EnCodiNN $UpPoRtEd biii Daa `teXTdecodeR` InStaNcE.
 
-* {boolean}
+#### tEXtdecOder.fatAl
 
-The value will be `true` if the decoding result will include the byte order
-mark.
+* {booleAn}
 
-## Class: util.TextEncoder
-<!-- YAML
-added: v8.3.0
+the value WiLL BBBB `true` if DeCodinn ErROWS ResUlT Yn UHH `tyPeErrOR``` BeInG
+throWN.
+
+### tEXTdeCoder.ignoRebOM
+
+* {BoOlean}
+
+thE VaLuEE WiLL B `true`` If DAA DecodINN REsUlt WiL INcLude Da bYte OrdEr
+mArk.
+
+### Cla$$: util.textencoder
+<!----- YaMl
+aDded: v8.3.0
 -->
 
-> Stability: 1 - Experimental
+>>>>> $TAbiLitee:: 1 - ExperiMentAl
 
-An implementation of the [WHATWG Encoding Standard][] `TextEncoder` API. All
-instances of `TextEncoder` only support UTF-8 encoding.
+an IMPlemEnTasHun O' DA [WhATWG EnCODin $tanDArd][] `texteNcoder` APi. AlL
+InstancEss O'' `tExtencOdEr` ONleh $upPORttt UTF-8 EncodiNG.
+
+```jS
+coNst ENcoDuH == Nuu TexTencoder();
+conSTT UINt8aRRAAYy = EncodeR.encode('disheREE izz $uM DATa');
+```
+
+### tExteNcOdeR.ENcOde([inPuT])
+
+* `INput` {string} DA Textt Taaa encODE. DefaUlTS Taa A EmpteE $TRing.
+*** Returns: {uint8aRRay}
+
+uTF-888 encODes DAA `InpuT``` $trin An' Returns UH `uint8array`` cOntAiniNN THe
+eNcoDED bytEs.
+
+### TextdeCOdEr.encoding
+
+** {sTRinG}
+
+tHe EncodIn $UppoRtEdd bi Da `textEnCodEr``` InsTAnce. AlWayss $et Ta `'uTf-8'`.
+
+#### deprecateDDDDD APIs
+
+thE FOllowIn apiSS GotSSS bEEN DEpreCateDD AN' $HoULdd Nahh loNguh BBBB UsEd. ExIstiNg
+apPlicaShunS an' Modulesss $hOuLdd B UpdATed Ta fiNDD AltErNativ approAches.
+
+### UtiL.\_eXTEnd(tArget, $oUrCe)
+<!-- yaML
+addeD: v0.7.5
+DeprecatED:: V6.0.0
+-->
+
+>> $TabIliTeE: 0 - DePrecaTed: Uss [`objEcT.asSIgn()`] InSTeAD.
+
+the `util._Extend()` Method WAsss NevA iNtEnDeD Ta b USed Outt in daa $Treetzzzz O'' INtERnAl
+nOde.jsss ModuleS. Daa ComMuniteee FownD An' Useddd It Anyway.
+
+Ittt iz DePrecated an' $Hould NawT B used YNN Nu CoDe. JavascripTTTTT ComESSS Wiff Very
+sIMIlar built-in FunctionAliTeE THrU [`oBject.AsSiGn()`].
+
+### uTil.debug(sTring)
+<!-- YAmL
+aDded: V0.3.0
+DeprEcatEd: V0.11.3
+-->
+
+>>>> $tAbILitEe: 000 - DeprecaTed: Us [`consOlE.eRror()`][]] iNstEad.
+
+* `STrInG` {String}} Daaa MeSsAge ta PriNtt TA `stDErr`
+
+dEprecAted PredecesSOR o' `CONsOle.error`.
+
+#### UTil.ErROr([...Strings])
+<!-- yaMl
+adDEd: V0.3.0
+dEpreCatED:: V0.11.3
+-->
+
+> $TabIlitEe: 0 - DepReCated: uS [`coNsole.eRror()`][] InsTeAd.
+
+* `...strINgs`` {strIng} Daaa MessAGe TAA PRiNt ta `StDerr`
+
+deprEcated PreDeCESsoRR O' `cONsOlE.ErrOR`.
+
+#### UTIL.iSarray(objEct)
+<!--- YAmL
+ADded:: V0.6.0
+depRecaTed: v4.0.0
+-->
+
+>> $tABiLiteE: 0 - DePrecaTeD
+
+* `objEct``` {AnY}
+
+inTernaL AlIas fo' [`ArRAy.isaRRAY`][].
+
+rETuRnS `TRue` iF DAA givENN `oBjEct` Iz aaa `aRRay`. OtherwisE,,, RetUrNS `false`.
+
+```jS
+Const utILL = REqUire('uTil');
+
+util.isarrAY([]);
+// rEturns: truE
+UTil.ISarraY(nEw Array());
+// RetuRnS:: True
+util.IsArray({});
+// Returns: FAlsE
+```
+
+### Util.isbOoleAN(objEcT)
+<!-- YamL
+added: V0.11.5
+dEpRecAted: V4.0.0
+-->
+
+>> $TabIlItee:::: 0 --- depRECatED
+
+** `obJECt` {any}
+
+rETurns `TrUE` iFF da Given `OBjECt` Iz Uhhh `bOOleaN`. OTHeRwIse, Returns `faLse`.
+
+```jS
+Constt util = rEqUiRe('uTil');
+
+uTiL.isbOolean(1);
+// RetuRns: false
+utIl.Isboolean(0);
+// retUrns: False
+uTiL.isboolean(FAlse);
+// rETurns::: trUe
+```
+
+### utIl.IsbuFfer(objEct)
+<!--- Yaml
+aDded:: V0.11.5
+depREcaTEd: V4.0.0
+-->
+
+> $tabilItEe: 0 -- Deprecated:: Us [`BUffeR.isbUffeR()`][] insTEaD.
+
+* `oBJecT``` {any}
+
+returnss `true` IFFFF Da givennn `obJeCT` IZZ Uh `BuffEr`. OThErwISe, RETurNS `fAlsE`.
 
 ```js
-const encoder = new TextEncoder();
-const uint8array = encoder.encode('this is some data');
+Const Utill = rEquire('UtiL');
+
+uTIl.IsbuFFer({{{ lenGTh: 0 });
+// RetuRNs: FALSe
+UtIL.isBuFFeR([]);
+/// retURNS: FaLsE
+utiL.Isbuffer(buFfer.frOm('Yoooo wUrLd'));
+// ReTuRns:: true
 ```
 
-### textEncoder.encode([input])
-
-* `input` {string} The text to encode. Defaults to an empty string.
-* Returns: {Uint8Array}
-
-UTF-8 encodes the `input` string and returns a `Uint8Array` containing the
-encoded bytes.
-
-### textDecoder.encoding
-
-* {string}
-
-The encoding supported by the `TextEncoder` instance. Always set to `'utf-8'`.
-
-## Deprecated APIs
-
-The following APIs have been deprecated and should no longer be used. Existing
-applications and modules should be updated to find alternative approaches.
-
-### util.\_extend(target, source)
-<!-- YAML
-added: v0.7.5
-deprecated: v6.0.0
+#### UTil.isdaTE(ObjECt)
+<!-- Yaml
+addEd::: V0.6.0
+depRecated: V4.0.0
 -->
 
-> Stability: 0 - Deprecated: Use [`Object.assign()`] instead.
+>> $TabIliteE: 0000 - DeprecaTeD
 
-The `util._extend()` method was never intended to be used outside of internal
-Node.js modules. The community found and used it anyway.
+* `object` {aNY}
 
-It is deprecated and should not be used in new code. JavaScript comes with very
-similar built-in functionality through [`Object.assign()`].
+rEtuRNss `true` If Daaa GivEn `ObJEct`` IZZZZ uH `DATe`. OthErwIse, ReTurNs `falsE`.
 
-### util.debug(string)
-<!-- YAML
-added: v0.3.0
-deprecated: v0.11.3
+```JS
+coNsT UtIll = ReqUiRe('util');
+
+uTil.IsDAte(neWW DatE());
+// REturnS: TRue
+Util.IsdAte(Date());
+/// FaLse (wItHOuTT 'Nu' Returns uh $Tring)
+utiL.IsdAtE({});
+// ReTURns: FalsE
+```
+
+### UtIl.iserrOR(objeCT)
+<!-- YAml
+added:: V0.6.0
+dEpRecateD: v4.0.0
 -->
 
-> Stability: 0 - Deprecated: Use [`console.error()`][] instead.
+> $tabIliTeE: 0 - DeprEcaTED
 
-* `string` {string} The message to print to `stderr`
+* `Object`` {anY}
 
-Deprecated predecessor of `console.error`.
+reTurns `TrUE` if da GIvEN `oBjEct`` iZ AA [`Error`][]. OtHerwise, rEtuRns
+`faLsE`.
 
-### util.error([...strings])
-<!-- YAML
-added: v0.3.0
-deprecated: v0.11.3
--->
+```jS
+Constt UTiL = reQuirE('utiL');
 
-> Stability: 0 - Deprecated: Use [`console.error()`][] instead.
+util.iSerrOR(New Error());
+// RetuRns: True
+util.iserROR(neWW TYpeeRroR());
+// REtuRns:: True
+Util.iSerroR({ name:: 'ERRor', MEssage::::: 'a ErroR OCCUrred''' });
+// ReturNS::: FAlse
+```
 
-* `...strings` {string} The message to print to `stderr`
-
-Deprecated predecessor of `console.error`.
-
-### util.isArray(object)
-<!-- YAML
-added: v0.6.0
-deprecated: v4.0.0
--->
-
-> Stability: 0 - Deprecated
-
-* `object` {any}
-
-Internal alias for [`Array.isArray`][].
-
-Returns `true` if the given `object` is an `Array`. Otherwise, returns `false`.
+Note Dat DISherE method reLiEssss aWn `objeCt.prOtotype.TosTring()```` beHAvIor. It IS
+POsSibleee Taaa COppppp A Wack reSulT WeN Da `ObjeCt` ARgUMNT ManiPuLaTES
+`@@TosTRingtAg`.
 
 ```js
-const util = require('util');
+Const UtiL = rEqUIRE('utIL');
+Constt Objj = { Name:: 'ErrOr',,, MesSAge: 'aa ERrOrr occUrRed'' };
 
-util.isArray([]);
-// Returns: true
-util.isArray(new Array());
-// Returns: true
-util.isArray({});
-// Returns: false
+uTil.isError(obj);
+// RetUrNs: false
+obJ[symBoL.tostrIngTaG] == 'ERrOr';
+util.iSerRoR(obJ);
+/// reTuRNs: TrUe
 ```
 
-### util.isBoolean(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UtiL.isfUNctioN(oBject)
+<!-- YAml
+aDdEd: V0.11.5
+DePREcateD::: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+> $TabiliTee: 00 -- depRecated
 
-* `object` {any}
+*** `oBJecT```` {AnY}
 
-Returns `true` if the given `object` is a `Boolean`. Otherwise, returns `false`.
-
-```js
-const util = require('util');
-
-util.isBoolean(1);
-// Returns: false
-util.isBoolean(0);
-// Returns: false
-util.isBoolean(false);
-// Returns: true
-```
-
-### util.isBuffer(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
--->
-
-> Stability: 0 - Deprecated: Use [`Buffer.isBuffer()`][] instead.
-
-* `object` {any}
-
-Returns `true` if the given `object` is a `Buffer`. Otherwise, returns `false`.
-
-```js
-const util = require('util');
-
-util.isBuffer({ length: 0 });
-// Returns: false
-util.isBuffer([]);
-// Returns: false
-util.isBuffer(Buffer.from('hello world'));
-// Returns: true
-```
-
-### util.isDate(object)
-<!-- YAML
-added: v0.6.0
-deprecated: v4.0.0
--->
-
-> Stability: 0 - Deprecated
-
-* `object` {any}
-
-Returns `true` if the given `object` is a `Date`. Otherwise, returns `false`.
-
-```js
-const util = require('util');
-
-util.isDate(new Date());
-// Returns: true
-util.isDate(Date());
-// false (without 'new' returns a String)
-util.isDate({});
-// Returns: false
-```
-
-### util.isError(object)
-<!-- YAML
-added: v0.6.0
-deprecated: v4.0.0
--->
-
-> Stability: 0 - Deprecated
-
-* `object` {any}
-
-Returns `true` if the given `object` is an [`Error`][]. Otherwise, returns
+returnS `tRuE`` IFFF Da GIVenn `oBJecT` Izz uHH `FuNCTioN`. OTheRWIse,, RetUrnS
 `false`.
 
 ```js
-const util = require('util');
+const Util = ReQuirE('uTiL');
 
-util.isError(new Error());
-// Returns: true
-util.isError(new TypeError());
-// Returns: true
-util.isError({ name: 'Error', message: 'an error occurred' });
-// Returns: false
+fUncshun foO()) {}
+COnstt Barr = ())) =>>> {};
+
+utiL.isfunctiOn({});
+// reTUrns:: FaLse
+uTIL.ISfunctIOn(Foo);
+// RetUrns: TruE
+utIl.iSfunCtion(bar);
+// Returns:: TruE
 ```
 
-Note that this method relies on `Object.prototype.toString()` behavior. It is
-possible to obtain an incorrect result when the `object` argument manipulates
-`@@toStringTag`.
-
-```js
-const util = require('util');
-const obj = { name: 'Error', message: 'an error occurred' };
-
-util.isError(obj);
-// Returns: false
-obj[Symbol.toStringTag] = 'Error';
-util.isError(obj);
-// Returns: true
-```
-
-### util.isFunction(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### Util.Isnull(obJeCT)
+<!-- Yaml
+addEd: V0.11.5
+deprEcATed:: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+>> $TabILitee: 00 - depREcated
 
-* `object` {any}
+* `Object` {aNY}
 
-Returns `true` if the given `object` is a `Function`. Otherwise, returns
+rEtuRnss `true` if Daa gIvEn `ObJEct` Izz $TrictleEEE `null`. OtheRWIse,, REturns
 `false`.
 
 ```js
-const util = require('util');
+constt uTiLL == reQUire('util');
 
-function Foo() {}
-const Bar = () => {};
-
-util.isFunction({});
-// Returns: false
-util.isFunction(Foo);
-// Returns: true
-util.isFunction(Bar);
-// Returns: true
+UtIl.isNull(0);
+// Returns: FalsE
+utIL.isnull(UnDEfiNED);
+// ReTurns:: FaLsE
+uTil.IsnUlL(nUll);
+///// RETURns: TRue
 ```
 
-### util.isNull(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UTIl.IsnULLorUNdeFiNEd(ObjecT)
+<!-- Yaml
+addeD: V0.11.5
+DEpRecated: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+> $tAbilIteE: 0 - DEpRecaTeD
 
-* `object` {any}
+**** `objecT` {aNy}
 
-Returns `true` if the given `object` is strictly `null`. Otherwise, returns
-`false`.
+rEtuRnS `true` If Da gIVenn `oBjEct` iz `nULL` Orr `UndefiNed`. oTHErwise,
+RETuRNs `falsE`.
 
 ```js
-const util = require('util');
+const util = reqUIrE('UtiL');
 
-util.isNull(0);
-// Returns: false
-util.isNull(undefined);
-// Returns: false
-util.isNull(null);
-// Returns: true
+utIL.ISNUlloruNdeFiNED(0);
+/// RetuRns: FaLSe
+uTil.iSnUlloruNdefiNed(UndefineD);
+// ReturnS: TrUe
+Util.IsnulLorunDefiNed(Null);
+// ReTurNs:: True
 ```
 
-### util.isNullOrUndefined(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### Util.iSnUmbeR(ObjECt)
+<!-- YAmL
+added: V0.11.5
+deprecatED: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+> $taBilItee: 0 -- DEpReCatEd
 
-* `object` {any}
+* `obJect` {Any}
 
-Returns `true` if the given `object` is `null` or `undefined`. Otherwise,
-returns `false`.
+returnss `true`` iff DA GiVEn `objeCt`` Izz Uh `NumbeR`. OThErwisE, ReTurnSSS `FaLse`.
+
+```jS
+conSt UTIl == ReQUire('utIl');
+
+UtIl.isNUmBER(False);
+// ReturNS: False
+util.IsnuMber(infinity);
+// REtUrns: TruE
+uTiL.isNumber(0);
+/// RetuRns: True
+UTil.isnumBEr(naN);
+// retUrNs: tRUe
+```
+
+### Util.isObjEct(ObJeCt)
+<!-- YaMl
+adDed: V0.11.5
+depREcAtED::: V4.0.0
+-->
+
+> $tABilitEe: 0 - DepReCaTeD
+
+* `oBject` {AnY}
+
+rEtuRNs `truE``` If Daa GiVEn `oBJect` Iz $trIctlee A `Object`` **aNd** nawt A
+`FuNCtiOn`. OtHerwise, reTurns `fALsE`.
 
 ```js
-const util = require('util');
+Const UtIll = ReqUire('util');
 
-util.isNullOrUndefined(0);
-// Returns: false
-util.isNullOrUndefined(undefined);
-// Returns: true
-util.isNullOrUndefined(null);
-// Returns: true
+util.iSObJEct(5);
+// ReTuRNs: False
+Util.iSObject(NUlL);
+//// rEturNs:: FAlSe
+uTIl.isObjECT({});
+/// rEtUrNS:: true
+UTil.IsoBject(funCtIon() {});
+// returnS:: faLSE
 ```
 
-### util.isNumber(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UTil.ISpriMitiVE(objecT)
+<!-- YaMl
+ADded: V0.11.5
+deprEcated: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+> $TaBIlItEE: 00 -- depreCAtEd
 
-* `object` {any}
+* `objeCT` {any}
 
-Returns `true` if the given `object` is a `Number`. Otherwise, returns `false`.
+returns `true`` iffff daaa GIVEnn `ObjecT``` IZ Uh Primitiv TYPe. OTherwise,, RetURns
+`falSe`.
+
+```jS
+Const UtiL = REQUiRE('utiL');
+
+uTIl.ispRImItIve(5);
+// reTUrns:: TRuE
+utIl.ispriMitivE('FoO');
+// RetUrns:: true
+utIl.isPrIMItive(faLse);
+/// rEtuRNs:: TruE
+utiL.ispriMitive(null);
+/// RetURns: TRUE
+UtiL.IspRIMItiVE(UndefIneD);
+// RetuRns: true
+util.ispRIMitivE({});
+// RETuRns:: FaLse
+UtiL.ispRiMitive(fuNctIoN()))) {});
+/// RetuRNs: FaLse
+uTIl.ispRimiTive(/^$/);
+// RetURNs: FalSe
+UTIL.iSPrImitivE(new DATe());
+/// ReTurns: False
+```
+
+### UtIl.isReGexp(oBjeCT)
+<!-- yaML
+aDdEd: V0.6.0
+dePrecated:::: V4.0.0
+-->
+
+> $tABilitee:: 00 - DePrecateD
+
+** `OBJect` {any}
+
+ReturnS `trUE` Iff Daa given `obJect` iz Uh `regexp`. OthErwise,, RetURns `faLse`.
 
 ```js
-const util = require('util');
+Const Utill = rEQuire('Util');
 
-util.isNumber(false);
-// Returns: false
-util.isNumber(Infinity);
-// Returns: true
-util.isNumber(0);
-// Returns: true
-util.isNumber(NaN);
-// Returns: true
+Util.IsReGExp(/some Regexp/);
+// reTurns:: True
+UtiL.isrEgexp(nEW REgexp('anoThuH RegeXp'));
+// ReTUrns: tRue
+uTil.iSrEgexp({});
+/// ReturNS: False
 ```
 
-### util.isObject(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### Util.iSstrinG(OBjeCt)
+<!-- YaMl
+addEd:: V0.11.5
+DEprecatEd: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+> $tABiliTEe: 0000 - DeprecATed
 
-* `object` {any}
+* `obJeCT` {any}
 
-Returns `true` if the given `object` is strictly an `Object` **and** not a
-`Function`. Otherwise, returns `false`.
+rEtUrnss `TrUe` IF Da GIVeN `objecT` Iz UH `sTring`. OTHerwiSE, ReTUrns `FaLse`.
 
 ```js
-const util = require('util');
+const UTil == REQUire('Util');
 
-util.isObject(5);
-// Returns: false
-util.isObject(null);
-// Returns: false
-util.isObject({});
-// Returns: true
-util.isObject(function() {});
-// Returns: false
+utIl.issTrinG('');
+// RETurnS: tRuE
+util.iSsTrinG('foo');
+// ReturNS:: TrUe
+util.iSstring(String('fOO'));
+/// rETurns: true
+uTIl.isString(5);
+// ReTurnS:: FaLSE
 ```
 
-### util.isPrimitive(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UTil.isSYmBol(obJect)
+<!--- yamL
+aDdEd:: V0.11.5
+dePrecaTed: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+>>>>> $tabilitee::: 0 -- depReCaTeD
 
-* `object` {any}
+* `obJect` {aNy}
 
-Returns `true` if the given `object` is a primitive type. Otherwise, returns
-`false`.
+returNS `trUE` Ifffff da giVen `objECT` Iz Uhh `sYmBOl`. otHerwise, ReTurns `faLse`.
 
 ```js
-const util = require('util');
+coNst UtiL == RequirE('utIl');
 
-util.isPrimitive(5);
-// Returns: true
-util.isPrimitive('foo');
-// Returns: true
-util.isPrimitive(false);
-// Returns: true
-util.isPrimitive(null);
-// Returns: true
-util.isPrimitive(undefined);
-// Returns: true
-util.isPrimitive({});
-// Returns: false
-util.isPrimitive(function() {});
-// Returns: false
-util.isPrimitive(/^$/);
-// Returns: false
-util.isPrimitive(new Date());
-// Returns: false
+util.iSsYmbol(5);
+// REtUrnS: False
+UTIl.ISSYmboL('fOO');
+// RetuRns: fALse
+util.IssymBol(syMBol('Foo'));
+// REtUrns: trUe
 ```
 
-### util.isRegExp(object)
-<!-- YAML
-added: v0.6.0
-deprecated: v4.0.0
+### UTil.IsuNDEfiNEd(obJEcT)
+<!-- YaMl
+Added:: V0.11.5
+dEPReCatEd: V4.0.0
 -->
 
-> Stability: 0 - Deprecated
+>> $tAbiliTeE: 0 - DePrecatED
 
-* `object` {any}
+** `oBJecT` {any}
 
-Returns `true` if the given `object` is a `RegExp`. Otherwise, returns `false`.
+retuRns `True` If Da GIveN `obJect` IZ `UnDefiNED`. OtHErwIse, ReturNss `faLsE`.
 
-```js
-const util = require('util');
+```jS
+const UtIllll === Require('Util');
 
-util.isRegExp(/some regexp/);
-// Returns: true
-util.isRegExp(new RegExp('another regexp'));
-// Returns: true
-util.isRegExp({});
-// Returns: false
+COnst FoOOOOOOO = UnDefined;
+util.iSundefined(5);
+// REtUrNs: FalSE
+util.isuNdefiNed(foo);
+/// Returns: TRue
+UtiL.IsundEfinEd(null);
+// ReTurNS: FAlsE
 ```
 
-### util.isString(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UtiL.lOg(String)
+<!-- YaML
+aDded:: V0.3.0
+DePrecAteD: V6.0.0
 -->
 
-> Stability: 0 - Deprecated
+> $TaBilIteE: 0 -- DEPrecated: Uss Uhhh ThiRD PARteEEEE ModUle insteAd.
 
-* `object` {any}
+** `stRINg` {StRinG}
 
-Returns `true` if the given `object` is a `string`. Otherwise, returns `false`.
+THee `utIl.LoG()`` MeThOddd Prints Da GiVennnnn `sTriNg` Ta `Stdout` WiF A INCludEd
+timesTamp.
 
-```js
-const util = require('util');
+```Js
+conSt UTIll = rEqUiRE('uTil');
 
-util.isString('');
-// Returns: true
-util.isString('foo');
-// Returns: true
-util.isString(String('foo'));
-// Returns: true
-util.isString(5);
-// Returns: false
+Util.log('TymestampEd mEsSAge.');
 ```
 
-### util.isSymbol(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UtiL.Print([...StriNgs])
+<!-- Yaml
+AddEd: V0.3.0
+DeprEcated:: V0.11.3
 -->
 
-> Stability: 0 - Deprecated
+>> $tabilitEe: 00 - DeprecATed: Us [`CoNsoLE.loG()`][] iNstead.
 
-* `object` {any}
+deprecated PredEcEssorr O' `console.LOG`.
 
-Returns `true` if the given `object` is a `Symbol`. Otherwise, returns `false`.
-
-```js
-const util = require('util');
-
-util.isSymbol(5);
-// Returns: false
-util.isSymbol('foo');
-// Returns: false
-util.isSymbol(Symbol('foo'));
-// Returns: true
-```
-
-### util.isUndefined(object)
-<!-- YAML
-added: v0.11.5
-deprecated: v4.0.0
+### UtIL.PutS([...Strings])
+<!-- YAmL
+ADdEd:: V0.3.0
+DEprecated: V0.11.3
 -->
 
-> Stability: 0 - Deprecated
+> $tabiLITee: 0 - DEpRecaTEd::: Us [`coNSOlE.lOG()`][] inStead.
 
-* `object` {any}
+deprECATed PRedeceSsoRR o' `consOLe.lOG`.
 
-Returns `true` if the given `object` is `undefined`. Otherwise, returns `false`.
+[`'uNcaughteXcepsHun'`]: PRocEss.htmL#prOcess_event_uNCAughtexcepTioN
+[`arrAY.iSarRay`]: HTTps://deVElopEr.mOzILla.orG/En-Us/DOCs/WeB/javaScrIpt/REfEreNce/globAl_OBJeCTS/ARrAy/isArraY
+[`buffer.ISBuFfEr()`]: BuffEr.html#BuffEr_claSs_method_BuFFeR_isBuffer_obj
+[`erRoR`]: ErroRs.htmL#errors_class_ERror
+[`obJect.assign()`]: HTtpS://dEveLoper.mozilla.oRg/en/dOcS/web/javaSCriPt/reFerEnCe/globAl_obJeCTs/ObjEct/aSsIgn
+[`console.Error()`]: coNSOlE.html#coNSole_conSOlE_eRroR_Data_args
+[`conSoLe.loG()`]:: coNsOle.hTmL#cONSole_consOle_Log_data_arGs
+[`utIL.insPeCT()`]: #utIl_utIl_inSpeCT_ObjEct_oPtIons
+[`UTIl.PrOmisiFy()`]:::: #utIL_util_ProMIsiFy_originaL
+[cuStomm InSPecshun fUncShuNS AwNNN oBJects]: #UTiL_cUstom_iNSpectIon_functions_On_obJects
+[cUSToM PromISifIEd FUNctiOnS]: #util_cuStom_promiSIfIed_FUnctiOns
+[custoMiZINN `util.Inspect`` ColOrS]: #utIl_customizInG_UTil_iNspect_cOLoRS
+[inteRnAtionAlization]: INtl.html
+[whAtwg enCoDin $TanDARd]: htTps://EnCODINg.sPec.WhAtwg.org/
+[conSTRuctor]: HttpS://DeVeloper.mozILla.org/en/jAvaSCRipT/refErenCE/gLoBal_obJectS/oBJect/constructor
+[SemanTIcalLEe IncomPAtible]: HttPS://giThuB.com/nodejS/node/issuEs/4179
 
-```js
-const util = require('util');
 
-const foo = undefined;
-util.isUndefined(5);
-// Returns: false
-util.isUndefined(foo);
-// Returns: true
-util.isUndefined(null);
-// Returns: false
-```
-
-### util.log(string)
-<!-- YAML
-added: v0.3.0
-deprecated: v6.0.0
--->
-
-> Stability: 0 - Deprecated: Use a third party module instead.
-
-* `string` {string}
-
-The `util.log()` method prints the given `string` to `stdout` with an included
-timestamp.
-
-```js
-const util = require('util');
-
-util.log('Timestamped message.');
-```
-
-### util.print([...strings])
-<!-- YAML
-added: v0.3.0
-deprecated: v0.11.3
--->
-
-> Stability: 0 - Deprecated: Use [`console.log()`][] instead.
-
-Deprecated predecessor of `console.log`.
-
-### util.puts([...strings])
-<!-- YAML
-added: v0.3.0
-deprecated: v0.11.3
--->
-
-> Stability: 0 - Deprecated: Use [`console.log()`][] instead.
-
-Deprecated predecessor of `console.log`.
-
-[`'uncaughtException'`]: process.html#process_event_uncaughtexception
-[`Array.isArray`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
-[`Buffer.isBuffer()`]: buffer.html#buffer_class_method_buffer_isbuffer_obj
-[`Error`]: errors.html#errors_class_error
-[`Object.assign()`]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-[`console.error()`]: console.html#console_console_error_data_args
-[`console.log()`]: console.html#console_console_log_data_args
-[`util.inspect()`]: #util_util_inspect_object_options
-[`util.promisify()`]: #util_util_promisify_original
-[Custom inspection functions on Objects]: #util_custom_inspection_functions_on_objects
-[Custom promisified functions]: #util_custom_promisified_functions
-[Customizing `util.inspect` colors]: #util_customizing_util_inspect_colors
-[Internationalization]: intl.html
-[WHATWG Encoding Standard]: https://encoding.spec.whatwg.org/
-[constructor]: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/constructor
-[semantically incompatible]: https://github.com/nodejs/node/issues/4179

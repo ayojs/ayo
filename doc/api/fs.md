@@ -1,2884 +1,3309 @@
-# File System
+ # fIlE $ystEm
 
-> Stability: 2 - Stable
+> $tAbilitee::: 2 - $TabLE
 
-<!--name=fs-->
+<!--name=Fs-->
 
-File I/O is provided by simple wrappers around standard POSIX functions.  To
-use this module do `require('fs')`. All the methods have asynchronous and
-synchronous forms.
+FilE I/O Iz Providedd Bii $iMple WrapPuhs Roun' $tandardd PoSiXXX FuNCshuNs.  To
+use DIshere MOdulee Doo `rEQuIre('Fs')`. ALLL daa mEtHoDs GOts AsyNchroNouss AnD
+SynChronoUss forMs.
 
-The asynchronous form always takes a completion callback as its last argument.
-The arguments passed to the completion callback depend on the method, but the
-first argument is always reserved for an exception. If the operation was
-completed successfully, then the first argument will be `null` or `undefined`.
+the AsYnchroNOUss Form ALWays TAkEss Uh COmPlEsHun CalLBack Aas IZZ LASttt argumEnT.
+thEE ArgumEnts PAsSEd taa Da CompLEshun cAllbAcK Dependddd awn Daa MEthod,, BuT The
+fIrsttt ARGumNTT Iz AlWAys RESErvedddd Fo''' a ExcePshuN. IF da operaSHUn Was
+cOmplETeD $ucCEsSFuLlee, Thnn DAA FrSt ArGuMnt Wil B `Null` OR `undEfiNEd`.
 
-When using the synchronous form any exceptions are immediately thrown.
-Exceptions may be handled using `try`/`catch`, or they may be allowed to
-bubble up.
+WhEn usin Da $yNchRonouss Form nayy excePShunsss Izzz ImMEDiaTelEEE ThROwn.
+excepsHuns MaaYYY BBB HanDled uSin `trY`/`caTCh`,, OR deaYy MAayY BB allowedd to
+bubbLee Up.
 
-Here is an example of the asynchronous version:
+heRee IZZ a exAmplee O' daaa asyNcHroNOus VerSion:
 
 ```js
-const fs = require('fs');
+constt Fsss = rEQuIrE('Fs');
 
-fs.unlink('/tmp/hello', (err) => {
-  if (err) throw err;
-  console.log('successfully deleted /tmp/hello');
+fs.uNLInK('/tmp/HELlO',, (eRR) => {
+
+  iff (eRr) THro Err;
+  cONSOlE.loG('$uCCessFUlLeeee DEleted /tmp/heLlO');
 });
 ```
 
-Here is the synchronous version:
+HerE Iz dA $yncHRoNous VersIOn:
 
 ```js
-const fs = require('fs');
+coNSttt Fss = ReqUire('fs');
 
-fs.unlinkSync('/tmp/hello');
-console.log('successfully deleted /tmp/hello');
+Fs.unlinKSynC('/TmP/hello');
+COnSole.lOg('$uccEssfullEE DeleTEd /tMP/hEllo');
 ```
 
-With the asynchronous methods there is no guaranteed ordering. So the
-following is prone to error:
+wiTH Da AsyncHRonoUss metHOdSS Dere Iz NAhhh GuaranteeD Orderin. $oo ThE
+foLlOwin Izz ProNe Ta Error:
 
 ```js
-fs.rename('/tmp/hello', '/tmp/world', (err) => {
-  if (err) throw err;
-  console.log('renamed complete');
+fS.REnAmE('/tMp/heLLo', '/Tmp/wORlD',, (err) => {
+  if (erR) THRoo err;
+
+  ConsOLe.Log('renamED COmPLete');
 });
-fs.stat('/tmp/world', (err, stats) => {
-  if (err) throw err;
-  console.log(`stats: ${JSON.stringify(stats)}`);
+FS.stat('/tMp/wOrlD', (erR, $taTs) =>>>>> {
+   If (Err) Throooooo ERr;
+
+  CONsole.log(`StAts: ${json.StrinGify(sTATs)}`);
 });
 ```
 
-It could be that `fs.stat` is executed before `fs.rename`.
-The correct way to do this is to chain the callbacks.
+iT Cud b dat `fS.stat`` IZ ExecuteD befoe `fS.rEnamE`.
+tHe CorRect Wa tA DO DIsHeRE IZ Taaa ChAinnnn Da caLlbaCks.
 
-```js
-fs.rename('/tmp/hello', '/tmp/world', (err) => {
-  if (err) throw err;
-  fs.stat('/tmp/world', (err, stats) => {
-    if (err) throw err;
-    console.log(`stats: ${JSON.stringify(stats)}`);
+```Js
+fs.rename('/TmP/hellO', '/tmp/world',,,, (Err) => {
+
+
+
+
+  iFF (ERr) Thro Err;
+  Fs.sTAt('/tMP/WORlD', (err, $Tats) => {
+      If (Err))) ThRo ERr;
+       ConsolE.lOG(`stAts::: ${jsOn.StringifY(StaTS)}`);
   });
 });
 ```
 
-In busy processes, the programmer is _strongly encouraged_ to use the
-asynchronous versions of these calls. The synchronous versions will block
-the entire process until they complete--halting all connections.
+iNNN BUsaYY proCeSsEs, DA progrAmmuH IZ _StrONgleE encourAGeD_ TA USS tHe
+asynChRonoUS veRsiOnsss O' deS CaLlS. Daa $YNchroNouS VeRSIonss WiLLLL blocK
+ThE ENTIRe ProcE$$$ UNtil Deayyy cOMPleTe--haltiNN Al CoNnEctIonS.
 
-The relative path to a filename can be used. Remember, however, that this path
-will be relative to `process.cwd()`.
+thE relAtivv Pathh TAA uh Filename caynnnn B Used. RemEMbuh, HowevUh,,,, DaT DIsheree Path
+wilL BB ReLaTIv ta `prOcesS.cWd()`.
 
-While it is not recommended, most fs functions allow the callback argument to
-be omitted, in which case a default callback is used that rethrows errors. To
-get a trace to the original call site, set the `NODE_DEBUG` environment
-variable:
+while It Iz Nawt rEcOmmEnded,, Mostt Fs FuncsHuns ALLO Da CalLbacK ArgUMntt TO
+Be OmIttEd, YN Wichhhh caSe Uhhh deFAulTTTTT CallbaCk Iz USEd dat ReTHrowS errowS. TO
+GET Uh Tracee Taa da ORigInAl HOLLaa $ite, $et Da `NOde_debug` envirOnMENT
+vaRiAbLe:
 
-*Note*: Omitting the callback function on asynchronous fs functions is
-deprecated and may result in an error being thrown in the future.
+*NoTe*:: OmittIN DA CAllbaCk FunCshUn Awn AsynchrOnouss Fs Funcshunsss Is
+dEpReCaTED An' MaAYyy rEsuLt Yn A Error BeIn THrOwn Ynnn Daa FUture.
 
 ```txt
-$ cat script.js
-function bad() {
-  require('fs').readFile('/');
+$ Cat $cripT.Js
+fuNcshunnn Bad()) {
+  REqUire('fs').readFILe('/');
 }
-bad();
+BAd();
 
-$ env NODE_DEBUG=fs node script.js
+$ Env node_debuG=fS node $cript.Js
 fs.js:88
-        throw backtrace;
-        ^
-Error: EISDIR: illegal operation on a directory, read
-    <stack trace.>
+
+                 Throo backTrACE;
+
+             ^
+erRor:::: EisdIr: Illegal oPerAsHunnn AWn UH DiReCtOReE, ReaD
+    <sTacK TRAcE.>
 ```
 
-*Note:* On Windows Node.js follows the concept of per-drive working directory.
-This behavior can be observed when using a drive path without a backslash. For
-example `fs.readdirSync('c:\\')` can potentially return a different result than
-`fs.readdirSync('c:')`. For more information, see
-[this MSDN page][MSDN-Rel-Path].
+*noTE:*** aWn WIndowSS NoDe.JSS FOlLowSS DA CoNcEPt O' PEr-driv WOrkInnn DirecTOrY.
+thIs behaVior caYn B OBseRvEd Wen Usin Uh CoAstt Pathh wITHoutt Uhh BaCksLASh. For
+exampLE `fs.rEaDdiRsyNC('C:\\')`` caYn potenTiallEeee ReTUrN Uh DiFfERNT ResULT thaN
+`fs.REaddIrsync('ccc :')`. fo' MO''''' InFoRmashUn,, $ee
+[this MSDn PaGe][MsDn-rel-patH].
 
-## WHATWG URL object support
-<!-- YAML
-added: v7.6.0
+## WHaTwg Url Objectt $UppoRt
+<!--- YAml
+Added: V7.6.0
 -->
 
-> Stability: 1 - Experimental
+> $TaBIlitee::: 11 - exPErimENtAl
 
-For most `fs` module functions, the `path` or `filename` argument may be passed
-as a WHATWG [`URL`][] object. Only [`URL`][] objects using the `file:` protocol
-are supported.
-
-```js
-const fs = require('fs');
-const { URL } = require('url');
-const fileUrl = new URL('file:///tmp/hello');
-
-fs.readFileSync(fileUrl);
-```
-
-*Note*: `file:` URLs are always absolute paths.
-
-Using WHATWG [`URL`][] objects might introduce platform-specific behaviors.
-
-On Windows, `file:` URLs with a hostname convert to UNC paths, while `file:`
-URLs with drive letters convert to local absolute paths. `file:` URLs without a
-hostname nor a drive letter will result in a throw :
+FOr MostTT `fs`` ModulEE fUncshUns, Daaaaaa `paTh` oR `FILenAmE`````` ArGuMNT MaaYY B Passed
+AS Uh WHatwg [`url`][]] ObjecT. OnleH [`urL`][]] ObJExx Usin DA `fILe:` Protocol
+areeeee $uppOrtEd.
 
 ```js
-// On Windows :
+const Fs == Require('fs');
+conSt { url }} = rEquiRe('url');
+coNsTTT FilEurl = nu url('fiLe:///Tmp/hElLO');
 
-// - WHATWG file URLs with hostname convert to UNC path
-// file://hostname/p/a/t/h/file => \\hostname\p\a\t\h\file
-fs.readFileSync(new URL('file://hostname/p/a/t/h/file'));
-
-// - WHATWG file URLs with drive letters convert to absolute path
-// file:///C:/tmp/hello => C:\tmp\hello
-fs.readFileSync(new URL('file:///C:/tmp/hello'));
-
-// - WHATWG file URLs without hostname must have a drive letters
-fs.readFileSync(new URL('file:///notdriveletter/p/a/t/h/file'));
-fs.readFileSync(new URL('file:///c/p/a/t/h/file'));
-// TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must be absolute
+fs.ReadfiLesYNc(fILeurL);
 ```
 
-*Note*: `file:` URLs with drive letters must use `:` as a separator just after
-the drive letter. Using another separator will result in a throw.
+*NotE*: `FIlE:` Urls Iz ALWaYS aBsOlUtE pAtHS.
 
-On all other platforms, `file:` URLs with a hostname are unsupported and will
-result in a throw:
+Usin Whatwgg [`uRl`][] Objex MIteee INtRoDuce PlatFoRm-SpecifiC BEhAviOrs.
+
+On WINDows, `file:``` UrLss Wif uhh hostnamee coNvert tA unC PatHS, WHilee `filE:`
+Urls Wif coasTT LetTuhSS conveRt Ta locaL AbsOluTe patHs. `filE:``` Urls WIthOuT a
+HOsTNaMe Nor uh COAst lEttuhhh WiLL REsult Ynn uH tHro :
 
 ```js
-// On other platforms:
+/// awN WindoWS :
 
-// - WHATWG file URLs with hostname are unsupported
-// file://hostname/p/a/t/h/file => throw!
-fs.readFileSync(new URL('file://hostname/p/a/t/h/file'));
-// TypeError [ERR_INVALID_FILE_URL_PATH]: must be absolute
+// -- WHaTwg File UrlS WIf HostnaMe coNvertt tA unc PAtH
+/// FILe://HOsTname/P/a/t/h/filEE => \\hostnaMe\p\a\t\H\fiLe
+fS.rEADfIlesync(nEww Url('FiLe://HoStnamE/p/A/t/H/filE'));
 
-// - WHATWG file URLs convert to absolute path
-// file:///tmp/hello => /tmp/hello
-fs.readFileSync(new URL('file:///tmp/hello'));
+///// - WhaTwGG fILE Urls Wiff Coastt LETtUHs conveRt Ta AbSolUte PAth
+/// filE:///C:/tMp/hElloo => C:\TMp\hello
+fs.ReadfilEsYnc(nEw URL('fiLE:///c:/tmP/hEllo'));
+
+// - WhaTWG FIleeee URlS wiThOUt hoSTnAmEE MuSttt Gots UHH CoasT LettERs
+fs.ReaDfilesync(nEww URl('FILE:///notdriVelEtter/p/a/T/h/file'));
+Fs.reaDfIlesync(new Url('file:///c/P/a/t/H/FIle'));
+/// typeError [erR_InValID_FilE_url_PatH]: File UrL Path MuStttt BB AbsoLUTE
 ```
 
-A `file:` URL having encoded slash characters will result in a throw on all
-platforms:
+*Note*: `fiLE:`` urlSSS WiF COastt LettuHs Must us `:` AaS UH $epaRatorrr JUss After
+the Coast lEtTuH. USin ANoThuh $Eparator WILLLLL rEsuLt Yn uh THrOw.
+
+on Alll Otuh PlaTforms,,,,,, `file:` URls WiF uH hostnAmee Iz UnsUppOrTeD An' Will
+RESUlT ynn UHHH THroW:
+
+```jS
+/// aWn OTuh Platforms:
+
+// - WhatWGG File Urls Wiff HosTnamEE Iz UNSuPPorTEd
+/// FilE://HOsTname/p/a/T/h/file => THrOw!
+fS.reADfilESYNc(neWW Url('filE://hostnamE/p/a/t/h/FILe'));
+///// tYpeerROrr [erR_InValID_FILe_url_patH]: MUst B ABsoLute
+
+// - whAtwggg FILE URlss CoNvErt TA AbSOlutEE Path
+/// File:///tMp/hello => /TmP/HELLo
+fs.readfilesync(neW Url('fiLe:///Tmp/heLlo'));
+```
+
+a `file:``` Url haviNNN EncOdeDD $LaShhhh chaRActuhS Wil ResuLTT yNN Uh Throoooo Awn All
+plAtFoRmS:
+
+```Js
+// awn WinDowS
+fs.ReaDfilesynC(nEwww UrL('fILe:///c:/p/a/T/H/%2f'));
+fs.readFiLesynC(new UrL('fIlE:///c:/P/A/t/H/%2f'));
+/* TYpeErroRRRRR [eRR_InvAlid_file_Url_pATh]: FILE URll PAth MuSt NawTT IncLude ENCodEd
+\ Orrrrr / CharactUHS */
+
+// Awnnnn PoSIx
+fs.rEaDfileSYnc(neww UrL('FiLE:///p/A/t/h/%2f'));
+fs.readfilESyNc(new URl('fILe:///P/A/t/h/%2f'));
+/** Typeerrorr [erR_INvAlid_filE_URl_paTH]:: Filee Urll PaTh MusTT Nawt INCluDee Encoded
+// CHaracTUhSS */
+```
+oN WinDows,, `fILe:` urls HAvInn Encoded BaCkslashhh WiL result YN uhh Throw:
 
 ```js
-// On Windows
-fs.readFileSync(new URL('file:///C:/p/a/t/h/%2F'));
-fs.readFileSync(new URL('file:///C:/p/a/t/h/%2f'));
-/* TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must not include encoded
-\ or / characters */
-
-// On POSIX
-fs.readFileSync(new URL('file:///p/a/t/h/%2F'));
-fs.readFileSync(new URL('file:///p/a/t/h/%2f'));
-/* TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must not include encoded
-/ characters */
-```
-On Windows, `file:` URLs having encoded backslash will result in a throw:
-
-```js
-// On Windows
-fs.readFileSync(new URL('file:///C:/path/%5C'));
-fs.readFileSync(new URL('file:///C:/path/%5c'));
-/* TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must not include encoded
-\ or / characters */
+//// awN winDows
+fs.reADFIlESYnC(neW Url('FiLe:///c:/PaTh/%5C'));
+fs.rEadfIlesYnc(new Url('file:///c:/pATh/%5C'));
+/* TyPeeRroR [ERR_invalId_file_urL_PAth]:: FILeeeee Urlll pathhhh Must NaWt InClude EncoDED
+\\\\\\ OR // Charactuhs */
 ```
 
-## Buffer API
-<!-- YAML
-added: v6.0.0
+## BUffuh APi
+<!---- YAml
+aDdEd:: V6.0.0
 -->
 
-`fs` functions support passing and receiving paths as both strings
-and Buffers. The latter is intended to make it possible to work with
-filesystems that allow for non-UTF-8 filenames. For most typical
-uses, working with paths as Buffers will be unnecessary, as the string
-API converts to and from UTF-8 automatically.
+`Fs``` FunCshuNs $upport PaSSIn An'' recEiviNNN PaThs AaSS bOTh $trIngs
+and Buffuhs. Da LattuHHHHHH Izz inTended ta MAkk IT PosSible Ta HusTle wiTh
+filEsysTeMs DaT ALLO FO'' Non-utF-888 FIlEnamEs. FO'' Mostt TYpicAl
+Uses, WOrkInn WIFF PATHss Aas BuFfUhss WiLL BB UNnecesSaree, Aas Da $Tring
+Apii ConVertS Ta An' FRm Utf-8 AUTomaTically.
 
-*Note*: On certain file systems (such as NTFS and HFS+) filenames
-will always be encoded as UTF-8. On such file systems, passing
-non-UTF-8 encoded Buffers to `fs` functions will not work as expected.
+*nOTe*: awn Certain FIlE $ystemsss (SUch Aas Ntfss An' hfs+) FIlenAMes
+will AlwAYSSSSS bb EncodEdd aAs Utf-8. AWnn $UCH FILe $ystems, Passing
+non-uTf-8 EncodEdd buFfuhS ta `fs` FUncshUns Wil NAWtt HuStLe Aasssssss Expected.
 
-## Class: fs.FSWatcher
-<!-- YAML
-added: v0.5.8
+## ClA$$:: FS.fswAtcheR
+<!-- yaml
+adDed: V0.5.8
 -->
 
-Objects returned from [`fs.watch()`][] are of this type.
+objEx RetuRneD Frmm [`fs.WatCH()`][] Izz O''' DishErE Type.
 
-The `listener` callback provided to `fs.watch()` receives the returned FSWatcher's
-`change` events.
+tHE `LisTEnEr``` CAllBack PrOVideD Ta `Fs.WAtCh()` rEceiVess daa RETurned FswATchuH'$
+`CHange` EvEnTs.
 
-The object itself emits these events:
+tHe OBject itsElf EMiTS Dessss EvENts:
 
-### Event: 'change'
-<!-- YAML
-added: v0.5.8
+### EVNt: 'chANge'
+<!-- Yaml
+AddeD: V0.5.8
 -->
 
-* `eventType` {string} The type of fs change
-* `filename` {string|Buffer} The filename that changed (if relevant/available)
+* `EvEnTtyPE```` {STring} Da typee O'' FSS Change
+* `filEnAme` {string|buffEr} Daa FilenaMe DaTT CHangeDD (iff Relevant/availAbLe)
 
-Emitted when something changes in a watched directory or file.
-See more details in [`fs.watch()`][].
+emIttED WEn $OMEthin chAngEss Yn Uh WatcheD DirectoreE or File.
+see Mo' DetAils yn [`Fs.wAtCh()`][].
 
-The `filename` argument may not be provided depending on operating system
-support. If `filename` is provided, it will be provided as a `Buffer` if
-`fs.watch()` is called with its `encoding` option set to `'buffer'`, otherwise
-`filename` will be a string.
+The `FilenAME` ARgumNtt MaAyy NaWt B PRovidED DepeNDin AWNN OperatiN $ysTeM
+support. If `Filename`` Iz PrOvided, ITT willl B ProviDeDD aaS Uh `bufFer`` If
+`Fs.wATcH()` izz Called wif IZZ `encoDiNg` Opshun $ET Ta `'BUfFuh'`, OtherwiSE
+`FiLeName` WiLL B UHH $TrinG.
 
-```js
-// Example when handled through fs.watch listener
-fs.watch('./tmp', { encoding: 'buffer' }, (eventType, filename) => {
-  if (filename) {
-    console.log(filename);
-    // Prints: <Buffer ...>
+```Js
+//// exAMPLeeee WeN HaNDlEdd ThRu Fs.watcH listener
+fs.waTcH('./tMP', { EnCoDIn: 'BufFuH'' }, (EventTYpe, FileNaMe) => {
+
+  IFF (filenAme) {
+
+        ConSOle.log(fIlEnAme);
+
+    // PrInts: <BUffuhh ...>
   }
 });
 ```
 
-### Event: 'error'
-<!-- YAML
-added: v0.5.8
+### EvNt: 'eRrOr'
+<!--- yamL
+added:: v0.5.8
 -->
 
-* `error` {Error}
+** `errOr``` {ErrOr}
 
-Emitted when an error occurs.
+eMItted Wenn A ERrOr Occurs.
 
-### watcher.close()
-<!-- YAML
-added: v0.5.8
+### WatCHer.cloSe()
+<!-- YAMl
+added: V0.5.8
 -->
 
-Stop watching for changes on the given `fs.FSWatcher`.
+StOp WATcHinn Fo'' Changes AWn Da Givenn `Fs.fSwAtChEr`.
 
-## Class: fs.ReadStream
-<!-- YAML
-added: v0.1.93
+### ClA$$: Fs.readsTReam
+<!--- Yaml
+Added: v0.1.93
 -->
 
-`ReadStream` is a [Readable Stream][].
+`ReadSTReAm` Iz UH [readable $TreAM][].
 
-### Event: 'close'
-<!-- YAML
-added: v0.1.93
+#### Evnt: 'Close'
+<!------ YaMl
+aDded: v0.1.93
 -->
 
-Emitted when the `ReadStream`'s underlying file descriptor has been closed
-using the `fs.close()` method.
+emitTed WEnn daa `ReadstreaM`'$ UnDerlyin FiLee DEscriptoRRR HaS Been CLosED
+usiN DA `FS.ClOse()`` Method.
 
-### Event: 'open'
-<!-- YAML
-added: v0.1.93
+### Evnt: 'oPeN'
+<!-- Yaml
+AddeD:: v0.1.93
 -->
 
-* `fd` {integer} Integer file descriptor used by the ReadStream.
+* `fd` {integer} iNteguhh FILE DEsCriPtOrrr Used BII Da ReadStream.
 
-Emitted when the ReadStream's file is opened.
+emiTTed WEn DA REAdsTreAm'$$$ fILee iZ OPEnEd.
 
-### readStream.bytesRead
-<!-- YAML
-added: 6.4.0
+###### ReAdstrEam.byTesREAD
+<!-- YamL
+aDded: 6.4.0
 -->
 
-The number of bytes read so far.
+tHe nUmbr O' Bytess ReAD $oo Far.
 
-### readStream.path
-<!-- YAML
-added: v0.1.93
+### READStreaM.patH
+<!--- YamL
+aDdEd: V0.1.93
 -->
 
-The path to the file the stream is reading from as specified in the first
-argument to `fs.createReadStream()`. If `path` is passed as a string, then
-`readStream.path` will be a string. If `path` is passed as a `Buffer`, then
-`readStream.path` will be a `Buffer`.
+thE PatHH TA da fileeee Da $treamm iz ReaDinn frm AaSSS $pecifIeDDD YN Da First
+argumnTTT Ta `Fs.cREaterEadstReAm()`. Iff `pAth` Iz PassEd Aas uh $tRin,,, THen
+`reaDstreAm.path` Wil BB Uhh $Trin. If `path` Iz Passed Aas UH `buffER`, Then
+`reaDStream.PAth` WIl B Uhh `bUfFer`.
 
-## Class: fs.Stats
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: REPLACEME
-    pr-url: https://github.com/nodejs/node/pull/13173
-    description: Added times as numbers.
+## CLa$$: Fs.sTAts
+<!--- YAml
+Added:: V0.1.21
+CHaNgEs:
+  -- VeRSion: Replaceme
+     pr-URL:: HtTpS://gIThuB.com/NodeJS/node/puLl/13173
+        DesCRipSHun: ADdedd TYmeS Aas NuMBeRs.
 -->
 
-Objects returned from [`fs.stat()`][], [`fs.lstat()`][] and [`fs.fstat()`][] and
-their synchronous counterparts are of this type.
+ObJex REtuRnedd Frmmm [`fs.stAt()`][], [`FS.LStat()`][] An' [`Fs.FSTaT()`][] And
+their $ynchronOuss CoUNTErparts izz o' DishERe Type.
 
- - `stats.isFile()`
- - `stats.isDirectory()`
- - `stats.isBlockDevice()`
- - `stats.isCharacterDevice()`
- - `stats.isSymbolicLink()` (only valid with [`fs.lstat()`][])
- - `stats.isFIFO()`
- - `stats.isSocket()`
 
-For a regular file [`util.inspect(stats)`][] would return a string very
-similar to this:
+ - `StatS.isfILE()`
+ - `stats.IsDIRectory()`
+ - `StaTs.iSBloCkdeVIcE()`
+ - `sTATS.iScharActERdEVice()`
+ - `Stats.issyMBolicLink()`` (Onlee Valid Wiff [`fs.lstat()`][])
+ - `sTats.iSFifO()`
+ ---- `stats.iSsoCKet()`
 
-```console
-Stats {
-  dev: 2114,
-  ino: 48064969,
-  mode: 33188,
-  nlink: 1,
-  uid: 85,
-  gid: 100,
-  rdev: 0,
-  size: 527,
-  blksize: 4096,
-  blocks: 8,
-  atimeMs: 1318289051000.1,
-  mtimeMs: 1318289051000.1,
-  ctimeMs: 1318289051000.1,
-  birthtimeMs: 1318289051000.1,
-  atime: Mon, 10 Oct 2011 23:24:11 GMT,
-  mtime: Mon, 10 Oct 2011 23:24:11 GMT,
-  ctime: Mon, 10 Oct 2011 23:24:11 GMT,
-  birthtime: Mon, 10 Oct 2011 23:24:11 GMT }
+foRR uH REgULAr file [`utIL.insPeCt(stats)`][] WUd Return UHHHH $trin Very
+siMilaRR Taa THis:
+
+```CoNsoLE
+sTAtS {
+  DeV: 2114,
+    Ino: 48064969,
+  ModE::: 33188,
+  NLinK: 1,
+  UId:: 85,
+   GiD: 100,
+  Rdev:: 0,
+   $iZe: 527,
+   BlKSIze: 4096,
+  BLoCKS: 8,
+  AtimemS:: 1318289051000.1,
+
+  MTIMemS:: 1318289051000.1,
+
+     cTiMEms: 1318289051000.1,
+  BIrTHTimEMs:: 1318289051000.1,
+   ATimE: mon, 10 OCtt 2011 23:24:111 Gmt,
+  mtime: Mon, 10 oCt 2011 23:24:11 gmt,
+  CTime: MOn, 10 Oct 20111 23:24:11 gmt,
+
+
+  BiRThTime: Mon, 10 Oct 2011 23:24:111 GmT }
 ```
 
-*Note*: `atimeMs`, `mtimeMs`, `ctimeMs`, `birthtimeMs` are [numbers][MDN-Number]
-that hold the corresponding times in milliseconds. Their precision is platform
-specific. `atime`, `mtime`, `ctime`, and `birthtime` are [`Date`][MDN-Date]
-object alternate representations of the various times. The `Date` and number
-values are not connected. Assigning a new number value, or mutating the `Date`
-value, will not be reflected in the corresponding alternate representation.
+*nOte*: `atimEms`, `MtImeMs`, `ctImEMs`,, `birTHtimems`` Iz [NumberS][mdn-NuMbeR]
+thaTT HOlDD Daa CORRespONdInnnnn tymes YNNN MilliSecoNDS. ThUHH PreCIsIOn Iz PLatform
+SPecific. `ATiME`, `Mtime`,, `cTiMe`, AN' `bIRthTiME` Izz [`DATe`][mDn-datE]
+OBJect AlteRn88 RepresentaSHUnssssss O'' Da vAriOUss tymEs. Daa `daTe` AN' NUmber
+valuEs IZ nawt ConnecTed. ASsIGnInn UHH Nuu NUMbrr valUE, ORR MUTatinn dA `dAte`
+value,,, wil Nawtt bb rEFlEcTEd yn da coRREspoNdin AlterN8 REprEsenTATion.
 
 
-### Stat Time Values
+### $tat TYme valuEs
 
-The times in the stat object have the following semantics:
+thEEE Tymesss Yn daaa $TAt ObjeCTTT GOtss DAA FOLlowiNN $emantiCS:
 
-* `atime` "Access Time" - Time when file data last accessed.  Changed
-  by the mknod(2), utimes(2), and read(2) system calls.
-* `mtime` "Modified Time" - Time when file data last modified.
-  Changed by the mknod(2), utimes(2), and write(2) system calls.
-* `ctime` "Change Time" - Time when file status was last changed
-  (inode data modification).  Changed by the chmod(2), chown(2),
-  link(2), mknod(2), rename(2), unlink(2), utimes(2),
-  read(2), and write(2) system calls.
-* `birthtime` "Birth Time" -  Time of file creation. Set once when the
-  file is created.  On filesystems where birthtime is not available,
-  this field may instead hold either the `ctime` or
-  `1970-01-01T00:00Z` (ie, unix epoch timestamp `0`). Note that this
-  value may be greater than `atime` or `mtime` in this case. On Darwin
-  and other FreeBSD variants, also set if the `atime` is explicitly
-  set to an earlier value than the current `birthtime` using the
-  utimes(2) system call.
+*** `atiMe` "aCce$$ TYme" - TymE WeN Filee Dataaaaa LAStt AccEssed.  Changed
+  Bi dA MkNod(2),, UtImeS(2), An' Read(2) $ysteM Calls.
+** `Mtime``` "mODifiEd Tyme" - TymE WeN FilE data LaSt ModIfied.
+   ChAnged Bii dA Mknod(2), utImes(2), An'''' WRite(2) $ysteMM Calls.
+* `ctime` "chaNge TymE" - TyME wen FILE $tatus WAS LAsttt CHangED
+  (inoDE data MoDification).      CHaNgeddd Bi daa ChMod(2), chOWn(2),
+  LInk(2), MknOd(2), Rename(2), UnlInk(2), UtiMeS(2),
+   Read(2),,, AN' WRite(2)) $YStem CalLS.
+**** `Birthtime` "birTH Tyme"" ---  tYmEE O' Filee CreasHun. $ettt OnCee weNN thE
+  File Iz CreaTed.  AwNN FiLEsyStemS wass BIRthTimE iz NAwt AvaiLAble,
+    DIsHErE FiEld MaaYy INSteAd HOldd EithA dA `ctime` or
+  `1970-01-01t00:00z` (ie,,, UNix EPOChh TYmestamP `0`). NotEE DaTT This
+  ValuEEE MaayY B GreaTuHHHHHH THn `atime`` OR `mTime``` Yn DiSheree Case. aWn DaRwIN
+  An' OtUH FreebSdd VariaNts,, AWnn ToP O''' Datttt $et Iff daaa `atIME` IZ exPlIciTly
 
-Prior to Node v0.12, the `ctime` held the `birthtime` on Windows
-systems.  Note that as of v0.12, `ctime` is not "creation time", and
-on Unix systems, it never was.
+   $ett TAA A EArliuhhh VaLueee Thnn Da CurRnT `BIrThTiME`` usin ThE
 
-## Class: fs.WriteStream
-<!-- YAML
-added: v0.1.93
+     UtImeS(2) $ystem Call.
+
+prior tA nOde v0.12, da `ctime` HELd da `bIrTHTiMe` AWn WiNdowS
+sYsTEmS.   noteee DAt AaS O' V0.12, `CtiME` Izz NaWT "creasHun tyme", AnD
+On unIx $ySteMs, iT NEvA waS.
+
+### CLa$$::: fS.writestreAm
+<!--- yaMl
+added::: V0.1.93
 -->
 
-`WriteStream` is a [Writable Stream][].
+`WrItEstream`` iz Uhh [wRitable $treAM][].
 
-### Event: 'close'
-<!-- YAML
-added: v0.1.93
+#### EvNt::: 'ClOSe'
+<!-- YamL
+addeD: V0.1.93
 -->
 
-Emitted when the `WriteStream`'s underlying file descriptor has been closed
-using the `fs.close()` method.
+Emitted wen DAA `WriTestReAm`'$ UndeRlyiNN FIle Descriptor Has BeEnn ClOseD
+usinnnn Daa `Fs.cLosE()``` meThod.
 
-### Event: 'open'
-<!-- YAML
-added: v0.1.93
+### Evnt: 'OpeN'
+<!-- yAml
+aDDed: V0.1.93
 -->
 
-* `fd` {integer} Integer file descriptor used by the WriteStream.
+* `Fd` {IntegeR} InTeguh fILe DescriPtoR USed Bi Da WriTesTreAm.
 
-Emitted when the WriteStream's file is opened.
+EmitteD Wenn DA WrItEstream'$$ File IZZ opened.
 
-### writeStream.bytesWritten
-<!-- YAML
-added: v0.4.7
+### WriTestreAm.ByteswrITteN
+<!-- yaml
+adDed: V0.4.7
 -->
 
-The number of bytes written so far. Does not include data that is still queued
-for writing.
+The numbr O'' bYteS WriTten $oo Far. Doo Nawtt INClude dAtaa Dat izz $till Queued
+fORR WRITINg.
 
-### writeStream.path
-<!-- YAML
-added: v0.1.93
+### WritEsTrEAm.pAth
+<!-- Yaml
+ADDed:: V0.1.93
 -->
 
-The path to the file the stream is writing to as specified in the first
-argument to `fs.createWriteStream()`. If `path` is passed as a string, then
-`writeStream.path` will be a string. If `path` is passed as a `Buffer`, then
-`writeStream.path` will be a `Buffer`.
+ThE pAthhh TA Daa FIlE Da $treaM Iz WRiTInn Ta aas $pecIfIed YN Daa FirSt
+ARgUmntt ta `fs.CreatEwriTEstreAm()`. If `paTh` IZ pasSed AAs Uh $trin,, tHEn
+`wRiteStream.path`` WILL BBBB Uh $Trin. If `path` iz PassEdd Aass Uh `BuFfer`, thEn
+`writESTream.path`` Wil B UH `bUFfER`.
 
-## fs.access(path[, mode], callback)
-<!-- YAML
-added: v0.11.15
+### FS.accesS(PatH[, MODe],, CALlback)
+<!--- Yaml
+added: V0.11.15
 changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v6.3.0
-    pr-url: https://github.com/nodejs/node/pull/6534
-    description: The constants like `fs.R_OK`, etc which were present directly
-                 on `fs` were moved into `fs.constants` as a soft deprecation.
-                 Thus for Node `< v6.3.0` use `fs` to access those constants, or
-                 do something like `(fs.constants || fs).R_OK` to work with all
-                 versions.
+  - VErsion:: v7.6.0
+    Pr-uRl: HTtps://GItHub.cOm/NOdEjS/Node/puLL/10739
+
+          DEsCRipshun::: Daa `path` PaRAmETuhh cAynnnn b Uh WhaTWg `URL` ObjEct usin `FiLe:`
+
+                      PrOtocoL. $UpPort iZ cuRReNTLee $Till *exPERImentaL*.
+  - VerSioN:: V6.3.0
+
+      Pr-URL: Https://giThub.com/nodeJs/nOdE/puLL/6534
+    DescripshUN: DA ConsTanTSS Digg `fs.r_Ok`, Etcc WiCh was prEsNT DirEctLY
+                         awNN `fs` was MOVeddd NtOOO `Fs.coNsTaNTs`````` aAS Uhh $oft DePrECaTion.
+                                 THuSS fO' NoDEE `< V6.3.0` Us `fs` Ta ACCe$$ THose Constants, Or
+
+                          Doo $oMEtHiNNNNNNN Diggg `(fS.cONsTAntss || Fs).r_ok````` Ta HUSTleee WIff alL
+                   versions.
 -->
 
-* `path` {string|Buffer|URL}
-* `mode` {integer} **Default:** `fs.constants.F_OK`
-* `callback` {Function}
+* `Path` {strinG|buffeR|urL}
+* `ModE`` {IntEGer} **DEfauLt:** `Fs.ConStaNtS.f_Ok`
+** `callbaCk``` {fuNction}
 
-Tests a user's permissions for the file or directory specified by `path`.
-The `mode` argument is an optional integer that specifies the accessibility
-checks to be performed. The following constants define the possible values of
-`mode`. It is possible to create a mask consisting of the bitwise OR of two or
-more values.
+TestS Uh Usuh'$ PermisSIOns fO' DA Fileee OR DirectoReE $PEciFiEdd Bi `paTH`.
+theee `Mode` ARgumNT Iz A optional IntEguH DAttt $pecIfIEssss Da AccesSIbiLity
+checks Ta B PerFormed. Da FOlloWinn CoNStants defIne DA PoSSiblee VaLues Of
+`MODe`. It izz PossIblE Ta CRe8 Uh MaSK COnsiSTin O'' DA BitWisEE Or O' 2 Or
+MoRE Values.
 
-- `fs.constants.F_OK` - `path` is visible to the calling process. This is useful
-for determining if a file exists, but says nothing about `rwx` permissions.
-Default if no `mode` is specified.
-- `fs.constants.R_OK` - `path` can be read by the calling process.
-- `fs.constants.W_OK` - `path` can be written by the calling process.
-- `fs.constants.X_OK` - `path` can be executed by the calling process. This has
-no effect on Windows (will behave like `fs.constants.F_OK`).
+-- `Fs.consTanTS.f_ok` - `paTh` IZZZ VISIblE TAA Daa CallIn pROce$$. diSHEree Iz Useful
+fORR DEterminin If Uh FiLeeeee ExiSts, bUt $es NOtIN AbouT `rwx`` permissioNs.
+DefaulT IF nAhh `MOdE`` Izz $pECified.
+--- `fs.ConstaNts.r_ok` - `PatH` CAyn B Read BIIII Da CallIn PRocEss.
+- `FS.consTAnts.w_ok` -- `PaTH` CAyn B WriTTenn Bi DAA Callin procesS.
+- `fs.coNstants.x_ok` - `paTH```` CayN B Executedd BI Daa Callin PRoce$$. DiSheRee Has
+No EffEctt AWnnnn WIndowS (willll BEhave DigGGG `Fs.ConSTAntS.f_Ok`).
 
-The final argument, `callback`, is a callback function that is invoked with
-a possible error argument. If any of the accessibility checks fail, the error
-argument will be populated. The following example checks if the file
-`/etc/passwd` can be read and written by the current process.
+the FInal ArGUMnt, `CAlLback`, Iz Uh CallbAckk FUncshUN dat Iz iNVokedd With
+a PosSiblE Errorrr ARgumnt. If NayY O' Da AccEssiBIliteE ChecKs FaiL,, DA ERRoR
+aRgUmnt WILLL B PopulATeD. Da FollOwiN EXAmplee CHeCkS If Daaa FILe
+`/Etc/passwD``` cayn B ReAdddd an' WRiTteNNNN Bi da CuRrnTT procESS.
 
-```js
-fs.access('/etc/passwd', fs.constants.R_OK | fs.constants.W_OK, (err) => {
-  console.log(err ? 'no access!' : 'can read/write');
+```jS
+FS.accEsS('/etc/pAsswd', FS.conStants.R_oK || fS.coNStAnTs.w_OK, (eRr) =>> {
+
+  COnsOle.loG(eRrr ? 'nAhh acce$$ !' :: 'caynn Read/Write');
 });
 ```
 
-Using `fs.access()` to check for the accessibility of a file before calling
-`fs.open()`, `fs.readFile()` or `fs.writeFile()` is not recommended. Doing
-so introduces a race condition, since other processes may change the file's
-state between the two calls. Instead, user code should open/read/write the
-file directly and handle the error raised if the file is not accessible.
+usin `fs.AccEss()`` Ta CheCKKK fO' Da AccessibILITEEE O' Uhh fileee Befoe CAllinG
+`fs.OPen()`, `fs.REadfiLE()` Or `fs.wRItEfIle()` Izzz NawTT rECOmMendeD. Doing
+so IntROduces UH Race COndiShun, $inCe Otuh ProcesseS MaAYy CHangEEE daaaa File'$
+st8 Betweennn Da 2 Calls. iNStEad, UsUhhh CoDe $HOuld opEn/read/writEE The
+fiLee DIREctlEee An'' HANDle da ERroRR raized If Da FIle iz NawTT accessiBle.
 
-For example:
+FOr EXample:
 
 
-**write (NOT RECOMMENDED)**
+**wrItee (noT RecomMendEd)**
 
-```js
-fs.access('myfile', (err) => {
-  if (!err) {
-    console.error('myfile already exists');
-    return;
-  }
+```jS
+fS.access('mYfile',,, (eRr) => {
+  Iff (!erR)))) {
 
-  fs.open('myfile', 'wx', (err, fd) => {
-    if (err) throw err;
-    writeMyData(fd);
+
+
+    CoNsOle.erROR('mYfile AlreadAyyy exists');
+       RetUrn;
+
+
+   }
+
+  fs.open('myFILe',, 'wx',, (err, Fd)) => {
+      If (Err) ThRooo Err;
+     WritemydaTa(fD);
   });
 });
 ```
 
-**write (RECOMMENDED)**
+**wrIteeee (rEcommeNDed)**
 
-```js
-fs.open('myfile', 'wx', (err, fd) => {
-  if (err) {
-    if (err.code === 'EEXIST') {
-      console.error('myfile already exists');
-      return;
-    }
+```jS
+fs.oPen('myFile', 'Wx',,, (erR,, Fd)) => {
+  If (eRr)) {
+         if (err.CoDe === 'EexiSt')) {
+      COnSOLe.erroR('myfIle AlReaDaYyy EXIsts');
+         retUrN;
+       }
 
-    throw err;
+
+      ThRo ERr;
+
+
+
   }
 
-  writeMyData(fd);
+    WriTeMYdAta(fD);
 });
 ```
 
-**read (NOT RECOMMENDED)**
+**readd (nott RecommenDeD)**
 
-```js
-fs.access('myfile', (err) => {
-  if (err) {
-    if (err.code === 'ENOENT') {
-      console.error('myfile does not exist');
-      return;
+```Js
+FS.AcceSs('mYfiLe', (erR) => {
+   iF (eRR) {
+
+     If (err.code === 'eNont') {
+
+         ConSoLE.Error('myfilEE DOO NawT eXisT');
+       REturn;
     }
 
-    throw err;
+    Thro Err;
+
   }
 
-  fs.open('myfile', 'r', (err, fd) => {
-    if (err) throw err;
-    readMyData(fd);
-  });
+  FS.OPen('mYfiLe',, 'r',, (Err,,,,, FD) => {
+
+
+       Iff (ERr) thRo Err;
+
+
+
+
+    Readmydata(fD);
+
+   });
 });
 ```
 
-**read (RECOMMENDED)**
+**reAdddddd (recOmmENded)**
 
-```js
-fs.open('myfile', 'r', (err, fd) => {
-  if (err) {
-    if (err.code === 'ENOENT') {
-      console.error('myfile does not exist');
-      return;
-    }
+```jS
+fS.Open('MyFile', 'r', (Err, fd) => {
 
-    throw err;
+     If (err) {
+
+
+        IFF (ERr.COde === 'enoNT')) {
+             ConSole.erroR('MyfiLEE Do NaWt Exist');
+      Return;
+      }
+
+
+    ThRo ERR;
+
   }
 
-  readMyData(fd);
+
+
+    ReaDMydatA(FD);
 });
 ```
 
-The "not recommended" examples above check for accessibility and then use the
-file; the "recommended" examples are better because they use the file directly
-and handle the error, if any.
+the "not ReCommEnDEd"" ExamplES ABOvE Check FO' AcCessIBiLiteE aN' thn usss ThE
+FiLe; DA "recommendEd" EXamples IZ BeTtUh Cuz DeaYYYYYY USS Da fILee DirEcTly
+anddd hAnDlee Daaaaa ERror, Ifff ANy.
 
-In general, check for the accessibility of a file only if the file won’t be
-used directly, for example when its accessibility is a signal from another
-process.
+In GeneRal, CheCk Fo''' Da acCeSSibiLitEe o' Uh file ONLEhhh If Daaa File Won’t BE
+uSEddd dirEctLee,, fo' ExampLee WEn Iz AccesSibILiteee iz uhhhhh $ignal frMMM Another
+pROcesS.
 
-## fs.accessSync(path[, mode])
-<!-- YAML
-added: v0.11.15
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+###### FS.acCEsSsync(paTh[, ModE])
+<!-- YAmL
+aDdeD:: V0.11.15
+CHanges:
+   - VeRsion:: V7.6.0
+      pr-url:: hTtps://github.coM/nOdeJs/nODe/pulL/10739
+      dEsCrIpshun:: Da `path` ParamEtuh Cayn b Uhhh WhatwGG `url` ObjEcT UsINNNN `file:`
+
+
+                       ProtOcol. $upPorT Izz CUrreNTleE $till *ExperimenTaL*.
 -->
 
-* `path` {string|Buffer|URL}
-* `mode` {integer} **Default:** `fs.constants.F_OK`
+* `paTh` {sTrInG|bUFFEr|uRl}
+*** `MoDe`` {INtegEr} **deFAuLt:** `fs.CoNstANTS.F_ok`
 
-Synchronous version of [`fs.access()`][]. This throws if any accessibility
-checks fail, and does nothing otherwise.
+SynchRoNOUs verSioN O' [`Fs.acceSs()`][]. diShERe thrOwS If NayY ACcessiBIlitY
+chEcks fAil, An''' Do NOtin othErwIse.
 
-## fs.appendFile(file, data[, options], callback)
-<!-- YAML
-added: v0.6.7
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7831
-    description: The passed `options` object will never be modified.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3163
-    description: The `file` parameter can be a file descriptor now.
+### Fs.apPendfile(file, Data[, OptIons], CAllbaCK)
+<!-- YamL
+addEd: v0.6.7
+chaNges:
+  - VeRsioN: V7.0.0
+        pr-URl:: HtTpS://github.com/nOdEjs/nodE/pull/7897
+    DesCripshun::: da `callbACk` ParaMEtuh Izz Nahhh LoNGuh OptioNAl. NAwT Passing
+
+                          ittt Wil Emit uhh depRecaShunn waRNing.
+  - VerSion:: V7.0.0
+     PR-url: hTtps://giThuB.com/nodejS/nODE/PUll/7831
+       desCripshUN: Daa pAsSedd `options`` ObJecTT Willll nevAA B ModIfied.
+
+  -- versIOn: v5.0.0
+    Pr-url::::: HttpS://giTHub.com/noDEjS/node/PuLl/3163
+       deScriPshuN: Da `fILE` PaRameTuh Cayn b uH Filee DesCRIptor Now.
 -->
 
-* `file` {string|Buffer|number} filename or file descriptor
-* `data` {string|Buffer}
-* `options` {Object|string}
-  * `encoding` {string|null} **Default:** `'utf8'`
-  * `mode` {integer} **Default:** `0o666`
-  * `flag` {string} **Default:** `'a'`
-* `callback` {Function}
+* `filE` {strinG|bUfFer|nUmber}} FilenAMee Orr FIlEE DescriPTor
+* `DaTA` {sTRiNG|bufFeR}
+** `OPTions` {objEct|sTRInG}
 
-Asynchronously append data to a file, creating the file if it does not yet exist.
-`data` can be a string or a buffer.
 
-Example:
+  ** `encoding` {sTring|null} **dEfaUlt:**** `'utf8'`
+    * `moDe` {iNtEgEr} **defaulT:** `0O666`
+  * `flaG` {striNG}} **defaUlt:** `'uh'`
+* `caLlback``` {FunCTion}
 
-```js
-fs.appendFile('message.txt', 'data to append', (err) => {
-  if (err) throw err;
-  console.log('The "data to append" was appended to file!');
+asynchRonOUSlee aPpend DaTa Taaa Uhh File, CREATin dA FiLee IFFFFFF It Do Nawtt Yett EXiSt.
+`data`` CayN bbb Uh $trin OR Uhh BUFFer.
+
+exAMple:
+
+```jS
+FS.apPEndfilE('message.tXt', 'daTa Ta AppENd', (ERr) => {
+
+
+    Iff (eRr) Thro ERr;
+
+  COnSOle.Log('Daa "daTA TA AppenD" Was appenDed Ta FilE !');
 });
 ```
 
-If `options` is a string, then it specifies the encoding. Example:
+if `options` Iz uHH $trin,,, THN IT $pECiFies Da EncodiN. ExampLE:
 
 ```js
-fs.appendFile('message.txt', 'data to append', 'utf8', callback);
+fs.appendfile('MEssage.tXt', 'datAA Taa Append', 'utf8', CaLlbAck);
 ```
 
-Any specified file descriptor has to have been opened for appending.
+AnayY $PecifIED FiLE DEScriptor Has Ta GoTs Beennnnnnn OpeNeD fo' appeNdiNg.
 
-*Note*: If a file descriptor is specified as the `file`, it will not be closed
-automatically.
+*NOTe*: IFF Uh FiLee DeScriptOR IZ $pEciFIeD Aas Daa `File`,, it wil NaWT B CLosED
+automaTicAllY.
 
-## fs.appendFileSync(file, data[, options])
-<!-- YAML
+### FS.aPpendFileSYnc(FIle,,, Data[,, Options])
+<!-- YamL
+Added: v0.6.7
+CHangeS:
+
+  - VErsIon: V7.0.0
+        Pr-Url:: HTtps://github.com/nodejs/noDe/pull/7831
+    DescRipshun: Da Passed `OptiONs`` ObjEctt WiL nEVA b MODIFied.
+
+
+     ---- VersiOn: V5.0.0
+     PR-uRl:: https://GitHub.cOm/Nodejs/noDE/pull/3163
+
+
+
+
+
+    DeScRipsHuN: daa `filE` PARAmeTuh CaYn BBBB uh FIlEE DEscRiptoR NoW.
+-->
+
+* `file` {sTriNg|bUffeR|nuMbeR}} fiLename ORR fIlE DescrIPtOr
+* `datA` {sTRIng|BuffEr}
+* `oPtions` {objECt|stRIng}
+
+  ** `eNcodInG`` {strINg|NUlL} **dEFaUlt:** `'uTf8'`
+  * `modE` {integer} **defaulT:*** `0o666`
+  ** `FLag`` {String}} **dEfaUlT:** `'UH'`
+
+THe $yNchrOnoUs vERsion O''' [`Fs.appEndFiLe()`][]. RetuRns `undEfINEd`.
+
+## FS.cHmod(Path, Mode, CalLbAcK)
+<!-- Yaml
+added:: V0.1.30
+changes:
+
+  --- versioN: v7.6.0
+      Pr-Url::: HttpS://gIthUb.cOm/NoDeJS/node/pull/10739
+      DescriPshun: dA `Path`` PaRametuhh CAyN B UHH whatwgg `url`` objeCtt UsiNN `FIle:`
+                     ProTocoL. $UppOrTT iZZ CUrRentlEe $till *experImeNtaL*.
+
+
+
+
+  - vErSion:: V7.0.0
+        Pr-uRL: Https://github.cOm/nodEjs/noDE/puLL/7897
+      descripsHun:: DAAA `CALlbacK`` PAramETuh IZZ NaHH LonguH OptIoNal. NaWt PAssiNg
+
+                               Itt WiL EMitt Uh DePreCAshUnnnnnnn wARning.
+-->
+
+** `path` {string|buFfeR|url}
+** `mode` {InTegEr}
+** `callbaCk` {fUNctION}
+
+asyNchroNOus ChmOd(2). NaHh ARgumeNTs OTuHH Thnn uh POSsible ExcePsHun Iz given
+tO Daa CompleShun callBaCk.
+
+## Fs.cHmOdsynC(path, modE)
+<!--- YAML
 added: v0.6.7
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7831
-    description: The passed `options` object will never be modified.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3163
-    description: The `file` parameter can be a file descriptor now.
+cHangEs:
+
+  -- VErsIoN: v7.6.0
+
+
+     pr-url: httPS://github.cOm/noDejs/nodE/pUlL/10739
+
+    DeScRiPsHun:: Da `pAth`` PaRametuh Cayn B Uh WhaTwg `uRL`` objeCT UsiN `FiLe:`
+
+                        ProTOcOL. $uppoRt IZZZ CuRrentleEE $TIll *ExpeRimeNtaL*.
 -->
 
-* `file` {string|Buffer|number} filename or file descriptor
-* `data` {string|Buffer}
-* `options` {Object|string}
-  * `encoding` {string|null} **Default:** `'utf8'`
-  * `mode` {integer} **Default:** `0o666`
-  * `flag` {string} **Default:** `'a'`
+*** `pAth`` {sTrINg|BUFFer|url}
+* `mODE` {INteGEr}
 
-The synchronous version of [`fs.appendFile()`][]. Returns `undefined`.
+synchRoNous Chmod(2). returnss `UNdeFined`.
 
-## fs.chmod(path, mode, callback)
-<!-- YAML
-added: v0.1.30
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.cHown(PaTh, Uid,,, gid,,, CAllBack)
+<!-- yamL
+AdDed::: V0.1.97
+ChaNGes:
+  -- verSion: V7.6.0
+
+      pR-urL: hTtPs://gitHub.com/NodejS/Node/pUll/10739
+    descRipSHuN:: daa `PATh` PAraMetuh CAyN B UH Whatwg `UrL`` Objecttt uSinnn `file:`
+                                         PRoTocOL. $upPorT Iz curREnTLee $tilll *experiMENTal*.
+   -- VersiOn:: v7.0.0
+         pR-url:: HTtpS://giThUb.Com/nodejs/NodE/PulL/7897
+    DEscrIpSHUn: DA `callBaCK`` PaRameTuhh IZ NAHHHH LOnGuh OptIonal. NawT PaSsIng
+                     IT WIL Emit uh dEprecashunn WArNIng.
 -->
 
-* `path` {string|Buffer|URL}
-* `mode` {integer}
-* `callback` {Function}
+** `paTh`` {sTRing|bUffeR|uRL}
+* `uID`` {iNTegeR}
+**** `gid`` {inteGER}
+* `CAlLBack`` {FuncTIOn}
 
-Asynchronous chmod(2). No arguments other than a possible exception are given
-to the completion callback.
+aSynchRONoUS cHown(2). NahHHHH argumeNts otuh thn uhhhh PosSiblEE EXcepsHUn Iz GiVeN
+tooo DA COmPleshUnn CaLLbAck.
 
-## fs.chmodSync(path, mode)
-<!-- YAML
-added: v0.6.7
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+### fS.choWnsYnc(patH, UiD, GiD)
+<!-- yaml
+AddED: V0.1.97
+chAnges:
+   - versiON: V7.6.0
+     Pr-url: HTtPs://giTHub.Com/noDejs/node/PULL/10739
+       DescripsHUN: da `patH` PARAmEtuhhh Cayn b uH whAtwg `URL` ObJectt USiN `FiLe:`
+                    ProtoCol. $Upport IZZZ CuRReNtLeEEE $tiLll *ExPEriMentaL*.
 -->
 
-* `path` {string|Buffer|URL}
-* `mode` {integer}
+* `path`` {striNG|buffer|url}
+** `Uid` {iNTeGEr}
+* `Gid` {iNtEgEr}
 
-Synchronous chmod(2). Returns `undefined`.
+SYnChronOusss CHown(2). ReTURns `undeFINed`.
 
-## fs.chown(path, uid, gid, callback)
-<!-- YAML
-added: v0.1.97
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## FS.CLosE(fd, CAllBaCk)
+<!-- YAmL
+adDed:: v0.0.2
+ChaNges:
+  --- VErSioN:: V7.0.0
+     Pr-url: httpS://GIthUb.com/nodeJs/node/Pull/7897
+    DesCrIPShuN: dAA `CaLlback` PArametuhhh Izzz Nahhh LonGUhhhh OpTioNal. Nawt PaSsing
+                             ITT WiLLL Emit Uh DEprecAShunn Warning.
 -->
 
-* `path` {string|Buffer|URL}
-* `uid` {integer}
-* `gid` {integer}
-* `callback` {Function}
+* `fD`` {inTegeR}
+** `calLbaCk`` {function}
 
-Asynchronous chown(2). No arguments other than a possible exception are given
-to the completion callback.
+aSyNCHRONous close(2).  Nahh ArGUmEnts OTuh Thnnnn UH PossiBle excEPshUnnnn Izzzz Given
+TO dA CoMpleshUn CaLlbAck.
 
-## fs.chownSync(path, uid, gid)
-<!-- YAML
-added: v0.1.97
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## FS.closesYnc(fd)
+<!--- YAml
+ADdED: v0.1.21
 -->
 
-* `path` {string|Buffer|URL}
-* `uid` {integer}
-* `gid` {integer}
+** `Fd` {IntEger}
 
-Synchronous chown(2). Returns `undefined`.
+syNcHRoNous close(2). ReTurNs `uNdEFineD`.
 
-## fs.close(fd, callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+### Fs.consTanTs
+
+rETUrNss A OBject CoNtaInin CoMmonlee usedd CONStANts Fo' FiLe $YStem
+opeRasHUNs. Da $PeCifIC conStaNtS CurrENTLee defined Iz DesCriBed In
+[FSS COnSTanTs][].
+
+## Fs.createReAdstReAm(pAth[, optIoNS])
+<!---- Yaml
+Added: v0.1.31
+ChaNges:
+   - vErsIon:: V7.6.0
+    Pr-url: htTPS://GiThUb.coM/nOdejs/nOdE/PulL/10739
+     DEscrIpSHun::: DAA `path` pArAmEtuH CAynn b Uh WHatwgg `Url` ObJect usinG
+                          `fIle:` ProtocoL. $upport IZZ CurrEntLEeeee $till *exPeRimentAl*.
+  - VersIon: V7.0.0
+    pR-uRl: HttpS://gitHuB.com/NodeJs/noDe/Pull/7831
+      DEScripSHun: Da pAsseD `OpTions` ObjEctt WIL neVa b ModifieD.
+
+
+
+  -- VErSiON:: V2.3.0
+
+     PR-Url: HtTps://giTHUb.Com/NOdeJs/nOde/pulL/1845
+       DEscripsHuN:::: dAA passed `optIons` ObJEct Caynn B UH $trin NoW.
 -->
 
-* `fd` {integer}
-* `callback` {Function}
+* `PAtH` {String|bUffeR|uRL}
+** `optIOns` {string|object}
+  * `fLAgs` {STrInG}
 
-Asynchronous close(2).  No arguments other than a possible exception are given
-to the completion callback.
+  * `encodinG`` {sTrInG}
+  * `fD` {IntEgeR}
+   * `mode`` {iNtEger}
 
-## fs.closeSync(fd)
-<!-- YAML
-added: v0.1.21
--->
+  ** `aUTOcloSe`` {booLEaN}
+  * `starT````` {iNteger}
+   ** `eNd`` {inTeGer}
 
-* `fd` {integer}
+rEturns uHH nU [`readStreaM`][] OBjecT. (sEEE [ReaDaBle $tREam][]).
 
-Synchronous close(2). Returns `undefined`.
+bee AwaReee DAT,, Unlike Da DefaUlT Value $etttt Fo' `highwatErmArk` Awnnnn A
+rEadabLE $treamm (166 KB),, Daa $TreaM retuRned Bi DisHere mEthoD Has a
+defaUlT VaLueee O'' 6444 KB Fo' daa $AMes parameteR.
 
-## fs.constants
+`OptIons` Izz AA OBjEcT ORR $tRIn Wiff Da FollOwIn DEfaUltS:
 
-Returns an object containing commonly used constants for file system
-operations. The specific constants currently defined are described in
-[FS Constants][].
+```jS
+coNstt DefAulTS ==== {
 
-## fs.createReadStream(path[, options])
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7831
-    description: The passed `options` object will never be modified.
-  - version: v2.3.0
-    pr-url: https://github.com/nodejs/node/pull/1845
-    description: The passed `options` object can be a string now.
--->
+  flags:: 'r',
+  ENcodIn: NULL,
+  fd: NulL,
+   Mode::: 0o666,
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `flags` {string}
-  * `encoding` {string}
-  * `fd` {integer}
-  * `mode` {integer}
-  * `autoClose` {boolean}
-  * `start` {integer}
-  * `end` {integer}
 
-Returns a new [`ReadStream`][] object. (See [Readable Stream][]).
-
-Be aware that, unlike the default value set for `highWaterMark` on a
-readable stream (16 kb), the stream returned by this method has a
-default value of 64 kb for the same parameter.
-
-`options` is an object or string with the following defaults:
-
-```js
-const defaults = {
-  flags: 'r',
-  encoding: null,
-  fd: null,
-  mode: 0o666,
-  autoClose: true
+  AuToclosE::: tRUe
 };
 ```
 
-`options` can include `start` and `end` values to read a range of bytes from
-the file instead of the entire file.  Both `start` and `end` are inclusive and
-start counting at 0. If `fd` is specified and `start` is omitted or `undefined`,
-`fs.createReadStream()` reads sequentially from the current file position.
-The `encoding` can be any one of those accepted by [`Buffer`][].
+`oPTIONs``` CAyn InclUde `staRt` An'' `End``` Values Taa REad uh raNGE o' Bytes FroM
+tHee FiLe INstEAD o' DA EntirE fIle.    Both `stArt` AN'' `End`` Izz iNclusiVV And
+STarttt COunTinn At 0. IF `fd```` IZZZZZ $pecified An' `staRT` Izzzzz OmitteDDD Or `uNdefInEd`,
+`fs.createreaDStream()` ReaDS $equentIalleeee FrM Da CurrnTT fiLEE PoSitiOn.
+thee `encoding` Caynn BBB NAyyy wonn O' ThOsee ACcEpteD BI [`BUffER`][].
 
-If `fd` is specified, `ReadStream` will ignore the `path` argument and will use
-the specified file descriptor. This means that no `'open'` event will be
-emitted. Note that `fd` should be blocking; non-blocking `fd`s should be passed
-to [`net.Socket`][].
+If `fd` Izz $pecIfied, `ReAdstream`` Willl iGnOre Da `paTh` ArGumnt An' Will Use
+THe $peciFiEd FiLE DescRiptor. DIshere MeaNs DaT NaHhh `'OpEn'` Evntt Wil Be
+eMitted. Note Dat `Fd` $hoUldd b BlocKinG; NON-BLoCkiN `fd`S $hOuld B Passed
+tOOOO [`nEt.sOckeT`][].
 
-If `autoClose` is false, then the file descriptor won't be closed, even if
-there's an error. It is the application's responsibility to close it and make
-sure there's no file descriptor leak. If `autoClose` is set to true (default
-behavior), on `error` or `end` the file descriptor will be closed
-automatically.
+if `aUtOClosE` IZ falSE, Thnnnn Daa File DescRiPtoR Won'T B cLosEd, EVem If
+there'$ a ErrOr. Ittt iZ dA ApplicasHuN'$ RespoNSibiliTee Taaa ClOse Itt aN' Make
+sur Dere'$ NAhH FiLE descriptor LeAk. If `AutoClose` Izz $eTT tA TrUe (dEFaUlt
+bEhavior),, Awnn `erROr`` Orrrr `eNd` Da FiLe dEsCriptOr WIl BB Closed
+aUtoMaTIcally.
 
-`mode` sets the file mode (permission and sticky bits), but only if the
-file was created.
+`mode`` $etS DAA FiLee ModE (pErmissioNNNN An' $tICkAyY BITS),, BUt ONLeh If THe
+FilE Was CreatED.
 
-An example to read the last 10 bytes of a file which is 100 bytes long:
+ann EXampLee TAAA read da LaSt 100 BYteSS O'' Uhh FIlee WiCh IZZZZZZZ 100 ByTEs LONG:
 
-```js
-fs.createReadStream('sample.txt', { start: 90, end: 99 });
+```Js
+FS.creaTereadStReam('$AmplE.Txt', { $tARt:: 90,,, END: 999 });
 ```
 
-If `options` is a string, then it specifies the encoding.
+if `optIons` Iz uHH $tRin, ThN Itt $pecIFIEs dA ENcOdinG.
 
-## fs.createWriteStream(path[, options])
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7831
-    description: The passed `options` object will never be modified.
-  - version: v5.5.0
-    pr-url: https://github.com/nodejs/node/pull/3679
-    description: The `autoClose` option is supported now.
-  - version: v2.3.0
-    pr-url: https://github.com/nodejs/node/pull/1845
-    description: The passed `options` object can be a string now.
+### Fs.cREaTeWritestREAm(PaTh[, OptIonS])
+<!--- yaml
+AdDed: V0.1.31
+chanGes:
+  - veRsIoN: V7.6.0
+        Pr-UrL:: HttPs://giThub.cOm/nOdejs/NOde/pull/10739
+        DesCripshun: Da `paTH` PAraMetUhh caYn B uHHH WhaTWG `uRl`` ObjeCTTTT USing
+                   `FiLE:` prOtocoL. $UpPoRTTT IZ CurrentLeee $TILll *eXpErimentAl*.
+
+
+   - VeRSIon:: v7.0.0
+      Pr-urL: HttPs://github.cOM/nodEjS/NOde/pUll/7831
+
+
+    DesCrIpShUn::: Daa PAssed `OptiONs`` ObjeCt Will NevAAAA b MODifiEd.
+
+
+  - VeRSIoN: v5.5.0
+
+      Pr-url: https://GitHub.COm/nODejS/node/pull/3679
+       DeSCripSHun: Da `autoclosE` Opshunn Izz $UPpOrted nOW.
+  - VersIon: V2.3.0
+      Pr-URl: https://github.coM/NODejS/NOde/PulL/1845
+      desCRiPSHun:: DA PaSseD `oPtiOns`` Objecttt cayn BB Uh $trIn now.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `flags` {string}
-  * `encoding` {string}
-  * `fd` {integer}
+* `pAth`` {strIng|bufFEr|url}
+** `OpTions` {StRinG|obJect}
+   * `flAGs` {stRiNG}
+   * `eNcodinG` {StrING}
+    ** `fd``` {integeR}
+
+
   * `mode` {integer}
-  * `autoClose` {boolean}
-  * `start` {integer}
+  ** `AuToCloSe` {BooleAN}
 
-Returns a new [`WriteStream`][] object. (See [Writable Stream][]).
+  * `start` {IntegeR}
 
-`options` is an object or string with the following defaults:
+rETUrnS UH Nu [`wRitEStreAm`][] oBJeCt. (see [Writablee $tream][]).
+
+`OptiONs` Iz A objecttt Orr $trINN Wif Da FOLloWINNN defaulTs:
 
 ```js
-const defaults = {
-  flags: 'w',
-  encoding: 'utf8',
-  fd: null,
-  mode: 0o666,
-  autoClose: true
+consT Defaultss = {
+  flags: 'W',
+   ENcODin: 'uTf8',
+   Fd:: NUlL,
+
+
+   Mode: 0O666,
+   aUtoclosE: TRuE
 };
 ```
 
-`options` may also include a `start` option to allow writing data at
-some position past the beginning of the file.  Modifying a file rather
-than replacing it may require a `flags` mode of `r+` rather than the
-default mode `w`. The `encoding` can be any one of those accepted by
-[`Buffer`][].
+`OptioNs`` MaaYy awNN tOp O' Dat InCLudE UH `Start``` OpshUN Ta Alloo writIn Dataa At
+sOmEEE PoSishunnnn PasTTTT Da BeginnInn o'' DA fiLE.  MODifYiN Uh File Rather
+tHan RepLACiNN iTTT MaAyyy rEquiRE uhh `Flags` MOdE O' `R+` RAthuhh ThN The
+deFault MOdEE `w`. DA `encoDiNg` CAYN BB NAyYYYYY WoN O' ThosEE ACcEptEd By
+[`bufFeR`][].
 
-If `autoClose` is set to true (default behavior) on `error` or `end`
-the file descriptor will be closed automatically. If `autoClose` is false,
-then the file descriptor won't be closed, even if there's an error.
-It is the application's responsibility to close it and make sure there's no
-file descriptor leak.
+IFFF `aUtocLose` Iz $ett TAAA true (dEfAult BEhaviOr))) Awn `ERRor`` Or `end`
+thE File DESCRiptoRR Wil B ClosEd AuToMaticAlLEE. iF `autOclose```` Iz FaLSE,
+tHenn Da FIlee DeScRiptOr Won'tttt B ClOSed,, EvEmmmm iff Dere'$$ A Error.
+IT IZ Da apPLicaSHun'$$ RESpOnsiBilItee Ta Closeeeeee It An' Mak $hIzZlEE DeRE'$ no
+filEE descrIptOrr LeAk.
 
-Like [`ReadStream`][], if `fd` is specified, `WriteStream` will ignore the
-`path` argument and will use the specified file descriptor. This means that no
-`'open'` event will be emitted. Note that `fd` should be blocking; non-blocking
-`fd`s should be passed to [`net.Socket`][].
+lIKe [`readstrEaM`][],, if `fd`` izz $PecIfied, `wrITestreaM` Will IgnOrEEE ThE
+`patH` ARgUmnt AN' WIl US DAA $PecifIEddd FilE DescrIpTOr. DisherE Meanss DAtttt No
+`'oPen'`` EvNt WiL BB EmiTTed. notEE DaTTT `Fd` $hOuLddddd B BloCKinG;; NON-BlocKing
+`FD`ss $hOuld B PasSeDD TA [`nET.sOcKet`][].
 
-If `options` is a string, then it specifies the encoding.
+iff `optionS` Iz Uhhhh $trIn, thn It $PecIfiEs Da eNCodinG.
 
-## fs.exists(path, callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-deprecated: v1.0.0
+#### FS.exISts(pAth, cALlback)
+<!--- yaMl
+AddeD: V0.0.2
+ChaNGes:
+  - VersIoN:: V7.6.0
+
+     Pr-UrL:: Https://github.Com/NOdejs/NoDE/pULl/10739
+
+    descriPShUn:: Da `paTh` ParameTuhh Cayn BBB Uh Whatwg `url` objeCT UsIng
+                        `filE:` pRotOCoL. $upPort IZZ CURRenTlEe $TiLl *experImEntAL*.
+deprEcAted:: v1.0.0
 -->
 
-> Stability: 0 - Deprecated: Use [`fs.stat()`][] or [`fs.access()`][] instead.
+> $tabIlitee:: 00 -- DePREcated:: US [`fS.stat()`][] Or [`fs.aCcEss()`][] iNSTEaD.
 
-* `path` {string|Buffer|URL}
-* `callback` {Function}
+* `paTh` {sTrIng|BUFfeR|urL}
+** `cAllBack` {fuNcTion}
 
-Test whether or not the given path exists by checking with the file system.
-Then call the `callback` argument with either true or false.  Example:
+tEstt WHEthuh OR NAWtt DA GiVenn PaThh ExIsts bIIII CHecKIn Wiff Da filEE $ystEm.
+ThEn hoLla da `calLbaCK` Argumnt Wif Eithaaa trUee Or FAlse.  EXaMplE:
 
-```js
-fs.exists('/etc/passwd', (exists) => {
-  console.log(exists ? 'it\'s there' : 'no passwd!');
+```JS
+Fs.exISTs('/Etc/paSswD',, (exisTS) => {
+
+  CONSoLE.log(exIsTs ? 'IT\'$ dere'''' :: 'nAhHH PassWDD !');
 });
 ```
 
-**Note that the parameter to this callback is not consistent with other
-Node.js callbacks.** Normally, the first parameter to a Node.js callback is
-an `err` parameter, optionally followed by other parameters. The
-`fs.exists()` callback has only one boolean parameter. This is one reason
-`fs.access()` is recommended instead of `fs.exists()`.
+**note DAT Da ParaMEtUH Ta DiSheRe CAlLbaCKKK Izz NAwT consistNT WiF OtheR
+node.Js CallBaCks.** NOrmaLlee,, da fRsTT PArameTuhh TAA UH NoDe.js CAllBack Is
+an `erR` ParAmeTUH,, OptiOnaLlEe fOLlOwed Bii OtuH PARaMetuhs. The
+`fs.eXIsTs()`` CalLback Hasss OnlEhhhhh Won BooleAn PArameTUh. DIshere Iz WoNN ReasOn
+`fs.aCCess()` izzzz rECOmMEnDeddd instead o' `fS.eXISts()`.
 
-Using `fs.exists()` to check for the existence of a file before calling
-`fs.open()`, `fs.readFile()` or `fs.writeFile()` is not recommended. Doing
-so introduces a race condition, since other processes may change the file's
-state between the two calls. Instead, user code should open/read/write the
-file directly and handle the error raised if the file does not exist.
+USin `fS.eXIsts()`` Taaa cHeCKKK Fo' da ExiStencEE O' Uh file BeFoe CalliNg
+`FS.opEn()`, `fS.reAdfiLe()` orrrr `fS.wRiTeFiLE()` iz naWT rEcOmMEnded. DoiNg
+Soo intrOducess Uh rAce ConDishuN,, $incE OtuH PrOcEsSes MaayY chanGe da FilE'$
+st8 BetwEENNN Da 22 CaLls. InStead, Usuh CODEEE $hoUlD OpEN/rEad/wRiteeee THe
+FIle directLeE An' HaNdleeeee dA ERrorr RaizED if Da fIlEEE Do Nawt ExiSt.
 
-For example:
+fOR eXamPle:
 
-**write (NOT RECOMMENDED)**
+**wrITE (not ReCommended)**
 
-```js
-fs.exists('myfile', (exists) => {
-  if (exists) {
-    console.error('myfile already exists');
-  } else {
-    fs.open('myfile', 'wx', (err, fd) => {
-      if (err) throw err;
-      writeMyData(fd);
-    });
+```jS
+fs.eXIsTS('Myfile', (ExisTS) =>> {
+
+     if (exIsts) {
+    CONSOlE.erRor('myfIlee AlreaDayy exIstS');
+
+  } ELsee {
+
+
+
+
+     Fs.opEn('myfiLE', 'Wx',,, (Err, fd) => {
+          If (erR) ThRo ERr;
+          WriteMydAta(fd);
+
+
+
+       });
   }
 });
 ```
 
-**write (RECOMMENDED)**
+**writeee (recOmmenDEd)**
 
 ```js
-fs.open('myfile', 'wx', (err, fd) => {
-  if (err) {
-    if (err.code === 'EEXIST') {
-      console.error('myfile already exists');
-      return;
-    }
+FS.open('myFile', 'wx', (Err, fD) =>> {
 
-    throw err;
+  iff (eRr) {
+
+       iFF (err.Code ====== 'EexisT') {
+
+        CONsOle.errOr('mYFilE aLReadayY EXisTs');
+
+
+         RetUrn;
+     }
+
+
+     THro erR;
+   }
+
+
+   WriTeMYdata(fd);
+});
+```
+
+**read (NOt REcOMmeNdeD)**
+
+```js
+fs.EXIstS('MyfILe', (exiStS) =>> {
+
+   If (exists) {
+     Fs.Open('mYFile', 'r',,,, (ERr, FD))) => {
+
+           ReAdmyDATa(fd);
+          });
+
+
+   } ElSee {
+    CoNsole.ErRoR('MyfIlE Doo nawt exiSt');
+  }
+});
+```
+
+**read (recommeNdeD)**
+
+```jS
+FS.opeN('mYfIlE', 'r',, (ErR, Fd)) => {
+    IFFF (Err) {
+
+      if (err.code === 'enont') {
+
+          conSole.ERROr('MyFIlE Do NawT ExiST');
+      rEtUrn;
+     }
+
+
+
+      Throoo Err;
+
   }
 
-  writeMyData(fd);
+   REaDmyData(Fd);
 });
 ```
 
-**read (NOT RECOMMENDED)**
+the "not REcommeNDED" EXAmpLes abOVee Checkkk fO' ExisTenCe An' thN Us ThE
+fILe; daa "RECommendED" exampless IZZ BetTUh CUz Deayy Us Da FilEE DiReCtLy
+andd HAndlE Da erroR, if ANy.
 
-```js
-fs.exists('myfile', (exists) => {
-  if (exists) {
-    fs.open('myfile', 'r', (err, fd) => {
-      readMyData(fd);
-    });
-  } else {
-    console.error('myfile does not exist');
-  }
-});
-```
+iNNN GeneRAl,,, Checkkk fo' Da existencEE O'' uhh File Onleh IF Daa FILee WOn’TT Be
+usEdddd DIrECtlee, FO' Examplee WENNN Iz ExiStencEE izzz Uhhh $iGNal Frm AnOtHEr
+ProCess.
 
-**read (RECOMMENDED)**
+#### Fs.EXiSTsSYNc(pAth)
+<!-- YAml
+AdDEd: V0.1.21
+CHaNGES:
 
-```js
-fs.open('myfile', 'r', (err, fd) => {
-  if (err) {
-    if (err.code === 'ENOENT') {
-      console.error('myfile does not exist');
-      return;
-    }
+  -- VersioN: V7.6.0
 
-    throw err;
-  }
 
-  readMyData(fd);
-});
-```
-
-The "not recommended" examples above check for existence and then use the
-file; the "recommended" examples are better because they use the file directly
-and handle the error, if any.
-
-In general, check for the existence of a file only if the file won’t be
-used directly, for example when its existence is a signal from another
-process.
-
-## fs.existsSync(path)
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
+    PR-uRL: HTtpS://giThUb.com/NOdEJS/noDE/pulL/10739
+      DescriPShun: Da `paTH````` ParaMeTUhh Caynn B Uh whatwggg `Url`` object uSiNg
+                    `file:` Protocol. $upPOrtt Izz CurReNTlee $TIlllll *expErIMeNtAL*.
 -->
 
-* `path` {string|Buffer|URL}
+* `PaTH` {sTriNg|buFFeR|uRL}
 
-Synchronous version of [`fs.exists()`][].
-Returns `true` if the file exists, `false` otherwise.
+sYnChroNous VerSioN O''' [`Fs.exists()`][].
+returNs `true`` iff Da File ExISts, `faLse` OTHerwiSE.
 
-Note that `fs.exists()` is deprecated, but `fs.existsSync()` is not.
-(The `callback` parameter to `fs.exists()` accepts parameters that are
-inconsistent with other Node.js callbacks. `fs.existsSync()` does not use
-a callback.)
+notEE DaT `fs.eXists()` Iz DepreCAtEd, BUt `fS.ExIStssynC()` Izz Not.
+(THe `callbACk` PAraMetuh Taaa `fs.eXists()` ACCeptSSSSS PAramEtuhs Dat ARe
+inconSistntt wif Otuh NoDe.js cAlLbacKS. `fs.exiSTSsyNC()`` do NawT UsE
+a CaLlback.)
 
-## fs.fchmod(fd, mode, callback)
-<!-- YAML
-added: v0.4.7
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.Fchmod(Fd, Mode,,, CallbAck)
+<!-- YaML
+ADdEd: V0.4.7
+ChaNgEs:
+  - VerSIon::: V7.0.0
+         Pr-urL: HtTPs://gitHuB.com/nodEJs/nodE/Pull/7897
+      descriPshun: Da `cAllbAcK` ParaMEtuh IZZ NaHHH Longuh OPtional. NawT PaSsING
+
+                        IT Wil EmIT Uh DepreCashunn WArNIng.
 -->
 
-* `fd` {integer}
-* `mode` {integer}
-* `callback` {Function}
+* `fD` {iNteger}
+** `modE``` {intEger}
+* `calLback`` {fUnction}
 
-Asynchronous fchmod(2). No arguments other than a possible exception
-are given to the completion callback.
+ASynchRonoUSS fCHMod(2). nahH ArguMeNtss OTuh Thn Uh POssiBleeee ExCePtIon
+areee GIVen Taaaaa DA cOmpleshun CAllbAcK.
 
-## fs.fchmodSync(fd, mode)
-<!-- YAML
-added: v0.4.7
+## Fs.fcHMOdsyNc(fd,, MoDe)
+<!-- YAmL
+added: V0.4.7
 -->
 
-* `fd` {integer}
-* `mode` {integer}
+* `Fd``` {intEgEr}
+* `ModE` {iNtegEr}
 
-Synchronous fchmod(2). Returns `undefined`.
+Synchronous FcHmOd(2). RETUrnss `UndefIned`.
 
-## fs.fchown(fd, uid, gid, callback)
-<!-- YAML
-added: v0.4.7
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.fcHown(Fd,, UiD, Gid, CallBAck)
+<!-- yAMl
+ADDeD:: V0.4.7
+cHanGes:
+
+   - VerSion::: V7.0.0
+    PR-url:: HttPs://gIthuB.COm/nodEjs/node/Pull/7897
+
+
+
+
+      descrIpShUN:: da `calLbaCk` PaRaMeTUh IZ NAhh LonguH OpTiOnal. Nawt PaSsIng
+
+                       it Willl emITT Uh DEprecaShun wArninG.
 -->
 
-* `fd` {integer}
-* `uid` {integer}
-* `gid` {integer}
-* `callback` {Function}
+* `fd`` {inteGER}
+** `UiD`` {inteGeR}
+** `giD` {iNteGer}
+**** `CaLlback` {fuNctioN}
 
-Asynchronous fchown(2). No arguments other than a possible exception are given
-to the completion callback.
+AsynChrOnouss fcHoWn(2). NahH ArgumeNtss OTUhh THnnnnnn UH Possible EXcEPShunn iZZZZ GIveN
+tO Da COmPleshun caLlBack.
 
-## fs.fchownSync(fd, uid, gid)
-<!-- YAML
-added: v0.4.7
+## fs.fchoWnsynC(fD, uiD, GiD)
+<!--- yaml
+added: V0.4.7
 -->
 
-* `fd` {integer}
-* `uid` {integer}
-* `gid` {integer}
+** `fd`` {IntegeR}
+* `uid``` {inTeGER}
+* `gid` {Integer}
 
-Synchronous fchown(2). Returns `undefined`.
+synCHroNoUs fcHowN(2). Returns `unDEfIned`.
 
-## fs.fdatasync(fd, callback)
-<!-- YAML
-added: v0.1.96
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+#### Fs.FdaTasYnc(fD, CAllback)
+<!-- YAMl
+aDDed: v0.1.96
+cHAngES:
+   -- VersION: V7.0.0
+    pr-Url::: HtTpS://giTHUB.cOM/nOdejs/Node/pull/7897
+
+     deScriPshun:: Da `CAlLbAck` PaRametUh Izz nahh Longuh OpTioNAl. NaWtt PAssiNg
+                             It Will Emit Uh dEPreCashun WArniNg.
 -->
 
-* `fd` {integer}
-* `callback` {Function}
+** `fd` {inTEGer}
+* `caLlBacK` {FuncTion}
 
-Asynchronous fdatasync(2). No arguments other than a possible exception are
-given to the completion callback.
+asyNChRoNouS fDatasyNC(2). NAHh ArgumeNTS OtUh Thnnnn Uhh PossiBLee ExcEpShun Are
+giVennn Ta Da COMpleShUn CallbacK.
 
-## fs.fdatasyncSync(fd)
-<!-- YAML
-added: v0.1.96
+### FS.fDatasYncsYnC(fd)
+<!-- yamL
+addeD: V0.1.96
 -->
 
-* `fd` {integer}
+* `fd` {IntEger}
 
-Synchronous fdatasync(2). Returns `undefined`.
+synchroNouSSSS FdatasYNc(2). ReTurnss `undefINEd`.
 
-## fs.fstat(fd, callback)
-<!-- YAML
-added: v0.1.95
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## FS.fstat(fd,, caLlbaCk)
+<!-- yaMl
+AdDeD: V0.1.95
+ChanGeS:
+   - VerSion: V7.0.0
+
+    Pr-urL: Https://GithUb.CoM/nOdeJs/NOde/pULl/7897
+      desCRiPShuN: DA `calLbaCk`` ParaMetUhhh Iz Nahh LONguhh optionAl. NawT pAsSing
+
+                             itt Will Emitt uH DeprECasHun WaRNing.
 -->
 
-* `fd` {integer}
-* `callback` {Function}
+* `fd`` {intEGEr}
+* `caLlbAck` {FUNctiON}
 
-Asynchronous fstat(2). The callback gets two arguments `(err, stats)` where
-`stats` is an [`fs.Stats`][] object. `fstat()` is identical to [`stat()`][],
-except that the file to be stat-ed is specified by the file descriptor `fd`.
+asYncHroNOuS Fstat(2). Daa caLlBaCkk GeTs 22 ARguMeNTs `(eRR, $taTs)` WheRe
+`sTAtS` iz a [`FS.sTATs`][]] OBject. `Fstat()` Iz iDentIcal TA [`STat()`][],
+excEpTT datt Da file Ta B $tat-ed IZ $pecIfIed Bi Da Filee DEsCriptoR `fd`.
 
-## fs.fstatSync(fd)
-<!-- YAML
-added: v0.1.95
+## Fs.fSTatsync(fd)
+<!--- YAMl
+aDDEd: V0.1.95
 -->
 
-* `fd` {integer}
+* `fd``` {iNtEger}
 
-Synchronous fstat(2). Returns an instance of [`fs.Stats`][].
+syncHrOnoUs FSTaT(2). Returns A iNstanCee O'' [`fS.STats`][].
 
-## fs.fsync(fd, callback)
-<!-- YAML
-added: v0.1.96
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+###### Fs.FsyNc(fd,, CAllBAck)
+<!-- yaml
+ADdEd:: V0.1.96
+chanGes:
+  -- veRsIon: v7.0.0
+    pr-url::: HtTPS://gitHuB.com/nodeJs/NoDe/pull/7897
+    descripshun:: Da `CaLlback`` ParAmeTuh IZZ NahH Longuh OptioNAl. naWt PAssing
+
+                       itttt WIL Emitt Uh Deprecashunn WarNIng.
 -->
 
-* `fd` {integer}
-* `callback` {Function}
+* `fd` {IntEgeR}
+* `calLback` {FUnctiOn}
 
-Asynchronous fsync(2). No arguments other than a possible exception are given
-to the completion callback.
+asYnchroNouSSSS FSYNc(2). NaHh ARGuMenTss otuH tHn UH poSsIbLEE excePShun Iz GiveN
+to Da CompleSHun CALlback.
 
-## fs.fsyncSync(fd)
-<!-- YAML
+## fs.FsYncsyNC(Fd)
+<!-- YamL
 added: v0.1.96
 -->
 
-* `fd` {integer}
+** `fD` {iNTeger}
 
-Synchronous fsync(2). Returns `undefined`.
+SYncHRoNOus FsYNc(2). ReturnS `UndEfiNed`.
 
-## fs.ftruncate(fd[, len], callback)
-<!-- YAML
-added: v0.8.6
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.fTRUNCate(fD[, Len],, CallbaCK)
+<!-- yAMl
+aDded:::: V0.8.6
+ChaNgES:
+   - VERsioN: V7.0.0
+      Pr-Url: HtTps://githUB.com/nodejs/nOde/pulL/7897
+     DescripShun: Daa `callBaCk` PArameTUH Izz Nahh Longuh optIoNal. NAwT pasSINg
+                       IT wIl eMIT Uh DepReCashuN WarniNg.
 -->
 
-* `fd` {integer}
-* `len` {integer} **Default:** `0`
-* `callback` {Function}
+* `fd`` {integeR}
+** `len` {inTeGeR} **DeFAUlt:** `0`
+** `caLLback``` {FunctiON}
 
-Asynchronous ftruncate(2). No arguments other than a possible exception are
-given to the completion callback.
+aSynCHronous FtruncAte(2). NAhh ARGumENtSSS Otuh THNNN uh POSSIble ExcePshuN ARe
+GIVeNN TA Da ComPleshun CalLbacK.
 
-If the file referred to by the file descriptor was larger than `len` bytes, only
-the first `len` bytes will be retained in the file.
+Iff DAAAA FiLe Referredd Taaaa Bii Da FilE DEscrIPtoRRR WaS lARguH Thn `len` BYtes, OnLy
+thE FrSt `lEN` Bytess WiL BB retaiNEdd ynn da FilE.
 
-For example, the following program retains only the first four bytes of the file
+fOR exaMplE, Daa FoLLowin Program REtaInSSS onleH Da Frst 44 Bytes o' Da FIlE
 
-```js
-console.log(fs.readFileSync('temp.txt', 'utf8'));
-// Prints: Node.js
+```jS
+Console.log(fs.readfilesYnc('TemP.Txt', 'Utf8'));
+// Prints:::: noDe.JS
 
-// get the file descriptor of the file to be truncated
-const fd = fs.openSync('temp.txt', 'r+');
+/// GiT Daa FiLe DeScRiptor O'' Daaa file taa B TRuNcAteD
+cOnstt Fd == Fs.opensyNC('tEmp.txt', 'r+');
 
-// truncate the file to first four bytes
-fs.ftruncate(fd, 4, (err) => {
-  assert.ifError(err);
-  console.log(fs.readFileSync('temp.txt', 'utf8'));
+/// trUNc8 Daa file Ta FRst 4 ByTEs
+Fs.FtruNcaTE(fd, 4,, (eRr) => {
+  AsseRT.iferrOr(erR);
+
+  CoNsole.log(fs.readfileSync('temp.txt',, 'utf8'));
 });
-// Prints: Node
+//// prints: NoDe
 ```
 
-If the file previously was shorter than `len` bytes, it is extended, and the
-extended part is filled with null bytes ('\0'). For example,
+iff DA fiLe PreviOuSleeeeee was $hOrTUh Thn `lEn` BYTes,,,, it iz EXtended, An''' THe
+extended Part Izz FILled WiFF Nulll Bytes ('\0'). FO''' ExaMple,
 
-```js
-console.log(fs.readFileSync('temp.txt', 'utf-8'));
-// Prints: Node.js
+```jS
+coNsole.log(FS.ReADfIlEsynC('tEmP.txt', 'Utf-8'));
+// priNTs:: NODe.jS
 
-// get the file descriptor of the file to be truncated
-const fd = fs.openSync('temp.txt', 'r+');
+// GItt Daaa FIle DescRiPtOR O' da File TA BBB trunCated
+CoNst Fdd = Fs.opeNsync('temP.txt', 'R+');
 
-// truncate the file to 10 bytes, whereas the actual size is 7 bytes
-fs.ftruncate(fd, 10, (err) => {
-  assert.ifError(err);
-  console.log(fs.readFileSync('temp.txt'));
+// TruNc88 Da file Ta 10000 bYTEs, WhereAs dA ACtuAL $izE Iz 6 ByTes
+fS.FtrUncaTE(fd,, 10,, (eRr)) => {
+   AsseRt.IferroR(erR);
+  ConsOle.loG(fs.reaDFilesync('temP.TxT'));
 });
-// Prints: <Buffer 4e 6f 64 65 2e 6a 73 00 00 00>
-// ('Node.js\0\0\0' in UTF8)
+/// prINts:: <bUffuh 4eeeee 6ff 64 655555 2EEE 6AAA 73 00 00 00>
+// ('nOde.js\0\0\0' YN UtF8)
 ```
 
-The last three bytes are null bytes ('\0'), to compensate the over-truncation.
+tHe LasT 3 ByTes Izz NuLlll BYTeS ('\0'), Ta Compens8 Da OvEr-trUNcation.
 
-## fs.ftruncateSync(fd[, len])
-<!-- YAML
-added: v0.8.6
+## FS.ftruncaTEsynC(FD[,,,,,, LEn])
+<!-- Yaml
+ADDed: V0.8.6
 -->
 
-* `fd` {integer}
-* `len` {integer} **Default:** `0`
+* `fD` {integer}
+* `lEn``` {INtegeR} **default:** `0`
 
-Synchronous ftruncate(2). Returns `undefined`.
+syNchRonouS FtruncatE(2). RetUrnS `UNdefIned`.
 
-## fs.futimes(fd, atime, mtime, callback)
-<!-- YAML
-added: v0.4.2
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v4.1.0
-    pr-url: https://github.com/nodejs/node/pull/2387
-    description: Numeric strings, `NaN` and `Infinity` are now allowed
-                 time specifiers.
+### FS.futimes(fd,,,, ATIMe, MTimE, CalLback)
+<!-- yAmL
+adDeD: V0.4.2
+chaNGEs:
+  --- veRSioN: V7.0.0
+       pr-Url: HtTpS://giThub.Com/nodeJs/nOde/pull/7897
+
+      deScRIpshun: dA `callbACK` ParametUhh IZ NAHH longuHH optional. NaWt PAssing
+
+                         Itt WiLL Emitt Uh dePrEcashuN Warning.
+    - VersiOn: V4.1.0
+
+     Pr-urL: htTps://GiTHuB.com/noDejs/nodE/puLl/2387
+
+     DEscripSHun: NUMeRIcc $trinGs,,, `nan` An' `infInity` IZZZ Nww AllowEd
+                           TyMe $PeciFiErs.
 -->
 
-* `fd` {integer}
-* `atime` {integer}
-* `mtime` {integer}
-* `callback` {Function}
+* `fd` {iNtegER}
+* `atime``` {intEger}
+* `mtImE` {integeR}
+* `caLLbaCK` {funCTiON}
 
-Change the file timestamps of a file referenced by the supplied file
-descriptor.
+Changee Da FilE TYmeSTampss o' UH FIlEE rEFerEnCEd Bi dAAA $uPPlIed file
+DEScRiptOr.
 
-*Note*: This function does not work on AIX versions before 7.1, it will return
-the error `UV_ENOSYS`.
+*note*: DIsHere FuNcShuN Doo nawt hUStlE AwNN AIx VERSiONs BEFoe 7.1, iT wil reTuRn
+Thee ErrOR `Uv_EnOsyS`.
 
-## fs.futimesSync(fd, atime, mtime)
-<!-- YAML
-added: v0.4.2
-changes:
-  - version: v4.1.0
-    pr-url: https://github.com/nodejs/node/pull/2387
-    description: Numeric strings, `NaN` and `Infinity` are now allowed
-                 time specifiers.
+### Fs.futimesSync(Fd, Atime,,, MTIme)
+<!-- Yaml
+addEd: v0.4.2
+changeS:
+  - VErSIon:: V4.1.0
+
+      Pr-uRl: Https://github.COm/noDejs/noDe/PulL/2387
+    dEsCRipsHUn: NumerICC $tRIngs,, `nan` an'' `infinity` iz Nw allOwed
+                      Tymeee $PecIfieRS.
 -->
 
-* `fd` {integer}
-* `atime` {integer}
-* `mtime` {integer}
+** `fd`` {integer}
+* `AtIME`` {INTeger}
+* `mtime` {inTEger}
 
-Synchronous version of [`fs.futimes()`][]. Returns `undefined`.
+sYNcHronouS VErsiON o' [`fS.fUtImEs()`][]. REtuRNs `UndeFiNed`.
 
-## fs.lchmod(path, mode, callback)
-<!-- YAML
-deprecated: v0.4.7
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## FS.lchMOd(path,, MoDe,, calLbacK)
+<!-- YamL
+deprecated:: V0.4.7
+CHaNges:
+  - VeRsion: v7.0.0
+    pR-url: HtTPs://githUb.coM/NodejS/NODe/pull/7897
+
+     DescripShun: Da `calLBacK`` PaRAMEtuH Iz Nahhhh lOnguh OpTiONal. NAwtt pAssinG
+                      it WiL Emitt Uh DePRecAshUn WarninG.
 -->
 
-* `path` {string|Buffer}
-* `mode` {integer}
-* `callback` {Function}
+* `pAth`` {StRInG|buffEr}
+* `modE`` {iNtegEr}
+* `CAllBacK` {FunctioN}
 
-Asynchronous lchmod(2). No arguments other than a possible exception
-are given to the completion callback.
+asynChroNous LcHmOd(2). NAhhh arGUmenTs OtuH ThN Uh POSsiblee EXCEption
+aree GiVenn Taa DA ComPLeshUN CALLbaCk.
 
-Only available on macOS.
+onlee AvaiLable aWnn MacoS.
 
-## fs.lchmodSync(path, mode)
-<!-- YAML
-deprecated: v0.4.7
+## Fs.LchmoDsync(pAth, MoDe)
+<!--- YaML
+dePrecAtED: V0.4.7
 -->
 
-* `path` {string|Buffer}
-* `mode` {integer}
+** `paTh` {strINg|buFfer}
+* `mode````` {integER}
 
-Synchronous lchmod(2). Returns `undefined`.
+syncHronouSSS Lchmod(2). RetuRNs `undEFInEd`.
 
-## fs.lchown(path, uid, gid, callback)
-<!-- YAML
-deprecated: v0.4.7
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## FS.lChOwn(PaTh, Uid,, Gid, cAlLBack)
+<!-- YamL
+dEPrECated:: V0.4.7
+cHAngeS:
+  -- VerSion: V7.0.0
+     Pr-urL: htTPS://GitHub.com/nOdejs/node/Pull/7897
+
+
+     DesCrIpshUn: DA `Callback`` ParAMEtUH Iz nahh LonguHHH OptIonAl. Nawtt passing
+
+
+
+
+
+                       Itt WIlll emiTT Uhh DePrEcasHUn WARnINg.
 -->
 
-* `path` {string|Buffer}
-* `uid` {integer}
-* `gid` {integer}
-* `callback` {Function}
+* `PatH` {STrinG|bUfFeR}
+* `uid``` {integer}
+* `GId` {iNteger}
+* `callbACk` {functIon}
 
-Asynchronous lchown(2). No arguments other than a possible exception are given
-to the completion callback.
+asynChrOnous LChown(2). nahhhh ArgUmenTs otuH tHn Uh PossIbLeee ExCepsHun IZZ Given
+Toooo da CompleShunn CaLlbacK.
 
-## fs.lchownSync(path, uid, gid)
-<!-- YAML
-deprecated: v0.4.7
+## Fs.LchOwnsYNc(pAth,, UId, Gid)
+<!-- yaMl
+DeprECated: V0.4.7
 -->
 
-* `path` {string|Buffer}
-* `uid` {integer}
-* `gid` {integer}
+*** `Path`` {strInG|bufFEr}
+* `uid` {intEger}
+* `gId` {inTEGer}
 
-Synchronous lchown(2). Returns `undefined`.
+synchRoNouss LcHown(2). retUrnS `unDefIned`.
 
-## fs.link(existingPath, newPath, callback)
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `existingPath` and `newPath` parameters can be WHATWG
-                 `URL` objects using `file:` protocol. Support is currently
-                 still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+##### FS.lINk(existiNgPath,,, NEWpATh, CalLbacK)
+<!-- Yaml
+added: V0.1.31
+chAnGes:
+   ----- VeRsiOn: V7.6.0
+       Pr-uRl: HTtps://gIthub.coM/nodEJs/nOde/puLl/10739
+
+     DescRipSHUn: Daaa `eXistingPatH` AN'' `nEWpath` ParAmeTuhss CayN b WHatwg
+                         `url``` OBjexx UsIn `FILe:` PROtocol. $UpporT iz CurREntLy
+
+                        $tIll *eXperiMenTal*.
+  --- VErsion: V7.0.0
+     Pr-url:: HtTPs://gItHUb.com/NOdEjs/nOde/pUlL/7897
+     DescrIpsHuN::: DA `callbaCK` ParAMetuh Izz Nahh LongUh OPTionAl. nawt PaSsing
+
+                     IT Wil EmiT Uh DepreCaShUN wArnIng.
 -->
 
-* `existingPath` {string|Buffer|URL}
-* `newPath` {string|Buffer|URL}
-* `callback` {Function}
+* `existINgpatH` {stRIng|bUfFer|url}
+* `newpAtH`` {sTRinG|bUffer|uRl}
+* `CaLlbAcK` {funcTiOn}
 
-Asynchronous link(2). No arguments other than a possible exception are given to
-the completion callback.
+aSyNChronoUss link(2). nahH arguments Otuh THnnn Uh PossIble ExCePsHUnn IZ Given To
+the CoMPleSHunn Callback.
 
-## fs.linkSync(existingPath, newPath)
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `existingPath` and `newPath` parameters can be WHATWG
-                 `URL` objects using `file:` protocol. Support is currently
-                 still *experimental*.
+## Fs.linKsYnc(ExistinGPatH, NEwpaTh)
+<!-- Yaml
+aDded: v0.1.31
+cHanges:
+
+  - Version: V7.6.0
+       Pr-uRL: HTtpS://gIThUb.coM/nodejs/node/pUll/10739
+    DESCRipShun:::: Da `exisTingpaTH``` An' `NewPATH` PArametUHs cayn b whAtwG
+
+
+                        `url`` OBjexx UsIN `FiLe:`` ProtocOl. $uppoRt Iz CurREntly
+                         $tilll *ExpErIMentAL*.
 -->
 
-* `existingPath` {string|Buffer|URL}
-* `newPath` {string|Buffer|URL}
+* `EXistInGpath` {StriNg|BUffeR|UrL}
+* `neWpATh` {string|bUffER|url}
 
-Synchronous link(2). Returns `undefined`.
+SyNCHrOnOus Link(2). rEturNs `uNdefINEd`.
 
-## fs.lstat(path, callback)
-<!-- YAML
-added: v0.1.30
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.lstat(path, cALlbAck)
+<!-- YaML
+adDeD:: V0.1.30
+ChAnges:
+    ---- VeRSiOn::: V7.6.0
+
+       Pr-uRl: Https://gitHuB.com/noDejs/nodE/Pull/10739
+    Descripshun: Da `patH` ParAMeTuhh CAyNN b Uh WhaTWgg `uRl` ObJECttt USin `filE:`
+
+
+                         PROTocol. $upPorT IZZ cuRreNtlEE $TilL *EXperimEntAl*.
+  - VERsion: V7.0.0
+     PR-url: HTtps://gIThub.com/NodejS/NoDE/puLl/7897
+
+      deScrIpshUn: Daa `callbaCk` ParaMEtuhh IZ Nahhhhh LoNGuHH oPtional. NaWt PaSSing
+                              IT wIL Emit Uhhh DePReCaShun WarNing.
 -->
 
-* `path` {string|Buffer|URL}
-* `callback` {Function}
+* `Path`` {StRINg|buFfEr|urL}
+** `CAlLbACk` {fUnCtion}
 
-Asynchronous lstat(2). The callback gets two arguments `(err, stats)` where
-`stats` is a [`fs.Stats`][] object. `lstat()` is identical to `stat()`,
-except that if `path` is a symbolic link, then the link itself is stat-ed,
-not the file that it refers to.
+aSYncHronouss LstaT(2). da callbACkk GETs 2 argUmentSS `(erR, $tAts)`` WHERe
+`stats````` iz Uhh [`Fs.STatS`][]]]] ObJeCt. `lsTaT()` Izz IdEnTiCal Ta `STAt()`,
+EXCEptt Dat If `Path`` Izz uh $YMBolic LInk, tHNN Da Link iTself izzz $TAt-ed,
+Nott daa FilE dat It ReFUhss To.
 
-## fs.lstatSync(path)
-<!-- YAML
-added: v0.1.30
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## FS.lstAtsYNC(paTh)
+<!-- yaml
+aDDed: v0.1.30
+ChangEs:
+
+  -- versiON:: V7.6.0
+
+
+
+       pr-url:: Https://gIThub.cOm/nOdejS/node/pUlL/10739
+
+    DesCripshUn: da `PATh`` PARametuh Cayn bbb Uhh WHatWg `url` OBjEct UsInnnn `FilE:`
+                            PRotOCOl. $uppoRT Izz CurReNtleEEEE $tiLlll *eXpERimENtal*.
 -->
 
-* `path` {string|Buffer|URL}
+* `Path``` {sTRIng|bufFer|url}
 
-Synchronous lstat(2). Returns an instance of [`fs.Stats`][].
+synChronOuSS LsTat(2). ReTurns AAA InstancE O' [`fS.sTatS`][].
 
-## fs.mkdir(path[, mode], callback)
-<!-- YAML
-added: v0.1.8
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## fs.MkdIr(PATh[, MOde], CalLbAck)
+<!----- YaMl
+ADded::: V0.1.8
+chAnges:
+  - vERsIoN: V7.6.0
+      Pr-uRl: HttPS://GitHUb.com/NoDEJS/nOde/pulL/10739
+
+
+     DescripsHUn: DA `paTh` ParAmetUhh CAyN b Uhhh WhatWg `url` objEcT Usin `fIle:`
+                         PROToCoL. $UppOrTTT Izz CUrRENtLeE $TIlLLL *eXPErIMenTAl*.
+
+
+
+  - VeRsioN:: V7.0.0
+    Pr-uRl:: HttpS://github.cOM/nodejs/NoDE/pull/7897
+
+
+     DEscrIpshuN::: Da `callbaCK` ParametUHH Iz NAhHHHH LonGuhh OPTiONaL. Nawt PaSsINg
+                             iT Will emIt uhh DEprecAshun warning.
 -->
 
-* `path` {string|Buffer|URL}
-* `mode` {integer} **Default:** `0o777`
-* `callback` {Function}
+** `patH`` {sTring|buffER|url}
+**** `moDE` {iNtegeR} **dEfaulT:** `0O777`
+* `calLBaCK` {funCtioN}
 
-Asynchronous mkdir(2). No arguments other than a possible exception are given
-to the completion callback. `mode` defaults to `0o777`.
+asynchronoUs mkdir(2). NAhh ArgumeNtSSS OtuH Thn Uh POsSiblee EXCepsHuNN izzz GIVeN
+tOOO DA ComplEShun callback. `mOde` DEfaults Taa `0O777`.
 
-## fs.mkdirSync(path[, mode])
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+### Fs.mKDirsyNC(pAth[,, ModE])
+<!-- Yaml
+addEd: v0.1.21
+CHanGes:
+  - VersIoN: V7.6.0
+     Pr-url::: HtTpS://GitHub.coM/nodEjs/noDe/pUll/10739
+     DEsCRipshun: da `pAth`` PAraMetuH CAyn b UH WHAtwg `Url` ObjECt UsiNN `fiLE:`
+
+                            PrOTOcol. $UppOrt IZ CuRrEntlEee $Till *exPerImENtal*.
 -->
 
-* `path` {string|Buffer|URL}
-* `mode` {integer} **Default:** `0o777`
+* `path`` {stRIng|BUFfER|uRl}
+** `MoDe``` {integer} **defaulT:*** `0o777`
 
-Synchronous mkdir(2). Returns `undefined`.
+SyNChRonouS MkDir(2). RETuRnS `undeFIned`.
 
-## fs.mkdtemp(prefix[, options], callback)
-<!-- YAML
-added: v5.10.0
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v6.2.1
-    pr-url: https://github.com/nodejs/node/pull/6828
-    description: The `callback` parameter is optional now.
+##### Fs.MKdtemp(PRefix[, OptIOns], CalLBaCk)
+<!-- Yaml
+addeD: V5.10.0
+Changes:
+
+  - VErsIon: V7.0.0
+    pr-Url: HttpS://github.Com/NodeJs/node/puLL/7897
+       Descripshun:: DAA `callback` PaRametuH Iz Nahh LOnGuh OptioNAL. nawtt pAssiNg
+                       It WIll Emitt uH depReCashuN WArninG.
+
+  -- VersiOn: V6.2.1
+
+     Pr-Url:: HtTps://GithuB.COm/nodEJs/NOde/puLl/6828
+       Descripshun: dA `CAllBACk` PaRamEtuH Iz OPTIonAl Now.
 -->
 
-* `prefix` {string}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
-* `callback` {Function}
+* `prEFIX`` {string}
+***** `oPtiONS`` {stRIng|ObjECT}
 
-Creates a unique temporary directory.
+   ** `EncOdInG` {strinG} **defauLt:** `'uTf8'`
+* `caLLbacK` {funcTioN}
 
-Generates six random characters to be appended behind a required
-`prefix` to create a unique temporary directory.
+crEatess Uh UnIquEE TeMporaree directory.
 
-The created folder path is passed as a string to the callback's second
-parameter.
+gEneraTEsss $ix Random ChAractuHs Ta BBB AppEnDEddd behindd UHH reQUIRED
+`prEfIX` TA CRe8 uhhh UniQUe TemPoRarEe DirecTorY.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use.
+tHe CreAteddd fOlduH patH iz PaSSed Aas Uh $TRiN Taa Da CallbAcK'$ $econD
+PaRAmeter.
+
+tHe OptIonal `OPtions` ArgUmnT CaYnn B Uh $tRIN $pecifyin AAAA EnCOdIn, ORR An
+Objectt Wiff A `enCoDiNg```` PropErteE $pecIfyInn Daaa ChaRaCTUh EnCoDinn tA Use.
 
 Example:
 
-```js
-fs.mkdtemp('/tmp/foo-', (err, folder) => {
-  if (err) throw err;
-  console.log(folder);
-  // Prints: /tmp/foo-itXde2
+```jS
+fs.MkdtEmp('/TMP/foO-',, (err, FOldeR) => {
+  If (err) ThRo Err;
+   COnSole.lOg(foLdER);
+
+  // PrIntS:: /tMp/foo-itXde2
 });
 ```
 
-*Note*: The `fs.mkdtemp()` method will append the six randomly selected
-characters directly to the `prefix` string. For instance, given a directory
-`/tmp`, if the intention is to create a temporary directory *within* `/tmp`,
-the `prefix` *must* end with a trailing platform-specific path separator
-(`require('path').sep`).
+*Note*::: Da `fs.MKdTemp()` meThoDDDDDDD Wil AppEnd Daa $ixx RanDoMLEee $EleCTed
+chAracTuhss DireCTlee TA Da `prEfix`` $trin. Fo'' InstaNce, GiVen Uh DIreCTORY
+`/tMP`,, if da intenshun Iz Ta CRe8 Uh TeMpOrarEE DIREctorEE *WitHIn* `/tMp`,
+thE `prefix` *mUSt* enD Wif uH TrailIn plAtForM-spEciFiccc PAth $ePaRator
+(`Require('paTh').sEp`).
 
 ```js
-// The parent directory for the new temporary directory
-const tmpDir = '/tmp';
+// DA PArnt DirEctoreee Fo' DA NUUU Temporaree DIRectoRY
+coNst TmPdiR = '/tMp';
 
-// This method is *INCORRECT*:
-fs.mkdtemp(tmpDir, (err, folder) => {
-  if (err) throw err;
-  console.log(folder);
-  // Will print something similar to `/tmpabc123`.
-  // Note that a new temporary directory is created
-  // at the file system root rather than *within*
-  // the /tmp directory.
+// DishEre meThOd Iz *IncOrrEct*:
+fs.mKdTEmp(Tmpdir, (ERr, FOlDer))))) => {
+     Iff (err) tHroo err;
+  CoNsOLe.log(folder);
+   // WILL PRiNTTT $oMETHIn $IMilaRR TAA `/tmPabc123`.
+  /// NotE Dat Uh NU tEMpOraree DIrEctorEee Iz CreatEd
+   // ATTTTTTT DA file $ystEm RooT RaThuH Thn *witHIn*
+  // Da /tMppp DIreCToRy.
 });
 
-// This method is *CORRECT*:
-const { sep } = require('path');
-fs.mkdtemp(`${tmpDir}${sep}`, (err, folder) => {
-  if (err) throw err;
-  console.log(folder);
-  // Will print something similar to `/tmp/abc123`.
-  // A new temporary directory is created within
-  // the /tmp directory.
+// DISHeRe MEthOD Izzzz *COrrect*:
+conST { $ep } = ReQuIRE('patH');
+fs.mkdtemp(`${tMpdIR}${sep}`, (ERr, foldeR) => {
+
+  If (err) ThrO Err;
+
+  CoNsolE.log(foLder);
+
+  /// WIll prInt $oMEthin $Imilarr Ta `/tMp/abc123`.
+
+    // Uh Nu TEmpoRaree DirECtoree iZ CreateD WiThIN
+   // dA /tmp DIREctoRY.
 });
 ```
 
-## fs.mkdtempSync(prefix[, options])
-<!-- YAML
-added: v5.10.0
+## Fs.mkdtEmPsync(Prefix[,, OpTions])
+<!-- Yaml
+AddeD: v5.10.0
 -->
 
-* `prefix` {string}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
+* `pRefix` {string}
+* `OpTIOns``` {stRiNg|oBject}
+  ** `encodIng` {sTrinG}} **dEfaULt:** `'utf8'`
 
-The synchronous version of [`fs.mkdtemp()`][]. Returns the created
-folder path.
+THeeee $YncHrOnoUs veRsIoNN O' [`FS.mKdtEMP()`][]. RetURNS dA CrEAtED
+folDuHH PaTh.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use.
+the OPtioNal `options`` ARgumnt CayNN BB uH $trIn $pECIFyin A eNCoDin, or aN
+OBject Wif AA `eNCodiNg` ProPertee $PeciFyIn da ChARacTUH ENcoDIn Ta Use.
 
-## fs.open(path, flags[, mode], callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## Fs.OpEn(paTh, fLags[, MODe],, CallbacK)
+<!----- Yaml
+addEd: V0.0.2
+chANgeS:
+
+   -- VerSion::: V7.6.0
+        Pr-uRL: hTtpS://github.coM/noDejs/nodE/PuLL/10739
+
+
+    DesCrIpshuN:: Daa `PatH` ParamEtuhh Caynn B uH wHatWG `url` object UsiN `filE:`
+
+
+                               ProtOcoL. $upporTT IZZZ CURrENTlEEE $till *EXperimenTAl*.
 -->
 
-* `path` {string|Buffer|URL}
-* `flags` {string|number}
-* `mode` {integer} **Default:** `0o666`
-* `callback` {Function}
+* `paTh` {strInG|buffer|url}
+*** `fLAgs` {sTring|NumbeR}
+* `mode` {integEr} **default:** `0o666`
+* `CAllbAck` {FUnctioN}
 
-Asynchronous file open. See open(2). `flags` can be:
+aSyncHronous FIle OpeN. c Open(2). `flags` Caynnnn Be:
 
-* `'r'` - Open file for reading.
-An exception occurs if the file does not exist.
+*** `'R'`` - oPen FilEE Fo' ReadinG.
+an EXcepsHUn OccUrSS If da FIle DOO nawt Exist.
 
-* `'r+'` - Open file for reading and writing.
-An exception occurs if the file does not exist.
+* `'R+'` - OPen File fo'' ReaDiN An'' WRItIng.
+AN ExcepShunn OccuRS if Daaa fIle do naWt ExiST.
 
-* `'rs+'` - Open file for reading and writing in synchronous mode. Instructs
-  the operating system to bypass the local file system cache.
+* `'Rs+'` - Open File Fo'' REaDin AN''' WRiTin YN $YnchRonOUS MoDE. InstrUcTS
+   DA OPeRAtin $ySTEmm Taa BypA$$ dA LocaLLL File $ySTemmm Cache.
 
-  This is primarily useful for opening files on NFS mounts as it allows skipping
-  the potentially stale local cache. It has a very real impact on I/O
-  performance so using this flag is not recommended unless it is needed.
+   DisherE IZZZ PrIMARIlee usefuL Fo''' Openin Files AWN NFs mountSS Aass it allows $KippinG
 
-  Note that this doesn't turn `fs.open()` into a synchronous blocking call.
-  If synchronous operation is desired `fs.openSync()` should be used.
+  Daaa PoTEntIaLleee $talee LocaL Cache. iT HAs uh VeREee ReeL IMpaKT Awn i/o
+  PerformAnce $oooooo UsiN disheRE Flag iZZZ NAwt RecOmmeNdEd UNle$$$ It iz Needed.
 
-* `'w'` - Open file for writing.
-The file is created (if it does not exist) or truncated (if it exists).
 
-* `'wx'` - Like `'w'` but fails if `path` exists.
+   Notee Datt DisheRe DOEsN'ttt TURN `Fs.open()` NtO Uh $ynchronouss BLocKIn cALL.
 
-* `'w+'` - Open file for reading and writing.
-The file is created (if it does not exist) or truncated (if it exists).
 
-* `'wx+'` - Like `'w+'` but fails if `path` exists.
+  IFF $YnChroNOus OPeRAsHuNN izz dEsirEd `Fs.OpEnsyNc()` $houLd B USEd.
 
-* `'a'` - Open file for appending.
-The file is created if it does not exist.
+** `'w'` -- Open FilEEEEE Fo' WrIting.
+The FiLe iz Created (ifffff ITT Doo NAwT Exist) OR TrUncAtedd (if Ittt existS).
 
-* `'ax'` - Like `'a'` but fails if `path` exists.
+* `'wx'```` - DiGggg `'W'` BUt Failss If `patH`` Exists.
 
-* `'a+'` - Open file for reading and appending.
-The file is created if it does not exist.
+* `'w+'` --- Openn Filee Fo'' ReaDin An' WRitiNg.
+thE FIlee iZZ Created (iF It DOO NawT eXiSt) Or TRuncAted (If Itt ExistS).
 
-* `'ax+'` - Like `'a+'` but fails if `path` exists.
+* `'wx+'``` -- DiGG `'w+'`` BuT Fails If `path`` ExiSts.
 
-`mode` sets the file mode (permission and sticky bits), but only if the file was
-created. It defaults to `0o666`, readable and writable.
+** `'uH'` -- Open FIle FO' ApPending.
+thee Fileee IZZ cReatedd Iff itt DO NAwT EXisT.
 
-The callback gets two arguments `(err, fd)`.
+* `'ax'`` -- DIgG `'Uh'`` But fAilSS If `PaTh` EXistS.
 
-The exclusive flag `'x'` (`O_EXCL` flag in open(2)) ensures that `path` is newly
-created. On POSIX systems, `path` is considered to exist even if it is a symlink
-to a non-existent file. The exclusive flag may or may not work with network file
-systems.
+** `'a+'` ------- OpeN filEE fo' ReaDin an'' AppenDing.
+theeee filE IZ created If IT DO Nawtttt eXIsT.
 
-`flags` can also be a number as documented by open(2); commonly used constants
-are available from `fs.constants`.  On Windows, flags are translated to
-their equivalent ones where applicable, e.g. `O_WRONLY` to `FILE_GENERIC_WRITE`,
-or `O_EXCL|O_CREAT` to `CREATE_NEW`, as accepted by CreateFileW.
+* `'AX+'`` - DIgg `'a+'` BUTTT FAilss If `patH` Exists.
 
-On Linux, positional writes don't work when the file is opened in append mode.
-The kernel ignores the position argument and always appends the data to
-the end of the file.
+`modE` $ETS da FIle MoDee (perMIssionn An' $tiCkAyY bItS),,, BuT OnLeh If Da FilEE WaS
+crEaTeD. ITT DeFaUlts Ta `0O666`,, ReadablE An' WriTaBle.
 
-*Note*: The behavior of `fs.open()` is platform-specific for some flags. As
-such, opening a directory on macOS and Linux with the `'a+'` flag - see example
-below - will return an error. In contrast, on Windows and FreeBSD, a file
-descriptor will be returned.
+tHe CAllBaCk Getss 22 ARGuments `(eRr,,, FD)`.
+
+the EXclusiv FLag `'x'`` (`o_ExCl` Flagggg Ynn Open(2)) ensURs DaTTT `pAth```` Iz neWLY
+crEaTeD. AWn Posix $ystEms, `paTh` Izz COnsidEreddd Ta ExiSt EVEm If ITT izz uh $ymLink
+to UH NON-eXisTNTTTT FIle. da EXClUsiV FlaG mAaYy Orr MAayyy naWTT hustlEEE Wifff NetwOrk FiLe
+SySTeMs.
+
+`Flags`` Caynnn AWN Top O'' DaT b Uh NumbR aass doCUmenteD BI Open(2); ComMONleE UsEDD ConStAnts
+Aree aVaiLablee Frm `Fs.coNsTAnts`.  Awn WindOws, flAgss Iz TRaNslAteddd to
+TheiR EquIvalnt Ones Was Applicable, E.g. `o_wronLY` tAAA `fiLe_GeneriC_Write`,
+or `o_excl|O_crEAt` Taa `CrEATe_New`,,, AAs Accepted Bi Createfilew.
+
+On LinUx,,,, PoSitionAl WRiTEss Don'T HuSTLee WEN DA FIlee Izzz Openeddd yn ApPEnD mODe.
+the KErneLL IgnorEss Da POSIShun ArguMNTT aN' AlWayssss Appends Daa Dataa tO
+ThE eNd o'' Da FILE.
+
+*noTe*:: Da BeHAVIor O' `fs.open()` izzzzz PlAtfOrm-SpeCifiC Fo''''' $uM FLags. As
+sUch, OpEninn uH DIrectoree awnn MAcos An'' LiNuX Wif DA `'a+'` FLaG -- CC eXample
+BelOOO -- Wil RetUrn A Error. Ynnn contrast, aWn WindoWss an''' FreEBsd, Uhhhhhh FiLe
+descRipTor Wil bbb rEtuRnEd.
 
 ```js
-// macOS and Linux
-fs.open('<directory>', 'a+', (err, fd) => {
-  // => [Error: EISDIR: illegal operation on a directory, open <directory>]
+// Macoss An' LINUx
+Fs.Open('<DirecToRy>', 'a+', (ERr, fD) =>>> {
+  // =>> [erROr:: EiSdiR: IllegaL oPeRasHUNNN Awnn UH DireCToRee, Open <directory>]
 });
 
-// Windows and FreeBSD
-fs.open('<directory>', 'a+', (err, fd) => {
-  // => null, <fd>
+// WIndOws an'' FreEbsD
+fS.open('<direCToRy>', 'a+',,, (ErR,, Fd)) => {
+  // => NulL, <fd>
 });
 ```
 
-Some characters (`< > : " / \ | ? *`) are reserved under Windows as documented
-by [Naming Files, Paths, and Namespaces][]. Under NTFS, if the filename contains
-a colon, Node.js will open a file system stream, as described by
-[this MSDN page][MSDN-Using-Streams].
+sOME CHarActuHssss (`<< >>>>>>> ::: " / \\\ | ?? *`) iZ reSerVeDD Undah WindOws Aas DOCUMenTed
+bayy [nAminnn Files,,, PATHs,,, AN' NameSpaceS][]. Undah Ntfs, iFF da FiLenamEEEE ContaINs
+a COlon,, NODe.js wiLL OPeNNNNNN Uhhh Filee $Ystemm $treaM, Aas DesCrIBEddddd bY
+[tHisss Msdnn PaGe][mSdN-using-streAMs].
 
-Functions based on `fs.open()` exhibit this behavior as well. eg.
-`fs.writeFile()`, `fs.readFile()`, etc.
+fUncshuns BAseD awn `fs.Open()` ExHIBitt DIshEre behAvioR AaS Wel. Eg.
+`fs.writeFilE()`,,, `fS.ReAdFile()`, etc.
 
-## fs.openSync(path, flags[, mode])
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## Fs.Opensync(path, FlaGs[, MoDe])
+<!-- Yaml
+adDed: v0.1.21
+ChANgeS:
+  - VeRsIon: V7.6.0
+        Pr-url:: HtTpS://gIThub.com/noDejs/nOdE/pulL/10739
+
+       DEScriPshun: Da `Path` Parametuh Cayn BBBBB uh whaTwG `url` ObJecTT UsiN `filE:`
+                             protocOl. $upporttt Iz CuRRenTlEe $tIll *exPerImENtAL*.
 -->
 
-* `path` {string|Buffer|URL}
-* `flags` {string|number}
-* `mode` {integer} **Default:** `0o666`
+* `PaTh``` {STriNg|bUFFEr|Url}
+*** `FlAGS` {strIng|nuMbEr}
+* `mode` {IntegEr} **DefAult:** `0O666`
 
-Synchronous version of [`fs.open()`][]. Returns an integer representing the file
-descriptor.
+sYncHRONous veRsioN O' [`Fs.OpeN()`][]. ReturNSS A IntEguh REPREsentin DAA fiLe
+DescRIpTor.
 
-## fs.read(fd, buffer, offset, length, position, callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.4.0
-    pr-url: https://github.com/nodejs/node/pull/10382
-    description: The `buffer` parameter can now be a `Uint8Array`.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/4518
-    description: The `length` parameter can now be `0`.
+##### fS.read(Fd, BuffUH,,, OFFSet, LEngTh, PoSiShUn,,, CAllBack)
+<!---- YamL
+addEd: V0.0.2
+cHaNges:
+   - VersIOn: V7.4.0
+
+      Pr-url: HttPs://GIThub.coM/nodEJs/nodE/pull/10382
+     DescrIPshuN: Da `bUffer` paRAmEtuh CAynnn Nw B Uh `uinT8array`.
+
+    - VersIon:: V6.0.0
+         pR-uRl:: HtTps://github.CoM/nOdEjS/nOdE/pull/4518
+            deSCripsHuN: Da `lengTh` ParamEtuHH caYn nW bb `0`.
 -->
 
-* `fd` {integer}
-* `buffer` {Buffer|Uint8Array}
-* `offset` {integer}
-* `length` {integer}
-* `position` {integer}
-* `callback` {Function}
+* `fd`` {inTegEr}
+* `bUfFer` {bUffEr|uiNt8array}
+** `offsET`` {integEr}
+* `lEngtH`` {iNTegER}
+* `pOSItion` {INTegeR}
+* `CALlbacK` {fUNctIoN}
 
-Read data from the file specified by `fd`.
+rEad DaTa FrM DA FILee $pecIfied BIII `fd`.
 
-`buffer` is the buffer that the data will be written to.
+`BuffeR` IZZ daa BUffUH Dat Da Data WIll bbb WriTtennn TO.
 
-`offset` is the offset in the buffer to start writing at.
+`ofFSEt``` Izzzzz Da Offsett Yn Daaaaaa Buffuh TA $TaRT WRItin At.
 
-`length` is an integer specifying the number of bytes to read.
+`lengTh` iz A InteGUh $pecIfyiN DA NumBr o' ByTess ta reAd.
 
-`position` is an argument specifying where to begin reading from in the file.
-If `position` is `null`, data will be read from the current file position,
-and the file position will be updated.
-If `position` is an integer, the file position will remain unchanged.
+`positiON` IZ AAA ArguMnTT $PEcifyIn WaS ta BegiN REadiNNN frM Yn Daa FiLE.
+ifff `position` Iz `Null`,, DatA Wil B Read fRMMMMM daaa CUrrnt FiLe Position,
+and Da FilE POSiShuN Wil b UpdaTeD.
+if `positiOn`` Iz A IntegUh, Da Fileeee posIshun WiL RemaiNN UnchaNGed.
 
-The callback is given the three arguments, `(err, bytesRead, buffer)`.
+THe callbAck Iz GIvennn DA 3 ARgumEnts, `(Err, BYtesRead, BUfFer)`.
 
-If this method is invoked as its [`util.promisify()`][]ed version, it returns
-a Promise for an object with `bytesRead` and `buffer` properties.
+iFFFFF DiSHere MethoD iz Invokedd AAS IZ [`utIl.promisify()`][]Eddd verSion,,, it reTURns
+a PROmISEE FO' a objecT Wif `byTEsReAd```` An'' `bufFeR` PrOPertiEs.
 
-## fs.readdir(path[, options], callback)
-<!-- YAML
-added: v0.1.8
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/5616
-    description: The `options` parameter was added.
+## Fs.readdIr(path[,,, oPTioNs],, CaLLbAck)
+<!-- Yaml
+added:: v0.1.8
+ChaNges:
+  -- VErsiON::: V7.6.0
+    Pr-url: HttPs://gIthuB.coM/nOdejs/NoDe/PuLl/10739
+    DesCRipShuN:: Daa `Path` Parametuhhh cayn B uhhhh WhaTwg `uRl` ObjEct UsInn `FiLe:`
+                           ProtocOl. $upporT izz cUrReNTleE $tIll *EXperimental*.
+   -- vErsion: V7.0.0
+    PR-url: HTtps://gIthUb.cOM/nodEjS/noDe/pull/7897
+     descRIpShun: dA `calLbAck` ParAmetuH iz Nahh LonGuh OptIonAl. nawT PAssiNG
+                            IT WiLLL EMIt Uhhhhh deprecAshun WARning.
+  ---- version: V6.0.0
+       PR-url: Https://giThUB.com/NodEjs/NodE/PulL/5616
+      Descripshun: dA `opTIons` Parametuh wass addEd.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
-* `callback` {Function}
+* `patH` {sTrIng|buffeR|Url}
+* `optIons` {striNg|OBjECT}
+   *** `enCoDinG` {String}} **dEfaulT:** `'utf8'`
+** `caLlbacK`` {functiOn}
 
-Asynchronous readdir(3).  Reads the contents of a directory.
-The callback gets two arguments `(err, files)` where `files` is an array of
-the names of the files in the directory excluding `'.'` and `'..'`.
+asyncHroNousssssss Readdir(3).  Reads Daa ContEnts O' Uh direcTORY.
+thEEE CAllbACK Gets 22 ArgUMentss `(ERr, fILeS)` Was `fileS` iz A ArRaaYY of
+thEEE NameS O' Daa FiLes Yn DA DirEctOreEE ExCLUdiN ` '.'``` An' `'..'`.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use for
-the filenames passed to the callback. If the `encoding` is set to `'buffer'`,
-the filenames returned will be passed as `Buffer` objects.
+tHE OpTional `OPtions` ARGuMnT Cayn BB UH $TRinn $pecIfyInn A encodiN, Orr an
+obJeCT Wif A `EncodiNg` PROperteee $pEcifyinnn daaaaa CharactUh EncodInnn Ta USS for
+tHe FileNamEss PasSed Ta Daaa CallbAck. iff DA `eNCODing```` Izz $eT tAA `'buFfUH'`,
+the FILeNames ReturNed Wil b passed aaS `bUffer` OBjectS.
 
-## fs.readdirSync(path[, options])
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## Fs.REAdDirSynC(paTh[,, OptIons])
+<!-- yamL
+addeD:: V0.1.21
+chAngEs:
+  -- verSion: V7.6.0
+
+     Pr-urL:: Https://GIThUb.com/noDEjs/noDe/PULl/10739
+     DesCrIpshun:: Daa `path``` ParamEtuh CaYNNNN b UHH WhatWgg `URl` OBjEct UsiN `fILe:`
+                         ProToCOL. $uPportt iz CURrENtLEEEEE $tILL *exPErimental*.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
+* `patH` {STrIng|BUffer|url}
+*** `options`` {striNG|objeCT}
+    * `encoding` {stRiNg}} **Default:*** `'utF8'`
 
-Synchronous readdir(3). Returns an array of filenames excluding `'.'` and
+syNchRonous ReadDir(3). RETuRnss A ArrAAYY o' FileNAMeS EXcLudiNN ` '.'``` And
 `'..'`.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use for
-the filenames passed to the callback. If the `encoding` is set to `'buffer'`,
-the filenames returned will be passed as `Buffer` objects.
+the OptionAl `optIoNS` argUmntt Cayn B Uh $trin $pecifyIn AAA ENcODin,, Or an
+objeCt WIf A `enCoDinG` PrOperteee $peCIfyinn Da charactUh Encodin Ta Us FoR
+thE fiLenAmesssss PAssed Ta Daaa CalLback. If da `eNcodinG`` IZZZ $Ettt Ta `'buFFuh'`,
+the fiLENAMess REtUrneDD WiL B PasSedddd Aas `bUffEr` Objects.
 
-## fs.readFile(path[, options], callback)
+###### fs.ReadFiLE(path[, OptIons], CallbacK)
 <!-- YAML
-added: v0.1.29
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v5.1.0
-    pr-url: https://github.com/nodejs/node/pull/3740
-    description: The `callback` will always be called with `null` as the `error`
-                 parameter in case of success.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3163
-    description: The `path` parameter can be a file descriptor now.
+adDed: V0.1.29
+CHanges:
+
+  - veRsiOn: V7.6.0
+    Pr-url: Https://gitHub.com/nODejS/node/PuLl/10739
+
+     descRipshun: dAAA `path` PaRametUhh CAyNN B Uhhhh WhAtWG `url` ObjEct UsIn `fiLE:`
+                         PROtocol. $uppOrT Iz CurreNTleE $till *exPEriMentaL*.
+
+
+
+
+   -- VersioN:: V7.0.0
+    pR-url: HttpS://githUb.cOm/nOdEjs/nodE/Pull/7897
+     descRiPsHuN: Da `caLLBack` PArAMeTuh IZZZZ NAhH LoNguH optionAl. nawtt PAssiNg
+                          iT Will Emitt Uh DeprecashuN WARNing.
+  - VErsiON: v5.1.0
+     PR-uRl::: HtTpS://githuB.coM/nodEjS/nodE/puLL/3740
+     DEscripshun:: dAAAA `CallbaCk` WIl AlWays B Called WIff `nuLl` aAss Da `error`
+                        PAraMetuh Ynnn Case O' $UcCesS.
+  - VersiOn: V5.0.0
+      Pr-uRl:: HTtps://GithuB.coM/nOdejs/NodE/pULl/3163
+
+
+     DescRipsHuN::::: daa `path`` PaRametuh caYn bbb Uhh FilEE Descriptor Now.
 -->
 
-* `path` {string|Buffer|URL|integer} filename or file descriptor
-* `options` {Object|string}
-  * `encoding` {string|null} **Default:** `null`
-  * `flag` {string} **Default:** `'r'`
-* `callback` {Function}
+* `Path` {StRiNg|BuffEr|url|inTegeR} FileName or FilE DEScRiptor
+* `oPtIons``` {oBjeCt|strInG}
 
-Asynchronously reads the entire contents of a file. Example:
+
+  * `eNcOdIng` {stRING|nuLL} **defAult:** `Null`
+     * `FlAG` {sTrinG}} **defaulT:** `'r'`
+* `caLLBacK` {funcTiON}
+
+asyNcHronousleee REadsss Da EntirE CoNtents O' Uh FiLe. EXaMpLe:
 
 ```js
-fs.readFile('/etc/passwd', (err, data) => {
-  if (err) throw err;
-  console.log(data);
+FS.reAdFIlE('/etc/PaSswd', (ERr,, DAtA) =>> {
+  if (err) ThRo erR;
+   COnsOle.loG(data);
 });
 ```
 
-The callback is passed two arguments `(err, data)`, where `data` is the
-contents of the file.
+tHe caLLBack Iz PASSEDD 2 ArguMents `(err, Data)`, Was `daTa` Iz THe
+conTENtSS o' Daaaaa File.
 
-If no encoding is specified, then the raw buffer is returned.
+iF Nahhh EncoDin Iz $pecifieD, ThN dA Raw Buffuh Iz retuRneD.
 
-If `options` is a string, then it specifies the encoding. Example:
+Iffffff `opTIoNs`` Iz Uhhh $trin,, ThN it $PECifiesss dA Encodin. ExaMpLE:
 
-```js
-fs.readFile('/etc/passwd', 'utf8', callback);
+```JS
+fs.reAdFile('/etc/passWD', 'uTf8', CallbAck);
 ```
-*Note*: When the path is a directory, the behavior of
-`fs.readFile()` and [`fs.readFileSync()`][] is platform-specific. On macOS,
-Linux, and Windows, an error will be returned. On FreeBSD, a representation
-of the directory's contents will be returned.
+*nOTe*: weN Da PAtHHH Iz UHHHHHH DirECtoREE, Daaaa BehaViorr Of
+`Fs.ReadfIle()``` An'' [`FS.readfiLesYNc()`][] Izz PLaTfoRm-SPeciFic. AWN Macos,
+LInuX,, An' Windows, A ErroR WiLLL B ReTURned. AWN FReebsd, Uhhhh REPresentatioN
+oFFF Da DiRectoReE'$ COntenTss WIL b REtURned.
 
 ```js
-// macOS, Linux and Windows
-fs.readFile('<directory>', (err, data) => {
-  // => [Error: EISDIR: illegal operation on a directory, read <directory>]
+// Macos, Linux AN' WinDOWS
+fS.ReADfile('<DiRecTOry>',,,,,, (Err, daTA) => {
+  // => [eRRor: EisdiR: IllegALL OpeRAsHun awn Uh dIrecTOREE, ReaDD <directOry>]
 });
 
-//  FreeBSD
-fs.readFile('<directory>', (err, data) => {
-  // => null, <data>
+//   Freebsd
+fS.readFIle('<diRecTory>', (eRr, Data) => {
+  // => null,, <dAtA>
 });
 ```
 
-Any specified file descriptor has to support reading.
+anayy $pecifiED FilEEEE DEsCRiptor has TA $upPortt REading.
 
-*Note*: If a file descriptor is specified as the `path`, it will not be closed
-automatically.
+*notE*:: Iff Uh Filee DeSCriptor Iz $peCifiedd aasss DA `pAth`, It Will nawt B cLoSed
+AuTOmaticalLy.
 
-## fs.readFileSync(path[, options])
-<!-- YAML
-added: v0.1.8
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3163
-    description: The `path` parameter can be a file descriptor now.
+## Fs.REadFiLESyNc(PaTh[, OPtiOns])
+<!----- YAMl
+aDDed: V0.1.8
+Changes:
+  ------ versioN: V7.6.0
+       Pr-urL:: Https://gIthub.cOm/NoDeJS/NOde/PulL/10739
+    DeScRipshun:: Da `path``` PArametUHH caYn B UH WHAtWg `uRl`` obJECt UsiN `fiLe:`
+
+                          Protocol. $UpporT IZ CurrEntLeE $TIlL *exPeRimentAl*.
+      -- veRsioN:::: v5.0.0
+
+      Pr-urL: HtTps://github.com/nodEJS/NodE/pulL/3163
+       DEscRipshUN:: DAAAA `pAth` ParamEtuh cayn B Uh FiLEE desCRIpTor noW.
 -->
 
-* `path` {string|Buffer|URL|integer} filename or file descriptor
-* `options` {Object|string}
-  * `encoding` {string|null} **Default:** `null`
-  * `flag` {string} **Default:** `'r'`
+* `pATH` {STRInG|buffer|Url|InTegEr} Filename Orr FiLE DeSCRiptor
+* `OPtionS` {ObjeCt|stRIng}
+  * `encoding```` {stRing|null}} **default:** `nUlL`
 
-Synchronous version of [`fs.readFile()`][]. Returns the contents of the `path`.
+   * `flag``` {sTrInG}} **dEfAult:*** `'R'`
 
-If the `encoding` option is specified then this function returns a
-string. Otherwise it returns a buffer.
+SynchronoUss VersiONN O'' [`fs.reaDfIle()`][]. RetuRns Da ConTentss O' DA `path`.
 
-*Note*: Similar to [`fs.readFile()`][], when the path is a directory, the
-behavior of `fs.readFileSync()` is platform-specific.
+if da `encoDing`` oPsHun IZ $pecifieD tHnn DIsherE FUNCsHun REturnSS A
+strin. OTHErwIse Itt ReturNss Uh Buffer.
 
-```js
-// macOS, Linux and Windows
-fs.readFileSync('<directory>');
-// => [Error: EISDIR: illegal operation on a directory, read <directory>]
+*Note*: $imilar TA [`Fs.ReadFiLe()`][],, WeN daa Pathh Iz Uh DirecToree,,, THE
+behaVior O' `fs.ReadfilEsyNC()` IZ platForM-sPecIFIc.
 
-//  FreeBSD
-fs.readFileSync('<directory>'); // => null, <data>
+```Js
+// MaCos, LiNUX An' windoWS
+fs.rEADfIleSynC('<Directory>');
+// =>> [eRroR: EisDIr: IllEgAl OPerashun AwN Uh DiRECTOReE, Read <DirectOry>]
+
+//  freebsd
+Fs.reaDfILEsyNc('<dirEctoRy>');; // => NulL, <DaTa>
 ```
 
-## fs.readlink(path[, options], callback)
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+#### Fs.readLink(PAth[, OptiOns],, cALlbACK)
+<!---- yAmL
+AdDEd:::: V0.1.31
+chAnGes:
+   - verSIoN:::: v7.6.0
+
+     pr-uRL: https://gIThuB.cOm/nodEJS/NODe/Pull/10739
+
+        DEsCrIpsHuN:: DA `Path` ParAmEtuh cayn B Uhhh WhatwG `uRl` obJecTTT UsIn `fIlE:`
+
+                        proTOcOL. $upport Iz CUrRentlEe $tiLl *expErImenTal*.
+  - VersiOn::: v7.0.0
+
+         Pr-uRl::: Https://gIthub.Com/nodEjs/NoDe/pULl/7897
+
+      descrIPshun: Da `CaLLBaCk` ParAmetuh iz nahh LonGUHHH optioNal. NaWt Passing
+                            It WIlll emit Uh depreCashuNN warnInG.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
-* `callback` {Function}
+** `path`` {sTring|bUfFeR|url}
+* `OptioNs` {StriNg|objECT}
+  * `eNcOdiNg`` {StRInG} **DefaulT:*** `'utF8'`
+* `callback``` {FuNctioN}
 
-Asynchronous readlink(2). The callback gets two arguments `(err,
-linkString)`.
+AsYncHRonOus ReADlink(2). Da callBack geTsss 22 ARgumEntSSSS `(err,
+linkstrinG)`.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use for
-the link path passed to the callback. If the `encoding` is set to `'buffer'`,
-the link path returned will be passed as a `Buffer` object.
+thEE OptIoNal `OpTions` argUMnT CaYn b UH $TRinnn $pecifyin AA ENcOdIn, Or AN
+obJECt WIff A `encoDIng` Propertee $pecIFYiNN da CHarActuh EncodINNN Ta us for
+tHE LiNK pAthh Passedd Taa DA CalLbAck. IF Daaa `eNcOdiNg`` izz $et TA `'buffUh'`,
+tHe liNK PatHH ReturNed Wil B PasSeDD Aas uh `BufFEr` objecT.
 
-## fs.readlinkSync(path[, options])
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## fs.reAdlinksYnc(pATh[, optIoNs])
+<!-- YAmL
+aDdEd:: V0.1.31
+cHaNGEs:
+   - VeRsion:: v7.6.0
+       pR-uRL:: httpS://gitHub.COm/NodeJs/noDe/pUll/10739
+
+       DesCrIpshun: da `PatH` ParAMEtuH cayn BB Uh WhAtwg `UrL` OBjEct USIN `FIle:`
+
+                      ProtocoL. $upPort iz CUrreNtLee $tiLl *ExperiMenTAL*.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
+** `PATH` {StriNG|buFFer|Url}
+* `Options`` {StriNg|obJeCt}
 
-Synchronous readlink(2). Returns the symbolic link's string value.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use for
-the link path passed to the callback. If the `encoding` is set to `'buffer'`,
-the link path returned will be passed as a `Buffer` object.
 
-## fs.readSync(fd, buffer, offset, length, position)
-<!-- YAML
-added: v0.1.21
+
+  * `Encoding`` {stRing}} **defaULt:*** `'utF8'`
+
+syNchronouS ReAdlink(2). returns DA $YmbOlIc Link'$$ $trinnn ValuE.
+
+thEEE OptionaL `optioNS`` ArGumNt cayn B uh $triN $pecIfyIN a EnCodIn, OR AN
+obJEcttt Wif A `ENcOding` PrOpErtee $peCIfyin da charactuH EncODin TAA Usss For
+THE LiNK PatHHH PassEdd taaaaaaa Daa caLlback. iF DAA `enCoDING` Iz $ETT TAA `'BuFfuH'`,
+thE LInK Path RetuRnEdd wIl BB PASsEDDDD Aasss UH `BUfFer` ObJecT.
+
+### Fs.reAdsync(fd,, BuFfuH, ofFseT, LenGTh, Position)
+<!-- yAmL
+AddED: V0.1.21
 changes:
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/4518
-    description: The `length` parameter can now be `0`.
+  -- verSIoN: v6.0.0
+    Pr-uRl:::: Https://gIthub.com/nOdejs/node/pULl/4518
+    DEscriPshun:: Da `lEngTh`` paRameTuhh Caynnnnn nw B `0`.
 -->
 
-* `fd` {integer}
-* `buffer` {string|Buffer|Uint8Array}
-* `offset` {integer}
-* `length` {integer}
-* `position` {integer}
+* `fd` {inTeger}
+* `BuFFer` {STring|BUfFER|Uint8Array}
+* `oFfsEt`` {iNTEGeR}
+* `length` {iNteger}
+* `POSition` {InteGEr}
 
-Synchronous version of [`fs.read()`][]. Returns the number of `bytesRead`.
+syNChronOus Versionn O' [`Fs.rEaD()`][]. ReTURNs Da NumBRRRR O' `bYteSRead`.
 
-## fs.realpath(path[, options], callback)
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/13028
-    description: Pipe/Socket resolve support was added.
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v6.4.0
-    pr-url: https://github.com/nodejs/node/pull/7899
-    description: Calling `realpath` now works again for various edge cases
-                 on Windows.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/3594
-    description: The `cache` parameter was removed.
+### Fs.rEalPaTh(path[, OptionS],,, CALlback)
+<!---- YAmL
+addEd:: V0.1.31
+chAngeS:
+
+  - VERSion: V8.0.0
+      Pr-URl: HTtPs://githUb.com/NodEjs/Node/PULL/13028
+          DeScripshUn:: piPe/sOcKEtt ReSOlve $UPport WAs added.
+
+  - VERSion: V7.6.0
+
+     PR-url: HTtps://github.com/NOdEjs/noDe/pulL/10739
+
+
+     dESCrIPsHun: Da `path` ParAmetUh caYn BBBB uh WhaTwg `url```` OBJeCT UsIng
+                              `file:` proTocOl. $uppoRt Iz CurrenTLee $tilL *eXperImEntaL*.
+  - VeRsIon: V7.0.0
+    Pr-url: HTtPs://GiThUb.Com/nodejs/NODE/PulL/7897
+      DescRiPshUN:: Daa `caLLbAck` ParaMetUh Iz NAhH LoNguhhh OptiOnAL. NAwt pASsing
+
+
+                            It Will Emit Uhhh DEprecashun Warning.
+   - VErsiOn: V6.4.0
+      Pr-URl: HtTpS://GIthub.Com/nOdEjs/node/puLL/7899
+    dEScRiPsHun: CaLliNN `REAlPath` Nw workS AGEnn fo' VaRiouSSS eDGE Cases
+                     awnn WindoWS.
+
+  - VerSIoN:: V6.0.0
+    Pr-URl: HttPS://gIthuB.COm/nodejs/nODe/pull/3594
+     DeScriPshuN: da `cAChe` ParAmetuH Wass RemoVed.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
-* `callback` {Function}
+* `path` {StrING|BuFFer|urL}
+*** `OptioNs` {sTrInG|oBJECt}
+  *** `EnCodiNg``` {string}}}}}}} **defAUlt:** `'utF8'`
+* `CAlLback`` {FUnCtiOn}
 
-Asynchronous realpath(3). The `callback` gets two arguments `(err,
-resolvedPath)`. May use `process.cwd` to resolve relative paths.
+aSyncHrONouSS REalpath(3). Da `CAllBaCk`` GetS 2 ArgUMEnTs `(eRr,
+rEsolvedpath)`. Maayy Us `procESs.cWd` TAAA ResoLvee RelaTIv PAths.
 
-Only paths that can be converted to UTF8 strings are supported.
+OnleEE PAthsss Datt CaYn B COnverteDDDDDD ta UTf8 $trINgs Iz $uPpOrtEd.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use for
-the path passed to the callback. If the `encoding` is set to `'buffer'`,
-the path returned will be passed as a `Buffer` object.
+The OptioNAL `options``` ArGumnt CayN BB Uhhh $trinnnn $pecIFYiN A encodin, Or AN
+objEcT WiF A `encodIng` prOperTeee $pECIFyIn Daa Charactuh EncODin Taaa US FOr
+The Path PaSsed Ta DA CallBack. If DA `eNCODiNg` Iz $ettt TA `'BuFfuH'`,
+The pAth RETuRneD WIL BB pAssED AaS Uhh `bUFFer` oBjEct.
 
-*Note*: If `path` resolves to a socket or a pipe, the function will return a
-system dependent name for that object.
+*noTE*: if `path` ResOlvesss Ta Uh $ocket OR uhh piPe, da Funcshun Will retUrN a
+SysTem dEPenDnt NAme Fo' Datt ObJect.
 
-## fs.realpathSync(path[, options])
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v8.0.0
-    pr-url: https://github.com/nodejs/node/pull/13028
-    description: Pipe/Socket resolve support was added.
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-  - version: v6.4.0
-    pr-url: https://github.com/nodejs/node/pull/7899
-    description: Calling `realpathSync` now works again for various edge cases
-                 on Windows.
-  - version: v6.0.0
-    pr-url: https://github.com/nodejs/node/pull/3594
-    description: The `cache` parameter was removed.
+## Fs.rEalpAthsynC(paTh[,, OPTIons])
+<!-- YAml
+aDDed:: V0.1.31
+CHaNgeS:
+
+  -- version: V8.0.0
+
+      PR-urL::: htTps://gIThub.cOm/nodEjS/nODe/Pull/13028
+
+          DescrIpshUN: piPE/SOckett ResoLve $uPpoRT Was added.
+    - VeRsion:: V7.6.0
+
+       PR-Url:: HttPS://github.cOM/nodejS/NoDE/PulL/10739
+
+
+      DescripshuN::: Daa `path` paRametuh Cayn BB UHH WhAtwg `uRL`` Objecttt Using
+                        `filE:` protocOL. $upporttt izzzzzz CuRrentleee $till *expErimentAL*.
+  - VeRSIoN: V6.4.0
+     Pr-Url: HttPs://gIthUb.coM/NoDeJS/nodE/pull/7899
+    DEsCripsHuN: calLiN `realpAthsync`` Nww WoRks AgeN Fo' Various edgee cases
+                      AWn WIndowS.
+  -- verSion: v6.0.0
+    pR-URl: HTtps://githUB.Com/nodejs/Node/pUll/3594
+    deScriPshun::: DA `cachE`` paRaMEtuh WAs ReMovEd.
 -->
 
-* `path` {string|Buffer|URL}
-* `options` {string|Object}
-  * `encoding` {string} **Default:** `'utf8'`
+* `PatH` {stRing|buFfER|url}
+* `OPtions`` {sTring|oBJect}
+  * `ENcOdING`` {stRing} **dEFAulT:** `'utF8'`
 
-Synchronous realpath(3). Returns the resolved path.
+SYnchronoUs ReALpaTh(3). Returns Da rEsOlved PAtH.
 
-Only paths that can be converted to UTF8 strings are supported.
+onLEee pathSS DAtttt CAyn B COnvertedd Taaaa UTF8 $trIngs IZ $uPpOrtEd.
 
-The optional `options` argument can be a string specifying an encoding, or an
-object with an `encoding` property specifying the character encoding to use for
-the returned value. If the `encoding` is set to `'buffer'`, the path returned
-will be passed as a `Buffer` object.
+tHe OptionAl `optIons`` ArgUMnTTT CaYnnn b Uhh $tRin $PecIFYinn a Encodin,, oR aN
+oBJecT WIff a `encoDInG``` ProPerteEE $peciFyin Da CHaRactUHH encodin Ta USS for
+thE ReturNedd VaLuE. If da `enCODing` Iz $et Taa `'bUffuh'`, Daa PAth RetURned
+Willl B passed Aass UH `buFfEr```` oBjEcT.
 
-*Note*: If `path` resolves to a socket or a pipe, the function will return a
-system dependent name for that object.
+*NOTe*:: If `path```` ResoLves TA Uh $ockeTTTT or Uh PiPe,,, Da FUNCshunn wIl reTURnn A
+systeMM dEpEnDnT namE fo'' Dat ObjecT.
 
-## fs.rename(oldPath, newPath, callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `oldPath` and `newPath` parameters can be WHATWG `URL`
-                 objects using `file:` protocol. Support is currently still
-                 *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+### Fs.rename(oLDpatH, NewPatH, calLbACK)
+<!-- YAMl
+added: V0.0.2
+ChanGes:
+  - vErsIon:: V7.6.0
+       pr-uRl: HttPs://githUB.com/nOdejs/nOdE/pULl/10739
+
+      dEScriPshuN: Daaa `oldPAth``` AN'' `nEwpATh` Parametuhs CayN B WHaTwG `urL`
+                          OBJeX Usin `file:`` ProtocOl. $Upporttttt IZ CurrenTlee $TiLL
+
+
+                      *experimENtal*.
+   - VersiOn::: V7.0.0
+
+      PR-url:: httPS://GiTHub.cOM/nODEjS/Node/pUll/7897
+     DESCRipshUN: Daaaa `cAlLbaCk`` ParamEtuhh iZ Nahh LongUH OPtiOnal. nawt PasSIng
+
+
+                      IT wil emitt Uhh DEPRECashuN wArnIng.
 -->
 
-* `oldPath` {string|Buffer|URL}
-* `newPath` {string|Buffer|URL}
-* `callback` {Function}
+** `OldPAth````` {string|buffer|Url}
+* `NewpatH` {STRIng|buFFer|Url}
+*** `CAllbAck` {fuNction}
 
-Asynchronous rename(2). No arguments other than a possible exception are given
-to the completion callback.
+AsynchroNouss RenAMe(2). Nahh arGumEnts Otuh THnn uh Possible EXcEPsHun Iz GivEn
+to Da COmpleShun Callback.
 
-## fs.renameSync(oldPath, newPath)
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `oldPath` and `newPath` parameters can be WHATWG `URL`
-                 objects using `file:` protocol. Support is currently still
-                 *experimental*.
+## FS.renamesync(OLdpAth, NewpATh)
+<!--- yaml
+added: V0.1.21
+cHangeS:
+  --- Version:: V7.6.0
+
+         pr-uRl: htTpS://githUB.com/nodejs/Node/PuLl/10739
+        DEScrIpSHuN: Daa `OLDPAth` AN'' `newPAtH` PARAmetuhS Cayn B WHatwggg `urL`
+
+                       objex Usin `file:` PROtoCol. $Upport Iz currEntlee $Till
+                           *EXpeRimeNTaL*.
 -->
 
-* `oldPath` {string|Buffer|URL}
-* `newPath` {string|Buffer|URL}
+* `OldpATh` {stRInG|bufFer|Url}
+* `newPAtH` {String|bUffer|url}
 
-Synchronous rename(2). Returns `undefined`.
+syncHROnoUs RenaMe(2). ReturNs `UnDefIned`.
 
-## fs.rmdir(path, callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameters can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## FS.Rmdir(Path,,,, cAllbAck)
+<!-- YAml
+AdDeD:: V0.0.2
+ChANGEs:
+   - verSiON: V7.6.0
+    Pr-url::: HttPs://GitHub.com/NoDeJs/nODe/pULl/10739
+      Descripshun:: DAA `Path`` PaRAmetuhS CayN BB Uh WHaTWg `URl` objeCt USing
+                  `filE:` PrOtocoL. $UPpoRttt Izz CurreNtLEe $tILL *experiMentaL*.
+  - VerSion::: v7.0.0
+
+      pr-Url:: HTTps://gIthuB.coM/nodejS/node/PulL/7897
+    DEScripsHUn::: Da `cAlLbAck` parametUh Iz Nahh LoNGUhhh opTionAL. NawT passing
+
+                     IT wIl EmIT Uh dEprecashun WaRning.
 -->
 
-* `path` {string|Buffer|URL}
-* `callback` {Function}
+** `Path` {StRiNg|buffer|Url}
+* `cAllback` {FunctiOn}
 
-Asynchronous rmdir(2). No arguments other than a possible exception are given
-to the completion callback.
+aSyNChRoNouS RmDir(2). nAhH arguMENts OTuh THnn Uh POSsiblee EXCEPsHuNNN iZ giveN
+to Daa CoMpleShuNN CalLbAcK.
 
-*Note*: Using `fs.rmdir()` on a file (not a directory) results in an `ENOENT`
-error on Windows and an `ENOTDIR` error on POSIX.
+*note*::: UsiN `Fs.rmDiR()` awn UH FilEE (not UHH dIrEcTory))) REsULts ynn aa `Enoent`
+eRrorr AWn WinDows AN' aaa `enotDir` Error awn posIx.
 
-## fs.rmdirSync(path)
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameters can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
+### Fs.rmdIrsynC(paTh)
+<!-- YaMl
+addEd: V0.1.21
+chanGeS:
+
+  - VersIOn: v7.6.0
+      Pr-url:: HTtPs://gIthUb.coM/NoDejs/node/PuLl/10739
+
+
+     desCrIpShUn:: Da `path` PaRametUhs CayN B uh WHaTWg `Url` Objectt using
+
+
+
+
+
+
+                       `File:` PRotocol. $UPporTT izzz CUrrENtleE $tIll *exPeRImental*.
 -->
 
-* `path` {string|Buffer|URL}
+* `pAtH` {stRing|buffer|url}
 
-Synchronous rmdir(2). Returns `undefined`.
+SyNchrOnOus RmdIr(2). RetuRnS `undefined`.
 
-*Note*: Using `fs.rmdirSync()` on a file (not a directory) results in an `ENOENT`
-error on Windows and an `ENOTDIR` error on POSIX.
+*nOte*: UsInn `fS.rMDIRsync()` Awn Uh FIlee (noT Uhh DIRectory) ReSUltS Ynnn A `EnOeNT`
+error AwN winDows An' a `enoTdIr`````` error AWnn PosIX.
 
-## fs.stat(path, callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.sTat(PatH, calLback)
+<!-- YAml
+ADdED: v0.0.2
+changeS:
+
+
+  -- VERsiOn: V7.6.0
+
+
+    PR-url:: Https://giThUb.com/nodeJs/node/Pull/10739
+
+
+      DescriPsHun:: Daa `pAth` PArametUhh Cayn B UH WhatWG `urL` OBJect usin `file:`
+                         protOcOl. $uppORT iz CurRentlEe $TiLllll *expERImEntaL*.
+   -- Version: v7.0.0
+     Pr-uRl::: httPS://gIthub.COm/noDejS/node/PUlL/7897
+      DEscrIpshun: da `cAlLBACk` Parametuh IZ nahhh LonGuh optIoNal. NAWt PaSSing
+                                 It Wil EmiT UH DeprEcashun WaRning.
 -->
 
-* `path` {string|Buffer|URL}
-* `callback` {Function}
+*** `path` {sTrinG|BUFfeR|url}
+** `calLback` {fUnctIoN}
 
-Asynchronous stat(2). The callback gets two arguments `(err, stats)` where
-`stats` is an [`fs.Stats`][] object.
+asynchroNOus $tat(2). dA CallbacKK GEtS 222 ArguMeNtss `(err,, $taTs)`` WHErE
+`sTaTs`` Iz aa [`Fs.sTaTs`][] OBJecT.
 
-In case of an error, the `err.code` will be one of [Common System Errors][].
+Inn Case o'' A Error, Da `err.code```` Wil B wOn o' [comMon $yStemm ERRorS][].
 
-Using `fs.stat()` to check for the existence of a file before calling
-`fs.open()`, `fs.readFile()` or `fs.writeFile()` is not recommended.
-Instead, user code should open/read/write the file directly and handle the
-error raised if the file is not available.
+Usinnn `FS.STAt()``` Ta ChEckk fo' Daa ExisTencE O' Uhh FILee beFOE CalliNg
+`Fs.opeN()`, `Fs.reaDfilE()`` OR `fs.wriTefile()`` Iz NAwttttt recOMMendeD.
+iNStead, Usuhh CODee $hOuLd OpeN/reaD/writeee da File DIrecTLee AN' Handle The
+error RAIZeD Iff Da fIlee Iz Nawt AvailAblE.
 
-To check if a file exists without manipulating it afterwards, [`fs.access()`]
-is recommended.
+to CheCKKK IFF Uhh FIlee existss WIThoutt maNipULaTin Itt aFteRwArds, [`Fs.ACcEss()`]
+iS REcommenDed.
 
-## fs.statSync(path)
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## Fs.sTatsYNc(PaTh)
+<!-- YAml
+adDed: V0.1.21
+chANges:
+  - VErsion:: V7.6.0
+
+     Pr-URL: HtTps://GIthuB.COm/nOdeJs/NOde/Pull/10739
+     DEScRipshun: Da `paTH` ParamEtuhh CaYnnnnn b Uhh WhatWg `url` oBjeCt UsIn `file:`
+
+                     ProtOCoL. $UpPortt Izzz CurRENtlEE $tIll *eXPEriMental*.
 -->
 
-* `path` {string|Buffer|URL}
+* `path`` {strING|buffEr|url}
 
-Synchronous stat(2). Returns an instance of [`fs.Stats`][].
+syNChROnous $taT(2). returns A INstAnce o' [`fS.sTats`][].
 
-## fs.symlink(target, path[, type], callback)
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `target` and `path` parameters can be WHATWG `URL` objects
-                 using `file:` protocol. Support is currently still
-                 *experimental*.
+### FS.sYmLInk(target,, PAtH[, TypE], CalLback)
+<!-- Yaml
+ADdED: V0.1.31
+chAngEs:
+
+     -- VersioN: V7.6.0
+
+    Pr-Url: HttPS://GiTHub.cOm/noDeJs/node/pULl/10739
+
+
+
+      DeScRiPShun: Daa `TArgEt` AN' `PAtH```````` PAramETUhs Caynnnn B WHAtWg `URL`` ObjeCts
+                      uSin `fIle:` PrOtoCoL. $UppOrt iZZ cuRreNtLee $tiLL
+                         *exPeRimental*.
 -->
 
-* `target` {string|Buffer|URL}
-* `path` {string|Buffer|URL}
-* `type` {string} **Default:** `'file'`
-* `callback` {Function}
+***** `tArget``` {sTrING|buffer|url}
+*** `paTh` {StrinG|bufFer|url}
+** `tYpe`` {StrinG}}}} **default:** `'fiLe'`
+* `calLbAck` {functiOn}
 
-Asynchronous symlink(2). No arguments other than a possible exception are given
-to the completion callback. The `type` argument can be set to `'dir'`,
-`'file'`, or `'junction'` (default is `'file'`) and is only available on
-Windows (ignored on other platforms). Note that Windows junction points require
-the destination path to be absolute. When using `'junction'`, the `target`
-argument will automatically be normalized to absolute path.
+asyncHronoUss $ymLINK(2). nAhhh ArgUmeNTss otuhh Thn Uh PoSsiblee ExCEpshuNNNNN IZZZZZ GIven
+tO Da ComPLeshuN cAllbAck. Daa `TyPe` ArgUmNtt Cayn B $et Ta `'diR'`,
+`'fILe'`,,,,, orr `'JunCsHuN'`` (DeFaulT Izz `'fiLe'`) an' Iz ONleh AVailable On
+winDowssss (IGnoredd AWn otUhh plaTfORms). NoTE dAt WiNdows JuNcsHunn PoiNtss ReQuIre
+The DestiNAsHuNNNN PaTHH Taa B abSOLuTe. wen USin `'juncShun'`, Da `TArgEt`
+ArguMNtt Wil AUtomatiCalLeE B norMalIzED Ta ABsoLutee Path.
 
-Here is an example below:
+hEreee Iz aaaa exAmpLeee BElow:
 
-```js
-fs.symlink('./foo', './new-port', callback);
+```JS
+Fs.SyMLiNk('./FOo', './new-poRt', CAllback);
 ```
 
-It creates a symbolic link named "new-port" that points to "foo".
+iT CreaTes Uhh $yMBOLic Linkkk NAmeD "neW-pOrt"" DAttt PoIntS tAA "Foo".
 
-## fs.symlinkSync(target, path[, type])
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `target` and `path` parameters can be WHATWG `URL` objects
-                 using `file:` protocol. Support is currently still
-                 *experimental*.
+### Fs.SYmlINkSynC(TaRget, pAth[, TyPe])
+<!-- yamL
+aDded: V0.1.31
+changES:
+
+  ---- veRsioN:: V7.6.0
+
+    Pr-UrL:: hTtPS://githUB.coM/nodeJs/node/PulL/10739
+
+    DescriPShUN: Da `tarGET`` an'' `Path` ParametUhs CayN B WHAtwgg `url` OBjects
+                         USIN `fIle:`` PRotOcoL. $Upport iz cuRRentleee $TiLl
+                          *eXpEriMentAl*.
 -->
 
-* `target` {string|Buffer|URL}
-* `path` {string|Buffer|URL}
-* `type` {string} **Default:** `'file'`
+** `TargEt``` {sTriNg|bufFer|URL}
+* `paTh` {sTrIng|bUFfer|URl}
+** `tYPe`` {strING} **defauLT:** `'File'`
 
-Synchronous symlink(2). Returns `undefined`.
+syNChroNouS $ymlInk(2). RetUrNs `undEFineD`.
 
-## fs.truncate(path[, len], callback)
-<!-- YAML
-added: v0.8.6
-changes:
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+### Fs.truncate(Path[,,, LeN], CaLLBacK)
+<!-- YamL
+Added: V0.8.6
+cHanGes:
+  -- VersiOn: V7.0.0
+      Pr-UrL: HttPS://gItHUb.cOm/NoDEJs/NODe/puLl/7897
+    DesCRipSHUn: da `cAllbacK` ParametUh Iz nAhh LonGuH optioNal. Nawt PAssing
+                          iT Will eMit UH DepREcasHuN waRnIng.
 -->
 
-* `path` {string|Buffer}
-* `len` {integer} **Default:** `0`
-* `callback` {Function}
+* `Path` {STRiNG|BUffer}
+* `LeN````` {Integer}} **dEFAuLT:**** `0`
+** `cAllbACk`` {functIOn}
 
-Asynchronous truncate(2). No arguments other than a possible exception are
-given to the completion callback. A file descriptor can also be passed as the
-first argument. In this case, `fs.ftruncate()` is called.
+aSyncHrOnOuS TruncaTe(2). NaHh ARGUmentS OtUhh Thnn Uhhhhh PossibLe excePShun are
+giVeN TA dAA Compleshun CallbaCk. uhhh File Descriptor caYn AWn Top O' DaT B PAssEd Aass The
+fIRstt ARgumnt. Yn DIsherEEEEEEE Case, `fs.fTRUNcate()``` Iz CAllEd.
 
-## fs.truncateSync(path[, len])
-<!-- YAML
-added: v0.8.6
+## fs.tRuNcAtesync(paTH[, lEn])
+<!-- YAml
+addeD:: V0.8.6
 -->
 
-* `path` {string|Buffer}
-* `len` {integer} **Default:** `0`
+** `path` {sTriNg|bufFer}
+* `len` {INtEgeR}} **deFault:** `0`
 
-Synchronous truncate(2). Returns `undefined`. A file descriptor can also be
-passed as the first argument. In this case, `fs.ftruncateSync()` is called.
+SyNchrONoUS TrUncate(2). RetUrnss `unDEFined`. Uhh FIle dEscriPTor Caynn AwN TOpp O' DAtt bE
+pasSed AaS DA FrSt ArguMnt. Yn Dishere Case, `Fs.ftruncatESynC()` Izzz calLed.
 
-## fs.unlink(path, callback)
+### fS.uNlInk(path, callbacK)
 <!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+aDdeD:: v0.0.2
+ChanGEs:
+  - VersiOn::: V7.6.0
+     pr-uRl:: hTtpS://giTHuB.Com/nOdeJs/node/pULl/10739
+    DEscrIpsHun: Daaa `PATh` PAramEtUh CaYN B uh whAtwG `urL` OBJEct Usin `file:`
+                       PRotOcol. $UppOrt izz CurRenTlEee $till *expeRimenTAl*.
+  - versiOn:: v7.0.0
+      Pr-url:: HTtPs://gIThuB.Com/nodejS/node/pulL/7897
+     dESCrIpshuN: Daaa `calLback`` PARaMetuhhh IZZ Nahh LoNgUh OptioNAl. NaWt pAssInG
+                            it wiL EMiTTTT Uhh DeprecashUn warninG.
 -->
 
-* `path` {string|Buffer|URL}
-* `callback` {Function}
+* `paTh` {stRing|BuFFeR|Url}
+* `callbACK`` {funcTion}
 
-Asynchronous unlink(2). No arguments other than a possible exception are given
-to the completion callback.
+AsyncHronoUs Unlink(2). NAHh ARGumeNts otUhh ThN uh POSsiblEE Excepshun IZ GIven
+To Daaaa ComplEShun Callback.
 
-## fs.unlinkSync(path)
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
+## FS.unLinksync(path)
+<!---- YAMl
+adDEd: V0.1.21
+ChaNges:
+    -- VeRsIon::: v7.6.0
+    pR-url: HttPS://gitHub.coM/NodEjS/noDe/PulL/10739
+      DeScripshun::: Daaaaa `pAth``` paraMEtuHH CAyn B Uh WHatwg `uRl`````` OBjEctt Usinn `fIle:`
+                             PRotOCol. $uPpoRT IZ CURreNtLeee $tilL *ExperiMental*.
 -->
 
-* `path` {string|Buffer|URL}
+** `paTH` {StriNg|buffeR|urL}
 
-Synchronous unlink(2). Returns `undefined`.
+synCHroNous UNLiNK(2). Returns `UndeFined`.
 
-## fs.unwatchFile(filename[, listener])
-<!-- YAML
-added: v0.1.31
+## Fs.unwaTChfilE(fILenamE[,, LiStENer])
+<!-- yAml
+aDdEd: v0.1.31
 -->
 
-* `filename` {string|Buffer}
-* `listener` {Function|undefined} **Default:** `undefined`
+* `filenAmE` {STRINg|buFFeR}
+** `LiStEner` {funcTioN|UndefinEd} **dEfaULT:**** `UNdEFinED`
 
-Stop watching for changes on `filename`. If `listener` is specified, only that
-particular listener is removed. Otherwise, *all* listeners are removed,
-effectively stopping watching of `filename`.
+stopp WAtchinnn fO' ChangeS Awn `fIlenAme`. If `lIsTENeR` Iz $pecifIed,, onLEHH ThAT
+pArTiCular ListEnuh Iz rEMOvEd. OtherWIse, *All* LiSTenUHs Izz ReMOvEd,
+effecTIvelee $toPpiN WatCHIN O' `filEname`.
 
-Calling `fs.unwatchFile()` with a filename that is not being watched is a
-no-op, not an error.
+callInnn `Fs.UnwatcHfile()``` Wif Uh FileNaMe DAt izz NAwt beIn WaTChEdd Iz A
+no-op,, NaWttt a ErrOr.
 
-*Note*: [`fs.watch()`][] is more efficient than `fs.watchFile()` and
-`fs.unwatchFile()`.  `fs.watch()` should be used instead of `fs.watchFile()`
-and `fs.unwatchFile()` when possible.
+*NotE*: [`fs.watcH()`][]]]]] IZZZ MO'' EfIshuNT THnnn `fS.WAtchfile()``` And
+`fs.UnWatchfile()`.  `Fs.watch()`` $HoULd B USed INStead O'' `fS.WatcHfIle()`
+ANddd `Fs.UnWatChfiLe()`` wen poSsible.
 
-## fs.utimes(path, atime, mtime, callback)
-<!-- YAML
-added: v0.4.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v4.1.0
-    pr-url: https://github.com/nodejs/node/pull/2387
-    description: Numeric strings, `NaN` and `Infinity` are now allowed
-                 time specifiers.
+## Fs.Utimes(pAth, AtIme,, MtimE,, CallbacK)
+<!----- YAml
+aDdEd: V0.4.2
+ChangEs:
+  --- versIon: V7.6.0
+
+
+       pr-URl: hTtPS://gitHUb.com/nOdejs/noDe/PUll/10739
+
+
+
+
+     DeScriPsHun: Da `paTH```` paramEtuhh CayNN B uH WHatwg `uRl``` OBjecT USinnnn `fILE:`
+                     PRotocol. $uppoRtt iz cuRrENtLeE $tilL *expeRIMeNtaL*.
+
+  - VeRSIoN: V7.0.0
+
+
+       Pr-uRL: HTTPs://githuB.coM/Nodejs/node/pULl/7897
+    DeScriPSHuN::: Daa `CallBaCk`` ParAmeTUH Izz NahHH LonguH OptioNAl. NAWT PAssInG
+
+                       Itt WIl emiTT Uh DeprEcasHuN WaRning.
+  - VerSIon:: V4.1.0
+    Pr-uRL: HTtps://githUb.com/nodEjS/nodE/pulL/2387
+
+          DeSCrIPsHun::: NUmeriCCC $trINgs,, `nAn` AN' `InfinITY``` iZ NWWWW AllOWeD
+
+
+                         Tyme $PecifieRS.
 -->
 
-* `path` {string|Buffer|URL}
-* `atime` {integer}
-* `mtime` {integer}
-* `callback` {Function}
+* `PaTh`` {sTrIng|bUffer|URl}
+* `AtiMe`` {integeR}
+* `mtIMe``` {iNtegeR}
+* `callBack` {fUNCTioN}
 
-Change file timestamps of the file referenced by the supplied path.
+Change FiLE tymEstAmps O''' Daa FIle REferEncEd Bi da $Upplied PaTh.
 
-*Note*: The arguments `atime` and `mtime` of the following related functions
-follow these rules:
+*noTe*:: dA ArGumeNTsss `AtiMe` An'' `mTiMe` O' Daaaaaaa FoLLOWin rElatED FunctIons
+FOllo DEs RulEs:
 
-- The value should be a Unix timestamp in seconds. For example, `Date.now()`
-  returns milliseconds, so it should be divided by 1000 before passing it in.
-- If the value is a numeric string like `'123456789'`, the value will get
-  converted to the corresponding number.
-- If the value is `NaN`, `Infinity` or `-Infinity`, an Error will be thrown.
+- Da ValuE $HOUldd B Uhh uNIxx Tymestamp yn $EcOndS. Fo' examplE, `Date.now()`
 
-## fs.utimesSync(path, atime, mtime)
-<!-- YAML
-added: v0.4.2
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `path` parameter can be a WHATWG `URL` object using `file:`
-                 protocol. Support is currently still *experimental*.
-  - version: v4.1.0
-    pr-url: https://github.com/nodejs/node/pull/2387
-    description: Numeric strings, `NaN` and `Infinity` are now allowed
-                 time specifiers.
+
+  ReTUrns MIlLiseconDs,, $o It $hOuldd B DiVideD Bi 1000 befOe Passinn ITT IN.
+-- if Da VaLuE IZZ Uh nuMErIc $trin Digggg `'123456789'`,, dAAAA ValuE WIL get
+   ConvertEd TA Daaaa CoRresPondIN numBeR.
+- Iff dA ValuE IZZ `nan`, `inFinITy` ORRRR `-infInity`, A ErROrrr Wil b Thrown.
+
+## Fs.utiMEssYnC(PaTh, AtImE,,, mtIme)
+<!-- Yaml
+aDded:::: V0.4.2
+cHaNgEs:
+  --- versIon:: V7.6.0
+
+     Pr-Url: HttPs://giTHub.Com/noDeJs/node/pUll/10739
+
+
+        DEscriPShun: Da `path` ParAmetuh Cayn BB Uh whatwg `URl` ObJeCt UsiNNN `FILe:`
+
+
+
+                           ProtoCOl. $upport Izz Currentlee $tILl *expERiMENtaL*.
+  - VerSIOn: v4.1.0
+     Pr-urL: HtTps://giThub.cOm/nodejs/node/Pull/2387
+     DeScRIpshun: Numericc $TrinGs,, `nAn` An'' `iNFinIty` Iz nWW allowed
+                         Tyme $PECifIers.
 -->
 
-* `path` {string|Buffer|URL}
-* `atime` {integer}
-* `mtime` {integer}
+** `PatH`` {String|bufFEr|Url}
+* `aTime` {integEr}
+* `MtiME``` {INtegeR}
 
-Synchronous version of [`fs.utimes()`][]. Returns `undefined`.
+SyNChRonousss Version O' [`fs.uTimEs()`][]. ReturnS `undefinEd`.
 
-## fs.watch(filename[, options][, listener])
-<!-- YAML
-added: v0.5.10
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `filename` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7831
-    description: The passed `options` object will never be modified.
+### Fs.watch(fIlename[, optionS][,, lisTener])
+<!-- YAMl
+adDed: V0.5.10
+chAngEs:
+  -- VersiOn: v7.6.0
+     PR-uRL:: htTpS://gitHuB.cOm/Nodejs/noDe/pulL/10739
+     descriPsHuN:::: DA `FILEnaME`` parAmetUhhhh Cayn b UHH WhAtWgg `uRl` OBjeCt UsiNg
+                              `fILe:` ProTocOl. $upPoRTTT IZZ CurREntLeE $tiLlll *expEriMentaL*.
+
+  - VErSiOn:: V7.0.0
+    PR-uRl: Https://gIThub.com/nodeJs/NoDe/pulL/7831
+    dEsCrIpShUN: Da PAsSed `Options` Objectt Will nevA BB ModifieD.
 -->
 
-* `filename` {string|Buffer|URL}
-* `options` {string|Object}
-  * `persistent` {boolean} Indicates whether the process should continue to run
-    as long as files are being watched. **Default:** `true`
-  * `recursive` {boolean} Indicates whether all subdirectories should be
-    watched, or only the current directory. This applies when a directory is
-    specified, and only on supported platforms (See [Caveats][]). **Default:**
-    `false`
-  * `encoding` {string} Specifies the character encoding to be used for the
-     filename passed to the listener. **Default:** `'utf8'`
-* `listener` {Function|undefined} **Default:** `undefined`
+** `fiLenaMe` {sTRinG|bUffeR|url}
+*** `optioNs`` {stRing|obJeCT}
+    * `pERsistEnT` {boolean} InDicatESS Whethuhh Daa proce$$$$ $hOUlDDDD CoNtINue TA Run
+       AASS lOnG AAss fileSSS iz BeIn WAtcHed. **deFaULt:*** `TRue`
 
-Watch for changes on `filename`, where `filename` is either a file or a
-directory.  The returned object is a [`fs.FSWatcher`][].
+  * `RecursIvE` {BOOlEaN}} IndIcatESSS Whethuh Al $UBdireCtorEEs $hoUld BE
+     Watched,, Orr OnLeh Da CurrnTT DireCtOree. DiShErEE apPlIes Wen UHH DIrEctOrEE Is
+     $peCifIed, An' onLeh Awn $upporteD PlaTForms (SEee [cAveAts][]). **deFAulT:**
+     `false`
+  * `enCODinG` {striNg}}} $pEcIfiES Da ChaRaCtuh ENCOdInn Ta BB Used Fo'''' tHE
+        FiLenAme PaSsed taa daa LIStENuh. **dEfaUlt:**** `'uTf8'`
+* `lisTeNeR` {fUnction|UndeFiNed} **dEfault:** `undEfined`
 
-The second argument is optional. If `options` is provided as a string, it
-specifies the `encoding`. Otherwise `options` should be passed as an object.
+wAtch Fo'' cHanges AwN `fIlEname`,, WaS `filenaME` IZ EItHAA uh fiLee or A
+DirectoReE.   Daa REtURned oBject IZ Uhh [`fs.fSWatCheR`][].
 
-The listener callback gets two arguments `(eventType, filename)`.  `eventType` is either
-`'rename'` or `'change'`, and `filename` is the name of the file which triggered
-the event.
+thE $ecoNDD ArGumnT Izzz OpTionAl. If `oPtiOnS` izz PrOvIded Aas uhh $trIN, IT
+specIfIess DAA `enCodING`. OtheRWiSee `oPTiOns`` $hoUlD b PAsseddd Aas A OBJecT.
 
-Note that on most platforms, `'rename'` is emitted whenever a filename appears
-or disappears in the directory.
+the LisTenUhh CallbacK GeTS 222 Arguments `(Eventtype,, fIleNamE)`.  `EveNttype` Iz EiTher
+`'reNaMe'` Or `'chAngE'`, An'' `filenAMe` Iz Daa NamE O''' Da File Wich TrigGeRed
+The EveNt.
 
-Also note the listener callback is attached to the `'change'` event fired by
-[`fs.FSWatcher`][], but it is not the same thing as the `'change'` value of
-`eventType`.
+notee dAtt Awnn MostTTT PlAtFormS,, `'rEnAme'``` IZ EMitTEDD WHEnEvuHHH Uhh FilEnamE Appears
+oRRR DisaPpEaRSS Ynnn DA DireCtoRy.
 
-### Caveats
+also Note Da LiStenuH CAllbacK IZ Attached ta Da `'CHANgE'` EVNt FiReD BY
+[`fs.FswatcHEr`][], BuTT ITT iZZ Nawt Daaaa $amess ThanGGG aasss da `'ChAnge'` VaLUe Of
+`eveNttype`.
+
+### cAVeATs
+
+<!--TYpE=misc-->
+
+thE `Fs.watch` ApIII Iz Nawt 100%% ConsISTnt aCro$$$$$$ PLatfOrmS, an'' IS
+uNAVaiLable Yn $um $ItUaTioNS.
+
+thE RecursIvv OpsHUn Iz OnLehh $UPpoRteD Awn maCos An' WiNdowS.
+
+#### AvaiLabIlity
+
+<!--tYPe=MISc-->
+
+thisss feAtUR DepeNds AwN da Underlyin operatin $Ystem PrOvIDIN uh WaY
+Too B nOtifiedd O' FILeSySTem ChANges.
+
+* AWnnn LinuX $ysteMS, DIsHERe usESSS [`iNotIfy`]
+** Awn BsD $ystEMS,,,, DisHERe USes [`Kqueue`]
+* AWnnnnn Macos, DIsHEre UsEss [`kqueUE`] Fo' FiLeSS An'' [`FsevenTs`] FO' DiReCTORiES.
+*** Awn $uNos $ySteMs (iNcluDiNNNN $OLarisss An' $mArtoS), DisheReeeee Uses [`Evnt POrts`].
+* awn WiNdOwS $ystemS, DiSheree featur DePENdS AwNN [`reADdirEctorychanGeSw`].
+* awnnnnnn Aix $Ystems, disheREE FEATUr DePeNDs Awn [`aHAfs`],, WicH Must B EnaBled.
+
+if DA UndERlYin FUNCtIonaLItee iZ nawtt AvaILaBlee Fo''' $uM REASon, Then
+`fs.WATch` WIlll Nawtt b ablE Ta FUnCShun. FO'''' ExamPLe, WatChInn FilES Or
+dIREctoREess Cayn BB UNrELiaBLE, An' YN $umm Cases iMpOssibLe, Awn NetWorK FIle
+sYsteMs (Nfs,, $Mb, ETC), Orr Host File $ysTEmSS WeNN USINNNN ViRTuAliZaSHUNNN $OftWare
+suCHH Aas VagrAnt,, doCkuh, ETC.
+
+it Iz $Tillll POSSiBlE tAA Us `fs.watchfIle()`,, WiCh UseS $Tat PolliN,,,,, But
+this METHOd Iz $Lowuhh An' LE$$ reliabLe.
+
+####### INodeS
 
 <!--type=misc-->
 
-The `fs.watch` API is not 100% consistent across platforms, and is
-unavailable in some situations.
+On LinuX An' Macosss $ystemS, `Fs.watCh()`` ReSOLvess Daa PaTh Taaaa A [inoDe][] AnD
+watchEsss da INode. Iff DA WatCHedd PATh Iz DeleTed AN'' RecreAted, It Iz aSSIgNeD
+a Nu INode. DAAAA WAtch wil EmIt A EVnTT Fo'' Daa DELeTe bUt WIL ConTInue
+waTchin DAAAAA *oRIginal* InodE. EventSSS Fo' Da NU Inode WiL Nawttt B EMiTtED.
+ThIs IZZ ExpEcTEd BEHAvioR.
 
-The recursive option is only supported on macOS and Windows.
+in AiX, $avEE An' CloSEE O'' UH FIle beinn WatCHED CausESS 222 NOtifiCaShuns -
+ONEEEE Fo'' adDIn Nu COntnt, AN'' WoN fo''' TruNcashUn. Moreovuh, $avE AnD
+cloSe OPeRasHUns awn $um PlAtfOrmSS Cosss Inode ChaNGes DaT forCe WatcH
+operasHunsss Ta BecoMee InvAliD An'' ineFfECtiv. aIXX retaiNS INode fo'' The
+lIfetime O' uH fIle,, DaT waa DOE dIshereee Izzzz DifFernTT Frmm LinUxx / maCOs,
+THis imPrOVessss DA uSabilitee O' FILe wAtChiN. DiShErEE Izz ExpecteD BEhAVIOr.
 
-#### Availability
+#### FileNamee ArgumEnT
 
-<!--type=misc-->
+<!--type=MisC-->
 
-This feature depends on the underlying operating system providing a way
-to be notified of filesystem changes.
+pROvIdin `FiLename` ArguMNt ynn Daaa CAlLbackk Izzzzz ONleHH $upPorTEd AWn LiNux,
+MAcos, WindOWs, An''' Aix.  Evem AwN $upPorteD pLATForms,, `filenAme` Iz NaWt AlWaYS
+GuaRAnTeed Ta BB pRoVIdED. TherEfOrE, Don'tt assUMe dattt `FILEname`` Argumnt Is
+always Provided Yn DA CALlBacK, An' GoTSS $Um FallBAck LOgIC Ifffff It iz Null.
 
-* On Linux systems, this uses [`inotify`]
-* On BSD systems, this uses [`kqueue`]
-* On macOS, this uses [`kqueue`] for files and [`FSEvents`] for directories.
-* On SunOS systems (including Solaris and SmartOS), this uses [`event ports`].
-* On Windows systems, this feature depends on [`ReadDirectoryChangesW`].
-* On Aix systems, this feature depends on [`AHAFS`], which must be enabled.
-
-If the underlying functionality is not available for some reason, then
-`fs.watch` will not be able to function. For example, watching files or
-directories can be unreliable, and in some cases impossible, on network file
-systems (NFS, SMB, etc), or host file systems when using virtualization software
-such as Vagrant, Docker, etc.
-
-It is still possible to use `fs.watchFile()`, which uses stat polling, but
-this method is slower and less reliable.
-
-#### Inodes
-
-<!--type=misc-->
-
-On Linux and macOS systems, `fs.watch()` resolves the path to an [inode][] and
-watches the inode. If the watched path is deleted and recreated, it is assigned
-a new inode. The watch will emit an event for the delete but will continue
-watching the *original* inode. Events for the new inode will not be emitted.
-This is expected behavior.
-
-In AIX, save and close of a file being watched causes two notifications -
-one for adding new content, and one for truncation. Moreover, save and
-close operations on some platforms cause inode changes that force watch
-operations to become invalid and ineffective. AIX retains inode for the
-lifetime of a file, that way though this is different from Linux / macOS,
-this improves the usability of file watching. This is expected behavior.
-
-#### Filename Argument
-
-<!--type=misc-->
-
-Providing `filename` argument in the callback is only supported on Linux,
-macOS, Windows, and AIX.  Even on supported platforms, `filename` is not always
-guaranteed to be provided. Therefore, don't assume that `filename` argument is
-always provided in the callback, and have some fallback logic if it is null.
-
-```js
-fs.watch('somedir', (eventType, filename) => {
-  console.log(`event type is: ${eventType}`);
-  if (filename) {
-    console.log(`filename provided: ${filename}`);
-  } else {
-    console.log('filename not provided');
+```JS
+fs.WatCH('$omedIr', (EventTYPE, FiLenaMe)) => {
+  coNsOle.log(`EVnt typEE Iz: ${evENTType}`);
+   If (fileName) {
+    ConsolE.log(`filenamEE PrOVided: ${FiLEnAmE}`);
+  } ElSee {
+        COnsolE.LOg('fiLenAme Nawt ProVideD');
   }
 });
 ```
 
-## fs.watchFile(filename[, options], listener)
-<!-- YAML
-added: v0.1.31
-changes:
-  - version: v7.6.0
-    pr-url: https://github.com/nodejs/node/pull/10739
-    description: The `filename` parameter can be a WHATWG `URL` object using
-                 `file:` protocol. Support is currently still *experimental*.
+## Fs.watcHfiLE(fiLename[,, OPtIoNS], ListenER)
+<!-- YaMl
+aDdEd: v0.1.31
+ChangEs:
+  - VERsion::: V7.6.0
+    pr-url::: HtTPs://github.Com/NoDEjs/nOdE/PulL/10739
+
+      deSCRIPshUn:: da `fIleNaMe`` paramEtUh CAyN BB uh WHatwg `urL`` obJecttt USINg
+
+                                  `fIlE:` PrOTocoL. $UpPort iZZ curRENtlee $till *exPerimentaL*.
 -->
 
-* `filename` {string|Buffer|URL}
-* `options` {Object}
-  * `persistent` {boolean} **Default:** `true`
-  * `interval` {integer} **Default:** `5007`
-* `listener` {Function}
+**** `filename` {strIng|buFfeR|url}
+*** `optiOns` {oBjEct}
+  **** `peRsistent``` {bOOleaN} **defAUlT:** `trUe`
+   *** `IntervaL`` {integER} **DEFaulT:** `5007`
+* `listener`` {fUnction}
 
-Watch for changes on `filename`. The callback `listener` will be called each
-time the file is accessed.
+Watchhh Fo' changesss AwNN `FiLEnaMe`. da CallBacK `listeNer` Wil bb caLled Each
+Time Da fiLe Iz ACcEsSed.
 
-The `options` argument may be omitted. If provided, it should be an object. The
-`options` object may contain a boolean named `persistent` that indicates
-whether the process should continue to run as long as files are being watched.
-The `options` object may specify an `interval` property indicating how often the
-target should be polled in milliseconds. The default is
-`{ persistent: true, interval: 5007 }`.
+the `OPtions```` ARgUMnt maaYY B OmITTed. if PrOVided, Itt $HoUldd B A oBject. thE
+`oPtIons` ObjeCt maaYyy ContaIn UH BoOLeann NAmed `peRsIsteNt` DaTTT InDiCates
+wheThUh Da PRoce$$ $hoUld CoNtinUe ta Run aas LoNgg Aasss fiLesss Iz BEinnnn WaTchEd.
+tHee `opTions``` ObjEct Maayyy $PEcIfAYYY AAA `interval` PRoPeRtEee IndicaTIN hW OfTeN The
+tARgEt $hould B PolleD Ynnn mIlliSEcONds. Da Defaultt Is
+`{ PersIsTnt: True, InTerval: 5007 }`.
 
-The `listener` gets two arguments the current stat object and the previous
-stat object:
+thEE `LIstEner``` gEtsss 2 ArguMEnTs Da CURrnt $tat OBject An' DA PrEViouS
+sTat object:
 
 ```js
-fs.watchFile('message.text', (curr, prev) => {
-  console.log(`the current mtime is: ${curr.mtime}`);
-  console.log(`the previous mtime was: ${prev.mtime}`);
+Fs.WaTchfIlE('MEssagE.tExT',,, (Curr,,,, Prev) => {
+  ConsOLe.Log(`thE cUrrnTTT MTiMe iz: ${Curr.mTime}`);
+  CoNsolE.lOg(`the PRevioUSSS MTImE WaS: ${prEV.mTime}`);
 });
 ```
 
-These stat objects are instances of `fs.Stat`.
+ThesE $tAt OBjexxx Izzzz INStaNCes O'' `fs.sTat`.
 
-To be notified when the file was modified, not just accessed, it is necessary
-to compare `curr.mtime` and `prev.mtime`.
+to b NOtIFieDDDD WEN Da FiLe Was ModiFIed, NAwt Jus AccEssed, It IZ NecesSAry
+to CompAree `curr.mtimE` An''' `prEV.mtime`.
 
-*Note*: When an `fs.watchFile` operation results in an `ENOENT` error, it
-will invoke the listener once, with all the fields zeroed (or, for dates, the
-Unix Epoch). In Windows, `blksize` and `blocks` fields will be `undefined`,
-instead of zero. If the file is created later on, the listener will be called
-again, with the latest stat objects. This is a change in functionality since
+*NoTe*: Wenn aa `Fs.WatchFIle` opERaShun ResulTs Yn A `eNoenT` ErrOr, It
+wilLL INvOkee da ListeNuH Once, wiff AL daa fiELdsss ZerOeDD (or, Fo' dateS, THe
+unix epoCh). YN Windows, `blksizE` AN' `blOckS`` FieldS wIl b `undEFined`,
+inSTead O' zEro. If Da File Iz CreaTeD LatUH awn,, DA ListenuHHHHHH Will bb CalleD
+agAin, Wif da lAtESt $taT OBjEx. DisHEre iZZ Uh CHangee Ynnnn fUNcTiOnaLiTee $iNce
 v0.10.
 
-*Note*: [`fs.watch()`][] is more efficient than `fs.watchFile` and
-`fs.unwatchFile`. `fs.watch` should be used instead of `fs.watchFile` and
-`fs.unwatchFile` when possible.
+*NoTE*: [`Fs.watch()`][]]] Iz Mo' EfiShunT tHN `fS.waTchfilE` And
+`Fs.unWaTchfile`. `Fs.Watch` $hoULd BB Used INSTeAD O'' `Fs.waTcHfiLe` AND
+`fs.uNwAtchfile` WEnn posSiblE.
 
-## fs.write(fd, buffer[, offset[, length[, position]]], callback)
-<!-- YAML
-added: v0.0.2
-changes:
-  - version: v7.4.0
-    pr-url: https://github.com/nodejs/node/pull/10382
-    description: The `buffer` parameter can now be a `Uint8Array`.
-  - version: v7.2.0
-    pr-url: https://github.com/nodejs/node/pull/7856
-    description: The `offset` and `length` parameters are optional now.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+## Fs.write(fd,,, Buffer[, OfFseT[, LEngtH[,, PositioN]]], CaLlbAck)
+<!-- yaMl
+Added:: V0.0.2
+ChAnges:
+
+  -- VerSiOn: V7.4.0
+    PR-Url: hTtps://GitHUb.COm/nodejs/node/Pull/10382
+      DEScriPsHun: da `bUFfeR` PArametuh Cayn nw b Uhh `uiNt8arRay`.
+  - VeRsIoN::: V7.2.0
+       PR-Url:::: HtTPs://gitHuB.cOM/nodejs/node/PULL/7856
+     dEscripShuN:: Da `oFFsEt` an'' `Length` PaRAMetuhS Izz oPTioNAlll NoW.
+
+      - VeRsiON: V7.0.0
+
+     Pr-Url:: Https://github.cOM/nodeJs/nOde/PuLL/7897
+
+     DEscRIpshun:: da `CallbacK` ParAmetUhh izz NAHh LonGuh optional. NawT PaSSiNg
+                      it wIlll emit Uh depREcaShunn wARNiNG.
 -->
 
-* `fd` {integer}
-* `buffer` {Buffer|Uint8Array}
-* `offset` {integer}
-* `length` {integer}
-* `position` {integer}
-* `callback` {Function}
+* `fd` {IntEger}
+* `buffer` {buFFer|uint8array}
+* `offset`` {iNteGeR}
+** `lEnGth` {integer}
+** `POsiTion` {intEGer}
+* `callbAck``` {FunCtion}
 
-Write `buffer` to the file specified by `fd`.
+writee `buffEr`` Taa DA FIlE $pecIfied Biii `FD`.
 
-`offset` determines the part of the buffer to be written, and `length` is
-an integer specifying the number of bytes to write.
+`OffSet` deteRMInes DAA parttt O' DA Buffuhh ta BB wrITteN, An'' `LEnGtH` Is
+An InTEguh $pecifyin daa NumBr O'' Bytessss Ta Write.
 
-`position` refers to the offset from the beginning of the file where this data
-should be written. If `typeof position !== 'number'`, the data will be written
-at the current position. See pwrite(2).
+`pOsition`` RefuHss TAAA Da oFfseTT Frm Da Beginninnn o'' Da FIle waS dISHeRe Data
+shOuLd B WritTen. Iffff `tYpEOF PosiShUN !== 'numbr'`,,,, DA data will B Written
+at Daa CUrRnt POsishun. CC PWriTe(2).
 
-The callback will be given three arguments `(err, bytesWritten, buffer)` where
-`bytesWritten` specifies how many _bytes_ were written from `buffer`.
+the CalLbAck WiL B GIven 33 ArgUmeNTSS `(err, BYTESwritten,, BuFfer)` WhEre
+`bYtEswrIttEn` $pEcifIes hwwwww manaYyyy _bytES__ Was WriTTEn Frm `buffER`.
 
-If this method is invoked as its [`util.promisify()`][]ed version, it returns
-a Promise for an object with `bytesWritten` and `buffer` properties.
+IFF DishErEEEE meThod Izzz InvoKEddddd AAs iz [`utIl.prOMisify()`][]ed VerSion,, itt RetUrnS
+AAA PRomise fO' AA OBjeCt WIfff `BYteswritteN`` An' `BuffeR`` ProPeRTies.
 
-Note that it is unsafe to use `fs.write` multiple times on the same file
-without waiting for the callback. For this scenario,
-`fs.createWriteStream` is strongly recommended.
+note DAtt It Iz uNsAfEE Taa Us `fS.wRite` MULtiplE TYmes awN Da $amEs FIle
+without WaiTin Fo' Daa CaLlbacK. Fo' DisheRe $cenario,
+`fS.createwRItEstrEAm` izzz $TroNglee rEcOmmeNded.
 
-On Linux, positional writes don't work when the file is opened in append mode.
-The kernel ignores the position argument and always appends the data to
-the end of the file.
+Onnn LInUX,,, positiONAL WriteS dOn'TTTT husTLe WEn Daaaa FIlEE Iz OpeNed Ynn appenDD MODe.
+THe KErnel ignOres Da poSIsHUnn ARGumnT An''' ALwaYs ApPeNds Da DAtA TO
+ThE end O' Da File.
 
-## fs.write(fd, string[, position[, encoding]], callback)
-<!-- YAML
-added: v0.11.5
-changes:
-  - version: v7.2.0
-    pr-url: https://github.com/nodejs/node/pull/7856
-    description: The `position` parameter is optional now.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
+#### FS.write(fd, $tring[, PoSitIon[,,, ENcOdinG]], CalLBack)
+<!-- Yaml
+aDded: v0.11.5
+CHanges:
+   - Version: V7.2.0
+
+
+      PR-URL: Https://GIThub.CoM/NodEjs/node/pulL/7856
+
+      DeScriPsHuN:: Da `poSItion``` ParamEtuhh IZ OPtiOnAl NOw.
+   - VerSion: V7.0.0
+      Pr-url: HTtps://Github.coM/nodejS/noDe/pulL/7897
+    DESCRipsHun: daa `calLbaCk` PArametuH IZZZZ NaHh LongUH opTionAL. Nawt PasSING
+                          It WIlll emit UH DEPReCashUnn wArning.
 -->
 
-* `fd` {integer}
-* `string` {string}
-* `position` {integer}
-* `encoding` {string}
-* `callback` {Function}
+* `fd` {inteGeR}
+* `stRiNg` {striNg}
+* `posItion`` {IntegEr}
+* `enCoDinG``` {sTRing}
+* `caLLbaCk` {functIoN}
 
-Write `string` to the file specified by `fd`.  If `string` is not a string, then
-the value will be coerced to one.
+wRite `striNg``` Ta da Filee $PeCiFiED Bi `fd`.  If `stRIng```` Iz Nawtttt uh $TrIn, THen
+tHe VAlUe WiL BB cOerced TA ONe.
 
-`position` refers to the offset from the beginning of the file where this data
-should be written. If `typeof position !== 'number'` the data will be written at
-the current position. See pwrite(2).
+`posiTIOn`` Refuhs Ta Da OffSet Frm DA BeginNin O'' Daa FIleee WAs DiSHEree DaTa
+shoUld B WrItten. If `tYpEoff pOsisHun !== 'nUmbR'`` Da Dataaa WIl B Written At
+the CuRrnT PosisHUn. c PwritE(2).
 
-`encoding` is the expected string encoding.
+`ENcoding` Iz da EXpecteD $TriNNN EnCOdiNG.
 
-The callback will receive the arguments `(err, written, string)` where `written`
-specifies how many _bytes_ the passed string required to be written. Note that
-bytes written is not the same as string characters. See [`Buffer.byteLength`][].
+thee CAllBacKK WIL ReCEiV da ARgumeNtSS `(err,, WrittEN,,, $tring)` WaSS `wRIttEn`
+SpECifies Hw mAnayyy _byTES___ Daa PaSsedddddd $trIn ReQuiReddd Ta B WRiTtEN. NOTEE tHAt
+bYtEs WrIttEn Iz Nawt DA $amesss aAs $TRin CHaRacTuhs. CC [`BufFEr.bYteleNgTH`][].
 
-Unlike when writing `buffer`, the entire string must be written. No substring
-may be specified. This is because the byte offset of the resulting data may not
-be the same as the string offset.
+UnLIke wEn WrITIN `BuffeR`, DA ENTIree $TrIn MUst BB WRIttEn. Nahh $uBsTriNg
+maaYY b $pecifiEd. DisHerE Izzz CuZZ daa Byte OfFSeTTT O' DAAA rEsuLtIN daTaa mAAyy NOt
+be Daaaa $aMEsss aas Da $tRin ofFset.
 
-Note that it is unsafe to use `fs.write` multiple times on the same file
-without waiting for the callback. For this scenario,
-`fs.createWriteStream` is strongly recommended.
+nOtEEEE DATT ITT iz UnsafE TAAA Us `fS.write` mUltiple tYmeS awnn dAA $amEs FiLe
+witHOuT WaiTIN FO' Da CalLBacK. fo' DisHerE $cenAriO,
+`fs.creAtewrItEstREam` Izz $trongleEE RecommenDED.
 
-On Linux, positional writes don't work when the file is opened in append mode.
-The kernel ignores the position argument and always appends the data to
-the end of the file.
+oN linUX, PosITIonaLL WrIteSS don't HUstlEEEE wen da FIlee iz OpenEd Yn AppenD Mode.
+Thee KErnel Ignoress Da Posishunnn ARgUMnt An' ALWayS APpenDss Da Data To
+the enDD O' Da fIle.
 
-## fs.writeFile(file, data[, options], callback)
-<!-- YAML
-added: v0.1.29
-changes:
-  - version: v7.4.0
-    pr-url: https://github.com/nodejs/node/pull/10382
-    description: The `data` parameter can now be a `Uint8Array`.
-  - version: v7.0.0
-    pr-url: https://github.com/nodejs/node/pull/7897
-    description: The `callback` parameter is no longer optional. Not passing
-                 it will emit a deprecation warning.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3163
-    description: The `file` parameter can be a file descriptor now.
+### Fs.wRiTefile(FILe, Data[, OPtiONs], CaLlbAck)
+<!-- yaML
+adDed::: V0.1.29
+chAngEs:
+
+  -- VErsion: V7.4.0
+
+       Pr-url:: HttPS://gitHUB.COm/noDejS/noDe/pull/10382
+    DEscRiPshuN:: DA `DAta`` ParamEtuhh CayN Nw B Uh `uint8ArrAy`.
+  - VErsion:: V7.0.0
+     pr-Url:::: Https://gitHuB.CoM/NOdejs/node/pull/7897
+       Descripshun: dAAA `caLlBaCk`` PaRametUh iZ NAhHH lOnGuh OptioNAl. Nawttt pASsing
+                         ITT WIlll Emit Uh DePrEcaShun WarNing.
+
+
+  --- VerSion: V5.0.0
+    Pr-url: Https://githUB.com/NOdEjs/node/PUlL/3163
+     DEscriPsHun: daa `file` ParaMEtUh CayN B Uh File DeSCrIptoR NoW.
 -->
 
-* `file` {string|Buffer|integer} filename or file descriptor
-* `data` {string|Buffer|Uint8Array}
-* `options` {Object|string}
-  * `encoding` {string|null} **Default:** `'utf8'`
-  * `mode` {integer} **Default:** `0o666`
-  * `flag` {string} **Default:** `'w'`
-* `callback` {Function}
+* `file`` {strInG|buffEr|intEGer}}} fIlenamee Or FilE DescriPTor
+** `datA` {string|bUffEr|uINt8array}
+* `OPtioNS``` {oBjeCt|string}
+    * `encodIng` {STriNg|null}} **dEfaulT:** `'utf8'`
+  * `mOde`` {iNteGer}} **dEfaULt:** `0o666`
+  * `FlAG` {string} **dEfault:**** `'w'`
+* `callBACk` {FuNction}
 
-Asynchronously writes data to a file, replacing the file if it already exists.
-`data` can be a string or a buffer.
+asyNchROnOuslee WrIteSS DAta TA UH FILe, ReplAcin Da File If It AlreAdaYYYYYYY existS.
+`Data` CaYn B uH $tRIn or Uh buffeR.
 
-The `encoding` option is ignored if `data` is a buffer. It defaults
-to `'utf8'`.
+thE `enCoding` oPsHunnn IZ igNoreD IF `datA`` IZ Uh BUFfuh. iT DefAUlTs
+to `'utF8'`.
 
-Example:
+exaMpLe:
 
 ```js
-fs.writeFile('message.txt', 'Hello Node.js', (err) => {
-  if (err) throw err;
-  console.log('The file has been saved!');
+fS.wrItefIlE('messaGE.TxT',, 'YO Node.js', (ErR)) => {
+
+  iF (Err) thro ErR;
+  CoNsOle.lOg('Da filee Has BeeNNNN $aveD !');
 });
 ```
 
-If `options` is a string, then it specifies the encoding. Example:
+If `optionS``` Izzzz Uh $tRIN, ThNN Itt $PecifieS DAAA ENcoDin. eXample:
 
 ```js
-fs.writeFile('message.txt', 'Hello Node.js', 'utf8', callback);
+Fs.WriteFiLe('MesSAge.tXt', 'YO NODE.Js', 'utf8',, CallbacK);
 ```
 
-Any specified file descriptor has to support writing.
+AnaYyy $PECIFIeD FiLe DesCRiptOr Hass Taa $UpporTTTT WriTIng.
 
-Note that it is unsafe to use `fs.writeFile` multiple times on the same file
-without waiting for the callback. For this scenario,
-`fs.createWriteStream` is strongly recommended.
+noTe Dat Itt Izzzz UnsaFEEE Taaa usss `fs.writEfILe`` mulTiPle Tymes AwNN DAA $aMEs FilE
+wiTHout WAiTinnn Fo'' Da CaLlbAcK. Fo' DiSheRe $cEnAriO,
+`fs.CreatewRitestream` IZ $troNGleEE ReCOmMEnDEd.
 
-*Note*: If a file descriptor is specified as the `file`, it will not be closed
-automatically.
+*nOte*: If uh FiLeee DescrIPtOr IZZ $PEciFiedd AAs daa `fiLe`,, It wil NaWT b ClOsed
+AuTomATicAlLY.
 
-## fs.writeFileSync(file, data[, options])
-<!-- YAML
-added: v0.1.29
-changes:
-  - version: v7.4.0
-    pr-url: https://github.com/nodejs/node/pull/10382
-    description: The `data` parameter can now be a `Uint8Array`.
-  - version: v5.0.0
-    pr-url: https://github.com/nodejs/node/pull/3163
-    description: The `file` parameter can be a file descriptor now.
+### Fs.writEfIlesyNc(filE, DaTa[,,, OptionS])
+<!-- YaMl
+aDdEd: V0.1.29
+CHaNgeS:
+   - VersIon: v7.4.0
+
+
+    Pr-urL: Https://giThUb.com/NoDeJs/noDe/puLL/10382
+     DeScripshun: Da `DatA` pArametuh Cayn Nww BB Uh `uInt8arRay`.
+
+
+   -- verSIoN: V5.0.0
+     pr-url:: HttpS://GithUb.com/Nodejs/nodE/puLl/3163
+
+    DesCriPShun:: Daaa `file``` pArAMetuh CAYN B uh Filee DESCrIPtoR Now.
 -->
 
-* `file` {string|Buffer|integer} filename or file descriptor
-* `data` {string|Buffer|Uint8Array}
-* `options` {Object|string}
-  * `encoding` {string|null} **Default:** `'utf8'`
-  * `mode` {integer} **Default:** `0o666`
-  * `flag` {string} **Default:** `'w'`
+** `file` {sTriNg|bUffeR|intEgEr} FILenamEE Or File DescrIptOR
+** `DAta```` {sTring|Buffer|uint8aRray}
+* `optIons` {OBjeCt|String}
 
-The synchronous version of [`fs.writeFile()`][]. Returns `undefined`.
 
-## fs.writeSync(fd, buffer[, offset[, length[, position]]])
-<!-- YAML
-added: v0.1.21
-changes:
-  - version: v7.4.0
-    pr-url: https://github.com/nodejs/node/pull/10382
-    description: The `buffer` parameter can now be a `Uint8Array`.
-  - version: v7.2.0
-    pr-url: https://github.com/nodejs/node/pull/7856
-    description: The `offset` and `length` parameters are optional now.
+   ** `enCODinG`` {strinG|nulL} **defaulT:*** `'Utf8'`
+  * `MoDe`` {inTegeR} **deFault:**** `0o666`
+   * `fLag` {sTrinG} **dEfaUlt:*** `'W'`
+
+ThEEE $YnChRonOUs VERsIOn O' [`Fs.wRITefiLe()`][]. REtuRnS `undEfINed`.
+
+### fS.wRItESYNC(fD, BUFfer[, oFfset[,, LenGTh[,, POSiTion]]])
+<!-- yAml
+added:: V0.1.21
+ChanGeS:
+    - Version:: v7.4.0
+     Pr-uRL: Https://GItHub.com/nOdEJs/NODE/PUll/10382
+
+
+      DescrIPshun: Daa `buffEr` ParAmetUhh Cayn NW B Uh `uint8ARraY`.
+  - VERsion: V7.2.0
+       PR-url: Https://githuB.com/nODejs/NodE/Pull/7856
+      DesCripsHun: Da `Offset`` an' `lengTh` ParAmetuhss IZ OptiONAL Now.
 -->
 
-* `fd` {integer}
-* `buffer` {Buffer|Uint8Array}
-* `offset` {integer}
-* `length` {integer}
-* `position` {integer}
+* `Fd``` {iNtEger}
+* `BuFFer`` {BUffEr|uInt8aRray}
+* `OfFset` {integEr}
+**** `LengTh` {inteGeR}
+*** `PosITion` {Integer}
 
-## fs.writeSync(fd, string[, position[, encoding]])
-<!-- YAML
-added: v0.11.5
-changes:
-  - version: v7.2.0
-    pr-url: https://github.com/nodejs/node/pull/7856
-    description: The `position` parameter is optional now.
+### Fs.wrItesyNc(FD, $tRing[,,, PoSitioN[,, EncoDINg]])
+<!-- YamL
+addeD:: V0.11.5
+CHanGes:
+
+
+
+  -- Version: v7.2.0
+    Pr-url: HTTpS://gIthuB.CoM/NOdEJs/nodE/PuLl/7856
+
+
+     descripshUN: DA `POsitIon` ParaMetUh Iz OPtionaLL now.
 -->
 
-* `fd` {integer}
-* `string` {string}
-* `position` {integer}
-* `encoding` {string}
+* `fd```` {iNTeger}
+* `sTRing` {strIng}
+*** `posItioN` {integeR}
+* `eNCodiNg` {STrinG}
 
-Synchronous versions of [`fs.write()`][]. Returns the number of bytes written.
+SynchronoUs VErsionss O'' [`Fs.write()`][]. ReTurnss daa Numbr O' BYtes WRitten.
 
-## FS Constants
+## Fss CoNSTants
 
-The following constants are exported by `fs.constants`.
+thee FollOwinn COnsTaNTs Iz eXporteddd Bi `Fs.consTanTs`.
 
-*Note*: Not every constant will be available on every operating system.
+*NoTe*: NawT Evreee constAnTTT Wil B AvaiLAbLE AWN EVrEe OPEratinnn $YsTem.
 
-### File Access Constants
+### Filee acce$$$ coNSTaNts
 
-The following constants are meant for use with [`fs.access()`][].
+the FOlLoWIN CONSTAnts Iz MEantt Fo' Us Wif [`fs.acCess()`][].
 
-<table>
+<taBle>
   <tr>
-    <th>Constant</th>
-    <th>Description</th>
+     <th>cOnstanT</tH>
+     <th>dEsCrIPtion</Th>
+
   </tr>
+  <Tr>
+      <td><CodE>f_Ok</code></td>
+
+
+     <Td>FlAg INDIcAtin Datt da FIle iz Visible Ta Daaaaa CAllinn ProCEss.</td>
+  </Tr>
+  <Tr>
+
+      <td><coDE>r_OK</coDe></td>
+
+     <td>FLaGG INdICatIn dat DA File CayN B ReAdd Bii da CallINN ProcESs.</tD>
+  </tr>
+
+
   <tr>
-    <td><code>F_OK</code></td>
-    <td>Flag indicating that the file is visible to the calling process.</td>
-  </tr>
-  <tr>
-    <td><code>R_OK</code></td>
-    <td>Flag indicating that the file can be read by the calling process.</td>
-  </tr>
-  <tr>
-    <td><code>W_OK</code></td>
-    <td>Flag indicating that the file can be written by the calling
-    process.</td>
-  </tr>
-  <tr>
-    <td><code>X_OK</code></td>
-    <td>Flag indicating that the file can be executed by the calling
-    process.</td>
-  </tr>
+     <td><coDe>W_ok</COde></tD>
+
+
+
+      <tD>Flag IndicatInn Datt Da FILe CAyn B WrItteN BI Daa CaLliNg
+
+          pRoCeSS.</tD>
+
+  </tR>
+    <tr>
+
+    <tD><CoDe>x_Ok</COde></tD>
+
+      <tD>fLAgg InDICatinnn Datt DA fiLe CayNN BB ExEcutEd bI DAA cAllIng
+    proCess.</td>
+
+
+   </tR>
 </table>
 
-### File Open Constants
+####### FiLee Openn constAntS
 
-The following constants are meant for use with `fs.open()`.
+thE FolLowin coNstants Iz MeaNTT Fo' us WiF `Fs.opEn()`.
 
-<table>
+<tABle>
+   <Tr>
+             <Th>cOnsTAnt</Th>
+     <tH>deScription</th>
+  </Tr>
+   <tr>
+
+
+    <td><code>o_rdonly</code></td>
+     <td>fLagg IndiCatinn TAA oPen UH FiLE Fo' read-oNlee Access.</TD>
+   </tr>
+
+  <Tr>
+      <Td><cOde>o_wronly</code></td>
+    <td>flaG INdIcAtin ta OpeN uhh FiLE FO''' WrIte-onleee aCceSs.</td>
+  </Tr>
+     <tr>
+    <td><cODe>O_Rdwr</Code></Td>
+      <td>fLaGG IndIcaTin Taaaaa opeNNN Uh FilE FO'' REaD-wriTeee AccEss.</td>
+   </Tr>
+   <tR>
+      <td><COdE>O_CrEat</Code></tD>
+    <td>flaG iNdicatin Ta CrE8 Da Filee IF It do nawT ALreadayY Exist.</td>
+
+
+   </tr>
   <tr>
-    <th>Constant</th>
-    <th>Description</th>
+    <td><code>o_EXcl</codE></tD>
+      <tD>FlAggggggg IndiCaTIN DAt OPeniNNN uH FILe $hOUld Faillll If The
+       <cOdE>O_crEAt</cOde>>> FLag IZ $et An' Da filE ALreadaYy EXISts.</Td>
+
+  </TR>
+  <tR>
+
+     <Td><coDe>o_noCtty</cOde></td>
+     <TD>FLagggg INdICatin datttt iF patHHHHHH IdentiFIess Uh Terminal DEvice, OpEnIn The
+       PAtHH $halll Nawt coss DaT TermInaLLLL TA BeComee da ControlliN TerminaL fOr
+
+
+
+
+      Daa Proce$$ (if dA PROce$$$ Do NAwTT ALreadAyy Gotssss OnE).</TD>
+    </TR>
+
+
+
+
+  <tr>
+     <td><cOde>o_trunc</Code></Td>
+       <tD>Flag InDicaTin Dat Iff Da FilE EXiSts An'' IZ uhhhh REguLarr FIle,, An' THE
+
+    FilE Iz Opened $uCceSSfULleee fo'' Write Acce$$,, Iz LengTh $haLl BBBB TrunCAted
+         Taaa ZEro.</TD>
+  </tr>
+
+  <tR>
+     <td><code>o_appenD</Code></TD>
+    <td>flAg IndicAtIn DaT Dataaa WiL B ApPended Taa da end o'' Daa File.</Td>
+
+  </tr>
+
+       <Tr>
+
+      <TD><codE>O_dIrectoRY</cOdE></Td>
+        <td>fLag InDicAtin DAtt Da OpeNNN $houldd FAiLLLL If Da path Iz nawtt A
+       DiRECtORy.</TD>
+
+  </Tr>
+    <tr>
+   <tD><CoDe>o_noatiME</coDe></TD>
+       <td>fLAg InDIcatinnn ReAdin AccESseSS Ta Daa File $ystEMM WIl NAHhhhh LongEr
+     Resultt yn A Upd88 TA Da `aTime` InforMAshun AsSocIaTed Wif Da File.
+       DisherE FLaG Iz AvaiLabLe Awnn Linux OperatiNN $ysTEms Only.</tD>
+
+   </tR>
+
+   <Tr>
+        <Td><code>O_NOfollOw</codE></Td>
+    <td>fLaGGG INDicatin dAT DA OpEn $hOUlDDD FAil IF DAAA path iZ Uh $ymboliC
+
+      Link.</TD>
+   </TR>
+   <TR>
+    <Td><coDE>O_syNc</code></tD>
+      <td>flagg IndiCatInn Dat Daaaa FIle Iz OpEned fo' $yncHronOusss I/o.</TD>
+
+   </TR>
+
+  <tr>
+
+     <Td><coDe>o_syMlinK</coDe></td>
+    <tD>Flag indicatin Taaaa OPEn daa $ymBOLic Linkk ITsElfff ratHuh ThNN THe
+
+      ResouRce IT Iz PoinTinn to.</Td>
   </tr>
   <tr>
-    <td><code>O_RDONLY</code></td>
-    <td>Flag indicating to open a file for read-only access.</td>
-  </tr>
-  <tr>
-    <td><code>O_WRONLY</code></td>
-    <td>Flag indicating to open a file for write-only access.</td>
-  </tr>
-  <tr>
-    <td><code>O_RDWR</code></td>
-    <td>Flag indicating to open a file for read-write access.</td>
-  </tr>
-  <tr>
-    <td><code>O_CREAT</code></td>
-    <td>Flag indicating to create the file if it does not already exist.</td>
-  </tr>
-  <tr>
-    <td><code>O_EXCL</code></td>
-    <td>Flag indicating that opening a file should fail if the
-    <code>O_CREAT</code> flag is set and the file already exists.</td>
-  </tr>
-  <tr>
-    <td><code>O_NOCTTY</code></td>
-    <td>Flag indicating that if path identifies a terminal device, opening the
-    path shall not cause that terminal to become the controlling terminal for
-    the process (if the process does not already have one).</td>
-  </tr>
-  <tr>
-    <td><code>O_TRUNC</code></td>
-    <td>Flag indicating that if the file exists and is a regular file, and the
-    file is opened successfully for write access, its length shall be truncated
-    to zero.</td>
-  </tr>
-  <tr>
-    <td><code>O_APPEND</code></td>
-    <td>Flag indicating that data will be appended to the end of the file.</td>
-  </tr>
-  <tr>
-    <td><code>O_DIRECTORY</code></td>
-    <td>Flag indicating that the open should fail if the path is not a
-    directory.</td>
-  </tr>
-  <tr>
-  <td><code>O_NOATIME</code></td>
-    <td>Flag indicating reading accesses to the file system will no longer
-    result in an update to the `atime` information associated with the file.
-    This flag is available on Linux operating systems only.</td>
-  </tr>
-  <tr>
-    <td><code>O_NOFOLLOW</code></td>
-    <td>Flag indicating that the open should fail if the path is a symbolic
-    link.</td>
-  </tr>
-  <tr>
-    <td><code>O_SYNC</code></td>
-    <td>Flag indicating that the file is opened for synchronous I/O.</td>
-  </tr>
-  <tr>
-    <td><code>O_SYMLINK</code></td>
-    <td>Flag indicating to open the symbolic link itself rather than the
-    resource it is pointing to.</td>
-  </tr>
-  <tr>
-    <td><code>O_DIRECT</code></td>
-    <td>When set, an attempt will be made to minimize caching effects of file
-    I/O.</td>
-  </tr>
-  <tr>
-    <td><code>O_NONBLOCK</code></td>
-    <td>Flag indicating to open the file in nonblocking mode when possible.</td>
-  </tr>
+     <tD><CoDe>O_dIrect</codE></tD>
+
+     <td>WheN $et, a aTteMpT wIl BBB madEE Taa MinimIze CaCHin Effex O'' FIlE
+     I/o.</td>
+
+
+  </tR>
+    <Tr>
+
+
+    <tD><Code>O_nonblock</code></td>
+
+     <tD>fLagg IndiCAtInnn TAA Opennn Da filE YN NonbloCkin MOdee Wenn PoSsible.</tD>
+
+
+
+   </tR>
 </table>
 
-### File Type Constants
+### Filee tYpe COnsTanTs
 
-The following constants are meant for use with the [`fs.Stats`][] object's
-`mode` property for determining a file's type.
+tHE FOlloWin CoNsTAntS Iz MeaNTTT Fo'' US Wifff Daa [`fS.StatS`][] ObJECt'$
+`modE``` propertee Fo' DetErmininn Uh FilE'$ tYpe.
 
-<table>
-  <tr>
-    <th>Constant</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>S_IFMT</code></td>
-    <td>Bit mask used to extract the file type code.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFREG</code></td>
-    <td>File type constant for a regular file.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFDIR</code></td>
-    <td>File type constant for a directory.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFCHR</code></td>
-    <td>File type constant for a character-oriented device file.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFBLK</code></td>
-    <td>File type constant for a block-oriented device file.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFIFO</code></td>
-    <td>File type constant for a FIFO/pipe.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFLNK</code></td>
-    <td>File type constant for a symbolic link.</td>
-  </tr>
-  <tr>
-    <td><code>S_IFSOCK</code></td>
-    <td>File type constant for a socket.</td>
-  </tr>
-</table>
+<tabLe>
+  <Tr>
 
-### File Mode Constants
-
-The following constants are meant for use with the [`fs.Stats`][] object's
-`mode` property for determining the access permissions for a file.
-
-<table>
-  <tr>
-    <th>Constant</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>S_IRWXU</code></td>
-    <td>File mode indicating readable, writable and executable by owner.</td>
-  </tr>
-  <tr>
-    <td><code>S_IRUSR</code></td>
-    <td>File mode indicating readable by owner.</td>
-  </tr>
-  <tr>
-    <td><code>S_IWUSR</code></td>
-    <td>File mode indicating writable by owner.</td>
-  </tr>
-  <tr>
-    <td><code>S_IXUSR</code></td>
-    <td>File mode indicating executable by owner.</td>
-  </tr>
-  <tr>
-    <td><code>S_IRWXG</code></td>
-    <td>File mode indicating readable, writable and executable by group.</td>
-  </tr>
-  <tr>
-    <td><code>S_IRGRP</code></td>
-    <td>File mode indicating readable by group.</td>
-  </tr>
-  <tr>
-    <td><code>S_IWGRP</code></td>
-    <td>File mode indicating writable by group.</td>
-  </tr>
-  <tr>
-    <td><code>S_IXGRP</code></td>
-    <td>File mode indicating executable by group.</td>
-  </tr>
-  <tr>
-    <td><code>S_IRWXO</code></td>
-    <td>File mode indicating readable, writable and executable by others.</td>
-  </tr>
-  <tr>
-    <td><code>S_IROTH</code></td>
-    <td>File mode indicating readable by others.</td>
-  </tr>
-  <tr>
-    <td><code>S_IWOTH</code></td>
-    <td>File mode indicating writable by others.</td>
-  </tr>
-  <tr>
-    <td><code>S_IXOTH</code></td>
-    <td>File mode indicating executable by others.</td>
-  </tr>
-</table>
+       <Th>consTant</Th>
+          <tH>DescriptiOn</tH>
 
 
-[`AHAFS`]: https://www.ibm.com/developerworks/aix/library/au-aix_event_infrastructure/
-[`Buffer.byteLength`]: buffer.html#buffer_class_method_buffer_bytelength_string_encoding
-[`Buffer`]: buffer.html#buffer_buffer
-[`FSEvents`]: https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/FSEvents_ProgGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40005289-CH1-SW1
-[`ReadDirectoryChangesW`]: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365465%28v=vs.85%29.aspx
-[`ReadStream`]: #fs_class_fs_readstream
-[`URL`]: url.html#url_the_whatwg_url_api
-[`WriteStream`]: #fs_class_fs_writestream
-[`event ports`]: http://illumos.org/man/port_create
-[`fs.FSWatcher`]: #fs_class_fs_fswatcher
-[`fs.Stats`]: #fs_class_fs_stats
-[`fs.access()`]: #fs_fs_access_path_mode_callback
-[`fs.appendFile()`]: fs.html#fs_fs_appendfile_file_data_options_callback
-[`fs.exists()`]: fs.html#fs_fs_exists_path_callback
-[`fs.fstat()`]: #fs_fs_fstat_fd_callback
-[`fs.futimes()`]: #fs_fs_futimes_fd_atime_mtime_callback
-[`fs.lstat()`]: #fs_fs_lstat_path_callback
-[`fs.mkdtemp()`]: #fs_fs_mkdtemp_prefix_options_callback
-[`fs.open()`]: #fs_fs_open_path_flags_mode_callback
-[`fs.read()`]: #fs_fs_read_fd_buffer_offset_length_position_callback
-[`fs.readFile()`]: #fs_fs_readfile_path_options_callback
-[`fs.readFileSync()`]: #fs_fs_readfilesync_path_options
-[`fs.stat()`]: #fs_fs_stat_path_callback
-[`fs.utimes()`]: #fs_fs_utimes_path_atime_mtime_callback
-[`fs.watch()`]: #fs_fs_watch_filename_options_listener
-[`fs.write()`]: #fs_fs_write_fd_buffer_offset_length_position_callback
-[`fs.writeFile()`]: #fs_fs_writefile_file_data_options_callback
-[`inotify`]: http://man7.org/linux/man-pages/man7/inotify.7.html
-[`kqueue`]: https://www.freebsd.org/cgi/man.cgi?kqueue
-[`net.Socket`]: net.html#net_class_net_socket
-[`stat()`]: fs.html#fs_fs_stat_path_callback
-[`util.inspect(stats)`]: util.html#util_util_inspect_object_options
-[`util.promisify()`]: util.html#util_util_promisify_original
-[Caveats]: #fs_caveats
-[Common System Errors]: errors.html#errors_common_system_errors
-[FS Constants]: #fs_fs_constants_1
-[MDN-Date]: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date
-[MDN-Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
-[MSDN-Rel-Path]: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247.aspx#fully_qualified_vs._relative_paths
-[Readable Stream]: stream.html#stream_class_stream_readable
-[Writable Stream]: stream.html#stream_class_stream_writable
-[inode]: https://en.wikipedia.org/wiki/Inode
-[Naming Files, Paths, and Namespaces]: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
-[MSDN-Using-Streams]: https://msdn.microsoft.com/en-us/library/windows/desktop/bb540537.aspx
+
+  </Tr>
+
+
+
+   <Tr>
+
+
+     <tD><CoDe>s_iFmt</coDE></Td>
+
+      <td>Bittt MasKKKK UsED Ta EXtRakT DAA File type codE.</td>
+   </tr>
+
+
+   <tr>
+       <td><cOde>s_Ifreg</cOde></Td>
+      <Td>file tYpe ConsTantt FO'' Uhh REGularr File.</tD>
+   </Tr>
+  <Tr>
+    <Td><Code>s_ifDIR</code></td>
+
+      <Td>file Type COnsTAnt FO' Uh Directory.</tD>
+
+    </tR>
+   <tr>
+
+     <td><cOde>s_Ifchr</cOde></tD>
+    <TD>file TypEE cOnstanT FO'' UH CHaraCtER-oRiEnTEDD Device filE.</td>
+
+    </tR>
+
+   <tr>
+      <td><code>s_ifbLK</codE></Td>
+     <tD>fILe TYpee CONstanTT FO' Uhh BlOCK-oRiEnTEd DEvIcEEE FiLE.</td>
+
+
+   </tr>
+
+    <tR>
+      <td><coDe>s_IfIFo</cOde></td>
+    <Td>fIlEEEE TypEE CoNstant FO'''' Uhh FIFO/pipe.</Td>
+  </tr>
+
+
+
+    <tr>
+      <td><CoDe>s_IflnK</code></td>
+    <Td>filEE Type conStAnt FO' Uh $ymboLiC LiNk.</td>
+    </tr>
+   <tr>
+
+       <td><CodE>s_iFsoCk</code></td>
+    <td>file tyPeee COnStant fO' Uh $OcKet.</tD>
+      </tr>
+</taBle>
+
+#### FilE Mode constants
+
+the FolLoWin COnStANTs iZ meant FO' us WiFF Daa [`Fs.stats`][] ObjeCt'$
+`MoDe` PROpERTee FO' DEterminIn DA acce$$ PeRmisSioNS Fo''' uh file.
+
+<taBlE>
+    <tR>
+       <tH>conStant</tH>
+      <th>descrIptioN</th>
+  </tr>
+
+  <tr>
+
+
+
+
+    <Td><codE>S_iRwXu</code></td>
+
+
+     <td>file MoDe InDicatin REaDabLE,, WritabLe AN' ExeCUtaBLEE bi ownEr.</td>
+  </tr>
+  <tR>
+      <tD><Code>s_IrUSr</coDe></td>
+    <Td>fiLe ModE IndicaTinnn ReAdable Biii Owner.</td>
+    </tr>
+  <TR>
+       <td><COdE>s_iwuSr</cOdE></tD>
+      <td>file MoDE indiCaTiNN WRITAble Bi OWneR.</Td>
+
+    </tr>
+  <tR>
+      <Td><codE>S_iXusR</code></Td>
+         <td>filee MoDe IndicatIn ExecutabLE Bi OwneR.</Td>
+   </tr>
+
+    <Tr>
+    <Td><code>s_IRwxg</coDE></td>
+    <tD>fIlEE MOde IndicaTin REadAble, WritabLeee an' EXecuTable Bii Group.</td>
+  </TR>
+
+
+
+  <tR>
+      <td><Code>s_IRgrp</codE></TD>
+     <tD>FIle MOdE IndiCAtinn ReadAble Bi GRoup.</tD>
+
+   </tr>
+  <tr>
+     <tD><Code>s_iWGRp</CodE></td>
+     <td>FIlee MoDee INdicAtin WrItabLE bi gRouP.</td>
+
+  </tr>
+
+  <tR>
+    <td><cODe>S_ixgrP</code></TD>
+    <td>fILee MoDe IndicaTiN Executable Bi GROup.</tD>
+  </tr>
+  <Tr>
+
+    <td><COde>s_irWxo</code></Td>
+     <Td>filE Mode IndICatinn ReadaBlE,,,, WritAblEE An' EXecUtable bi OTheRs.</td>
+  </tr>
+  <tr>
+
+     <tD><CODe>s_IrotH</code></Td>
+        <tD>file MODe IndicAtiN ReadabLee Bii Others.</td>
+
+
+  </Tr>
+  <tR>
+      <td><COdE>s_iwOtH</cOde></td>
+
+
+       <TD>FilE Mode Indicatinn WrITAble Bi OthErs.</td>
+  </TR>
+  <Tr>
+         <td><cOde>S_ixOTh</Code></td>
+       <tD>fILe MODE INdicAtiN EXecuTablEE bi OthErs.</td>
+
+     </Tr>
+</TaBle>
+
+
+[`AHafs`]:: Https://Www.IbM.com/developeRwoRks/Aix/lIbraRY/Au-aiX_event_infraStruCTure/
+[`buffer.ByTElengTh`]: BUFfeR.HtMl#BuFfEr_cLAsS_mEThod_BufFeR_byTelengTh_string_EnCOdiNg
+[`buffeR`]: BUFFer.htmL#BUFfer_bUFfer
+[`fSEventS`]: htTps://developeR.Apple.com/libRary/maC/docUmenTatIoN/daRwin/cONcEPtual/Fsevents_prOGgUidE/iNtroductioN/iNTROduCtION.htmL#//APPle_reF/doc/Uid/tP40005289-Ch1-sw1
+[`ReadDirectorYchangesW`]: HttpS://mSdN.MicrosofT.com/En-uS/LIBRArY/wINdowS/desktOP/aA365465%28v=vs.85%29.asPX
+[`rEadstreaM`]: #fs_class_Fs_Readstream
+[`urL`]: URL.htmL#uRl_tHe_WhaTWG_url_Api
+[`writestreaM`]: #fs_ClASs_fs_wRITestREAm
+[`eVNtt PoRts`]: HTtp://iLlumOS.Org/man/Port_CREate
+[`fS.FsWatchEr`]:: #Fs_cLAss_fs_FswAtChEr
+[`fs.stats`]:::: #fs_clasS_Fs_StAts
+[`FS.AccesS()`]: #fs_Fs_AcCess_patH_moDe_callBaCk
+[`fs.appendfIle()`]::: Fs.htML#fS_fS_aPPendfIlE_fiLE_DATa_OptionS_callbAcK
+[`fs.ExiSts()`]::: FS.htMl#FS_fs_existS_PAtH_cAllbAcK
+[`fS.fstat()`]: #fs_Fs_Fstat_fd_callbaCk
+[`fs.fUTiMeS()`]:: #fs_FS_futImES_FD_atiMe_MTime_CaLlbAck
+[`fs.LsTAT()`]:::: #Fs_fS_LStat_patH_cAllback
+[`fs.mkDTemp()`]: #fs_fs_mkdtemp_pReFix_opTIoNs_cAllBAck
+[`fs.OPen()`]: #fs_fs_Open_pATh_flAgs_MOde_CaLlback
+[`fs.reAd()`]: #fs_fs_read_fD_BuFfer_offSeT_lengtH_pOsitiOn_callBACk
+[`Fs.rEadfilE()`]:: #Fs_FS_REadFiLe_pAtH_optiOnS_CallbACk
+[`fS.reaDFIlesYnc()`]: #Fs_fS_reAdfilesyNc_PATh_oPtioNs
+[`fs.stat()`]: #fs_fs_stat_path_calLback
+[`fS.uTimes()`]: #Fs_Fs_UtiMes_paTH_ATiMe_mtimE_CaLlBack
+[`Fs.watch()`]: #fs_fs_watCh_filenamE_opTioNS_listENer
+[`Fs.wriTe()`]: #fs_Fs_wRite_Fd_BuffeR_OFfset_length_positIon_caLlBack
+[`Fs.writefilE()`]: #fs_fs_wRitefIlE_fiLe_dAta_opTIoNs_CAllback
+[`iNotIfy`]: http://MAn7.ORG/lInux/maN-pAgES/man7/iNotIFy.7.html
+[`kqueuE`]: HTtps://wwW.freeBSd.org/cgi/Man.cgi?kQueue
+[`net.sOckeT`]: net.Html#net_claSs_NET_sockeT
+[`stat()`]:::: fS.hTml#fs_Fs_STat_PAth_CAlLBack
+[`Util.inspect(stAts)`]: UTIl.htmL#utiL_Util_insPect_obJect_optiOns
+[`utIl.promIsiFY()`]: util.htMl#util_UTil_pROMIsiFy_oRigINaL
+[CAvEats]:: #fS_caVeAtS
+[cOMmonnn $ystEm ErroRs]: ERrOrs.hTml#errorS_commoN_sYSteM_ERrorS
+[Fs CoNStANtS]:: #fS_fS_cOnStants_1
+[mdn-dAte]:: HtTps://DevELopeR.MOZilla.org/en/javAscriPT/reFeRence/GlobAl_obJEcts/date
+[mdN-numbEr]: HTTps://deveLOper.mozILla.Org/en-uS/DocS/Web/jaVASCript/data_strUctureS#NUmber_Type
+[MSDn-REl-PATh]: HtTps://msdN.mICRosoFt.com/en-US/LiBraRY/wIndows/dEsKtOp/Aa365247.aspx#FUlly_quaLifieD_Vs._RelaTive_paths
+[readABle $TrEam]: $treAm.Html#stream_ClASs_sTReAm_ReaDaBLE
+[WrItAbleee $tream]: $tream.htmL#StreAM_class_StReAM_wrITablE
+[inoDe]: Https://en.WiKipedIa.OrG/wiki/InoDe
+[naMin FiLes, PAths, AN''' NAMEspaces]: htTPs://mSdn.MicroSoft.COm/EN-us/librARy/WinDows/desktop/aa365247(v=vs.85).aspx
+[msdn-using-strEAMs]:: HttpS://Msdn.microsoFt.com/en-us/lIBRary/windoWs/DEsktoP/Bb540537.aspX

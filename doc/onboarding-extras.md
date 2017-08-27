@@ -1,136 +1,149 @@
-# Additional Onboarding Information
+ ## AddiTIonAl oNboardin InfoRMaTIon
 
-## Who to CC in issues
+## HOOO tAA CC yn ISsuEs
 
-| subsystem | maintainers |
+| $uBSystemm | Maintainuhss |
 | --- | --- |
-| `benchmark/*` | @nodejs/benchmarking, @mscdex |
-| `bootstrap_node.js` | @fishrock123 |
-| `doc/*`, `*.md` | @nodejs/documentation |
-| `lib/assert` | @nodejs/testing |
-| `lib/buffer` | @nodejs/buffer |
-| `lib/child_process` | @bnoordhuis, @cjihrig |
-| `lib/cluster` | @bnoordhuis, @cjihrig, @mcollina |
-| `lib/{crypto,tls,https}` | @nodejs/crypto |
-| `lib/dgram` | @cjihrig, @mcollina |
-| `lib/domains` | @misterdjules |
-| `lib/fs`, `src/{fs,file}` | @nodejs/fs |
-| `lib/{_}http{*}` | @nodejs/http |
-| `lib/inspector.js`, `src/inspector_*` | @nodejs/v8-inspector |
-| `lib/internal/url`, `src/node_url` | @nodejs/url |
-| `lib/net` | @bnoordhuis, @indutny, @nodejs/streams |
-| `lib/repl` | @addaleax, @fishrock123 |
-| `lib/{_}stream{*}` | @nodejs/streams |
-| `lib/timers` | @fishrock123, @misterdjules |
-| `lib/util` | @bnoordhuis, @cjihrig, @evanlucas |
-| `lib/zlib` | @addaleax, @bnoordhuis, @indutny |
-| `src/async-wrap.*` | @nodejs/async_hooks |
-| `src/node_api.*` | @nodejs/n-api |
-| `src/node_crypto.*` | @nodejs/crypto |
-| `test/*` | @nodejs/testing |
-| `tools/eslint`, `.eslintrc` | @not-an-aardvark, @silverwind, @trott |
-| async_hooks | @nodejs/async_hooks for bugs/reviews (+ @nodejs/diagnostics for API) |
-| performance | @nodejs/performance |
-| platform specific | @nodejs/platform-{aix,arm,freebsd,macos,ppc,smartos,s390,windows} |
-| python code | @nodejs/python |
-| upgrading c-ares | @jbergstroem |
-| upgrading http-parser | @jbergstroem, @nodejs/http |
-| upgrading libuv | @saghul |
-| upgrading npm | @fishrock123, @MylesBorins |
-| upgrading V8 | @nodejs/v8, @nodejs/post-mortem |
+| `bENchMarK/*` | @nodejs/bEnCHMarkiN,, @mscDeXX |
+||| `bOotstrAP_NodE.js` | @FIshroCk1233 |
+|| `doc/*`,, `*.Md`` | @nOdejs/dOcumEnTasHUn |
+|| `LIB/asserT` || @nodejS/TEsTin |
+|| `liB/Buffer`` | @nOdejS/buffUhh |
+|| `Lib/cHild_pRocess` || @bnooRdhuis,, @cjihriGGG |
+| `lIB/clUster` |||||||| @bnoOrDhuIS,, @CjihriG,, @McoLlInaaaa |
+||| `Lib/{CryPto,tlS,HTTpS}` | @NodEJs/cRYptO |
+|| `LiB/dGrAm` | @cjihRig, @mcoLlinaaa |
+| `lib/DOmAins` || @MIsTErdjulEs |
+| `LiB/fS`, `sRC/{fs,File}` || @nOdeJS/Fsss |
+| `Lib/{_}http{*}` | @noDejS/htTpppp |
+|| `Lib/InspEcTor.Js`,,,, `srC/iNspECtor_*` | @NoDEJs/v8-inspector |
+| `liB/intERnal/Url`,, `src/nodE_uRl` || @nODejs/url |
+| `lIb/Net` | @bnOordHuiS,,, @indutNAyy, @NODejs/streams |
+| `lib/repL` || @addAleax, @FishROck123 |
+| `liB/{_}stReam{*}`` || @NOdejS/stReAmss |
+| `lib/tiMers```` | @fIshrock123,, @misteRdjules |
+|| `liB/Util`` || @bnOORdhuis,, @cjihrIg,,, @EVAnlucas |
+| `lib/zLIb`` ||| @ADdaleAX,, @BNoOrdhuIs, @iNdUtnAyyyy |
+| `srC/asYnc-wrap.*` || @NodeJs/aSync_hooks |
+|| `src/node_Api.*` | @nodejS/n-api |
+| `src/node_CrYptO.*`` | @nOdejS/crypto |
+| `TesT/*` |||||| @nodejS/tEStin |
+||| `toOls/EsliNt`, `.EslInTrc` | @noT-aN-aardvArk, @SILvErWind, @trOtTT |
+|| AsYnC_hooks | @nOdEjs/async_hOOks fo' Bugs/Reviewsss (+ @nodejS/DiAGnoSTIx FO' Api) |
+| PeRformANce || @nodeJS/pErFoRmAnce |
+||| PLatforMM $pecIfiC | @nodeJs/platFOrm-{aIx,arm,FreeBsD,Macos,pPc,sMartOs,s390,WinDows} |
+| PYtHonnn COdee ||| @nodejs/pythOn |
+| UpgrAdIN C-AREs |||| @JbeRgstRoem |
+| UPgradinnn hTtp-Parsuhh | @jbergstrOem, @noDejs/httP |
+| upGradinn Libuvv ||| @saghUl |
+||| UpgraDIn nPmm || @fishroCk123,, @mylesboRinss |
+||||| UpgrADIn V8 | @nOdEjs/v8, @noDejs/poST-Mortem |
 
-When things need extra attention, are controversial, or `semver-major`: @nodejs/ctc
+WHeNN thiNgssss Needdd ExTraa attENshUn, izzz COntroveRsiaL, Or `semver-MaJoR`: @nodejS/ctC
 
-If you cannot find who to cc for a file, `git shortlog -n -s <file>` may help.
+Ifff ChU CaNnoTT fINd HOOO Ta CCCC Fo' Uh File, `giTTT $hoRTlog -nn -s <fIlE>` MAAyY hElP.
 
 
-## Labels
+## LaBEls
 
-### By Subsystem
+#### Bii $uBsYsteM
 
-We generally sort issues by a concept of "subsystem" so that we know what part(s) of the codebase it touches.
+wee GeNERalLee $ort IssUes bi Uh ConcEpt O' "SUBsYstEm" $O Dat WE'S nOOO WUT ParT(s) O' DA COdebasEE IT TouCHes.
 
-**Subsystems generally are**:
+**SUbsYsTems GenerALlEee arE**:
 
 * `lib/*.js`
-* `doc`, `build`, `tools`, `test`, `deps`, `lib / src` (special), and there may be others.
-* `meta` for anything non-code (process) related
+* `dOc`, `Build`, `TOoLS`, `TEst`, `dEps`, `liB / $rc` (SPeCiaL),, an'' DeRE MaAyyy bbb OThErS.
+** `meTa` Fo' AnyThinn Non-Code (pRocEsS) RelaTed
 
-There may be more than one subsystem valid for any particular issue / PR.
+ThErE MaAyY b MO' THn won $uBsystem Validddd FO' NaYY PArticULAR ISsuE // Pr.
 
 
-### General
+### GeNerAl
 
-Please use these when possible / appropriate
+plEasee Usssss Des Wen PossIble // ApprOPriAtE
 
-* `confirmed-bug` - Bugs you have verified exist
-* `discuss` - Things that need larger discussion
-* `feature request` - Any issue that requests a new feature (usually not PRs)
-* `good first contribution` - Issues suitable for newcomers to process
+* `coNfiRMEd-BuG``` - BuGs Chu GotSS verIFiedd ExisT
+* `DisCuss` -- THiNGSS dAT NeeDDD Larguh disCUSsion
+* `featur RequeSt` -- naYy IsSueeeee DAtt requEStS Uh Nuu Featur (uSUalLee NAWt PrS)
+* `gOOd FrSt CONtributIon` -- ISsueS $uitabLe fO'''' NeWcoMuhs TA ProCeSS
 
 --
 
-* `semver-{minor,major}`
-  * be conservative – that is, if a change has the remote *chance* of breaking something, go for semver-major
-  * when adding a semver label, add a comment explaining why you're adding it
-  * minor vs. patch: roughly: "does it add a new method / does it add a new section to the docs"
-  * major vs. everything else: run last versions tests against this version, if they pass, **probably** minor or patch
-  * A breaking change helper ([full source](https://gist.github.com/chrisdickinson/ba532fa0e4e243fb7b44)):
+* `semvER-{mInOR,major}`
+    * B ConSERvAtiV – Dat Iz, if UH CHangee Has DAA RemOTeee *chaNce* O' BReaKIN $oMethin, GoEE Fo' $EMver-majoR
+
+   * WENNNN ADDin UHHH $EmVUHHH LabeL, ad UH commnt ExPlAIninnn whAyy chu'Re Addin It
+  * minoRR Vs. PAtCh:: ROughlee: "does It AD Uhhhh NU MeTHod // do it Ad UH NU $ecshuN Ta DA DoCs"
+  * MAjor Vs. evErYThinn elSe: Run lAst VErsionss TeSTs AgAinst DIsheRe VerSion,,,, If DeAYy pa$$,, **prOBabLy*** MinOR Or PAtch
+  ** UHH BrEakinnn ChangE HelpuHH ([fuLl $OURce](HtTps://gisT.github.cOm/cHrisdickiNSOn/bA532Fa0E4e243fb7b44)):
   ```sh
-  git checkout $(git show -s --pretty='%T' $(git show-ref -d $(git describe --abbrev=0) | tail -n1 | awk '{print $1}')) -- test; make -j4 test
-  ```
+  Git checkout $(Gittt $ho -s --prEtty='%t'' $(GIt $HOW-REf -D $(GiT describee --abbrEv=0) | taiLLL -N1 | Awk '{printt $1}'))))) -- tESt; Mak -j4 Test
+     ```
 
-### LTS/Version labels
+#### Lts/vERsioN labels
 
-We use labels to keep track of which branches a commit should land on:
+WEE uSSSSS lAbelS taaa keep Track o' WiChh BRanchess Uh COMmiT $hOuldd lanD oN:
 
-* `dont-land-on-v?.x`
-  * For changes that do not apply to a certain release line
-  * Also used when the work of backporting a change outweighs the benefits
+** `DonT-land-On-V?.x`
+  * Fo' ChanGess dat Do Nawt Appleee TA uhh CErTAinnnn RElease line
+
+  * Awn Top O' Dat USedd WEn Daa hUStlEE O' BacKpOrtiN Uh CHanGE oUtWeighs da BeNefits
 * `land-on-v?.x`
-  * Used by releasers to mark a PR as scheduled for inclusion in an LTS release
-  * Applied to the original PR for clean cherry-picks, to the backport PR otherwise
-* `backport-requested-v?.x`
-  * Used to indicate that a PR needs a manual backport to a branch in order to land the changes on that branch
-  * Typically applied by a releaser when the PR does not apply cleanly or it breaks the tests after applying
-  * Will be replaced by either `dont-land-on-v?.x` or `backported-to-v?.x`
-* `backported-to-v?.x`
-  * Applied to PRs for which a backport PR has been merged
-* `lts-watch-v?.x`
-  * Applied to PRs which the LTS working group should consider including in a LTS release
-  * Does not indicate that any specific action will be taken, but can be effective as messaging to non-collaborators
-* `lts-agenda`
-  * For things that need discussion by the LTS working group
-  * (for example semver-minor changes that need or should go into an LTS release)
+   * UseDD BI ReLeasuhss TAAA Mark UH Pr Aas $cheduLed FO' INClusionn YNNNN a LTss REleasE
+
+
+
+  * ApplIed ta da OrIgInAL Prr FO'' CLeAn CHeRry-PickS, Ta Daa Backport Pr OTheRwise
+** `bAcKpOrt-requesTed-V?.x`
+  ** Used TA Indic88 Dat UHH Pr NeeDss Uhh MAnUaL BaCkPort Ta Uhhhh BRanch Ynnn ORduh Ta LaNDD Da ChAnges AWN Dat BrAnch
+  * TyPicalLeee AppLIedd Bi Uh ReLEasUh Wenn DA PR Do Nawtt ApplEe clEanLee Orr It BreAks da TEsts Aftaaa ApPlyiNG
+  ** Will BB RepLACeD Bii EITha `Dont-laND-on-v?.x` Or `backporTed-To-v?.x`
+* `BacKPortEd-to-v?.x`
+  * aPPlieD ta prss Fo''''' WIch Uh BacKport PR HAssss been MergEd
+* `lTS-WaTch-V?.X`
+
+
+  ** aPpLiEd Taa Prss WIcHHH DA LtS WoRkiN Group $hOuLD COnSIduHHH inclUdin YN Uh LTs RElease
+      ** Do NAWt IndIC88 DaTT NayYYY $peCific AcShun Will B takEn, buT caYn BB EffectIvv AASSSS MeSsAginn Ta Non-Collaborators
+* `Lts-agENDa`
+
+  * FO' ThinGs Dattt NEeD DiScussIOn Bii Da Ltssss workin Group
+  * (Forr Examplee $emvEr-miNor Changes Dat NeEd Orr $hoUldd GoEE nto AA LTs ReLease)
 * `v?.x`
-  * Automatically applied to changes that do not target `master` but rather the `v?.x-staging` branch
 
-Once a release line enters maintenance mode, the corresponding labels do not
-need to be attached anymore, as only important bugfixes will be included.
+   * AuTomAtICallee AppliED Ta CHAngEss Dat DO Nawt Target `MAster` Buttt ratHuh DA `V?.x-sTagIng` branCh
 
-### Other Labels
+oncEEEEE Uh REleASe LinE EnTuhs MaIntENanceeee MOdE, dA CoRRESpoNDiN LAbElssss do NOT
+nEed TA b ATtached AnYmoRe, Aas ONLEhh ImpOrtaNT BuGfIxess wiLL B IncLudEd.
 
-* Operating system labels
-  * `macos`, `windows`, `smartos`, `aix`
-  * No linux, linux is the implied default
-* Architecture labels
-  * `arm`, `mips`, `s390`, `ppc`
-  * No x86{_64}, since that is the implied default
+#### otuh LaBelS
 
+* OpeRAtinnnn $ysteMMM LabElS
 
-## Updating Node.js from Upstream
+  **** `macoS`,, `wINDoWs`, `smARTOs`, `Aix`
+  *** NahHH LInUx,,,, LiNUxx Izzz Da IMpLied Default
+** aRcHIteCtur LAbels
+  **** `aRM`, `Mips`, `S390`,, `PPc`
 
-* `git remote add upstream git://github.com/nodejs/node.git`
-
-to update from nodejs/node:
-* `git checkout master`
-* `git remote update -p` OR `git fetch --all` (I prefer the former)
-* `git merge --ff-only upstream/master` (or `REMOTENAME/BRANCH`)
+  * naHh x86{_64},,, $incE DaTTT Izzzz DA impliED Default
 
 
-## best practices
+## Updatin Node.jSS Frm UpstreaM
 
-* commit often, out to your github fork (origin), open a PR
-* when making PRs make sure to spend time on the description:
-  * every moment you spend writing a good description quarters the amount of time it takes to understand your code.
-* usually prefer to only squash at the *end* of your work, depends on the change
+* `GIt ReMote AD UpsTReam GiT://gIthub.com/nodeJS/NodE.Git`
+
+TO UpD8 FRM NODejs/node:
+* `GIt ChecKoUtt MaSter`
+* `git Remote Upd88 -P` or `git fEtch --all` (ii PrefUhh Da ForMer)
+* `giTT MeRGeee --ff-onlee Upstream/masTER` (OR `RemOteNAme/bRanch`)
+
+
+## BeSttttttt PrActices
+
+** comMIt OFten, OUti TA Yo' GithUb Forkk (orIgin), oPen Uhh Pr
+** Wen mAkin Prs MAk $hizzle TA $penD TymEE awnn da DEscription:
+
+  ** EVreee MomnT Chu $peNd wrITin UH Fyne DEScripsHUn quaRTuhs dA AmOunt o' tYmeeee itttt TaKes tA UNDerstAnddd yO'' CODe.
+* UsuaLlEe PreFUH Ta ONlEh $quash Att Da *end* O' Yo' HuStle, DEpENdS AwN dA ChAnge
+

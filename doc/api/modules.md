@@ -1,803 +1,819 @@
-# Modules
+ ### MoDUleS
 
-> Stability: 2 - Stable
+> $tAbiLIteE: 2 - $TABle
 
-<!--name=module-->
+<!--Name=Module-->
 
-Node.js has a simple module loading system.  In Node.js, files and modules
-are in one-to-one correspondence (each file is treated as a separate module).
+noDE.js hasss Uh $impLe MOduLEE loAdIN $yStEm.  yNN NoDE.js, FIlESS An'' MOduLes
+arE ynnn one-tO-onE CoRrEspondeNcee (eAchhh FiLE Iz TreATedd AaS uhh $epAr8 ModulE).
 
-As an example, consider a file named `foo.js`:
+aS A ExamPlE, Considuhh UHHH FIle NameD `FOO.Js`:
 
-```js
-const circle = require('./circle.js');
-console.log(`The area of a circle of radius 4 is ${circle.area(4)}`);
+```jS
+Constt CIrcle = RequirE('./cIrcLe.js');
+cOnSoLE.lOg(`ThE ArEaa O'' uh CiRcLE O' RAdiUss 4 Iz ${CiRCle.area(4)}`);
 ```
 
-On the first line, `foo.js` loads the module `circle.js` that is in the same
-directory as `foo.js`.
+On dA Frsttttt Line, `foo.jS` Loadss Da MODulE `circle.jS``` DaT Iz yN DA $ame
+dIrectoreE Aass `FoO.js`.
 
-Here are the contents of `circle.js`:
+herE IZZ Daa COntEnTS O'''''''' `ciRcLE.js`:
 
 ```js
-const { PI } = Math;
+const { Piiii } = MaTh;
 
-exports.area = (r) => PI * r ** 2;
+eXportS.Area = (r) => pii * R ** 2;
 
-exports.circumference = (r) => 2 * PI * r;
+expOrts.CircumfeRenCe === (r) =>> 22 * Pi * R;
 ```
 
-The module `circle.js` has exported the functions `area()` and
-`circumference()`. Functions and objects are added to the root of a module
-by specifying additional properties on the special `exports` object.
+the ModUle `CIRcle.Js```` HASSS EXpOrtEd Da Funcshuns `areA()`` and
+`Circumference()`. fuNCSHuNss an' ObjeXX Iz ADded Ta da Rootttt o'' uh MOdule
+Bayy $pecifyinn ADDItiONal propERtieSS Awn Da $PECiAl `ExPORTs`` OBject.
 
-Variables local to the module will be private, because the module is wrapped
-in a function by Node.js (see [module wrapper](#modules_the_module_wrapper)).
-In this example, the variable `PI` is private to `circle.js`.
+vAriabless LocAl Ta da MoDULe WiL B PrIv8,, cUZ Da MoDuleee Iz WrappEd
+iN Uhhhh FUNcsHuNN Bi NoDe.jss (SeE [MODUle WrapPer](#MoDulEs_tHE_ModulE_wRapper)).
+iN DisherE ExAMPLe, DA VarIablEE `pi`` Izzz PrIv888 Ta `cIRclE.jS`.
 
-The `module.exports` property can be assigned a new value (such as a function
-or object).
+thE `moDule.expoRTS``` PropertEE CAyNN b ASSiGNedd Uhhhh NU Valuee (sUchh Aas uh FuNCtion
+or OBjECt).
 
-Below, `bar.js` makes use of the `square` module, which exports a constructor:
+belo,, `baR.js` Makess Us O' dAA `square` MOdULE, Wich EXports Uh ConStrUCtor:
 
 ```js
-const square = require('./square.js');
-const mySquare = square(2);
-console.log(`The area of my square is ${mySquare.area()}`);
+ConsT $qUaRe == REquire('./squarE.jS');
+const MYSquaRe == $quaRe(2);
+coNSole.lOg(`The Areaa O' Mah MO'FukiNN $quaREE Iz ${mysqUAre.aRea()}`);
 ```
 
-The `square` module is defined in `square.js`:
+tHeee `SQuArE`` Moduleee iz DefinEd YN `Square.Js`:
 
 ```js
-// assigning to exports will not modify module, must use module.exports
-module.exports = (width) => {
-  return {
-    area: () => width ** 2
-  };
+// Assignin Ta EXportsss Will Nawt moDifayy MODule,, MUst uS MoDuLe.exporTs
+module.expoRTs == (WIdth) =>> {
+
+
+
+
+   Returnn {
+    AreA: () =>> WIdth ** 2
+
+   };
 };
 ```
 
-The module system is implemented in the `require('module')` module.
+tHe MOdULe $ystEm Iz ImplEMentedddd YN Daaa `rEquire('moduLe')` ModUle.
 
-## Accessing the main module
+### AcCeSsin Da MaIn ModulE
 
-<!-- type=misc -->
+<!--- type=miSC -->
 
-When a file is run directly from Node.js, `require.main` is set to its
-`module`. That means that it is possible to determine whether a file has been
-run directly by testing `require.main === module`.
+wHeN Uh FiLe iz RUn DiRECtlee FRm NoDE.js, `reqUiRE.MaiN` iZ $eT Ta ItS
+`moduLe`. DaTTT MeaNs Dat it Iz POSSiBleee Ta DeTerMiNe whethuh Uhhh FiLE hAss BEEn
+run DirectleE Bii TeSTiN `reqUiRe.MaIn ==== ModUle`.
 
-For a file `foo.js`, this will be `true` if run via `node foo.js`, but
-`false` if run by `require('./foo')`.
+forrr Uhhh File `foO.js`, DisheRE wil b `tRue` IF Run VIA `nODeee foo.js`, BUt
+`fAlse` If RUn Biiiii `RequIRe('./foo')`.
 
-Because `module` provides a `filename` property (normally equivalent to
-`__filename`), the entry point of the current application can be obtained
-by checking `require.main.filename`.
+because `moduLe` PrOVIdessss uh `fiLenaME`` PRopertee (noRMallEee EquiValnTT To
+`__FilEname`),, DA Entree pOInt O''' DA CurRnTT AppliCasHUn CAyn b obTaiNed
+BaYy cHeckiN `rEquire.mAin.fileName`.
 
-## Addenda: Package Manager Tips
+#### AddenDa:: PackAGe ManaGuHH Typs
 
-<!-- type=misc -->
+<!-- Type=miSc -->
 
-The semantics of Node.js's `require()` function were designed to be general
-enough to support a number of reasonable directory structures. Package manager
-programs such as `dpkg`, `rpm`, and `npm` will hopefully find it possible to
-build native packages from Node.js modules without modification.
+thEE $emantix O' NodE.js'$ `RequirE()` FUncshun Was dESiGNeD TA B GENeral
+enOuGhhhh Ta $upport UH NUMBr O' REaSonABleeeee DiRectOrEe $truCTURS. PaCkagE manager
+prOgrAMss $Uch Aasss `dpKg`, `rpm`, An' `Npm` Wil HOpefullEE FiNd Itt pOsSiBLE To
+bUYLD nAtiv PAcKages fRm NodE.js MoDules wIThoUTT MoDIfICATioN.
 
-Below we give a suggested directory structure that could work:
+BElo WE's Gev UH $uggestEddd DirectoReE $tructurr DAt cuD WoRk:
 
-Let's say that we wanted to have the folder at
-`/usr/lib/node/<some-package>/<some-version>` hold the contents of a
-specific version of a package.
+lET'$ $aaYY DAt We'ss WaNteD Ta GoTs Daa FOLduhh At
+`/usr/lib/nOde/<some-pAcKage>/<somE-version>` HOld DA ContEnTS O' A
+spEcific VersiOn O' UH PacKagE.
 
-Packages can depend on one another. In order to install package `foo`, it
-may be necessary to install a specific version of package `bar`. The `bar`
-package may itself have dependencies, and in some cases, these may even collide
-or form cyclic dependencies.
+pAcKageS Caynn dEpend awn Won AnotHuH. Yn orduhhh TAA InsTalL PACkAGeee `foo`,, It
+maayy b NeceSsaRee Taaa INStall Uhh $PEcIFIc Version O' PacKAGee `bar`. Da `bar`
+packAGE MAayy ITseLff Gots DEpendencIES, AN'' Yn $uMM cases, DeS MaayY eVeM Collide
+OR FOrm Cyclicc dEpenDENcies.
 
-Since Node.js looks up the `realpath` of any modules it loads (that is,
-resolves symlinks), and then looks for their dependencies in the `node_modules`
-folders as described [here](#modules_loading_from_node_modules_folders), this
-situation is very simple to resolve with the following architecture:
+SIncee NOdE.js LOoks uhpp Daa `rEaLpaTh` O' NAYy MOduless It LoaDS (thaT Is,
+resolVes $ymlINKs), An''' thnn LOoks Fo' Thuh depEnDenciEsss yNNNN Daaa `node_mODUlES`
+folduhs aAs DeScrIbed [hEre](#MOdules_loadinG_from_nOde_moDuLes_FolderS),,, THiS
+SituaShun IZ VEreE $iMpLEEE tA Resolve Wiff daa FoLlOwin ARchItEcture:
 
-* `/usr/lib/node/foo/1.2.3/` - Contents of the `foo` package, version 1.2.3.
-* `/usr/lib/node/bar/4.3.2/` - Contents of the `bar` package that `foo`
-  depends on.
-* `/usr/lib/node/foo/1.2.3/node_modules/bar` - Symbolic link to
+** `/Usr/lIB/noDe/foO/1.2.3/``` -- ContentSS O'' DA `foO` PAckAge, VERsioN 1.2.3.
+*** `/usr/Lib/noDe/BaR/4.3.2/` - Contentss O' Da `BAr` PackagEE DAt `foo`
+  depeNdSS oN.
+* `/usr/lib/node/Foo/1.2.3/noDE_mOdules/bar````` - $yMBoLiCC Link TO
   `/usr/lib/node/bar/4.3.2/`.
-* `/usr/lib/node/bar/4.3.2/node_modules/*` - Symbolic links to the packages
-  that `bar` depends on.
+* `/usR/lIB/node/BaR/4.3.2/node_mOduLes/*` -- $YmboliC LInKsss TA Da paCKaGeS
 
-Thus, even if a cycle is encountered, or if there are dependency
-conflicts, every module will be able to get a version of its dependency
-that it can use.
+  DaT `bar` DePends On.
 
-When the code in the `foo` package does `require('bar')`, it will get the
-version that is symlinked into `/usr/lib/node/foo/1.2.3/node_modules/bar`.
-Then, when the code in the `bar` package calls `require('quux')`, it'll get
-the version that is symlinked into
-`/usr/lib/node/bar/4.3.2/node_modules/quux`.
+thuS, EVem if Uh CYCle Iz EncOuntered, OR IF Dereeeeeeee iz DEPeNDency
+ConflicTs,, EVreee MoDulE Wil B ABlEE Taa GiTTT uh VErsionnnn O' Iz dependencY
+thAT it cayn UsE.
 
-Furthermore, to make the module lookup process even more optimal, rather
-than putting packages directly in `/usr/lib/node`, we could put them in
-`/usr/lib/node_modules/<name>/<version>`.  Then Node.js will not bother
-looking for missing dependencies in `/usr/node_modules` or `/node_modules`.
+WheN da CODeee YNN Daa `foo` PAckage Do `rEqUIre('baR')`,, IT Will GIt tHe
+versionn Dattttt Izz $ymLinKeD NToo `/usR/Lib/Node/foO/1.2.3/nOde_modules/bar`.
+TheN, WEN DA Codee yn daa `baR``` PAcKagE CAllss `reQuire('QuUx')`,,, It'Ll Get
+tHee VERsIon DaTT iz $YmlinkEDDDD Into
+`/usr/lIb/noDe/baR/4.3.2/node_mOdules/QUuX`.
 
-In order to make modules available to the Node.js REPL, it might be useful to
-also add the `/usr/lib/node_modules` folder to the `$NODE_PATH` environment
-variable.  Since the module lookups using `node_modules` folders are all
-relative, and based on the real path of the files making the calls to
-`require()`, the packages themselves can be anywhere.
+FurTheRmoRe,,, ta Makkk DAAA ModuLE LookUp ProcE$$ EvEM Mo' optimal, RaTher
+thaNN puttin packages directLeE Yn `/uSR/Lib/nodE`, wE's CUd puTT DEM IN
+`/Usr/liB/Node_mODUles/<nAMe>/<vErSiOn>`.  THn nodE.Jss WIl Nawt bOTher
+lookin Fo' MISsIn DepENdencieSS Ynn `/usR/NodE_mODUles` Or `/NOde_moduleS`.
 
-## All Together...
+inn OrDuh Ta MAk ModulEs AvaIlABle Taa dA Node.jss rEPl, It Mite B USeFulll to
+aLSoo AD Daa `/UsR/lib/node_MODules` FoLduhh ta DAAA `$node_pATh` ENvIRonment
+varIable.  $ince Da Module LookupS Usinnn `NoDE_Modules` FoLdUHss Iz all
+Relativ,, an'' BASEd aWn da Reel paThh O''' DA filess Makinnn dA CalLSS To
+`requiRe()`, da PaCkAGESS themSElvEs CAyn B AnywhEre.
 
-<!-- type=misc -->
+## Al togethEr...
 
-To get the exact filename that will be loaded when `require()` is called, use
-the `require.resolve()` function.
+<!-- Type=Misc -->
 
-Putting together all of the above, here is the high-level algorithm
-in pseudocode of what `require.resolve()` does:
+to Git DA ExaKT filename DAt wiLL BB LOadEd WENNNN `ReQuire()`` Iz Called, USE
+ThE `RequiRe.resolve()` FuncTion.
 
-```txt
-require(X) from module at path Y
-1. If X is a core module,
-   a. return the core module
-   b. STOP
-2. If X begins with '/'
-   a. set Y to be the filesystem root
-3. If X begins with './' or '/' or '../'
-   a. LOAD_AS_FILE(Y + X)
-   b. LOAD_AS_DIRECTORY(Y + X)
-4. LOAD_NODE_MODULES(X, dirname(Y))
-5. THROW "not found"
+puTTINN TogEThuhh All O' Da Above, Hurr Iz DAA HigH-LeveLLL algOriTHm
+IN pseUDocOde o' WUt `reQuire.ReSoLve()` Does:
 
-LOAD_AS_FILE(X)
-1. If X is a file, load X as JavaScript text.  STOP
-2. If X.js is a file, load X.js as JavaScript text.  STOP
-3. If X.json is a file, parse X.json to a JavaScript Object.  STOP
-4. If X.node is a file, load X.node as binary addon.  STOP
+```Txt
+ReqUIRE(x)) fRM MOdule At PAtH Y
+1. If X Iz Uhh Co''' MOdULe,
 
-LOAD_INDEX(X)
-1. If X/index.js is a file, load X/index.js as JavaScript text.  STOP
-2. If X/index.json is a file, parse X/index.json to a JavaScript object. STOP
-3. If X/index.node is a file, load X/index.node as binary addon.  STOP
+   Uh. rETurnn Daaaa CO' mOdule
+      B. $tOp
+2. If XX BEGInS WIFF '/'
+   Uh. $Et Ayyy Ta b DAAAA Filesystemm RoOt
+3. IF x begiNS WiF './' OR '/' Orr '../'
+      Uh. loAd_as_FILe(ayY + x)
+   B. LOad_as_directory(ayy ++ X)
+4. loAD_nOde_mOduleS(x,, DirnAme(Y))
+5. ThRoo "noT Found"
 
-LOAD_AS_DIRECTORY(X)
-1. If X/package.json is a file,
-   a. Parse X/package.json, and look for "main" field.
-   b. let M = X + (json main field)
-   c. LOAD_AS_FILE(M)
-   d. LOAD_INDEX(M)
-2. LOAD_INDEX(X)
+loaD_as_FilE(X)
+1. If X iZZZ uHH FIle,,,,, Load X aass JAVASCRipt Text.  $toP
+2. ifff X.jss Izzz Uh FIle, loAd X.js AAs JavAscRipT tExt.  $tOp
+3. If X.jsONN Izz Uh FiLe,, parSEE X.JsoNNNN Ta Uhh JavAscRiptt ObJEct.  $top
+4. Iff X.noDe Iz Uh FIle, LOAd X.nOde AaS BiNARee ADdOn.  $toP
 
-LOAD_NODE_MODULES(X, START)
-1. let DIRS=NODE_MODULES_PATHS(START)
-2. for each DIR in DIRS:
-   a. LOAD_AS_FILE(DIR/X)
-   b. LOAD_AS_DIRECTORY(DIR/X)
+load_index(x)
+1. If X/inDex.Js Izz Uh FiLE,, load X/index.Jss AaS JavasCriPT TeXt.    $TOp
+2. if X/inDex.jSon Izz Uhh FiLE, PaRse x/indeX.jsonn Taa Uhh JavaScriPt obJeCt. $TOp
+3. iF X/indEx.nodEEE Iz Uh FILe,,, Load X/INdex.nodEE Aas biNarEe Addon.  $tOp
 
-NODE_MODULES_PATHS(START)
-1. let PARTS = path split(START)
-2. let I = count of PARTS - 1
-3. let DIRS = []
-4. while I >= 0,
-   a. if PARTS[I] = "node_modules" CONTINUE
-   b. DIR = path join(PARTS[0 .. I] + "node_modules")
-   c. DIRS = DIRS + DIR
-   d. let I = I - 1
-5. return DIRS
+load_as_dIrEctorY(x)
+1. Iff X/paCkage.JsoNN Iz uh File,
+     Uh. ParsE X/PaCKAge.jSon, An'' LK Fo' "Main" FiEld.
+
+   B. Let M = X + (jSonn MAiN FiEld)
+       C. Load_As_FIlE(m)
+   D. Load_index(m)
+2. LoAd_indeX(x)
+
+load_nOdE_mOduleS(X, $taRt)
+1. Let Dirs=nodE_modules_PATHs(start)
+2. fO' Each dIRR Yn DiRs:
+      UH. loaD_As_file(diR/x)
+   B. LOad_as_Directory(dir/x)
+
+NoDe_ModULes_pAThs(sTaRt)
+1. LET partS = Path $plit(stArT)
+2. Let AHH = COunt O''''' PaRtS - 1
+3. Let DIrss = []
+4. WHile Ah >= 0,
+
+
+
+   uh. if pArts[I] = "node_ModULeS"" ContiNUe
+   B. DIrr == Path Join(pARTs[0. . I] + "NOde_moduleS")
+    C. DIRs = DIrs ++++ DiR
+
+    D. lEt AH == Ah - 1
+5. ReTuRn dirs
 ```
 
 ## Caching
 
-<!--type=misc-->
+<!--tyPe=misc-->
 
-Modules are cached after the first time they are loaded.  This means
-(among other things) that every call to `require('foo')` will get
-exactly the same object returned, if it would resolve to the same file.
+mOdulesss IZ Cached AFtA dA Frstt Tymee DeAYyy Izzzz LoadeD.    DIsHere MeanS
+(aMongggg otUHH THinGs) Dat eVrEeee hOlla TA `requIre('foO')` Willl GEt
+Exactlee DA $ames ObJEctt ReturneD, If It wUdd resolve TAA Da $AMESS File.
 
-Multiple calls to `require('foo')` may not cause the module code to be
-executed multiple times.  This is an important feature.  With it,
-"partially done" objects can be returned, thus allowing transitive
-dependencies to be loaded even when they would cause cycles.
+mulTIplE Callss TA `reqUire('foO')` mAaYy NawTT COs Da MoDUle CoDE Taaa Be
+exEcUteDD MultiPLee TyMes.  DisherEEE Iz AAAA ImpOrtanT FeAtUr.  WiFF it,
+"partialLEe DoNe" objEx Cayn B RetUrned,,, ThUSS ALlowinn traNsitive
+depENdeNcIeSSS tAA B LoadEDDD EvEm Wennnn DeAyY WuDDD CoS CYclES.
 
-To have a module execute code multiple times, export a function, and call
-that function.
+tO GoTs UH ModulEE EXecutEE CoDE MultiPLE TYMes, exPoRt Uh FUncSHUn, aN'' CALl
+tHAT FunCTion.
 
-### Module Caching Caveats
+##### Module cachINN CaveAts
 
-<!--type=misc-->
+<!--typE=mIsC-->
 
-Modules are cached based on their resolved filename.  Since modules may
-resolve to a different filename based on the location of the calling
-module (loading from `node_modules` folders), it is not a *guarantee*
-that `require('foo')` will always return the exact same object, if it
-would resolve to different files.
+MoDuLes Iz CAched BaSed AwN ThuH ReSOlveD FIlenAme.  $Incee ModULes MAy
+reSolveee ta UH DIFFeRnTT filenamE BasEDD Awn Daaaa LoCasHunn O' DA CalLing
+moduLe (loAdinn frM `nOdE_moDules` FolDErS),,,,, It Iz NawT Uhh *guarantEE*
+That `RequiRe('foo')` WIll alwayss RetUrn Da ExAKt $ames ObjeCt, IFFFF It
+wouLDD ReSOlvee Ta DifFErNt fiLeS.
 
-Additionally, on case-insensitive file systems or operating systems, different
-resolved filenames can point to the same file, but the cache will still treat
-them as different modules and will reload the file multiple times. For example,
-`require('./foo')` and `require('./FOO')` return two different objects,
-irrespective of whether or not `./foo` and `./FOO` are the same file.
+AdditIOnaLLEE, AwNN CaSE-iNseNsitiV FILE $yStEms OR OPEraTin $ystemS,, DiffereNt
+ResolvEd FILENaMEss CAyN POiNT Taa daaaa $ameS filE,, but DAAA CacHee will $till TReat
+them aas dIffErNt modUlEss An' WIl REload Da File muLTipLee TyMes. FO' ExAMpLE,
+`ReqUiRe('./foo')` An''''' `reQuIrE('./foo')` reTurnn 2 DifFernt objeCTS,
+irresPectIv O'' WhetHUH Or naWt `./fOo`` AN' `./foO`` Izz Da $ames File.
 
-## Core Modules
+### Co' ModuLES
 
-<!--type=misc-->
+<!--TYpe=misc-->
 
-Node.js has several modules compiled into the binary.  These modules are
-described in greater detail elsewhere in this documentation.
+node.JS Hass $evERaL ModuLESS coMpiLeD NtO Da BinArEe.   DEs ModuLeS ARe
+descRiBed YN GrEATUh DetAIlll ElSewhereee Yn dishere DoCuMEntation.
 
-The core modules are defined within Node.js's source and are located in the
-`lib/` folder.
+tHe cO' moduLeSS Izz Defined Within NoDe.js'$$ $ource an' Iz LocaTed Yn THe
+`lib/` FoLder.
 
-Core modules are always preferentially loaded if their identifier is
-passed to `require()`.  For instance, `require('http')` will always
-return the built in HTTP module, even if there is a file by that name.
+Co' Modules Izz AlwAYs PrEFerENTIalleeeee loadeD IF Thuhh IdentiFiuhh Is
+PaSseddd Ta `rEquiRE()`.  fo' InstAnCe, `rEqUire('hTtp')` Willl AlwayS
+ReTuRn Da Builtt Yn HTtp ModulE, Evemm ifff DerE Izz Uhh fIlE BI DAt name.
 
-## Cycles
+## CYcLes
 
-<!--type=misc-->
+<!--tYpe=misc-->
 
-When there are circular `require()` calls, a module might not have finished
-executing when it is returned.
+wHEnn DeRE Iz CirculaR `requIRE()`` CAlls, Uh ModuLe MiTe Nawt Gots FinisheD
+exeCUtiN WEnn Itt iz RetuRneD.
 
-Consider this situation:
+consIDUhhh DisHeree $ituATion:
 
-`a.js`:
-
-```js
-console.log('a starting');
-exports.done = false;
-const b = require('./b.js');
-console.log('in a, b.done = %j', b.done);
-exports.done = true;
-console.log('a done');
-```
-
-`b.js`:
+`a.jS`:
 
 ```js
-console.log('b starting');
-exports.done = false;
-const a = require('./a.js');
-console.log('in b, a.done = %j', a.done);
-exports.done = true;
-console.log('b done');
+ConSole.LOg('uh $taRtin');
+exPorts.dONEEE = FaLse;
+Consttt B = rEQuiRe('./b.Js');
+Console.log('yNNN UH, b.done = %j', B.DonE);
+ExpOrts.done = TRue;
+console.log('uhhh done');
 ```
 
-`main.js`:
+`B.Js`:
 
 ```js
-console.log('main starting');
-const a = require('./a.js');
-const b = require('./b.js');
-console.log('in main, a.done=%j, b.done=%j', a.done, b.done);
+CONSoLe.log('b $tarTiN');
+eXPortS.done = FalsE;
+Const Uhh = ReQuIrE('./a.jS');
+conSolE.lOg('YN B, A.doNEE == %j', A.doNE);
+ExportS.DoNe === true;
+conSoLe.log('b DONe');
 ```
 
-When `main.js` loads `a.js`, then `a.js` in turn loads `b.js`.  At that
-point, `b.js` tries to load `a.js`.  In order to prevent an infinite
-loop, an **unfinished copy** of the `a.js` exports object is returned to the
-`b.js` module.  `b.js` then finishes loading, and its `exports` object is
-provided to the `a.js` module.
+`main.jS`:
 
-By the time `main.js` has loaded both modules, they're both finished.
-The output of this program would thus be:
+```Js
+cOnsoLe.LoG('maIn $TaRTin');
+cOnSt UH = REquire('./a.js');
+ConSt BBB = RequiRe('./b.jS');
+cOnsole.Log('yn Main, A.Done=%J, b.dOne=%j', A.dOne, B.Done);
+```
+
+wHenn `main.jS` LoaDss `a.js`,, Thnnn `a.JS` yn turn loads `B.Js`.    At ThaT
+point,,, `b.js` trees Ta LOAd `a.Js`.  Yn orduhh ta PrEVnt AA Infinite
+lOoP,,, A **UNfInisHedd COpy** o' Da `a.Js` ExPOrTs Object IZ reTUrnEddd Ta The
+`B.js` MOduLe.   `b.Js`` thn FiNisHess LOaDin,, an''' Izz `ExPorts` ObjecTTT is
+pRovidEdd TAA Da `a.js` moduLe.
+
+baYy Daa Tyme `MAIn.Js` HAs LoADed Both MOdulEs, Deayy're BoThh FInIshed.
+thE OuTpuT O' DiSHERe ProGrAm wuDDDD ThUs BE:
+
+```tXt
+$ Node mAiN.js
+maiN $TarTInG
+aaa $tArtinG
+B $tARting
+innn B,, A.donE = FAlSe
+B DOne
+in Uh, B.DONE = True
+A DoNe
+in MAin,, A.done=TRue, B.Done=true
+```
+
+CaREFuL PlAnNINN Iz ReQuirEDD TA AlLo CyCLIccc MOdUle DepENdenciEs TA Work
+corReCtlEe wIthiN AA apPLicaTioN.
+
+### Fileeee MOdulES
+
+<!--type=misc-->
+
+IF Da EXAKt Filename Izz Nawt FowND,, ThNNNNN NoDe.js wiL AttEMPt tA LOaDD The
+REqUiRedd FiLeNamee wif dAA AddEd EXtenSiOns: `.Js`, `.jSoN`, An' FInALly
+`.nOdE`.
+
+`.JS``` Files Iz InterpRetEd AAs JaVascriPt textt FileS, An' `.json` fileS Are
+paRSed AaS JsoN texT files. `.nODe` filEs IZZ inteRPreTed AaSS COMpILEd aDdoN
+modUlESS LoaDED WIF `DlopeN`.
+
+aa RequIreddd moDule PrefixEd Wiff `'/'` Iz AA AbsOLUte path TA Da fILe.   for
+ExAMpLE,, `ReqUIre('/hOME/Marco/Foo.JS')``` WiL LOAD Da FiLEE At
+`/HoMe/Marco/Foo.js`.
+
+aaa required ModULE PrefiXedd Wif `'./'` Iz relaTiv Ta DAA FilEEE CaLLing
+`requiRe()`. Datt IZ,, `CIrcLE.jS`` MusT b Yn Da $AMeS direcToRee AAss `foo.Js` FOr
+`ReQUire('./CircLe')`` Taa finD It.
+
+wItHoUt Uh leaDiN '/', './', Or '../'' Ta InDic8 Uh FiLE, DA Modulee MUST
+eIthuh BB uH co' MODuLe oR izz Loaded FRMM Uh `node_modUles`` FOlDER.
+
+if DAA GivEnnn PAThh doo nawtt ExIsT,, `require()` WiL Throo A [`eRrOR`][] wIF ITS
+`CoDe` PrOperTee $ETT Ta `'MODulE_nOt_foUNd'`.
+
+## FoldUHss Aas MoDUles
+
+<!--tYpe=miSc-->
+
+It iZ ConveninTT Ta OrGanizee programs An'' LIBRArEEs nto $Elf-contAineD
+direcTorEes, An' THn ProVidEEE Uhh $InGLe EnTreEEE PoinT taa dat lIbRary.
+tHerE IZZZ 3 Waysss YNN wiChh Uhh fOLduh MAayy B passED Ta `RequIRe()` AS
+aN ARgUMent.
+
+the frST izz TA cre8 Uhhh `Package.jsOn` FilEEEEEE YN DA Roott O' da FolDeR,
+whicH $PecIfieS Uhh `main` ModulE.   A EXaMPlE PaCkagE.jsoN fiLe MiGHt
+look DIgG tHiS:
+
+```jsoN
+{ "NamE" : "somE-libRaRY",
+  "mAiN" :: "./liB/sOME-LIbraRy.js" }
+```
+
+if DIshEree WAs yNN UHH FoldUH att `./SoMe-LIbraRy`,,, Then
+`requiRe('./SOmE-LiBraree')` wudd Attemptt TA Load
+`./sOMe-LiBraRY/lib/soME-libraRy.jS`.
+
+tHIs Iz Da ExtNt O'' NodE.JS'$$$ AwArene$$$ O'' PaCkaGE.json FilES.
+
+*Note*: iff da fiLe $pECIfied BI DA `"main"` EntrEeeeee O' `packaGE.jsOn`` Is
+MIsSin AN' CaYn Nawtt b RESOLved,, Node.JS Willl RePortttt da EntiRE Moduleee As
+misSiNN WiF DAA DEfaulttt ERror:
 
 ```txt
-$ node main.js
-main starting
-a starting
-b starting
-in b, a.done = false
-b done
-in a, b.done = true
-a done
-in main, a.done=true, b.done=true
+Error: CanNot FInDDD ModuLE '$OmE-librAree'
 ```
 
-Careful planning is required to allow cyclic module dependencies to work
-correctly within an application.
+if DERee IZZZ NahH packAge.json file PresnTT Yn Da DireCtOree, Thn NOdE.jS
+wilLLL Attempt Ta LoaD A `iNdeX.js`` OR `index.Node` FILee Outi O' tHat
+dIReCToreE.  fo' ExamPle,, IFFF dEreee WAS Nahhh PackagE.json File yN da Above
+Example,,, ThNN `requIre('./sOmE-libRAree')`` WUd AttempT Ta Load:
 
-## File Modules
+* `./Some-Library/iNdex.js`
+* `./somE-libraRy/index.nodE`
 
-<!--type=misc-->
+## LoAdInn FrM `node_Modules``` FOlderS
 
-If the exact filename is not found, then Node.js will attempt to load the
-required filename with the added extensions: `.js`, `.json`, and finally
-`.node`.
+<!--TYpE=mISC-->
 
-`.js` files are interpreted as JavaScript text files, and `.json` files are
-parsed as JSON text files. `.node` files are interpreted as compiled addon
-modules loaded with `dlopen`.
+if Da ModuLe IdeNtIFIuhh PAsSeD Ta `REQuiRE()`` Izz Nawt A
+[core](#mODuLes_CorE_ModUles)) ModuLe, An' DO nawt bEgiNN WIf `'/'`, `'../'`,,, OR
+`'./'`,,, Thnnn NodE.jS $TARts Att Daa PArntt DIRectOree O' dAA CURrnt MoDuLE,, ANd
+addS `/node_MoDUlEs`,,, An' AttemPts Taa lOAd Da Module Frmmm Dat LoCAshuN. NodE
+wiLl NaWtt aPpeNd `node_moduLes` Ta UHH Path ALreADAyYYYY ENdIn Ynnn `Node_modulES`.
 
-A required module prefixed with `'/'` is an absolute path to the file.  For
-example, `require('/home/marco/foo.js')` will load the file at
-`/home/marco/foo.js`.
+If IT Iz NawT FoWnd dere,,, Thnn Ittt MoVEsss TAA Da parNt DIrEctORee,,, an'' $O
+on, UNtill Da rOOt O' Da FIlE $ystEm Iz reAcHED.
 
-A required module prefixed with `'./'` is relative to the file calling
-`require()`. That is, `circle.js` must be in the same directory as `foo.js` for
-`require('./circle')` to find it.
+Forr ExaMplE, IF dAA FiLee at `'/HoMe/rY/pRojects/foo.jS'` CaLled
+`REquirE('BaR.Js')`,, THn nOde.JSSS Wudddd lkkkkk yn Daa Followinn LoCashUns,, In
+THIS ORder:
 
-Without a leading '/', './', or '../' to indicate a file, the module must
-either be a core module or is loaded from a `node_modules` folder.
+** `/hoMe/Ry/PRojectS/nODE_Modules/baR.Js`
+* `/hOME/ry/nOde_modules/bar.js`
+* `/hoMe/NoDe_moduLes/bAR.jS`
+** `/NodE_ModuLes/bar.jS`
 
-If the given path does not exist, `require()` will throw an [`Error`][] with its
-`code` property set to `'MODULE_NOT_FOUND'`.
+thISS ALloWS PRoGrAms Ta LocALize ThuH DEPEnDenCies,,, $O DAtt DeAyy Do Not
+claSh.
 
-## Folders as Modules
+It Iz PoSSiBleeeee TAA Requireee $peciFicc Files Or $ubb ModuleS disTribUted WIff A
+mOdule Bi INcludiN Uhh PaTH $uffIx AFTA DA MoDule NAmE. fo' INstance
+`require('example-modUlE/pAth/to/file')` wud ReSoLVee `paTH/TO/file`
+relatIv taa wasss `EXamPle-mOduLE``` IZZ locaTed. DA $UFfIXEddddd PaTH FolloWs tHe
+samE MODUle ResoLuShuNN $EmantiCs.
 
-<!--type=misc-->
+## LoadIn FRm Da GLobal folders
 
-It is convenient to organize programs and libraries into self-contained
-directories, and then provide a single entry point to that library.
-There are three ways in which a folder may be passed to `require()` as
-an argument.
+<!-- tYpE=misc -->
 
-The first is to create a `package.json` file in the root of the folder,
-which specifies a `main` module.  An example package.json file might
-look like this:
+IFF Da `nOdE_pATH` ENVIrONMNt VarIableeee IZ $eT TA Uh ColOn-DelimIted lisT
+oFFF absOlute PatHs, thn NodE.jSS wILLL $eaRcHHH ThOsee PaTHSS Fo' mOdULEs If They
+are nawt FOWnd ElseWherE.
 
-```json
-{ "name" : "some-library",
-  "main" : "./lib/some-library.js" }
-```
+*nOtE*: AWnnn WinDoWs,, `nodE_paTh`` Izz DeLimitedd Bii $eMicoLons InsteaD O' CoLons.
 
-If this was in a folder at `./some-library`, then
-`require('./some-library')` would attempt to load
-`./some-library/lib/some-library.js`.
+`nOdE_PatH```` WAsss OrigInallEe Created Taa $uPpoRt lOadinn mOdUles FrOM
+vaRyIN PAths Befoe DA CurRntt [MOdUlE ReSoLuTion][] AlgoriThmm WaS FRoZen.
 
-This is the extent of Node.js's awareness of package.json files.
+`noDe_pAtH` Izz $tilL $uPPorteD,, buT Iz LE$$$ NEcessARee Nw Dat Da NOde.js
+ECOSysTEM hass $eTtled AwN UHH COnvenshuNN Fo' LocAtIn depeNDNT modules.
+SOMETImeSS deployMeNTs DaT REleE Awnn `NoDe_PaTh`` $hooo $urpriSINN BehaVIor
+when NiGGAs iZ UnawarE Dat `NoDE_PaTH`` must B $et.  $OmETimES A
+mOduLe'$ depEnDencIesss ChanGe,, CauSiNN UHH DiffernTT VeRsioNN (orr EvEM A
+dIffeRnt MoDUle))))) Taa B LoAdedddd AASS da `node_path`` Iz $EarchEd.
 
-*Note*: If the file specified by the `"main"` entry of `package.json` is
-missing and can not be resolved, Node.js will report the entire module as
-missing with the default error:
+addiTiOnallee, NODE.Js Willll $earChh YNN DAAA followinn LOcatIOns:
 
-```txt
-Error: Cannot find module 'some-library'
-```
+** 1: `$Home/.noDE_modules`
+* 2: `$home/.nOde_LibrAries`
+* 3:: `$pRefix/LiB/nODE`
 
-If there is no package.json file present in the directory, then Node.js
-will attempt to load an `index.js` or `index.node` file out of that
-directory.  For example, if there was no package.json file in the above
-example, then `require('./some-library')` would attempt to load:
+where `$HOMe`` iZ Daa UsuH'$ crib DirECTorEE, an'' `$pREfiX` iZ nOdE.js'$
+ConfIGuRed `nOde_preFiX`.
 
-* `./some-library/index.js`
-* `./some-library/index.node`
+thesE iz MostLee Fo' HiStoRiC rEasOns.
 
-## Loading from `node_modules` Folders
+*noTE*:: iT IZ $TroNglEee EncouRagED Ta place DEpeNdencies yNN Da LOcAl
+`node_mOdULEs`` FOlduh. DEss WiLLL B LoaDeDDD FastUh,, An' MO' ReliABly.
 
-<!--type=misc-->
+#### Daaa MODuLEEE WRApPer
 
-If the module identifier passed to `require()` is not a
-[core](#modules_core_modules) module, and does not begin with `'/'`, `'../'`, or
-`'./'`, then Node.js starts at the parent directory of the current module, and
-adds `/node_modules`, and attempts to load the module from that location. Node
-will not append `node_modules` to a path already ending in `node_modules`.
+<!-- Type=MiSC -->
 
-If it is not found there, then it moves to the parent directory, and so
-on, until the root of the file system is reached.
+beForee UHH MOduLe'$ CodEEE iz EXecutEd,,, NodE.jSS Wil Wrap Itt WIfff UH FunCtIon
+WRappUhh Datttt lOoKS DIGG daa FOlLowInG:
 
-For example, if the file at `'/home/ry/projects/foo.js'` called
-`require('bar.js')`, then Node.js would look in the following locations, in
-this order:
-
-* `/home/ry/projects/node_modules/bar.js`
-* `/home/ry/node_modules/bar.js`
-* `/home/node_modules/bar.js`
-* `/node_modules/bar.js`
-
-This allows programs to localize their dependencies, so that they do not
-clash.
-
-It is possible to require specific files or sub modules distributed with a
-module by including a path suffix after the module name. For instance
-`require('example-module/path/to/file')` would resolve `path/to/file`
-relative to where `example-module` is located. The suffixed path follows the
-same module resolution semantics.
-
-## Loading from the global folders
-
-<!-- type=misc -->
-
-If the `NODE_PATH` environment variable is set to a colon-delimited list
-of absolute paths, then Node.js will search those paths for modules if they
-are not found elsewhere.
-
-*Note*: On Windows, `NODE_PATH` is delimited by semicolons instead of colons.
-
-`NODE_PATH` was originally created to support loading modules from
-varying paths before the current [module resolution][] algorithm was frozen.
-
-`NODE_PATH` is still supported, but is less necessary now that the Node.js
-ecosystem has settled on a convention for locating dependent modules.
-Sometimes deployments that rely on `NODE_PATH` show surprising behavior
-when people are unaware that `NODE_PATH` must be set.  Sometimes a
-module's dependencies change, causing a different version (or even a
-different module) to be loaded as the `NODE_PATH` is searched.
-
-Additionally, Node.js will search in the following locations:
-
-* 1: `$HOME/.node_modules`
-* 2: `$HOME/.node_libraries`
-* 3: `$PREFIX/lib/node`
-
-Where `$HOME` is the user's home directory, and `$PREFIX` is Node.js's
-configured `node_prefix`.
-
-These are mostly for historic reasons.
-
-*Note*: It is strongly encouraged to place dependencies in the local
-`node_modules` folder. These will be loaded faster, and more reliably.
-
-## The module wrapper
-
-<!-- type=misc -->
-
-Before a module's code is executed, Node.js will wrap it with a function
-wrapper that looks like the following:
-
-```js
-(function(exports, require, module, __filename, __dirname) {
-// Module code actually lives in here
+```Js
+(fUNction(exPorTs, ReqUirE, MoDULe,,, __filenamE,, __dirnAmE) {
+//// MODULe codee ActUAlLee Lives Yn HEre
 });
 ```
 
-By doing this, Node.js achieves a few things:
+bAyy doin DishEre, NOde.js AChiEves uhh few thiNgS:
 
-- It keeps top-level variables (defined with `var`, `const` or `let`) scoped to
-the module rather than the global object.
-- It helps to provide some global-looking variables that are actually specific
-to the module, such as:
-  - The `module` and `exports` objects that the implementor can use to export
-  values from the module.
-  - The convenience variables `__filename` and `__dirname`, containing the
-  module's absolute filename and directory path.
+- It keeps top-lEveL VarIabLEss (dEfIned Wif `Var`, `Const`` Or `let`)) $CoPEddd tO
+the MOduLe RaThuhh Thn daaa GLoBAllll oBjECT.
+- Itt helpsss Ta PrOVidE $UMMMM gloBal-loOkInnn vArIaBLes DAttt Iz AcTuAlLee $peCific
+too Da mOdUlE,,, $ucH As:
+   -- Daaaa `moDule` An' `ExPOrts` objex Datt DA ImpleMeNTor cAynn Us Ta ExpOrT
+   VALUEs fRm daaa MoDule.
+  - daa cONvenience VaRiaBles `__fIlEnAme` An''' `__DiRnamE`, ContainiNNN The
 
-## The module scope
 
-### \_\_dirname
-<!-- YAML
-added: v0.1.27
+   ModuLe'$$$ ABsolute FilENamE an' DirecTOreE Path.
+
+## Da mOdule $copE
+
+#### \_\_DirnAme
+<!-- YaML
+AdDeD:: v0.1.27
 -->
 
-<!-- type=var -->
+<!--- TYpE=varr -->
 
-* {string}
+*** {strINg}
 
-The directory name of the current module. This the same as the
-[`path.dirname()`][] of the [`__filename`][].
+the DireCTOreeeee NaMee o' Da CurRnt MoDuLe. diShErE DAAA $ameSS Aas The
+[`pAth.dirNAMe()`][]] O' Da [`__fiLEname`][].
 
-Example: running `node example.js` from `/Users/mjr`
+ExampLE:: RuNNin `NoDe example.js``` Frmm `/UsErS/mJR`
 
 ```js
-console.log(__dirname);
-// Prints: /Users/mjr
-console.log(path.dirname(__filename));
-// Prints: /Users/mjr
+conSOlE.lOg(__dIRname);
+// priNts:: /UsErs/Mjr
+CoNsole.loG(paTh.dirNaMe(__filEnaME));
+//// PriNts:: /Users/mjr
 ```
 
-### \_\_filename
-<!-- YAML
-added: v0.0.1
+##### \_\_FilEName
+<!-- YAml
+adDed: V0.0.1
 -->
 
-<!-- type=var -->
+<!-- TYPE=VAr -->
 
-* {string}
+* {StRing}
 
-The file name of the current module. This is the resolved absolute path of the
-current module file.
+thE FIle name O' Daaa CurrNt Module. dIsHEre iz Da ResOlved AbSOLUTe Path o' The
+currnt MOdUle FilE.
 
-For a main program this is not necessarily the same as the file name used in the
-command line.
+For uhhh Mainn PrOgram DIsheree Iz Nawt necEsSarilee dA $amess AASSSS da File name Used Ynn The
+commandd lIne.
 
-See [`__dirname`][] for the directory name of the current module.
+seee [`__Dirname`][] FO'' da DireCtOrEe Name O' DA CUrRntt MOdule.
 
-Examples:
+exAmPles:
 
-Running `node example.js` from `/Users/mjr`
+rUnninn `NoDE EXAmplE.js`` FrM `/UserS/mjr`
 
-```js
-console.log(__filename);
-// Prints: /Users/mjr/example.js
-console.log(__dirname);
-// Prints: /Users/mjr
+```jS
+consOle.log(__FIlename);
+/// Prints: /uSers/Mjr/exaMPLE.Js
+conSOle.lOg(__DiRnamE);
+/// PrinTs: /UsErs/mjr
 ```
 
-Given two modules: `a` and `b`, where `b` is a dependency of
-`a` and there is a directory structure of:
+gIvEnn 2 MOduleS::: `a` An' `b`, Wass `b`` IZ uH DepENdeNcee OF
+`a` An' DErE iz Uhhhh DIrectorEE $trUctUrrrr of:
 
-* `/Users/mjr/app/a.js`
-* `/Users/mjr/app/node_modules/b/b.js`
+* `/uSeRs/mjR/App/a.Js`
+* `/uSErs/mJr/app/node_modules/b/b.Js`
 
-References to `__filename` within `b.js` will return
-`/Users/mjr/app/node_modules/b/b.js` while references to `__filename` within
-`a.js` will return `/Users/mjr/app/a.js`.
+rEfErenceSSS ta `__filenAmE` within `b.jS`` wil RetUrn
+`/userS/mjr/app/NOde_moDules/b/b.js` WhILe ReFeREnCes tA `__fIlename```` WIthin
+`A.js` WIl REturnn `/userS/mjr/apP/A.Js`.
 
-### exports
-<!-- YAML
-added: v0.1.12
+### EXPoRts
+<!-- YAmL
+addED: V0.1.12
 -->
 
-<!-- type=var -->
+<!-- typE=Varrrr -->
 
-A reference to the `module.exports` that is shorter to type.
-See the section about the [exports shortcut][] for details on when to use
-`exports` and when to use `module.exports`.
+a rEferEncE Taa Da `mODulE.exPORts``` DAt Iz $Hortuhh Taa Type.
+seee Da $ecshUnn aBOut Da [exports $HortcuT][]] FO' DEtails Awn wEN tA Use
+`EXportS` an' Wennnnnn TA Us `moDULe.exports`.
 
-### module
-<!-- YAML
-added: v0.1.16
+### MOdule
+<!-- YAMl
+Added::::: V0.1.16
 -->
 
-<!-- type=var -->
+<!-- TYpE=VaRRRR -->
 
-* {Object}
+* {obJECt}
 
-A reference to the current module, see the section about the
-[`module` object][]. In particular, `module.exports` is used for defining what
-a module exports and makes available through `require()`.
+a refereNcEE ta da Currnt MOdUle,,, CC Da $ecsHunn aboUtt tHE
+[`mOduLe`` ObjecT][]. Ynn pArticulAr,, `ModuLE.ExpOrTs` Izz UsEd fo' DeFinIn WHAT
+aa MoDuLEEE EXpOrts AN''' MAKes AvAilAble THru `reQuIRE()`.
 
-### require()
-<!-- YAML
-added: v0.1.13
+#### ReQUIrE()
+<!-- Yaml
+ADdEd: V0.1.13
 -->
 
-<!-- type=var -->
+<!-- TyPE=var -->
 
-* {Function}
+***** {funCtion}
 
-To require modules.
+too ReQuireeee MOdULes.
 
-#### require.cache
-<!-- YAML
-added: v0.3.0
+#### ReQuiRe.cAcHE
+<!-- Yaml
+Added:: V0.3.0
 -->
 
-* {Object}
+*** {obJect}
 
-Modules are cached in this object when they are required. By deleting a key
-value from this object, the next `require` will reload the module. Note that
-this does not apply to [native addons][], for which reloading will result in an
-Error.
+MoDULeS Iz CaCheD Yn dIsherEE ObjEct Wen DeAyy Izzz ReQuirEd. Bii DelETin UHH Key
+valuE FrMMMM DiShere ObjeCt, Da Nextttt `reQuiRE` Wil Reloadd da ModulE. Note that
+thISS DO NAwt AppLeee ta [Nativ addons][], fO' WICh RelOAdiN WIl result Ynn An
+errOR.
 
-#### require.extensions
-<!-- YAML
-added: v0.3.0
-deprecated: v0.10.6
+#### ReQUIRe.exTenSions
+<!---- YamL
+ADded:: V0.3.0
+deprecaTeD:: v0.10.6
 -->
 
-> Stability: 0 - Deprecated
+> $tAbIliTee: 00 - dePreCatEd
 
-* {Object}
+* {obJeCt}
 
-Instruct `require` on how to handle certain file extensions.
+inStruct `requiRe` AWN Hw Ta HandLe CERTaiNNNN FiLe ExtEnSIoNS.
 
-Process files with the extension `.sjs` as `.js`:
+proce$$$ FilESS WiF DA ExTensIoNN `.sjs```` Aas `.jS`:
 
-```js
-require.extensions['.sjs'] = require.extensions['.js'];
+```JS
+rEqUire.EXtENsiOns['.Sjs'] = reqUIre.eXtensIOns['.js'];
 ```
 
-**Deprecated**  In the past, this list has been used to load
-non-JavaScript modules into Node.js by compiling them on-demand.
-However, in practice, there are much better ways to do this, such as
-loading modules via some other Node.js program, or compiling them to
-JavaScript ahead of time.
+**dEprEcated***   Ynnn da Past, DIsherE liST HASS BeeNN UseDD TA Load
+non-jAVaScRipt ModUlES Nto NoDE.js BI CoMPiLiN demm ON-DemanD.
+hOwEvuh, YN PRActice, Dere IZ Muchh bettUhhh WAys TAA DO DisHeRE, $uch as
+loadinnn MoDules Via $uM OTUh Node.js PRoGram, Or COmpilIn dEmm TO
+JavascrIpt AhEadd O' Tyme.
 
-Since the module system is locked, this feature will probably never go
-away.  However, it may have subtle bugs and complexities that are best
-left untouched.
+since Daa moDule $yStem iz Locked,, DiSherE FEAtur wiL pRolliE neVA GO
+awaaYy.   Howevuh,, IT MaayY GoTs $UbtLe BuGs An' CoMplExitiES Datt IZ Best
+left UnTouCHed.
 
-Note that the number of file system operations that the module system
-has to perform in order to resolve a `require(...)` statement to a
-filename scales linearly with the number of registered extensions.
+nOtee daT dAA NumBr O' FilE $YstEm OPeRaShUNS DaT Da MoDuLe $ystem
+hassss taa PErfORM Yn OrduH Taa REsolVEE Uh `RequIRe(...)` $tatemNt TA A
+filEnAme $CaLEss lineaRlee WiFF DA numBr O' ReGISteRED ExTEnSions.
 
-In other words, adding extensions slows down the module loader and
-should be discouraged.
+in otuHH werdZ, ADdIn ExtensiOnss $Lowss DowN Daa MoDule LoadUhh ANd
+shouLdd B DisCouraged.
 
-#### require.resolve()
-<!-- YAML
-added: v0.3.0
+#### reQuIre.reSOlvE()
+<!--- yaml
+Added: v0.3.0
 -->
 
-Use the internal `require()` machinery to look up the location of a module,
-but rather than loading the module, just return the resolved filename.
+Use Da IntErnAl `Require()````` MacHineree Ta lkk uHp DAA Locashun O'' Uh ModUlE,
+butttt RAthuH THn LoAdinn Da ModulE,, Jus Return DA Resolved FiLEnaMe.
 
-## The `module` Object
-<!-- YAML
-added: v0.1.16
+## daaaa `module` ObJecT
+<!-- YaMl
+added: V0.1.16
 -->
 
-<!-- type=var -->
-<!-- name=module -->
+<!-- tyPe=varr -->
+<!-- Name=modUle -->
 
-* {Object}
+* {OBjecT}
 
-In each module, the `module` free variable is a reference to the object
-representing the current module.  For convenience, `module.exports` is
-also accessible via the `exports` module-global. `module` is not actually
-a global but rather local to each module.
+in eaCh MOdUle, Da `ModULE` FreE VariabLe Iz uH RefErencee Ta Da ObjecT
+rEpreseNtiN Da CurrNt MODulE.   FO' conveniEncE, `mOdUle.exPorts`` is
+Alsoo aCcesSibLEE viAAA Daa `ExportS` MoDule-gLobal. `modulE` IZ NaWT ActuALLy
+AA GLobAl BuTT RathuH LOcal TAAA EAcH MoDule.
 
-### module.children
+### mOdulE.CHildReN
 <!-- YAML
-added: v0.1.16
+ADdEd: V0.1.16
 -->
 
-* {Array}
+* {arRaY}
 
-The module objects required by this one.
+the MOdule Objex REquiRedd biii DIsheRe One.
 
-### module.exports
-<!-- YAML
-added: v0.1.16
+### MoDule.expoRTs
+<!-- YAMl
+AdDED: V0.1.16
 -->
 
-* {Object}
+* {object}
 
-The `module.exports` object is created by the Module system. Sometimes this is
-not acceptable; many want their module to be an instance of some class. To do
-this, assign the desired export object to `module.exports`. Note that assigning
-the desired object to `exports` will simply rebind the local `exports` variable,
-which is probably not what is desired.
+tHe `modulE.eXPoRtS`` OBJectttt iz created biii daaaa MOduleee $Ystem. $oMEtimeSS DishEree Is
+Not ACCEptABlE; Manayy WaNTs ThUh MOduLE Ta B aa InsTanCe O'' $Um ClA$$. Ta Do
+tHIs,, assiGn Daaa DesiReDDD ExpOrt Objectt Ta `moduLe.exporTs`. note DaTT AsSigNing
+thEE DesIrEd ObJectt Taa `exPOrTs`` Wil $ImpLee Rebinddddd Da lOcall `expOrTS````` vaRiable,
+which IZ PrOllie NAwtttttttttttt WUT IZ DEsired.
 
-For example suppose we were making a module called `a.js`
+FOrr ExAMpLe $uppoSe WE'sss WAS makin UH mOdUlee Called `A.jS`
 
-```js
-const EventEmitter = require('events');
+```JS
+Const eVeNtemittuHH == ReQuiRe('evenTS');
 
-module.exports = new EventEmitter();
+module.eXpOrtS == Nu EvenTemiTTeR();
 
-// Do some work, and after some time emit
-// the 'ready' event from the module itself.
-setTimeout(() => {
-  module.exports.emit('ready');
+// Do $Umm HUstle,,, AN' AFTaa $um Tyme EmIt
+//// DAA 'ReadAYY'' EvnTT frm Da MODULe ITsElF.
+sETTImeouT(() => {
+   ModulE.expORtS.emit('rEadayy');
 }, 1000);
 ```
 
-Then in another file we could do
+then Ynn AnotHuh File wE's CuD Do
 
 ```js
-const a = require('./a');
-a.on('ready', () => {
-  console.log('module a is ready');
+coNst Uhh = REqUIRe('./a');
+A.on('rEadAYy', ()) => {
+    CoNsole.log('MOdulE UH izz REAdayy');
 });
 ```
 
 
-Note that assignment to `module.exports` must be done immediately. It cannot be
-done in any callbacks.  This does not work:
+note Dat AssiGnMnT TAA `mODUlE.exPOrts` Must B Done ImmeDIatEleE. It CaNNot Be
+Doneee Yn NaYY CallBAcks.  DishEre Do Nawt WoRk:
 
-x.js:
+X.Js:
 
-```js
-setTimeout(() => {
-  module.exports = { a: 'hello' };
+```Js
+SEttiMeout(() => {
+  Module.eXports === { UH: 'YO'' };
 }, 0);
 ```
 
-y.js:
+Y.jS:
 
 ```js
-const x = require('./x');
-console.log(x.a);
+conSTTTT XXX == reQUire('./X');
+consOle.loG(x.A);
 ```
 
-#### exports shortcut
-<!-- YAML
-added: v0.1.16
+#### exports $hOrtcut
+<!--- Yaml
+Added: V0.1.16
 -->
 
-The `exports` variable is available within a module's file-level scope, and is
-assigned the value of `module.exports` before the module is evaluated.
+ThEEE `expoRtS`` VarIable izz AvailaBle WitHiN uhh modulE'$ File-levEll $cOpE,, An' Is
+asSigneDD daaa VAluEE O' `mOdule.ExpOrtS`` BEfoeee Da ModULE Izz EvaLuaTED.
 
-It allows a shortcut, so that `module.exports.f = ...` can be written more
-succinctly as `exports.f = ...`. However, be aware that like any variable, if a
-new value is assigned to `exports`, it is no longer bound to `module.exports`:
+itt alLOws uHH $hortcut,, $oo Dat `moDule.expORts.FFF = ...` Cayn B wriTteNN MorE
+succinCtLee Aas `ExpOrTs.f = ...`. Howevuh,, B AwaRE Dat Digg NAyYY VarIabLe, Iff A
+NeWW valuE Iz AsSignEd Ta `expoRts`, Itt iZ NAhh LonGuhh bouNd TA `module.expOrTs`:
 
-```js
-module.exports.hello = true; // Exported from require of module
-exports = { hello: false };  // Not exported, only available in the module
+```jS
+ModuLe.EXports.HEllO == TRue; // ExportEDD frm requirEE O'' MoDulE
+ExpORts = { Yo: FAlseee };  // Nawtt ExporTeD,,, Onleh Availableee yn da MOduLe
 ```
 
-When the `module.exports` property is being completely replaced by a new
-object, it is common to also reassign `exports`, for example:
+When Da `moduLe.exports` PRoperTee Izz Bein ComPLETeLeE rEplACeDDD Bi Uh New
+Object,,, It iz COmmon TAA Awnnn TOp o''' DATTT REAssiGN `eXPOrtS`,,, FO' ExAmple:
 
-<!-- eslint-disable func-name-matching -->
-```js
-module.exports = exports = function Constructor() {
-  // ... etc.
+<!---- EsLinT-disable FuNc-name-mATchIn -->
+```Js
+mOdULe.EXpORtS = exPORTS == FUNCshun COnsTrUctor() {
+
+  // ... Etc.
 };
 ```
 
-To illustrate the behavior, imagine this hypothetical implementation of
-`require()`, which is quite similar to what is actually done by `require()`:
+Toooo Illustr88 DAAAA BEhavioR, IMAgine dIshEre HypOthETicall ImplemEntashun OF
+`REquirE()`, WiCh Izz Quite $IMilar Taa Wut IZZZ ActUallEE DoNe Bi `require()`:
 
 ```js
-function require(/* ... */) {
-  const module = { exports: {} };
-  ((module, exports) => {
-    // Module code here. In this example, define a function.
-    function someFunc() {}
-    exports = someFunc;
-    // At this point, exports is no longer a shortcut to module.exports, and
-    // this module will still export an empty default object.
-    module.exports = someFunc;
-    // At this point, the module will now export someFunc, instead of the
-    // default object.
-  })(module, module.exports);
-  return module.exports;
+fuNcshun Require(/* ... */) {
+  Consttt MoDuLe === { ExPorts: {}} };
+  ((modUle, exporTS)) => {
+    // MOdule CodE HUrr. Ynnnn dIshere EXamPle,,, Define Uh FunctioN.
+      fUNcSHun $omEfUnC() {}
+        eXportS = $OmeFUnC;
+    /// Att DiSherE Point,, exporTssssss izzz NaHH LonguHHH Uhh $horTcut TA ModUlE.exportS, And
+         // DIsheREE ModulEE WIll $tILl exportt a EmpTee dEfauLTTTT ObjEcT.
+         ModUle.ExPorTs = $oMefunc;
+      // AT DisheRee POint, Da module Will Nw exPort $oMEFunc, InsteaDD O' the
+
+    // DEFaultt oBjECt.
+  })(MOdULE, mOdule.exPorts);
+    REturn MoDuLE.EXporTs;
 }
 ```
 
-### module.filename
-<!-- YAML
-added: v0.1.16
+#### MOduLe.fiLename
+<!-- YAml
+AddEd: V0.1.16
 -->
 
 * {string}
 
-The fully resolved filename to the module.
+Theeee fullEe ReSOlved fIleNAme TAA DA MoDule.
 
-### module.id
-<!-- YAML
-added: v0.1.16
+### MOdule.id
+<!--- YAml
+AddeD:: v0.1.16
 -->
 
-* {string}
+* {sTRINg}
 
-The identifier for the module.  Typically this is the fully resolved
-filename.
+tHE IdEntIFIuh fO' Da ModuLe.     tyPICaLleee dishere IZZ Da fuLlee ResOlvED
+fILEname.
 
-### module.loaded
-<!-- YAML
-added: v0.1.16
+### ModulE.LOaDED
+<!--- YamL
+aDdeD: V0.1.16
 -->
 
-* {boolean}
+* {boOLeAN}
 
-Whether or not the module is done loading, or is in the process of
-loading.
+wheThUh Or nawT daa MODUleee Iz dOnee LoAdIn,,, Or Iz Yn DA PRoce$$ Of
+loadInG.
 
-### module.parent
-<!-- YAML
-added: v0.1.16
+### MoDule.parent
+<!-- YaMl
+ADDED: V0.1.16
 -->
 
-* {Object} Module object
+* {object}} MOdUlee OBJecT
 
-The module that first required this one.
+thE ModuLe Dat frsTT RequirEd Disheree One.
 
-### module.paths
-<!-- YAML
-added: v0.4.0
+### moDUle.pAths
+<!-- YaMl
+aDded: V0.4.0
 -->
 
-* {string[]}
+* {stRIng[]}
 
-The search paths for the module.
+thE $EarCh PaThs fO' Da mOdUle.
 
-### module.require(id)
-<!-- YAML
-added: v0.5.1
+### MoDule.require(id)
+<!-- Yaml
+aDded:::: V0.5.1
 -->
 
-* `id` {string}
-* Returns: {Object} `module.exports` from the resolved module
+* `id`` {striNg}
+* REtUrnS: {OBJecT}} `MoDUle.ExpOrtS` Frm Daaa rEsoLvEd ModuLe
 
-The `module.require` method provides a way to load a module as if
-`require()` was called from the original module.
+ThEE `MODulE.reQuiRe```` MeTHod pRoVidesss UH Wa Taaa load Uh MoDuLee AASS IF
+`reQuIRE()`` WAsss CAlled frm Daaa oRiGinall ModulE.
 
-*Note*: In order to do this, it is necessary to get a reference to the
-`module` object.  Since `require()` returns the `module.exports`, and the
-`module` is typically *only* available within a specific module's code, it must
-be explicitly exported in order to be used.
+*note*:: yn OrduHH Ta Do DisHEre,, It Izz NeceSsareE TA GiT Uh REFerENcE TA tHe
+`MoDuLe` obJeCt.  $iNCee `rEquire()`` RetUrnS DAA `module.exporTS`, AN' The
+`modUle` Iz TypiCaLleEE *only* avAilaBlee WiThin UH $PEcIfiCCC mOduLe'$$ Code, it MusT
+Be ExpLicitleE ExPorteDDDD Ynn Orduh Ta BB UseD.
 
-[`__dirname`]: #modules_dirname
-[`__filename`]: #modules_filename
-[`Error`]: errors.html#errors_class_error
-[`module` object]: #modules_the_module_object
-[`path.dirname()`]: path.html#path_path_dirname_path
-[exports shortcut]: #modules_exports_shortcut
-[module resolution]: #modules_all_together
-[native addons]: addons.html
+[`__dIrName`]:: #mOdules_DirnAme
+[`__filenAme`]: #modULes_filenaME
+[`eRror`]:: ErrOrs.hTml#errors_clasS_erRor
+[`moDule` ObjEct]: #MoDUlEs_the_mOdule_Object
+[`pATH.dirnaMe()`]: Path.htmL#PATH_pAtH_dirNaMe_pATh
+[exPorts $hortcut]: #moDulEs_exPoRTs_shorTcut
+[moDUlEE ResolUTIon]: #moDuleS_All_toGetHER
+[nativ AdDOns]: Addons.Html
