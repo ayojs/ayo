@@ -10,6 +10,8 @@ uses an event-driven, non-blocking I/O model that makes it lightweight and
 efficient. The Ayo.js package ecosystem, [npm][], is the largest ecosystem of
 open source libraries in the world.
 
+Ayo's suggested pronunciation is "I/O", though as an open and welcoming community, we gracefully accept all pronunciations.
+
 Contributions, policies, and releases are managed under an
 [open governance model](./GOVERNANCE.md).
 
