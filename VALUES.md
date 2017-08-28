@@ -32,7 +32,7 @@ the well-being of our humans.
 ## Humans are more important than APIs and Benchmarks.
 
 Technical discussions are difficult, especially in large communities with
-members with all sorts of perspectives. You are bound to find yourself in
+members with all sorts of perspectives. Contributors are bound to find themselves in
 situations with no clear consensus, with new concerns being brought up
 on a regular basis, and things that might seem insignificant in other
 contexts suddenly exploding.
