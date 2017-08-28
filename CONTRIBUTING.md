@@ -12,7 +12,7 @@ When opening issues or commenting on existing issues, please make sure
 discussions are related to concrete technical issues with Ayo.js.
 
 * For general help using Ayo.js, please file an issue at the
-[ayo.js help repository](https://github.com/nodejs/help/issues).
+[ayo.js help repository](https://github.com/ayojs/ayo/issues).
 
 * Discussion of non-technical topics (such as intellectual property and
 trademark) should use the
@@ -315,7 +315,7 @@ widely used, so don't be discouraged!
 
 If you want to know more about the code review and the landing process,
 you can take a look at the
-[collaborator's guide](https://github.com/ayojs/ayo/blob/master/COLLABORATOR_GUIDE.md).
+[collaborator's guide](COLLABORATOR_GUIDE.md).
 
 <a id="developers-certificate-of-origin"></a>
 ## Developer's Certificate of Origin 1.1
