@@ -1,6 +1,6 @@
 # Ayo.js Community Values
 
-Ayo.js is about the humans that help make it happen. It's a project aimed at
+Ayo.js is about the people that help make it happen. It's a project aimed at
 creating a new foundation of project governance and management that brings
 **humans** and their concerns front and center.
 
