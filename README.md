@@ -7,8 +7,8 @@ still points towards the Node.js repository.)_
 
 Ayo.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It
 uses an event-driven, non-blocking I/O model that makes it lightweight and
-efficient. Ayo.js shares with the rest of the JavaScript
-implementations the [`npm` package ecosystem][], the largest set of
+efficient. Ayo.js, like the rest of the JavaScript
+implementations, benefits from the [`npm` package ecosystem][], the largest set of
 open source libraries in the world.
 
 Contributions, policies, and releases are managed under an
