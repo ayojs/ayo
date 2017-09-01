@@ -61,6 +61,15 @@ inline v8::Local<v8::Object> BaseObject::object() {
 }
 
 
+inline v8::Local<v8::Object> BaseObject::object(v8::Isolate* isolate) {
+  v8::Local<v8::Object> handle =
+      PersistentToLocal(env_->isolate(), persistent_handle_);
+  CHECK_EQ(handle->CreationContext()->GetIsolate(), isolate);
+  CHECK_EQ(env_->isolate(), isolate);
+  return handle;
+}
+
+
 inline Environment* BaseObject::env() const {
   return env_;
 }

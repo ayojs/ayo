@@ -26,6 +26,7 @@ const fixtures = require('../common/fixtures');
     delete providers.HTTP2SESSIONSHUTDOWNWRAP;
     // TODO(addaleax): Test for these
     delete providers.MESSAGEPORT;
+    delete providers.WORKER;
 
     const obj_keys = Object.keys(providers);
     if (obj_keys.length > 0)

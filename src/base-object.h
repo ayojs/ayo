@@ -39,6 +39,10 @@ class BaseObject {
   // persistent.IsEmpty() is true.
   inline v8::Local<v8::Object> object();
 
+  // Same as the above, except it additionally verifies that this object
+  // is associated with the passed Isolate.
+  inline v8::Local<v8::Object> object(v8::Isolate* isolate);
+
   // The parent class is responsible for calling .Reset() on destruction
   // when the persistent handle is strong because there is no way for
   // BaseObject to know when the handle goes out of scope.

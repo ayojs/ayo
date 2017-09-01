@@ -3,6 +3,7 @@
 #include "v8-profiler.h"
 #include "req-wrap-inl.h"
 #include "node_platform.h"
+#include "node_worker.h"
 
 #if defined(_MSC_VER)
 #define getpid GetCurrentProcessId
@@ -25,6 +26,7 @@ using v8::Private;
 using v8::StackFrame;
 using v8::StackTrace;
 using v8::String;
+using worker::Worker;
 
 IsolateData::IsolateData(Isolate* isolate,
                          uv_loop_t* event_loop,
@@ -313,6 +315,26 @@ void Environment::EnvPromiseHook(v8::PromiseHookType type,
   for (const PromiseHookCallback& hook : env->promise_hooks_) {
     hook.cb_(type, promise, parent, hook.arg_);
   }
+}
+
+void Environment::Exit(int exit_code) {
+  if (is_main_thread())
+    exit(exit_code);
+  else
+    worker_context_->Exit(exit_code);
+}
+
+void Environment::stop_sub_worker_contexts() {
+  while (!sub_worker_contexts_.empty()) {
+    Worker* w = *sub_worker_contexts_.begin();
+    sub_worker_contexts_.erase(w);
+    w->Exit(1);
+    w->JoinThread();
+  }
+}
+
+bool Environment::is_stopping_worker() const {
+  return worker_context_->stopped();
 }
 
 }  // namespace node

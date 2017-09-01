@@ -42,6 +42,7 @@
 #include <stdint.h>
 #include <vector>
 #include <stack>
+#include <unordered_set>
 #include <unordered_map>
 
 struct nghttp2_rcbuf;
@@ -54,6 +55,10 @@ struct performance_state;
 
 namespace loader {
 class ModuleWrap;
+}
+
+namespace worker {
+class Worker;
 }
 
 // Pick an index that's hopefully out of the way when we're embedded inside
@@ -187,7 +192,10 @@ class ModuleWrap;
   V(length_string, "length")                                                  \
   V(mac_string, "mac")                                                        \
   V(max_buffer_string, "maxBuffer")                                           \
+  V(max_semi_space_size_string, "maxSemiSpaceSize")                           \
+  V(max_old_space_size_string, "maxOldSpaceSize")                             \
   V(message_string, "message")                                                \
+  V(message_port_string, "messagePort")                                       \
   V(message_port_constructor_string, "MessagePort")                           \
   V(minttl_string, "minttl")                                                  \
   V(model_string, "model")                                                    \
@@ -274,6 +282,7 @@ class ModuleWrap;
   V(subjectaltname_string, "subjectaltname")                                  \
   V(sys_string, "sys")                                                        \
   V(syscall_string, "syscall")                                                \
+  V(thread_id_string, "threadId")                                             \
   V(tick_callback_string, "_tickCallback")                                    \
   V(tick_domain_cb_string, "_tickDomainCallback")                             \
   V(ticketkeycallback_string, "onticketkeycallback")                          \
@@ -315,6 +324,7 @@ class ModuleWrap;
   V(domain_array, v8::Array)                                                  \
   V(domains_stack_array, v8::Array)                                           \
   V(inspector_console_api_object, v8::Object)                                 \
+  V(message_port, v8::Object)                                                 \
   V(message_port_constructor_template, v8::FunctionTemplate)                  \
   V(module_load_list_array, v8::Array)                                        \
   V(pbkdf2_constructor_template, v8::ObjectTemplate)                          \
@@ -330,6 +340,7 @@ class ModuleWrap;
   V(script_context_constructor_template, v8::FunctionTemplate)                \
   V(script_data_constructor_function, v8::Function)                           \
   V(secure_context_constructor_template, v8::FunctionTemplate)                \
+  V(serialize_worker_error_function, v8::Function)                            \
   V(tcp_constructor_template, v8::FunctionTemplate)                           \
   V(tick_callback_function, v8::Function)                                     \
   V(tls_wrap_constructor_function, v8::Function)                              \
@@ -556,6 +567,7 @@ class Environment {
              bool start_profiler_idle_notifier);
   void AssignToContext(v8::Local<v8::Context> context);
   void CleanupHandles();
+  void Exit(int code);
 
   void StartProfilerIdleNotifier();
   void StopProfilerIdleNotifier();
@@ -633,8 +645,18 @@ class Environment {
   inline performance::performance_state* performance_state();
   inline std::map<std::string, uint64_t>* performance_marks();
 
+  bool is_stopping_worker() const;
   inline bool can_call_into_js() const;
   inline void set_can_call_into_js(bool can_call_into_js);
+
+  inline bool is_main_thread() const;
+  inline double thread_id() const;
+  inline void set_thread_id(double id);
+  inline worker::Worker* worker_context() const;
+  inline void set_worker_context(worker::Worker* context);
+  inline void add_sub_worker_context(worker::Worker* context);
+  inline void remove_sub_worker_context(worker::Worker* context);
+  void stop_sub_worker_contexts();
 
   inline void ThrowError(const char* errmsg);
   inline void ThrowTypeError(const char* errmsg);
@@ -734,7 +756,9 @@ class Environment {
   size_t makecallback_cntr_;
   std::vector<double> destroy_async_id_list_;
 
+  double thread_id_ = 0;
   bool can_call_into_js_ = true;
+  std::unordered_set<worker::Worker*> sub_worker_contexts_;
 
   performance::performance_state* performance_state_ = nullptr;
   std::map<std::string, uint64_t> performance_marks_;
@@ -757,6 +781,8 @@ class Environment {
   http2::http2_state* http2_state_ = nullptr;
 
   double* fs_stats_field_array_ = nullptr;
+
+  worker::Worker* worker_context_ = nullptr;
 
   struct AtExitCallback {
     void (*cb_)(void* arg);

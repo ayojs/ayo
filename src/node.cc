@@ -1871,9 +1871,9 @@ void AppendExceptionLine(Environment* env,
 }
 
 
-static void ReportException(Environment* env,
-                            Local<Value> er,
-                            Local<Message> message) {
+void ReportException(Environment* env,
+                     Local<Value> er,
+                     Local<Message> message) {
   HandleScope scope(env->isolate());
 
   AppendExceptionLine(env, er, message, FATAL_ERROR);
@@ -1952,9 +1952,9 @@ static void ReportException(Environment* env, const TryCatch& try_catch) {
 
 
 // Executes a str within the current v8 context.
-static Local<Value> ExecuteString(Environment* env,
-                                  Local<String> source,
-                                  Local<String> filename) {
+static MaybeLocal<Value> ExecuteString(Environment* env,
+                                       Local<String> source,
+                                       Local<String> filename) {
   EscapableHandleScope scope(env->isolate());
   TryCatch try_catch(env->isolate());
 
@@ -1967,13 +1967,19 @@ static Local<Value> ExecuteString(Environment* env,
       v8::Script::Compile(env->context(), source, &origin);
   if (script.IsEmpty()) {
     ReportException(env, try_catch);
-    exit(3);
+    env->Exit(3);
+    return MaybeLocal<Value>();
   }
 
   Local<Value> result = script.ToLocalChecked()->Run();
   if (result.IsEmpty()) {
+    if (try_catch.HasTerminated()) {
+      env->isolate()->CancelTerminateExecution();
+      return MaybeLocal<Value>();
+    }
     ReportException(env, try_catch);
-    exit(4);
+    env->Exit(4);
+    return MaybeLocal<Value>();
   }
 
   return scope.Escape(result);
@@ -2080,6 +2086,7 @@ static void Abort(const FunctionCallbackInfo<Value>& args) {
 
 static void Chdir(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
+  CHECK(env->is_main_thread());
 
   if (args.Length() != 1 || !args[0]->IsString()) {
     return env->ThrowTypeError("Bad argument.");
@@ -2123,6 +2130,8 @@ static void Umask(const FunctionCallbackInfo<Value>& args) {
   if (args.Length() < 1 || args[0]->IsUndefined()) {
     old = umask(0);
     umask(static_cast<mode_t>(old));
+  } else if (!env->is_main_thread()) {
+    return env->ThrowTypeError("cannot set umask from a worker");
   } else if (!args[0]->IsInt32() && !args[0]->IsString()) {
     return env->ThrowTypeError("argument must be an integer or octal string.");
   } else {
@@ -2279,6 +2288,7 @@ static void GetEGid(const FunctionCallbackInfo<Value>& args) {
 
 static void SetGid(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
+  CHECK(env->is_main_thread());
 
   if (!args[0]->IsUint32() && !args[0]->IsString()) {
     return env->ThrowTypeError("setgid argument must be a number or a string");
@@ -2298,6 +2308,7 @@ static void SetGid(const FunctionCallbackInfo<Value>& args) {
 
 static void SetEGid(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
+  CHECK(env->is_main_thread());
 
   if (!args[0]->IsUint32() && !args[0]->IsString()) {
     return env->ThrowTypeError("setegid argument must be a number or string");
@@ -2317,6 +2328,7 @@ static void SetEGid(const FunctionCallbackInfo<Value>& args) {
 
 static void SetUid(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
+  CHECK(env->is_main_thread());
 
   if (!args[0]->IsUint32() && !args[0]->IsString()) {
     return env->ThrowTypeError("setuid argument must be a number or a string");
@@ -2336,6 +2348,7 @@ static void SetUid(const FunctionCallbackInfo<Value>& args) {
 
 static void SetEUid(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
+  CHECK(env->is_main_thread());
 
   if (!args[0]->IsUint32() && !args[0]->IsString()) {
     return env->ThrowTypeError("seteuid argument must be a number or string");
@@ -2494,8 +2507,9 @@ static void WaitForInspectorDisconnect(Environment* env) {
 
 
 static void Exit(const FunctionCallbackInfo<Value>& args) {
-  WaitForInspectorDisconnect(Environment::GetCurrent(args));
-  exit(args[0]->Int32Value());
+  Environment* env = Environment::GetCurrent(args);
+  WaitForInspectorDisconnect(env);
+  env->Exit(args[0]->Int32Value());
 }
 
 
@@ -3426,11 +3440,12 @@ void SetupProcessObject(Environment* env,
   Local<Object> process = env->process_object();
 
   auto title_string = FIXED_ONE_BYTE_STRING(env->isolate(), "title");
-  CHECK(process->SetAccessor(env->context(),
-                             title_string,
-                             ProcessTitleGetter,
-                             ProcessTitleSetter,
-                             env->as_external()).FromJust());
+  CHECK(process->SetAccessor(
+      env->context(),
+      title_string,
+      ProcessTitleGetter,
+      env->is_main_thread() ? ProcessTitleSetter : nullptr,
+      env->as_external()).FromJust());
 
   // process.version
   READONLY_PROPERTY(process,
@@ -3724,21 +3739,24 @@ void SetupProcessObject(Environment* env,
   CHECK(process->SetAccessor(env->context(),
                              debug_port_string,
                              DebugPortGetter,
-                             DebugPortSetter,
+                             env->is_main_thread() ? DebugPortSetter : nullptr,
                              env->as_external()).FromJust());
 
   // define various internal methods
-  env->SetMethod(process,
-                 "_startProfilerIdleNotifier",
-                 StartProfilerIdleNotifier);
-  env->SetMethod(process,
-                 "_stopProfilerIdleNotifier",
-                 StopProfilerIdleNotifier);
+  if (env->is_main_thread()) {
+    env->SetMethod(process,
+                   "_startProfilerIdleNotifier",
+                   StartProfilerIdleNotifier);
+    env->SetMethod(process,
+                   "_stopProfilerIdleNotifier",
+                   StopProfilerIdleNotifier);
+    env->SetMethod(process, "abort", Abort);
+    env->SetMethod(process, "chdir", Chdir);
+  }
+
   env->SetMethod(process, "_getActiveRequests", GetActiveRequests);
   env->SetMethod(process, "_getActiveHandles", GetActiveHandles);
   env->SetMethod(process, "reallyExit", Exit);
-  env->SetMethod(process, "abort", Abort);
-  env->SetMethod(process, "chdir", Chdir);
   env->SetMethod(process, "cwd", Cwd);
 
   env->SetMethod(process, "umask", Umask);
@@ -3746,30 +3764,34 @@ void SetupProcessObject(Environment* env,
 #if defined(__POSIX__) && !defined(__ANDROID__)
   env->SetMethod(process, "getuid", GetUid);
   env->SetMethod(process, "geteuid", GetEUid);
-  env->SetMethod(process, "setuid", SetUid);
-  env->SetMethod(process, "seteuid", SetEUid);
-
-  env->SetMethod(process, "setgid", SetGid);
-  env->SetMethod(process, "setegid", SetEGid);
   env->SetMethod(process, "getgid", GetGid);
   env->SetMethod(process, "getegid", GetEGid);
 
   env->SetMethod(process, "getgroups", GetGroups);
-  env->SetMethod(process, "setgroups", SetGroups);
-  env->SetMethod(process, "initgroups", InitGroups);
+
+  if (env->is_main_thread()) {
+    env->SetMethod(process, "setuid", SetUid);
+    env->SetMethod(process, "seteuid", SetEUid);
+
+    env->SetMethod(process, "setgid", SetGid);
+    env->SetMethod(process, "setegid", SetEGid);
+    env->SetMethod(process, "setgroups", SetGroups);
+    env->SetMethod(process, "initgroups", InitGroups);
+  }
 #endif  // __POSIX__ && !defined(__ANDROID__)
 
   env->SetMethod(process, "_kill", Kill);
+  env->SetMethod(process, "dlopen", DLOpen);
 
-  env->SetMethod(process, "_debugProcess", DebugProcess);
-  env->SetMethod(process, "_debugPause", DebugPause);
-  env->SetMethod(process, "_debugEnd", DebugEnd);
+  if (env->is_main_thread()) {
+    env->SetMethod(process, "_debugProcess", DebugProcess);
+    env->SetMethod(process, "_debugPause", DebugPause);
+    env->SetMethod(process, "_debugEnd", DebugEnd);
+  }
 
   env->SetMethod(process, "hrtime", Hrtime);
 
   env->SetMethod(process, "cpuUsage", CPUUsage);
-
-  env->SetMethod(process, "dlopen", DLOpen);
 
   env->SetMethod(process, "uptime", Uptime);
   env->SetMethod(process, "memoryUsage", MemoryUsage);
@@ -3837,15 +3859,18 @@ void LoadEnvironment(Environment* env) {
   // 'internal_bootstrap_node_native' is the string containing that source code.
   Local<String> script_name = FIXED_ONE_BYTE_STRING(env->isolate(),
                                                     "bootstrap_node.js");
-  Local<Value> f_value = ExecuteString(env, MainSource(env), script_name);
+  MaybeLocal<Value> f_value = ExecuteString(env, MainSource(env), script_name);
   if (try_catch.HasCaught())  {
     ReportException(env, try_catch);
     exit(10);
   }
-  // The bootstrap_node.js file returns a function 'f'
-  CHECK(f_value->IsFunction());
 
-  Local<Function> f = Local<Function>::Cast(f_value);
+  if (f_value.IsEmpty())  // This happens when execution was interrupted.
+    return;
+
+  // The bootstrap_node.js file returns a function 'f'
+  CHECK(f_value.ToLocalChecked()->IsFunction());
+  Local<Function> f = f_value.ToLocalChecked().As<Function>();
 
   // Add a reference to the global object
   Local<Object> global = env->context()->Global();
@@ -4893,6 +4918,7 @@ inline int Start(Isolate* isolate, IsolateData* isolate_data,
   const int exit_code = EmitExit(&env);
 
   env.set_can_call_into_js(false);
+  env.stop_sub_worker_contexts();
   env.RunCleanup();
   RunAtExit(&env);
   uv_key_delete(&thread_local_env);

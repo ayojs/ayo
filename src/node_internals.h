@@ -193,6 +193,10 @@ void AppendExceptionLine(Environment* env,
 
 NO_RETURN void FatalError(const char* location, const char* message);
 
+void ReportException(Environment* env,
+                     v8::Local<v8::Value> er,
+                     v8::Local<v8::Message> message);
+
 void ProcessEmitWarning(Environment* env, const char* fmt, ...);
 
 void FillStatsArray(double* fields, const uv_stat_t* s);
