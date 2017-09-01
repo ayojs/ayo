@@ -154,6 +154,7 @@ static void DestroyIdsCb(uv_timer_t* handle) {
   do {
     std::vector<double> destroy_ids_list;
     destroy_ids_list.swap(*env->destroy_ids_list());
+    if (!env->can_call_into_js()) return;
     for (auto current_id : destroy_ids_list) {
       // Want each callback to be cleaned up after itself, instead of cleaning
       // them all up after the while() loop completes.
@@ -174,6 +175,9 @@ static void DestroyIdsCb(uv_timer_t* handle) {
 
 static void PushBackDestroyId(Environment* env, double id) {
   if (env->async_hooks()->fields()[AsyncHooks::kDestroy] == 0)
+    return;
+
+  if (!env->can_call_into_js())
     return;
 
   if (env->destroy_ids_list()->empty())
@@ -670,6 +674,7 @@ MaybeLocal<Value> AsyncWrap::MakeCallback(const Local<Function> cb,
                                           int argc,
                                           Local<Value>* argv) {
   CHECK(env()->context() == env()->isolate()->GetCurrentContext());
+  if (!env()->can_call_into_js()) return Undefined(env()->isolate());
 
   Environment::AsyncCallbackScope callback_scope(env());
 
@@ -709,6 +714,7 @@ MaybeLocal<Value> AsyncWrap::MakeCallback(const Local<Function> cb,
 
   Environment::TickInfo* tick_info = env()->tick_info();
 
+  if (!env()->can_call_into_js()) return ret;
   if (tick_info->length() == 0) {
     env()->isolate()->RunMicrotasks();
   }
@@ -725,6 +731,7 @@ MaybeLocal<Value> AsyncWrap::MakeCallback(const Local<Function> cb,
     return ret;
   }
 
+  if (!env()->can_call_into_js()) return ret;
   MaybeLocal<Value> rcheck =
       env()->tick_callback_function()->Call(env()->context(),
                                             process,

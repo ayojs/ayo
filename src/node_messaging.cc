@@ -192,7 +192,7 @@ class DeserializerDelegate : public ValueDeserializer::Delegate {
     if (!deserializer->ReadUint32(&id))
       return MaybeLocal<Object>();
     CHECK_LE(id, message_ports_.size());
-    return message_ports_[id]->object();
+    return message_ports_[id]->object(isolate);
   };
 
   ValueDeserializer* deserializer = nullptr;
@@ -581,10 +581,15 @@ void MessagePort::OnMessage() {
       }
     }
 
+    if (!env()->can_call_into_js()) {
+      // In this case there is nothing to do but to drain the current queue.
+      continue;
+    }
+
     {
       // Call the JS .onmessage() callback.
       HandleScope handle_scope(env()->isolate());
-      Local<Context> context = object()->CreationContext();
+      Local<Context> context = object(env()->isolate())->CreationContext();
       Context::Scope context_scope(context);
       Local<Value> args[] = {
         received.Deserialize(env(), context).FromMaybe(Local<Value>()),
@@ -651,13 +656,14 @@ void MessagePort::Send(Message&& message) {
 
 void MessagePort::Send(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
+  Local<Context> context = object(env->isolate())->CreationContext();
   if (args.Length() == 0) return;
   int32_t flag = MESSAGE_FLAG_NONE;
   if (args[2]->IsInt32() && is_privileged_) {
     flag = args[2].As<Int32>()->Value();
   }
   Message msg(flag);
-  if (msg.Serialize(env, object()->CreationContext(), args[0], args[1])
+  if (msg.Serialize(env, context, args[0], args[1])
           .IsNothing())
     return;
   Send(std::move(msg));
