@@ -133,7 +133,10 @@ def files(action):
       if sys.platform != 'darwin':
         output_prefix += 'lib.target/'
 
-  action([output_prefix + output_file], 'bin/' + output_file)
+  if 'false' == variables.get('node_shared'):
+    action([output_prefix + output_file], 'bin/' + output_file)
+  else:
+    action([output_prefix + output_file], 'lib/' + output_file)
 
   if not is_windows:
     # Install ayo -> node compatibility symlink.
