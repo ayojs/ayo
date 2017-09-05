@@ -339,7 +339,7 @@ CI_NATIVE_SUITES := addons addons-napi
 CI_JS_SUITES := abort async-hooks doctool inspector known_issues message parallel pseudo-tty sequential
 
 # Build and test addons without building anything else
-test-ci-native: LOGLEVEL := info
+test-ci-native: LOGLEVEL := silent
 test-ci-native: | test/addons/.buildstamp test/addons-napi/.buildstamp
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
@@ -357,7 +357,7 @@ test-ci-js: | clear-stalled
 		echo $${PS_OUT} | xargs kill; exit 1; \
 	fi
 
-test-ci: LOGLEVEL := info
+test-ci: LOGLEVEL := silent
 test-ci: | clear-stalled build-addons build-addons-napi
 	out/Release/cctest --gtest_output=tap:cctest.tap
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
