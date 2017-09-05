@@ -87,6 +87,7 @@ struct http2_state;
   V(decorated_private_symbol, "node:decorated")                               \
   V(npn_buffer_private_symbol, "node:npnBuffer")                              \
   V(processed_private_symbol, "node:processed")                               \
+  V(sab_lifetimepartner_symbol, "node:sharedArrayBufferLiftimePartner")       \
   V(selected_npn_buffer_private_symbol, "node:selectedNpnBuffer")             \
 
 // Strings are per-isolate primitives but Environment proxies them
@@ -182,6 +183,7 @@ struct http2_state;
   V(mac_string, "mac")                                                        \
   V(max_buffer_string, "maxBuffer")                                           \
   V(message_string, "message")                                                \
+  V(message_port_constructor_string, "MessagePort")                           \
   V(minttl_string, "minttl")                                                  \
   V(model_string, "model")                                                    \
   V(modulus_string, "modulus")                                                \
@@ -203,6 +205,7 @@ struct http2_state;
   V(onhandshakedone_string, "onhandshakedone")                                \
   V(onhandshakestart_string, "onhandshakestart")                              \
   V(onheaders_string, "onheaders")                                            \
+  V(oninit_string, "oninit")                                                  \
   V(onmessage_string, "onmessage")                                            \
   V(onnewsession_string, "onnewsession")                                      \
   V(onnewsessiondone_string, "onnewsessiondone")                              \
@@ -229,6 +232,8 @@ struct http2_state;
   V(pid_string, "pid")                                                        \
   V(pipe_string, "pipe")                                                      \
   V(port_string, "port")                                                      \
+  V(port1_string, "port1")                                                    \
+  V(port2_string, "port2")                                                    \
   V(preference_string, "preference")                                          \
   V(priority_string, "priority")                                              \
   V(produce_cached_data_string, "produceCachedData")                          \
@@ -301,6 +306,7 @@ struct http2_state;
   V(domain_array, v8::Array)                                                  \
   V(domains_stack_array, v8::Array)                                           \
   V(inspector_console_api_object, v8::Object)                                 \
+  V(message_port_constructor_template, v8::FunctionTemplate)                  \
   V(module_load_list_array, v8::Array)                                        \
   V(pbkdf2_constructor_template, v8::ObjectTemplate)                          \
   V(pipe_constructor_template, v8::FunctionTemplate)                          \
@@ -311,6 +317,7 @@ struct http2_state;
   V(promise_wrap_template, v8::ObjectTemplate)                                \
   V(push_values_to_array_function, v8::Function)                              \
   V(randombytes_constructor_template, v8::ObjectTemplate)                     \
+  V(sab_lifetimepartner_constructor_template, v8::FunctionTemplate)           \
   V(script_context_constructor_template, v8::FunctionTemplate)                \
   V(script_data_constructor_function, v8::Function)                           \
   V(secure_context_constructor_template, v8::FunctionTemplate)                \
