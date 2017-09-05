@@ -44,6 +44,7 @@ namespace node {
   V(HTTP2SESSIONSHUTDOWNWRAP)                                                 \
   V(HTTPPARSER)                                                               \
   V(JSSTREAM)                                                                 \
+  V(MESSAGEPORT)                                                              \
   V(PIPECONNECTWRAP)                                                          \
   V(PIPEWRAP)                                                                 \
   V(PROCESSWRAP)                                                              \
