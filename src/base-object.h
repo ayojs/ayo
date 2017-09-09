@@ -64,6 +64,7 @@ class BaseObject {
   template <typename Type>
   static inline void WeakCallback(
       const v8::WeakCallbackInfo<Type>& data);
+  static inline void DeleteMe(void* data);
 
   v8::Persistent<v8::Object> persistent_handle_;
   Environment* env_;
