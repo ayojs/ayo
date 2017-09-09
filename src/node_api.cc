@@ -853,6 +853,8 @@ void napi_module_register(napi_module* mod) {
   }
 #endif  // EXTERNAL_NAPI
 
+  static_assert(NAPI_F_WORKER_ENABLED == NM_F_WORKER_ENABLED,
+                "Worker-enabled flags match for N-API and Node");
   node::node_module* nm = new node::node_module {
     module_version,
     mod->nm_flags,

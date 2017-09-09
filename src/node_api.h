@@ -82,6 +82,8 @@ typedef struct {
 #define EXTERN_C_END
 #endif
 
+#define NAPI_F_WORKER_ENABLED 0x400
+
 #define NAPI_MODULE_X(modname, regfunc, priv, flags)                  \
   EXTERN_C_START                                                      \
     static napi_module _module =                                      \
@@ -101,6 +103,9 @@ typedef struct {
 
 #define NAPI_MODULE(modname, regfunc) \
   NAPI_MODULE_X(modname, regfunc, NULL, 0)
+
+#define NAPI_MODULE_WORKER_ENABLED(modname, regfunc) \
+  NAPI_MODULE_X(modname, regfunc, NULL, NAPI_F_WORKER_ENABLED)
 
 EXTERN_C_START
 

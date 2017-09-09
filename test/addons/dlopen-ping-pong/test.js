@@ -17,7 +17,4 @@ process.dlopen(module, bindingPath,
 module.exports.load(path.dirname(bindingPath) + '/ping.so');
 assert.strictEqual(module.exports.ping(), 'pong');
 
-// Check that after the addon is loaded with
-// process.dlopen() a require() call fails.
-const re = /^Error: Module did not self-register\.$/;
-assert.throws(() => require(`./build/${common.buildType}/binding`), re);
+assert.doesNotThrow(() => require(`./build/${common.buildType}/binding`));
