@@ -693,6 +693,10 @@ class Environment {
   void AddPromiseHook(promise_hook_func fn, void* arg);
   bool RemovePromiseHook(promise_hook_func fn, void* arg);
 
+  inline void AddCleanupHook(void (*fn)(void*), void* arg);
+  inline void RemoveCleanupHook(void (*fn)(void*), void* arg);
+  void RunCleanup();
+
  private:
   inline void ThrowError(v8::Local<v8::Value> (*fun)(v8::Local<v8::String>),
                          const char* errmsg);
@@ -752,6 +756,19 @@ class Environment {
     size_t enable_count_;
   };
   std::vector<PromiseHookCallback> promise_hooks_;
+
+  struct CleanupHookCallback {
+    void (*fun_)(void*);
+    void* arg_;
+
+    inline bool operator==(const CleanupHookCallback& other) const;
+    struct Hash {
+      inline size_t operator()(const CleanupHookCallback& cb) const;
+    };
+  };
+
+  std::unordered_map<CleanupHookCallback, size_t, CleanupHookCallback::Hash>
+      cleanup_hooks_;
 
   static void EnvPromiseHook(v8::PromiseHookType type,
                              v8::Local<v8::Promise> promise,

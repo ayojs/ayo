@@ -635,6 +635,33 @@ inline void Environment::SetTemplateMethod(v8::Local<v8::FunctionTemplate> that,
   t->SetClassName(name_string);  // NODE_SET_METHOD() compatibility.
 }
 
+void Environment::AddCleanupHook(void (*fn)(void*), void* arg) {
+  CleanupHookCallback cb { fn, arg };
+  cleanup_hooks_[cb]++;
+}
+
+void Environment::RemoveCleanupHook(void (*fn)(void*), void* arg) {
+  CleanupHookCallback cb { fn, arg };
+  auto it = cleanup_hooks_.find(cb);
+  if (it == cleanup_hooks_.end())
+    return;
+  if (--(it->second) == 0)
+    cleanup_hooks_.erase(it);
+}
+
+bool Environment::CleanupHookCallback::operator==(
+    const Environment::CleanupHookCallback& other) const {
+  return fun_ == other.fun_ && arg_ == other.arg_;
+}
+
+size_t Environment::CleanupHookCallback::Hash::operator()(
+    const Environment::CleanupHookCallback& cb) const {
+  // Almost all of the identifying information of a callback entry
+  // will usually be contained in the argument pointer, not the callback
+  // itself (which is static and is usually going to need a non-NULL argument).
+  return std::hash<void*>()(cb.arg_);
+}
+
 #define VP(PropertyName, StringValue) V(v8::Private, PropertyName)
 #define VS(PropertyName, StringValue) V(v8::String, PropertyName)
 #define V(TypeName, PropertyName)                                             \

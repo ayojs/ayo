@@ -168,6 +168,18 @@ void Environment::PrintSyncTrace() const {
   fflush(stderr);
 }
 
+void Environment::RunCleanup() {
+  CleanupHandles();
+
+  while (!cleanup_hooks_.empty()) {
+    auto it = cleanup_hooks_.begin();
+    CleanupHookCallback cb = it->first;
+    cleanup_hooks_.erase(it);
+    cb.fun_(cb.arg_);
+    CleanupHandles();
+  }
+}
+
 void Environment::RunAtExitCallbacks() {
   for (AtExitCallback at_exit : at_exit_functions_) {
     at_exit.cb_(at_exit.arg_);
