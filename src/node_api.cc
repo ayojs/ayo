@@ -856,6 +856,8 @@ void napi_module_register_cb(v8::Local<v8::Object> exports,
 
 // Registers a NAPI module.
 void napi_module_register(napi_module* mod) {
+  static_assert(NAPI_F_WORKER_ENABLED == NM_F_WORKER_ENABLED,
+                "Worker-enabled flags match for N-API and Node");
   int module_version = -1;
 #ifdef EXTERNAL_NAPI
   module_version = NODE_MODULE_VERSION;
