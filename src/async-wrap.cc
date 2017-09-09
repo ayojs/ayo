@@ -673,7 +673,6 @@ void AsyncWrap::EmitAsyncInit(Environment* env,
 MaybeLocal<Value> AsyncWrap::MakeCallback(const Local<Function> cb,
                                           int argc,
                                           Local<Value>* argv) {
-  CHECK(env()->context() == env()->isolate()->GetCurrentContext());
   if (!env()->can_call_into_js()) return Undefined(env()->isolate());
 
   Environment::AsyncCallbackScope callback_scope(env());

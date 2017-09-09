@@ -193,9 +193,14 @@ class MessagePort : public HandleWrap {
   // Start processing messages on this port as a receiving end.
   void Start();
 
+  /* constructor */
   static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+  /* prototype methods */
   static void PostMessage(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void StartBinding(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  /* static */
+  static void MoveToContext(const v8::FunctionCallbackInfo<v8::Value>& args);
 
   static void Entangle(MessagePort* a, MessagePort* b);
   static void Entangle(MessagePort* a, MessagePortData* b);

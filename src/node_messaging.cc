@@ -1,4 +1,5 @@
 #include "node_messaging.h"
+#include "node_contextify.h"
 #include "node_internals.h"
 #include "node_buffer.h"
 #include "util.h"
@@ -698,6 +699,37 @@ void MessagePort::StartBinding(const FunctionCallbackInfo<Value>& args) {
   port->Start();
 }
 
+void MessagePort::MoveToContext(const FunctionCallbackInfo<Value>& args) {
+  Environment* env = Environment::GetCurrent(args);
+  MessagePort* port;
+  if (!args[0]->IsObject() ||
+      (port = Unwrap<MessagePort>(args[0].As<Object>())) == nullptr) {
+    env->ThrowTypeError("First argument needs to be a MessagePort instance");
+  }
+  if (!port->data_) {
+    env->ThrowError("Cannot transfer a closed MessagePort");
+    return;
+  }
+  if (port->is_privileged_ || port->fm_listener_) {
+    env->ThrowError("Cannot transfer MessagePort with special semantics");
+    return;
+  }
+  Local<Value> context_arg = args[1];
+  Local<Context> context;
+  if (!context_arg->IsObject() ||
+      !ContextFromContextifiedSandbox(env, context_arg.As<Object>())
+          .ToLocal(&context)) {
+    env->ThrowError("Invalid context argument");
+    return;
+  }
+  Context::Scope context_scope(context);
+  MessagePort* target =
+      MessagePort::New(env, context, nullptr, std::move(port->data_));
+  if (target) {
+    args.GetReturnValue().Set(target->object());
+  }
+}
+
 size_t MessagePort::self_size() const {
   Mutex::ScopedLock lock(data_->mutex_);
   size_t sz = sizeof(*this) + sizeof(*data_);
@@ -781,6 +813,8 @@ static void InitMessaging(Local<Object> target,
                 templ->GetFunction(context).ToLocalChecked()).FromJust();
   }
 
+  env->SetMethod(target, "moveMessagePortToContext",
+                 MessagePort::MoveToContext);
   target->Set(context,
               env->message_port_constructor_string(),
               GetMessagePortConstructor(env, context).ToLocalChecked())

@@ -1343,7 +1343,6 @@ MaybeLocal<Value> MakeCallback(Environment* env,
                                Local<Value> argv[],
                                async_context asyncContext) {
   // If you hit this assertion, you forgot to enter the v8::Context first.
-  CHECK_EQ(env->context(), env->isolate()->GetCurrentContext());
   if (!env->can_call_into_js()) return Undefined(env->isolate());
 
   Local<Object> object;
