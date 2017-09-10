@@ -79,7 +79,7 @@ void HandleWrap::Close(v8::Local<v8::Value> close_callback) {
   state_ = kClosing;
 
   if (!close_callback.IsEmpty() && close_callback->IsFunction()) {
-    object()->Set(env()->context(), env()->onclose_string(), close_callback)
+    object()->Set(env()->context(), env()->_onclose_string(), close_callback)
         .FromJust();
     state_ = kClosingWithCallback;
   }
@@ -132,7 +132,7 @@ void HandleWrap::OnClose(uv_handle_t* handle) {
   wrap->OnClose();
 
   if (have_close_callback)
-    wrap->MakeCallback(env->onclose_string(), 0, nullptr);
+    wrap->MakeCallback(env->_onclose_string(), 0, nullptr);
 
   ClearWrap(wrap->object());
   wrap->persistent().Reset();

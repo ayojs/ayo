@@ -107,7 +107,8 @@ struct http2_state;
   V(channel_string, "channel")                                                \
   V(constants_string, "constants")                                            \
   V(oncertcb_string, "oncertcb")                                              \
-  V(onclose_string, "_onclose")                                               \
+  V(_onclose_string, "_onclose")                                              \
+  V(onclose_string, "onclose")                                                \
   V(code_string, "code")                                                      \
   V(configurable_string, "configurable")                                      \
   V(cwd_string, "cwd")                                                        \
