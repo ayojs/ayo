@@ -25,6 +25,8 @@ will be notified, rather than losing the context of the error in the
 `process.on('uncaughtException')` handler, or causing the program to
 exit immediately with an error code.
 
+*Note*: This module is not available in [`Worker`][]s.
+
 ## Warning: Don't Ignore Errors!
 
 <!-- type=misc -->
@@ -505,3 +507,4 @@ rejections.
 [`setInterval()`]: timers.html#timers_setinterval_callback_delay_args
 [`setTimeout()`]: timers.html#timers_settimeout_callback_delay_args
 [`throw`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/throw
+[`Worker`]: #worker_class_worker

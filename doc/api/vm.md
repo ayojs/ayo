@@ -310,6 +310,27 @@ console.log(util.inspect(sandbox));
 // { globalVar: 1024 }
 ```
 
+## vm.moveMessagePortToContext(port, context)
+<!-- YAML
+added: REPLACEME
+-->
+
+* `port` {MessagePort}
+* `contextifiedSandbox` {Object} A contextified object as returned by the
+  `vm.createContext()` method.
+* Returns: {MessagePort}
+
+Bind a `MessagePort` to a specific VM context. This returns a new `MessagePort`
+object, whose prototype and methods act as if they were created in the passed
+context. The received messages will also be emitted as objects from the passed
+context.
+
+Note that the return instance is *not* an `EventEmitter`; for receiving
+messages, the `.onmessage` property can be used.
+
+The `port` object on which this method was called can not be used for sending
+or receiving further messages.
+
 ## vm.runInDebugContext(code)
 <!-- YAML
 added: v0.11.14

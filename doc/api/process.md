@@ -338,6 +338,15 @@ The `*-deprecation` command line flags only affect warnings that use the name
 See the [`process.emitWarning()`][process_emit_warning] method for issuing
 custom or application-specific warnings.
 
+### Event: 'workerMessage'
+<!-- YAML
+added: REPLACEME
+-->
+
+If this thread was spawned by a `Worker`, this event emits messages sent using
+[`worker.postMessage()`][]. See the [`port.on('message')`][] event for
+more details.
+
 ### Signal Events
 
 <!--type=event-->
@@ -411,6 +420,8 @@ added: v0.7.0
 
 The `process.abort()` method causes the Node.js process to exit immediately and
 generate a core file.
+
+*Note*: This feature is not available in [`Worker`][] threads.
 
 ## process.arch
 <!-- YAML
@@ -514,6 +525,8 @@ try {
   console.error(`chdir: ${err}`);
 }
 ```
+
+*Note*: This feature is not available in [`Worker`][] threads.
 
 ## process.config
 <!-- YAML
@@ -901,6 +914,8 @@ console.log(process.env.test);
 // => 1
 ```
 
+*Note*: `process.env` is read-only in [`Worker`][] threads.
+
 ## process.execArgv
 <!-- YAML
 added: v0.7.7
@@ -1017,6 +1032,9 @@ if (someConditionNotMet()) {
 If it is necessary to terminate the Node.js process due to an error condition,
 throwing an *uncaught* error and allowing the process to terminate accordingly
 is safer than calling `process.exit()`.
+
+*Note*: in [`Worker`][] threads, this function stops the current thread rather than
+the current process.
 
 ## process.exitCode
 <!-- YAML
@@ -1185,6 +1203,8 @@ console.log(process.getgroups());         // [ 27, 30, 46, 1000 ]
 *Note*: This function is only available on POSIX platforms (i.e. not Windows
 or Android).
 
+*Note*: This feature is not available in [`Worker`][] threads.
+
 ## process.kill(pid[, signal])
 <!-- YAML
 added: v0.0.6
@@ -1226,6 +1246,15 @@ process.kill(process.pid, 'SIGHUP');
 
 *Note*: When `SIGUSR1` is received by a Node.js process, Node.js will start
 the debugger, see [Signal Events][].
+
+## process.isMainThread
+<!-- YAML
+added: REPLACEME
+-->
+
+* {boolean}
+
+Returns `true` if this code is not running inside of a [`Worker`][] thread.
 
 ## process.mainModule
 <!-- YAML
@@ -1407,6 +1436,18 @@ system platform on which the Node.js process is running. For instance
 console.log(`This platform is ${process.platform}`);
 ```
 
+## process.postMessage(value[, transferList])
+<!-- YAML
+added: REPLACEME
+-->
+
+This method is available if this is a `Worker` thread, which can be tested
+using [`process.isMainThread`][].
+
+Send a message to the parent thread’s `Worker` instance that will be received
+via [`worker.on('message')`][]. See [`port.postMessage()`][] for
+more details.
+
 ## process.release
 <!-- YAML
 added: v3.0.0
@@ -1502,6 +1543,7 @@ if (process.getegid && process.setegid) {
 *Note*: This function is only available on POSIX platforms (i.e. not Windows
 or Android).
 
+*Note*: This feature is not available in [`Worker`][] threads.
 
 ## process.seteuid(id)
 <!-- YAML
@@ -1530,6 +1572,8 @@ if (process.geteuid && process.seteuid) {
 *Note*: This function is only available on POSIX platforms (i.e. not Windows
 or Android).
 
+*Note*: This feature is not available in [`Worker`][] threads.
+
 ## process.setgid(id)
 <!-- YAML
 added: v0.1.31
@@ -1557,6 +1601,8 @@ if (process.getgid && process.setgid) {
 *Note*: This function is only available on POSIX platforms (i.e. not Windows
 or Android).
 
+*Note*: This feature is not available in [`Worker`][] threads.
+
 ## process.setgroups(groups)
 <!-- YAML
 added: v0.9.4
@@ -1572,6 +1618,8 @@ The `groups` array can contain numeric group IDs, group names or both.
 
 *Note*: This function is only available on POSIX platforms (i.e. not Windows
 or Android).
+
+*Note*: This feature is not available in [`Worker`][] threads.
 
 ## process.setuid(id)
 <!-- YAML
@@ -1598,6 +1646,8 @@ if (process.getuid && process.setuid) {
 *Note*: This function is only available on POSIX platforms (i.e. not Windows
 or Android).
 
+*Note*: This feature is not available in [`Worker`][] threads.
+
 
 ## process.stderr
 
@@ -1610,6 +1660,8 @@ a [Writable][] stream.
 
 *Note*: `process.stderr` differs from other Node.js streams in important ways,
 see [note on process I/O][] for more information.
+
+*Note*: This feature is not available in [`Worker`][] threads.
 
 ## process.stdin
 
@@ -1645,6 +1697,8 @@ For more information see [Stream compatibility][].
 must call `process.stdin.resume()` to read from it. Note also that calling
 `process.stdin.resume()` itself would switch stream to "old" mode.
 
+*Note*: This feature is not available in [`Worker`][] threads.
+
 ## process.stdout
 
 * {Stream}
@@ -1662,6 +1716,8 @@ process.stdin.pipe(process.stdout);
 
 *Note*: `process.stdout` differs from other Node.js streams in important ways,
 see [note on process I/O][] for more information.
+
+*Note*: This feature is not available in [`Worker`][] threads.
 
 ### A note on process I/O
 
@@ -1711,6 +1767,16 @@ false
 ```
 
 See the [TTY][] documentation for more information.
+
+## process.threadId
+<!-- YAML
+added: REPLACEME
+-->
+
+* {integer}
+
+An integer identifier for the current thread. On the corresponding worker object
+(if there is any), it is available as [`worker.threadId`][].
 
 ## process.title
 <!-- YAML
@@ -1866,6 +1932,14 @@ cases:
   code will be `128` + `6`, or `134`.
 
 
+## process.workerData
+<!-- YAML
+added: REPLACEME
+-->
+
+An arbitrary JavaScript object that contains a clone of the data passed
+to this thread’s `Worker` constructor.
+
 [`'exit'`]: #process_event_exit
 [`'finish'`]: stream.html#stream_event_finish
 [`'message'`]: child_process.html#child_process_event_message
@@ -1884,6 +1958,8 @@ cases:
 [`net.Server`]: net.html#net_class_net_server
 [`net.Socket`]: net.html#net_class_net_socket
 [`os.constants.dlopen`]: os.html#os_dlopen_constants
+[`port.postMessage()`]: worker.html#worker_port_postmessage_value_transferlist
+[`port.on('message')`]: worker.html#worker_event_message
 [`process.argv`]: #process_process_argv
 [`process.execPath`]: #process_process_execpath
 [`process.exit()`]: #process_process_exit_code
@@ -1894,6 +1970,10 @@ cases:
 [`require.main`]: modules.html#modules_accessing_the_main_module
 [`require.resolve()`]: globals.html#globals_require_resolve
 [`setTimeout(fn, 0)`]: timers.html#timers_settimeout_callback_delay_args
+[`Worker`]: worker.html#worker_worker
+[`worker.threadId`]: worker.html#worker_worker_threadid
+[`worker.postMessage()`]: worker.html#worker_worker_postmessage_value_transferlist
+[`worker.on('message')`]: worker.html#worker_event_message_1
 [Child Process]: child_process.html
 [Cluster]: cluster.html
 [Duplex]: stream.html#stream_duplex_and_transform_streams
