@@ -36,7 +36,7 @@ Contributions, policies, and releases are managed under an
 
 ### Official Resources
 
-_To be written_
+* [Join the Discord channel]!
 
 ### Unofficial Resources
 
@@ -95,6 +95,7 @@ _To be written_
 
 [Node.js]: https://github.com/nodejs/node
 [`npm` package ecosystem]: https://www.npmjs.com
+[Join the Discord channel]: https://discord.gg/hCgptwH
 [Website]: https://nodejs.org/en/
 [Contributing to the project]: CONTRIBUTING.md
 [Node.js Help]: https://github.com/nodejs/help
