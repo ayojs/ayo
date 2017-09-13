@@ -1,11 +1,11 @@
-# Building Node.js
+# Building Ayo.js
 
 Depending on what platform or features you require, the build process may
 differ slightly. After you've successfully built a binary, running the
 test suite to validate that the binary works as intended is a good next step.
 
 If you consistently can reproduce a test failure, search for it in the
-[Node.js issue tracker](https://github.com/nodejs/node/issues) or
+[Ayo.js issue tracker](https://github.com/ayojs/ayo/issues) or
 file a new issue.
 
 ## Supported platforms
@@ -50,9 +50,9 @@ in production.
 | macOS        | Experimental | >= 10.8 < 10.10                  | x64                  | no test coverage |
 | Linux (musl) | Experimental | musl >= 1.0                      | x64                  |                  |
 
-note1 - The gcc4.8-libs package needs to be installed, because node
+note1 - The gcc4.8-libs package needs to be installed, because ayo
   binaries have been built with GCC 4.8, for which runtime libraries are not
-  installed by default. For these node versions, the recommended binaries
+  installed by default. For these ayo versions, the recommended binaries
   are the ones available in pkgsrc, not the one available from nodejs.org.
   Note that the binaries downloaded from the pkgsrc repositories are not
   officially supported by the Node.js project, and instead are supported
@@ -96,13 +96,13 @@ If the path to your build directory contains a space, the build will likely fail
 ```console
 $ sudo ./tools/macosx-firewall.sh
 ```
-Running this script will add rules for the executable `node` in the out
-directory and the symbolic `node` link in the project's root directory.
+Running this script will add rules for the executable `ayo` in the out
+directory and the symbolic `ayo` link in the project's root directory.
 
 On FreeBSD and OpenBSD, you may also need:
 * libexecinfo
 
-To build Node.js:
+To build Ayo.js:
 
 ```console
 $ ./configure
@@ -153,25 +153,25 @@ This will build Node.js first (if necessary) and then use it to build the docs:
 $ make doc
 ```
 
-If you have an existing Node.js build, you can build just the docs with:
+If you have an existing Ayo.js build, you can build just the docs with:
 
 ```console
-$ NODE=/path/to/node make doc-only
+$ NODE=/path/to/ayo make doc-only
 ```
 
 To read the documentation:
 
 ```console
-$ man doc/node.1
+$ man doc/ayo.1
 ```
 
-To test if Node.js was built correctly:
+To test if Ayo.js was built correctly:
 
 ```console
-$ ./node -e "console.log('Hello from Node.js ' + process.version)"
+$ ./ayo -e "console.log('Hello from Ayo.js ' + process.version)"
 ```
 
-To install this version of Node.js into a system directory:
+To install this version of Ayo.js into a system directory:
 
 ```console
 $ [sudo] make install
@@ -210,7 +210,7 @@ To run the tests:
 To test if Node.js was built correctly:
 
 ```console
-> Release\node -e "console.log('Hello from Node.js', process.version)"
+> Release\ayo -e "console.log('Hello from Ayo.js', process.version)"
 ```
 
 ### Android / Android-based devices (e.g. Firefox OS)
@@ -251,7 +251,7 @@ data at runtime.
 
 With the `--download=all`, this may download ICU if you don't have an
 ICU in `deps/icu`. (The embedded `small-icu` included in the default
-Node.js source does not include all locales.)
+Ayo.js source does not include all locales.)
 
 ##### Unix / macOS:
 
@@ -368,4 +368,4 @@ and [user guide](https://openssl.org/docs/fips/UserGuide-2.0.pdf).
    For example on ubuntu 12 the installation directory was
    `/usr/local/ssl/fips-2.0`
 8. Build Node.js with `make -j`
-9. Verify with `node -p "process.versions.openssl"` (for example `1.0.2a-fips`)
+9. Verify with `ayo -p "process.versions.openssl"` (for example `1.0.2a-fips`)
