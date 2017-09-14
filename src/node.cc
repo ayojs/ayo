@@ -265,28 +265,32 @@ static v8::Isolate* node_isolate;
 
 node::DebugOptions debug_options;
 
+#ifdef NODE_USE_V8_PLATFORM
+NodePlatform* NodePlatform::platform = nullptr;
+#endif
+
 static struct {
 #if NODE_USE_V8_PLATFORM
-  void Initialize(int thread_pool_size, uv_loop_t* loop) {
+  void Initialize(int thread_pool_size) {
     tracing_agent_ =
         trace_enabled ? new tracing::Agent() : nullptr;
-    platform_ = new NodePlatform(thread_pool_size, loop,
+    NodePlatform::platform = new NodePlatform(thread_pool_size,
         trace_enabled ? tracing_agent_->GetTracingController() : nullptr);
-    V8::InitializePlatform(platform_);
+    V8::InitializePlatform(NodePlatform::platform);
     tracing::TraceEventHelper::SetTracingController(
         trace_enabled ? tracing_agent_->GetTracingController() : nullptr);
   }
 
   void Dispose() {
-    platform_->Shutdown();
-    delete platform_;
-    platform_ = nullptr;
+    NodePlatform::platform->Shutdown();
+    delete NodePlatform::platform;
+    NodePlatform::platform = nullptr;
     delete tracing_agent_;
     tracing_agent_ = nullptr;
   }
 
   void DrainVMTasks() {
-    platform_->DrainBackgroundTasks();
+    NodePlatform::platform->DrainBackgroundTasks();
   }
 
 #if HAVE_INSPECTOR
@@ -295,7 +299,8 @@ static struct {
     // Inspector agent can't fail to start, but if it was configured to listen
     // right away on the websocket port and fails to bind/etc, this will return
     // false.
-    return env->inspector_agent()->Start(platform_, script_path, options);
+    return env->inspector_agent()->Start(NodePlatform::platform,
+                                         script_path, options);
   }
 
   bool InspectorStarted(Environment *env) {
@@ -312,9 +317,8 @@ static struct {
   }
 
   tracing::Agent* tracing_agent_;
-  NodePlatform* platform_;
 #else  // !NODE_USE_V8_PLATFORM
-  void Initialize(int thread_pool_size, uv_loop_t* loop) {}
+  void Initialize(int thread_pool_size) {}
   void Dispose() {}
   void DrainVMTasks() {}
   bool StartInspector(Environment *env, const char* script_path,
@@ -4779,7 +4783,7 @@ int Start(int argc, char** argv) {
   V8::SetEntropySource(crypto::EntropySource);
 #endif  // HAVE_OPENSSL
 
-  v8_platform.Initialize(v8_thread_pool_size, uv_default_loop());
+  v8_platform.Initialize(v8_thread_pool_size);
   // Enable tracing when argv has --trace-events-enabled.
   if (trace_enabled) {
     fprintf(stderr, "Warning: Trace event is an experimental feature "

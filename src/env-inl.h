@@ -36,41 +36,9 @@
 
 namespace node {
 
-inline IsolateData::IsolateData(v8::Isolate* isolate, uv_loop_t* event_loop,
-                                uint32_t* zero_fill_field) :
-
-// Create string and private symbol properties as internalized one byte strings.
-//
-// Internalized because it makes property lookups a little faster and because
-// the string is created in the old space straight away.  It's going to end up
-// in the old space sooner or later anyway but now it doesn't go through
-// v8::Eternal's new space handling first.
-//
-// One byte because our strings are ASCII and we can safely skip V8's UTF-8
-// decoding step.  It's a one-time cost, but why pay it when you don't have to?
-#define V(PropertyName, StringValue)                                          \
-    PropertyName ## _(                                                        \
-        isolate,                                                              \
-        v8::Private::New(                                                     \
-            isolate,                                                          \
-            v8::String::NewFromOneByte(                                       \
-                isolate,                                                      \
-                reinterpret_cast<const uint8_t*>(StringValue),                \
-                v8::NewStringType::kInternalized,                             \
-                sizeof(StringValue) - 1).ToLocalChecked())),
-  PER_ISOLATE_PRIVATE_SYMBOL_PROPERTIES(V)
-#undef V
-#define V(PropertyName, StringValue)                                          \
-    PropertyName ## _(                                                        \
-        isolate,                                                              \
-        v8::String::NewFromOneByte(                                           \
-            isolate,                                                          \
-            reinterpret_cast<const uint8_t*>(StringValue),                    \
-            v8::NewStringType::kInternalized,                                 \
-            sizeof(StringValue) - 1).ToLocalChecked()),
-    PER_ISOLATE_STRING_PROPERTIES(V)
-#undef V
-    event_loop_(event_loop), zero_fill_field_(zero_fill_field) {}
+inline v8::Isolate* IsolateData::isolate() const {
+  return isolate_;
+}
 
 inline uv_loop_t* IsolateData::event_loop() const {
   return event_loop_;

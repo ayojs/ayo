@@ -4,6 +4,7 @@
 #include "v8.h"
 #include "v8-profiler.h"
 #include "req-wrap-inl.h"
+#include "node_platform.h"
 
 #if defined(_MSC_VER)
 #define getpid GetCurrentProcessId
@@ -19,10 +20,61 @@ namespace node {
 using v8::Context;
 using v8::FunctionTemplate;
 using v8::HandleScope;
+using v8::Isolate;
 using v8::Local;
 using v8::Message;
+using v8::Private;
 using v8::StackFrame;
 using v8::StackTrace;
+using v8::String;
+
+IsolateData::IsolateData(Isolate* isolate, uv_loop_t* event_loop,
+                         uint32_t* zero_fill_field) :
+
+// Create string and private symbol properties as internalized one byte strings.
+//
+// Internalized because it makes property lookups a little faster and because
+// the string is created in the old space straight away.  It's going to end up
+// in the old space sooner or later anyway but now it doesn't go through
+// v8::Eternal's new space handling first.
+//
+// One byte because our strings are ASCII and we can safely skip V8's UTF-8
+// decoding step.  It's a one-time cost, but why pay it when you don't have to?
+#define V(PropertyName, StringValue)                                          \
+    PropertyName ## _(                                                        \
+        isolate,                                                              \
+        Private::New(                                                         \
+            isolate,                                                          \
+            String::NewFromOneByte(                                           \
+                isolate,                                                      \
+                reinterpret_cast<const uint8_t*>(StringValue),                \
+                v8::NewStringType::kInternalized,                             \
+                sizeof(StringValue) - 1).ToLocalChecked())),
+  PER_ISOLATE_PRIVATE_SYMBOL_PROPERTIES(V)
+#undef V
+#define V(PropertyName, StringValue)                                          \
+    PropertyName ## _(                                                        \
+        isolate,                                                              \
+        String::NewFromOneByte(                                               \
+            isolate,                                                          \
+            reinterpret_cast<const uint8_t*>(StringValue),                    \
+            v8::NewStringType::kInternalized,                                 \
+            sizeof(StringValue) - 1).ToLocalChecked()),
+    PER_ISOLATE_STRING_PROPERTIES(V)
+#undef V
+    isolate_(isolate),
+    event_loop_(event_loop),
+    zero_fill_field_(zero_fill_field) {
+#ifdef NODE_USE_V8_PLATFORM
+  NodePlatform::platform->RegisterIsolate(this, event_loop);
+#endif
+}
+
+IsolateData::~IsolateData() {
+#ifdef NODE_USE_V8_PLATFORM
+  NodePlatform::platform->UnregisterIsolate(this);
+#endif
+}
 
 void Environment::Start(int argc,
                         const char* const* argv,

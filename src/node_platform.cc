@@ -1,5 +1,7 @@
 #include "node_platform.h"
 
+#include "env.h"
+#include "env-inl.h"
 #include "util.h"
 
 namespace node {
@@ -9,9 +11,9 @@ using v8::Platform;
 using v8::Task;
 using v8::TracingController;
 
-static void FlushTasks(uv_async_t* handle) {
-  NodePlatform* platform = static_cast<NodePlatform*>(handle->data);
-  platform->FlushForegroundTasksInternal();
+void PerIsolatePlatformData::FlushTasks(uv_async_t* handle) {
+  auto platform_data = static_cast<PerIsolatePlatformData*>(handle->data);
+  platform_data->FlushForegroundTasksInternal();
 }
 
 static void BackgroundRunner(void* data) {
@@ -23,12 +25,48 @@ static void BackgroundRunner(void* data) {
   }
 }
 
-NodePlatform::NodePlatform(int thread_pool_size, uv_loop_t* loop,
-                           TracingController* tracing_controller)
-    : loop_(loop) {
+PerIsolatePlatformData::PerIsolatePlatformData(
+    v8::Isolate* isolate, uv_loop_t* loop)
+  : isolate_(isolate), loop_(loop) {
   CHECK_EQ(0, uv_async_init(loop, &flush_tasks_, FlushTasks));
   flush_tasks_.data = static_cast<void*>(this);
   uv_unref(reinterpret_cast<uv_handle_t*>(&flush_tasks_));
+}
+
+void PerIsolatePlatformData::CallOnForegroundThread(Task* task) {
+  foreground_tasks_.Push(task);
+  uv_async_send(&flush_tasks_);
+}
+
+void PerIsolatePlatformData::CallDelayedOnForegroundThread(
+    Task* task, double delay_in_seconds) {
+  auto pair = new std::pair<Task*, double>(task, delay_in_seconds);
+  foreground_delayed_tasks_.Push(pair);
+  uv_async_send(&flush_tasks_);
+}
+
+PerIsolatePlatformData::~PerIsolatePlatformData() {
+  FlushForegroundTasksInternal();
+
+  // uv_run cannot be called from the time before the beforeExit callback
+  // runs until the program exits unless the event loop has any referenced
+  // handles after beforeExit terminates. This prevents unrefed timers
+  // that happen to terminate during shutdown from being run unsafely.
+  // Since uv_run cannot be called, this handle will never be fully cleaned
+  // up.
+  uv_close(reinterpret_cast<uv_handle_t*>(&flush_tasks_), nullptr);
+}
+
+void PerIsolatePlatformData::ref() {
+  ref_count_++;
+}
+
+int PerIsolatePlatformData::unref() {
+  return --ref_count_;
+}
+
+NodePlatform::NodePlatform(int thread_pool_size,
+                           TracingController* tracing_controller) {
   if (tracing_controller) {
     tracing_controller_.reset(tracing_controller);
   } else {
@@ -45,18 +83,35 @@ NodePlatform::NodePlatform(int thread_pool_size, uv_loop_t* loop,
   }
 }
 
+void NodePlatform::RegisterIsolate(IsolateData* isolate_data, uv_loop_t* loop) {
+  Isolate* isolate = isolate_data->isolate();
+  Mutex::ScopedLock lock(lock_);
+  PerIsolatePlatformData* existing = per_isolate_[isolate];
+  if (existing != nullptr)
+    existing->ref();
+  else
+    per_isolate_[isolate] = new PerIsolatePlatformData(isolate, loop);
+}
+
+void NodePlatform::UnregisterIsolate(IsolateData* isolate_data) {
+  Isolate* isolate = isolate_data->isolate();
+  Mutex::ScopedLock lock(lock_);
+  PerIsolatePlatformData* existing = per_isolate_[isolate];
+  CHECK_NE(existing, nullptr);
+  if (existing->unref() == 0) {
+    delete existing;
+    per_isolate_.erase(isolate);
+  }
+}
+
 void NodePlatform::Shutdown() {
   background_tasks_.Stop();
   for (size_t i = 0; i < threads_.size(); i++) {
     CHECK_EQ(0, uv_thread_join(threads_[i].get()));
   }
-  // uv_run cannot be called from the time before the beforeExit callback
-  // runs until the program exits unless the event loop has any referenced
-  // handles after beforeExit terminates. This prevents unrefed timers
-  // that happen to terminate during shutdown from being run unsafely.
-  // Since uv_run cannot be called, this handle will never be fully cleaned
-  // up.
-  uv_close(reinterpret_cast<uv_handle_t*>(&flush_tasks_), nullptr);
+  Mutex::ScopedLock lock(lock_);
+  for (const auto& pair : per_isolate_)
+    delete pair.second;
 }
 
 size_t NodePlatform::NumberOfAvailableBackgroundThreads() {
@@ -73,11 +128,10 @@ static void RunForegroundTask(uv_timer_t* handle) {
 }
 
 void NodePlatform::DrainBackgroundTasks() {
-  FlushForegroundTasksInternal();
   background_tasks_.BlockingDrain();
 }
 
-void NodePlatform::FlushForegroundTasksInternal() {
+void PerIsolatePlatformData::FlushForegroundTasksInternal() {
   while (auto delayed = foreground_delayed_tasks_.Pop()) {
     uint64_t delay_millis =
         static_cast<uint64_t>(delayed->second + 0.5) * 1000;
@@ -101,17 +155,26 @@ void NodePlatform::CallOnBackgroundThread(Task* task,
   background_tasks_.Push(task);
 }
 
+PerIsolatePlatformData* NodePlatform::ForIsolate(Isolate* isolate) {
+  Mutex::ScopedLock lock(lock_);
+  PerIsolatePlatformData* data = per_isolate_[isolate];
+  CHECK_NE(data, nullptr);
+  return data;
+}
+
 void NodePlatform::CallOnForegroundThread(Isolate* isolate, Task* task) {
-  foreground_tasks_.Push(task);
-  uv_async_send(&flush_tasks_);
+  ForIsolate(isolate)->CallOnForegroundThread(task);
 }
 
 void NodePlatform::CallDelayedOnForegroundThread(Isolate* isolate,
                                                  Task* task,
                                                  double delay_in_seconds) {
-  auto pair = new std::pair<Task*, double>(task, delay_in_seconds);
-  foreground_delayed_tasks_.Push(pair);
-  uv_async_send(&flush_tasks_);
+  ForIsolate(isolate)->CallDelayedOnForegroundThread(task,
+                                                     delay_in_seconds);
+}
+
+void NodePlatform::FlushForegroundTasks(v8::Isolate* isolate) {
+  ForIsolate(isolate)->FlushForegroundTasksInternal();
 }
 
 bool NodePlatform::IdleTasksEnabled(Isolate* isolate) { return false; }
