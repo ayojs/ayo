@@ -454,12 +454,29 @@ class MonochromeProgressIndicator(CompactProgressIndicator):
     print ("\r" + (" " * last_line_length) + "\r"),
 
 
+class OneLineProgressIndicator(CompactProgressIndicator):
+
+  def __init__(self, cases, flaky_tests_mode):
+    templates = {
+      'status_line': "[%(mins)02i:%(secs)02i|%%%(remaining) 4d|+%(passed) 4d|-%(failed) 4d]: %(test)s",
+      'stdout': '%s',
+      'stderr': '%s',
+      'clear': lambda: "\n",
+      'max_length': 78
+    }
+    super(OneLineProgressIndicator, self).__init__(cases, flaky_tests_mode, templates)
+
+  def ClearLine(self, last_line_length):
+    print ("\n"),
+
+
 PROGRESS_INDICATORS = {
   'verbose': VerboseProgressIndicator,
   'dots': DotsProgressIndicator,
   'color': ColorProgressIndicator,
   'tap': TapProgressIndicator,
   'mono': MonochromeProgressIndicator,
+  'oneline': OneLineProgressIndicator,
   'deopts': DeoptsCheckProgressIndicator
 }
 

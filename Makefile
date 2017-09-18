@@ -361,7 +361,7 @@ test-ci-js: | clear-stalled
 test-ci: LOGLEVEL := silent
 test-ci: | clear-stalled build-addons build-addons-napi
 	out/Release/cctest --gtest_output=tap:cctest.tap
-	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
+	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p oneline \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
 		$(TEST_CI_ARGS) $(CI_JS_SUITES) $(CI_NATIVE_SUITES)
 	# Clean up any leftover processes, error if found.
