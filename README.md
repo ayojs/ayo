@@ -28,9 +28,8 @@ Contributions, policies, and releases are managed under an
 * [Building Ayo.js](#building-ayojs)
   * [Security](#security)
   * [Current Project Team Members](#current-project-team-members)
-    * [TSC (Technical Steering Committee)](#tsc-technical-steering-committee)
-    * [Collaborators](#collaborators)
-    * [Release Team](#release-team)
+    * [Core Team](#core-team)
+    * [Moderation Team](#moderation-team)
 
 ## Resources for Newcomers
 
@@ -133,10 +132,36 @@ us a report nonetheless.
 
 When in doubt, please do send us a report.
 
-
 ## Current Project Team Members
 
-_To be written_
+The Ayo.js project team is comprised of a core team, a moderation team, and
+various sub-teams. For more information, see [GOVERNANCE.md](./GOVERNANCE.md).
+
+### Core Team
+
+| | Github | Name | Email | Pronouns |
+| ---| --- | --- | --- | --- |
+| ![addaleax](https://avatars2.githubusercontent.com/u/899444?v=4&s=64) | [addaleax](https://github.com/addaleax) | **Anna Henningsen** | anna@addaleax.net | she/her |
+| ![aqrln](https://avatars0.githubusercontent.com/u/4923335?v=4&s=64) | [aqrln](https://github.com/aqrln) | **Alexey Orlenko** | eaglexrlnk@gmail.com | he/him |
+| ![Harrison-M](https://avatars1.githubusercontent.com/u/1491200?v=4&s=64) | [Harrison-M](https://github.com/Harrison-M) | **Hal Massey** | harrison.massey@gmail.com | he/him |
+| ![pup](https://avatars0.githubusercontent.com/u/6078550?v=4&s=64) | [pup](https://github.com/pup) | **Olivia Hugger** | olivia@fastmail.com | she/her |
+| ![Qard](https://avatars1.githubusercontent.com/u/205482?v=4&s=64) | [Qard](https://github.com/Qard) | **Stephen Belanger** | admin@stephenbelanger.com | he/they |
+| ![sandfox](https://avatars1.githubusercontent.com/u/260919?v=4&s=64) | [sandfox](https://github.com/sandfox) | **James Butler** | james.butler@sandfox.co.u | they/he |
+| ![TimothyGu](https://avatars1.githubusercontent.com/u/1538624?v=4&s=64) | [TimothyGu](https://github.com/TimothyGu) | **Timothy Gu** | timothygu99@gmail.com | he/him |
+| ![varjmes](https://avatars0.githubusercontent.com/u/542140?v=4&s=64) | [varjmes](https://github.com/varjmes) |  **James Spencer** | hello@jmes.tech | they/them |
+
+### Moderation Team
+
+| | Github | Name | Email | Pronouns |
+| ---| --- | --- | --- | --- |
+| ![AgentAntelope](https://avatars1.githubusercontent.com/u/1962412?v=4&s=64) | [AgentAntelope](https://github.com/AgentAntelope) | **Fell Sunderland** | agentantelope+github@gmail.com | he/him |
+| ![janl](https://avatars1.githubusercontent.com/u/11321?v=4&s=64) | [janl](https://github.com/janl) | **Jan Lehnardt** | jan@apache.org | he/him |
+| ![NoahDragon](https://avatars3.githubusercontent.com/u/5704064?v=4&s=64) | [NoahDragon](https://github.com/NoahDragon) | **Abner Chou** | hi@abnerchou.me | he/him |
+| ![scotttrinh](https://avatars2.githubusercontent.com/u/1682194?v=4&s=64) | [scotttrinh](https://github.com/scotttrinh) | **Scott Trinh** | scott@scotttrinh.com | he/him |
+| ![siddharthkp](https://avatars0.githubusercontent.com/u/1863771?v=4&s=64) | [siddharthkp](https://github.com/siddharthkp) | **Siddharth Kshetrapal** | siddharth.kshetrapal@gmail.com | he/him |
+| ![SomeHats](https://avatars1.githubusercontent.com/u/1489520?v=4&s=64) | [SomeHats](https://github.com/SomeHats) | **Alex Dytrych** | alex@dytry.ch | she/they |
+| ![srilq](https://avatars3.githubusercontent.com/u/18026180?v=4&s=64) | [srilq](https://github.com/srilq) | **Stef** | stef@srilq.email | they/them |
+| ![zkat](https://avatars2.githubusercontent.com/u/17535?v=4&s=64) | [zkat](https://github.com/zkat) | **Kat Marchán** | kzm@sykosomatic.org | they/them |
 
 [Node.js]: https://github.com/nodejs/node
 [`npm` package ecosystem]: https://www.npmjs.com
