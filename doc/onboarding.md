@@ -173,6 +173,6 @@ onboarding session.
     * [https://github.com/nodejs/LTS](https://github.com/nodejs/LTS)
     * [https://github.com/nodejs/citgm](https://github.com/nodejs/citgm)
 
-[Code of Conduct]: https://github.com/nodejs/TSC/blob/master/CODE_OF_CONDUCT.md
+[Code of Conduct]: https://github.com/ayojs/ayo/blob/latest/CODE_OF_CONDUCT.md
 [`core-validate-commit`]: https://github.com/evanlucas/core-validate-commit
 [`node-review`]: https://github.com/evanlucas/node-review
