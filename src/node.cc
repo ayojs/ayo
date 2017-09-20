@@ -1386,6 +1386,11 @@ InternalCallbackScope::InternalCallbackScope(Environment* env,
     CHECK(!object.IsEmpty());
   }
 
+  if (!env->can_call_into_js()) {
+    failed_ = true;
+    return;
+  }
+
   HandleScope handle_scope(env->isolate());
   // If you hit this assertion, you forgot to enter the v8::Context first.
   CHECK_EQ(env->context(), env->isolate()->GetCurrentContext());
@@ -1433,6 +1438,7 @@ void InternalCallbackScope::Close() {
 
   Environment::TickInfo* tick_info = env_->tick_info();
 
+  if (!env_->can_call_into_js()) return;
   if (tick_info->length() == 0) {
     env_->isolate()->RunMicrotasks();
   }
@@ -1451,6 +1457,8 @@ void InternalCallbackScope::Close() {
 
   CHECK_EQ(env_->current_async_id(), 0);
   CHECK_EQ(env_->trigger_id(), 0);
+
+  if (!env_->can_call_into_js()) return;
 
   if (env_->tick_callback_function()->Call(process, 0, nullptr).IsEmpty()) {
     failed_ = true;
@@ -4756,6 +4764,7 @@ inline int Start(Isolate* isolate, IsolateData* isolate_data,
 
   const int exit_code = EmitExit(&env);
 
+  env.set_can_call_into_js(false);
   env.RunCleanup();
   RunAtExit(&env);
   uv_key_delete(&thread_local_env);

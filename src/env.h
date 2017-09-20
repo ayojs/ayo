@@ -609,6 +609,9 @@ class Environment {
   inline performance::performance_state* performance_state();
   inline std::map<std::string, uint64_t>* performance_marks();
 
+  inline bool can_call_into_js() const;
+  inline void set_can_call_into_js(bool can_call_into_js);
+
   inline void ThrowError(const char* errmsg);
   inline void ThrowTypeError(const char* errmsg);
   inline void ThrowRangeError(const char* errmsg);
@@ -705,6 +708,8 @@ class Environment {
   bool emit_napi_warning_;
   size_t makecallback_cntr_;
   std::vector<double> destroy_ids_list_;
+
+  bool can_call_into_js_ = true;
 
   performance::performance_state* performance_state_ = nullptr;
   std::map<std::string, uint64_t> performance_marks_;
