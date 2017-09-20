@@ -26,8 +26,10 @@ using v8::Maybe;
 using v8::MaybeLocal;
 using v8::Nothing;
 using v8::Object;
+using v8::Private;
 using v8::SharedArrayBuffer;
 using v8::String;
+using v8::Undefined;
 using v8::Value;
 using v8::ValueDeserializer;
 using v8::ValueSerializer;
@@ -657,8 +659,41 @@ MaybeLocal<Function> GetMessagePortConstructor(
   // Factor generating the MessagePort JS constructor into its own piece
   // of code, because it is needed early on in the child environment setup.
   Local<FunctionTemplate> templ = env->message_port_constructor_template();
-  if (!templ.IsEmpty())
-    return templ->GetFunction(context);
+
+  if (!templ.IsEmpty()) {
+    auto maybe_ctor = templ->GetFunction(context);
+    Local<Function> ctor;
+    if (!maybe_ctor.ToLocal(&ctor)) return maybe_ctor;
+
+    // Set up EventEmitter inheritance and some default listners.
+    Local<Private> initialized = env->messageport_initialized_private_symbol();
+    if (!ctor->HasPrivate(context, initialized).FromJust()) {
+      Local<Object> extras = context->GetExtrasBindingObject();
+      Local<Value> make_message_port;
+
+      if (!extras->Get(context,
+                      FIXED_ONE_BYTE_STRING(env->isolate(), "makeMessagePort"))
+              .ToLocal(&make_message_port)) {
+        return MaybeLocal<Function>();
+      }
+      if (!make_message_port->IsFunction()) {
+        env->ThrowError("'makeMessagePort' is not a function");
+        return MaybeLocal<Function>();
+      }
+      Local<Value> args[] = { ctor };
+      if (make_message_port.As<Function>()->Call(context,
+                                                 Undefined(env->isolate()),
+                                                 arraysize(args),
+                                                 args).IsEmpty()) {
+        return MaybeLocal<Function>();
+      }
+
+      ctor->SetPrivate(context, initialized, Undefined(env->isolate()))
+          .FromJust();
+    }
+
+    return maybe_ctor;
+  }
 
   {
     Local<FunctionTemplate> m = env->NewFunctionTemplate(MessagePort::New);

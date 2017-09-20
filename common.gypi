@@ -29,7 +29,8 @@
     'v8_enable_disassembler': 1,
 
     'v8_extra_library_files': [
-      './lib/extras/events.js'
+      './lib/extras/events.js',
+      './lib/extras/messaging.js'
     ],
 
     # Don't bake anything extra into the snapshot.

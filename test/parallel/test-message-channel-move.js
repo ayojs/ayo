@@ -9,6 +9,7 @@ const { MessageChannel } = require('worker');
   const context = vm.createContext();
   const channel = new MessageChannel();
   context.port = vm.moveMessagePortToContext(channel.port1, context);
+  context.common = common;
   context.global = context;
   const port = channel.port2;
   vm.runInContext('(' + function() {
@@ -16,13 +17,12 @@ const { MessageChannel } = require('worker');
 
     {
       assert(port instanceof Object);
-      assert(port.onmessage === undefined);
+      assert(port.onmessage instanceof Function);
       assert(port.postMessage instanceof Function);
-      port.onmessage = function(msg) {
+      port.on('message', common.mustCall((msg) => {
         assert(msg instanceof Object);
         port.postMessage(msg);
-      };
-      port.start();
+      }));
     }
 
     {
