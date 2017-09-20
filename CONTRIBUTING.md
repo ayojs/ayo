@@ -3,7 +3,7 @@
 ## Code of Conduct
 
 Please read the
-[Code of Conduct](https://github.com/nodejs/TSC/blob/master/CODE_OF_CONDUCT.md)
+[Code of Conduct](https://github.com/ayojs/ayo/blob/latest/CODE_OF_CONDUCT.md)
 which explains the minimum behavior expectations for Ayo.js contributors.
 
 ## Issue Contributions
