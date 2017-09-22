@@ -1,10 +1,12 @@
 <!--
 Thank you for your pull request. Please provide a description above and review
-the requirements below.
+the requirements below. Opening a Pull Request means that you agree to abide by
+our Code of Conduct which can be found at:
+https://github.com/ayojs/ayo/blob/latest/CODE_OF_CONDUCT.md
 
 Bug fixes and new features should include tests and possibly benchmarks.
 
-Contributors guide: https://github.com/nodejs/node/blob/master/CONTRIBUTING.md
+Contributors guide: https://github.com/ayojs/ayo/blob/latest/CONTRIBUTING.md
 -->
 
 ##### Checklist
@@ -13,7 +15,7 @@ Contributors guide: https://github.com/nodejs/node/blob/master/CONTRIBUTING.md
 - [ ] `make -j4 test` (UNIX), or `vcbuild test` (Windows) passes
 - [ ] tests and/or benchmarks are included
 - [ ] documentation is changed or added
-- [ ] commit message follows [commit guidelines](https://github.com/nodejs/node/blob/master/CONTRIBUTING.md#commit-message-guidelines)
+- [ ] commit message follows [commit guidelines](https://github.com/ayojs/ayo/blob/latest/CONTRIBUTING.md#commit-message-guidelines)
 
 ##### Affected core subsystem(s)
 <!-- Provide affected core subsystem(s) (like doc, cluster, crypto, etc). -->
