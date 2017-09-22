@@ -8,15 +8,14 @@ which explains the minimum behavior expectations for Ayo.js contributors.
 
 ## Issue Contributions
 
-When opening issues or commenting on existing issues, please make sure
-discussions are related to concrete technical issues with Ayo.js.
+When opening issues or commenting on existing issues [in this
+repository](https://github.com/ayojs/ayo/issues), discussions should be related
+to:
 
-* For general help using Ayo.js, please file an issue at the
-[ayo.js help repository](https://github.com/ayojs/ayo/issues).
-
-* Discussion of non-technical topics (such as intellectual property and
-trademark) should use the
-[Technical Steering Committee (TSC) repository](https://github.com/nodejs/TSC/issues).
+* Technical issues with Ayo.js.
+* General help using Ayo.js.
+* Discussion of non-technical topics related to Ayo.js (such as intellectual
+property and governance).
 
 ## Code Contributions
 
@@ -35,7 +34,7 @@ $ git remote add upstream https://github.com/ayojs/ayo.git
 
 #### Which branch?
 
-For developing new features and bug fixes, the `master` branch should be pulled
+For developing new features and bug fixes, the `latest` branch should be pulled
 and built upon.
 
 #### Dependencies
@@ -47,19 +46,15 @@ Ayo.js. We cannot accept such patches.
 
 In case of doubt, open an issue in the
 [issue tracker](https://github.com/ayojs/ayo/issues/) or contact one of the
-[project Collaborators](https://github.com/ayojs/ayo/#current-project-team-members).
-Ayo.js has two IRC channels:
-[#Node.js](http://webchat.freenode.net/?channels=node.js) for general help and
-questions, and
-[#Node-dev](http://webchat.freenode.net/?channels=node-dev) for development of
-Node.js core specifically.
+[Team Members](https://github.com/ayojs/ayo/#current-project-team-members).
+You can also [join the Ayo.js Discord channel][Ayo.js Discord channel].
 
 ### Step 2: Branch
 
 Create a branch and start hacking:
 
 ```text
-$ git checkout -b my-branch -t origin/master
+$ git checkout -b my-branch -t origin/latest
 ```
 
 Any text you write should follow the [Style Guide](doc/STYLE_GUIDE.md),
@@ -136,7 +131,7 @@ repository.
 
 ```text
 $ git fetch upstream
-$ git rebase upstream/master
+$ git rebase upstream/latest
 ```
 
 ### Step 5: Test
@@ -233,8 +228,8 @@ $ git push --force-with-lease origin my-branch
 
 **Important:** The `git push --force-with-lease` command is one of the few ways
 to delete history in git. Before you use it, make sure you understand the risks.
-If in doubt, you can always ask for guidance in the Pull Request or on
-[IRC in the #node-dev channel](https://webchat.freenode.net?channels=node-dev&uio=d4).
+If in doubt, you can always ask for guidance in the Pull Request or in
+[the Discord channel][Ayo.js Discord channel].
 
 Feel free to post a comment in the Pull Request to ping reviewers if you are
 awaiting an answer on something. If you encounter words or acronyms that
@@ -259,7 +254,7 @@ When a collaborator lands your Pull Request, they will post
 a comment to the Pull Request page mentioning the commit(s) it
 landed as. GitHub often shows the Pull Request as `Closed` at this
 point, but don't worry. If you look at the branch you raised your
-Pull Request against (probably `master`), you should see a commit with
+Pull Request against (probably `latest`), you should see a commit with
 your name on it. Congratulations and thanks for your contribution!
 
 ## Additional Notes
@@ -276,7 +271,7 @@ For the size of "one logical change",
 [0b5191f](https://github.com/ayojs/ayo/commit/0b5191f15d0f311c804d542b67e2e922d98834f8)
 can be a good example. It touches the implementation, the documentation,
 and the tests, but is still one logical change. In general, the tests should
-always pass when each individual commit lands on the master branch.
+always pass when each individual commit lands on the `latest` branch.
 
 ### Getting Approvals for Your Pull Request
 
@@ -343,3 +338,5 @@ By making a contribution to this project, I certify that:
   personal information I submit with it, including my sign-off) is
   maintained indefinitely and may be redistributed consistent with
   this project or the open source license(s) involved.
+
+[Ayo.js Discord channel]: https://discord.gg/hCgptwH
