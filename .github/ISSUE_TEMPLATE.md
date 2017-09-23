@@ -1,14 +1,13 @@
 <!--
 Thank you for reporting an issue.
 
-This issue tracker is for bugs and issues found within Node.js core.
-If you require more general support please file an issue on our help
-repo. https://github.com/nodejs/help
+This issue tracker is for bugs and issues found within Ayo.js core. Filing an
+issue means that you agree to abide by our Code of Conduct which can be found
+at: https://github.com/ayojs/ayo/blob/latest/CODE_OF_CONDUCT.md
 
+Please fill in as much of the template below as is relevant.
 
-Please fill in as much of the template below as you're able.
-
-Version: output of `node -v`
+Version: output of `ayo -v`
 Platform: output of `uname -a` (UNIX), or version and 32 or 64-bit (Windows)
 Subsystem: if known, please specify affected core module name
 
