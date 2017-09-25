@@ -110,6 +110,7 @@ struct MakeLibuvRequestCallback<ReqT, void(*)(ReqT*, Args...)> {
 
   static void Wrapper(ReqT* req, Args... args) {
     ReqWrap<ReqT>* req_wrap = ContainerOf(&ReqWrap<ReqT>::req_, req);
+    req_wrap->env()->DecreaseWaitingRequestCounter();
     T original_callback = reinterpret_cast<T>(req_wrap->original_callback_);
     original_callback(req, args...);
   }
@@ -126,6 +127,7 @@ template <typename T>
 template <typename LibuvFunction, typename... Args>
 int ReqWrap<T>::Dispatch(LibuvFunction fn, Args... args) {
   Dispatched();
+  env()->IncreaseWaitingRequestCounter();
 
   // This expands as:
   //
