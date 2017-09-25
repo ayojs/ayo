@@ -95,6 +95,7 @@
       'lib/internal/crypto/util.js',
       'lib/internal/encoding.js',
       'lib/internal/errors.js',
+      'lib/internal/error-serdes.js',
       'lib/internal/freelist.js',
       'lib/internal/fs.js',
       'lib/internal/http.js',
