@@ -284,6 +284,7 @@ inline Environment::Environment(IsolateData* isolate_data,
                                 v8::Local<v8::Context> context)
     : isolate_(context->GetIsolate()),
       isolate_data_(isolate_data),
+      profiler_idle_notifier_started_(false),
       async_hooks_(context->GetIsolate()),
       timer_base_(uv_now(isolate_data->event_loop())),
       using_domains_(false),
@@ -335,6 +336,10 @@ inline Environment::~Environment() {
   delete http2_state_;
   delete[] fs_stats_field_array_;
   free(performance_state_);
+}
+
+inline bool Environment::profiler_idle_notifier_started() const {
+  return profiler_idle_notifier_started_;
 }
 
 inline v8::Isolate* Environment::isolate() const {

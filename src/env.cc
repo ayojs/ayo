@@ -111,6 +111,11 @@ void Environment::CleanupHandles() {
 }
 
 void Environment::StartProfilerIdleNotifier() {
+  if (profiler_idle_notifier_started_)
+    return;
+
+  profiler_idle_notifier_started_ = true;
+
   uv_prepare_start(&idle_prepare_handle_, [](uv_prepare_t* handle) {
     Environment* env = ContainerOf(&Environment::idle_prepare_handle_, handle);
     env->isolate()->GetCpuProfiler()->SetIdle(true);
@@ -123,6 +128,7 @@ void Environment::StartProfilerIdleNotifier() {
 }
 
 void Environment::StopProfilerIdleNotifier() {
+  profiler_idle_notifier_started_ = false;
   uv_prepare_stop(&idle_prepare_handle_);
   uv_check_stop(&idle_check_handle_);
 }

@@ -543,6 +543,7 @@ class Environment {
 
   void StartProfilerIdleNotifier();
   void StopProfilerIdleNotifier();
+  inline bool profiler_idle_notifier_started() const;
 
   inline v8::Isolate* isolate() const;
   inline uv_loop_t* event_loop() const;
@@ -703,6 +704,7 @@ class Environment {
   uv_timer_t destroy_async_ids_timer_handle_;
   uv_prepare_t idle_prepare_handle_;
   uv_check_t idle_check_handle_;
+  bool profiler_idle_notifier_started_;
 
   AsyncHooks async_hooks_;
   DomainFlag domain_flag_;
