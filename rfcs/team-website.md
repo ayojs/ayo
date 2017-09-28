@@ -16,3 +16,7 @@ To fulfill these tasks, the team is granted the following privileges:
 - Rights management for the `ayojs/ayojs.tech` GitHub repository
 - Control over the membership of the `@ayojs/website` GitHub team
 - Ownership of the `ayojs.tech` domain
+
+Team membership is managed on a volunteer basis. Any contributor to the team's
+efforts can volunteer for team membership, or be nominated by an existing team
+member. All nominations are publicly reviewed and voted on by the team.
