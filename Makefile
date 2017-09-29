@@ -10,7 +10,7 @@ TEST_CI_ARGS ?=
 STAGINGSERVER ?= node-www
 LOGLEVEL ?= silent
 OSTYPE := $(shell uname -s | tr '[A-Z]' '[a-z]')
-COVTESTS ?= test
+COVTESTS ?= test-cov
 GTEST_FILTER ?= "*"
 GNUMAKEFLAGS += --no-print-directory
 
@@ -207,9 +207,19 @@ test: all
 	$(PYTHON) tools/test.py --mode=release -J \
 		$(CI_ASYNC_HOOKS) \
 		$(CI_JS_SUITES) \
-		$(CI_NATIVE_SUITES)
+		$(CI_NATIVE_SUITES) \
+		known_issues
 	$(MAKE) lint
 endif
+
+test-cov: all
+	$(MAKE) build-addons
+	$(MAKE) build-addons-napi
+	# $(MAKE) cctest
+	$(PYTHON) tools/test.py --mode=release -J \
+		$(CI_JS_SUITES) \
+		$(CI_NATIVE_SUITES)
+	$(MAKE) lint
 
 test-parallel: all
 	$(PYTHON) tools/test.py --mode=release parallel -J
@@ -339,7 +349,7 @@ test-all-valgrind: test-build
 
 CI_NATIVE_SUITES := addons addons-napi
 CI_ASYNC_HOOKS := async-hooks
-CI_JS_SUITES := abort doctool es-module inspector known_issues message parallel pseudo-tty sequential
+CI_JS_SUITES ?= default
 
 # Build and test addons without building anything else
 test-ci-native: LOGLEVEL := silent
@@ -352,7 +362,7 @@ test-ci-native: | test/addons/.buildstamp test/addons-napi/.buildstamp
 test-ci-js: | clear-stalled
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p tap --logfile test.tap \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES)
+		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) known_issues
 	# Clean up any leftover processes, error if found.
 	ps awwx | grep Release/node | grep -v grep | cat
 	@PS_OUT=`ps awwx | grep Release/node | grep -v grep | awk '{print $$1}'`; \
@@ -365,7 +375,7 @@ test-ci: | clear-stalled build-addons build-addons-napi
 	out/Release/cctest --gtest_output=tap:cctest.tap
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p oneline \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES) $(CI_NATIVE_SUITES)
+		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES) known_issues
 	# Clean up any leftover processes, error if found.
 	ps awwx | grep Release/node | grep -v grep | cat
 	@PS_OUT=`ps awwx | grep Release/node | grep -v grep | awk '{print $$1}'`; \
