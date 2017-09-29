@@ -19,7 +19,9 @@ the situation.
 
 **The moderation team will prioritize the well-being and comfort of the
 recipients of the violation over the comfort of the violator.** See [some
-examples below](#moderation-examples).
+examples below](#moderation-examples). Note that the moderation team [tracks
+basic details about moderation actions](#moderation-log) in the interest of
+transparency.
 
 ## Our Pledge
 
@@ -150,6 +152,15 @@ completely unacceptable in any social setting that puts our members at risk.
 
 Members expelled from events or venues with any sort of paid attendance will not
 be refunded.
+
+### <a name="moderation-log"></a> Public Records of Moderation Actions
+
+Any events or situations where moderators have taken action must be recorded in
+[the Ayo.js public Moderation
+Log](https://docs.google.com/spreadsheets/d/1-I4miSFFLEeJpI6N7BYKe_0OKiZRSiuIEqjRvDglPds/edit#gid=0)
+in accordance with the policies laid out in the [Moderation Log
+RFC](rfcs/moderation-log.md). Please refer to that RFC for details on log
+handling, including requesting changes to the public record.
 
 ### Who Watches the Watchers?
 
