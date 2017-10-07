@@ -5,8 +5,8 @@
 
 #include "env.h"
 #include "node_mutex.h"
+#include "sharedarraybuffer-metadata.h"
 #include <list>
-#include <memory>
 
 namespace node {
 namespace worker {
@@ -26,7 +26,6 @@ class MessagePort;
 #define MESSAGE_FLAG_CUSTOM_OFFSET 100
 
 // Any further flagged message codes are defined by the modules that use them.
-
 
 // Represents a single communication message. The only non-standard extension
 // here is passing of a separate flag that the Workers implementation uses
@@ -54,6 +53,9 @@ class Message {
                             v8::Local<v8::Value> input,
                             v8::Local<v8::Value> transfer_list);
 
+  // Internal method of Message that is called when a new SharedArrayBuffer
+  // object is encountered in the incoming value's structure.
+  void AddSharedArrayBuffer(SharedArrayBufferMetadataReference ref);
   // Internal method of Message that is called once serialization finishes
   // and that transfers ownership of `data` to this message.
   void AddMessagePort(std::unique_ptr<MessagePortData>&& data);
@@ -62,6 +64,7 @@ class Message {
   int32_t flag_ = MESSAGE_FLAG_NONE;
   uv_buf_t main_message_buf_;
   std::vector<uv_buf_t> array_buffer_contents_;
+  std::vector<SharedArrayBufferMetadataReference> shared_array_buffers_;
   std::vector<std::unique_ptr<MessagePortData>> message_ports_;
 
   friend class MessagePort;

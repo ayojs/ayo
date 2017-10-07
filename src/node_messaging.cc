@@ -25,6 +25,7 @@ using v8::Maybe;
 using v8::MaybeLocal;
 using v8::Nothing;
 using v8::Object;
+using v8::SharedArrayBuffer;
 using v8::String;
 using v8::Value;
 using v8::ValueDeserializer;
@@ -55,6 +56,7 @@ Message& Message::operator=(Message&& other) {
   main_message_buf_ = other.main_message_buf_;
   other.main_message_buf_ = uv_buf_init(nullptr, 0);
   array_buffer_contents_ = std::move(other.array_buffer_contents_);
+  shared_array_buffers_ = std::move(other.shared_array_buffers_);
   message_ports_ = std::move(other.message_ports_);
   return *this;
 }
@@ -98,6 +100,7 @@ MaybeLocal<Value> Message::Deserialize(Environment* env,
     // This is for messages generated in C++ with the expectation that they
     // are handled in JS, e.g. serialized error messages from workers.
     CHECK(array_buffer_contents_.empty());
+    CHECK(shared_array_buffers_.empty());
     CHECK(message_ports_.empty());
     char* buf = main_message_buf_.base;
     main_message_buf_.base = nullptr;
@@ -137,10 +140,24 @@ MaybeLocal<Value> Message::Deserialize(Environment* env,
   }
   array_buffer_contents_.clear();
 
+  for (uint32_t i = 0; i < shared_array_buffers_.size(); ++i) {
+    Local<SharedArrayBuffer> sab;
+    if (!shared_array_buffers_[i]->GetSharedArrayBuffer(env, context)
+            .ToLocal(&sab))
+      return MaybeLocal<Value>();
+    deserializer.TransferSharedArrayBuffer(i, sab);
+  }
+  shared_array_buffers_.clear();
+
   if (deserializer.ReadHeader(context).IsNothing())
     return MaybeLocal<Value>();
   return handle_scope.Escape(
       deserializer.ReadValue(context).FromMaybe(Local<Value>()));
+}
+
+void Message::AddSharedArrayBuffer(
+    SharedArrayBufferMetadataReference reference) {
+  shared_array_buffers_.push_back(reference);
 }
 
 void Message::AddMessagePort(std::unique_ptr<MessagePortData>&& data) {
@@ -165,6 +182,26 @@ class SerializerDelegate : public ValueSerializer::Delegate {
 
     env_->ThrowError("Cannot serialize unknown type of host object");
     return Nothing<bool>();
+  }
+
+  Maybe<uint32_t> GetSharedArrayBufferId(
+      Isolate* isolate, Local<SharedArrayBuffer> shared_array_buffer) override {
+    uint32_t i;
+    for (i = 0; i < seen_shared_array_buffers_.size(); ++i) {
+      if (seen_shared_array_buffers_[i] == shared_array_buffer)
+        return Just(i);
+    }
+
+    SharedArrayBufferMetadataReference reference(
+        SharedArrayBufferMetadata::ForIncomingSharedArrayBuffer(env_,
+                                                          context_,
+                                                          shared_array_buffer));
+    if (!reference) {
+      return Nothing<uint32_t>();
+    }
+    seen_shared_array_buffers_.push_back(shared_array_buffer);
+    msg_->AddSharedArrayBuffer(reference);
+    return Just(i);
   }
 
   void Finish() {
@@ -192,6 +229,7 @@ class SerializerDelegate : public ValueSerializer::Delegate {
   Environment* env_;
   Local<Context> context_;
   Message* msg_;
+  std::vector<Local<SharedArrayBuffer>> seen_shared_array_buffers_;
   std::vector<MessagePort*> ports_;
 
   friend class worker::Message;

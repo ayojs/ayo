@@ -92,6 +92,7 @@ class ModuleWrap;
   V(decorated_private_symbol, "node:decorated")                               \
   V(npn_buffer_private_symbol, "node:npnBuffer")                              \
   V(processed_private_symbol, "node:processed")                               \
+  V(sab_lifetimepartner_symbol, "node:sharedArrayBufferLifetimePartner")      \
   V(selected_npn_buffer_private_symbol, "node:selectedNpnBuffer")             \
   V(domain_private_symbol, "node:domain")                                     \
 
@@ -324,6 +325,7 @@ class ModuleWrap;
   V(promise_wrap_template, v8::ObjectTemplate)                                \
   V(push_values_to_array_function, v8::Function)                              \
   V(randombytes_constructor_template, v8::ObjectTemplate)                     \
+  V(sab_lifetimepartner_constructor_template, v8::FunctionTemplate)           \
   V(script_context_constructor_template, v8::FunctionTemplate)                \
   V(script_data_constructor_function, v8::Function)                           \
   V(secure_context_constructor_template, v8::FunctionTemplate)                \
