@@ -323,7 +323,6 @@ class ModuleWrap;
   V(promise_wrap_template, v8::ObjectTemplate)                                \
   V(push_values_to_array_function, v8::Function)                              \
   V(randombytes_constructor_template, v8::ObjectTemplate)                     \
-  V(sab_lifetimepartner_constructor_template, v8::FunctionTemplate)           \
   V(script_context_constructor_template, v8::FunctionTemplate)                \
   V(script_data_constructor_function, v8::Function)                           \
   V(secure_context_constructor_template, v8::FunctionTemplate)                \

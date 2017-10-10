@@ -519,8 +519,7 @@ MaybeLocal<Function> GetMessagePortConstructor(
     Environment* env, Local<Context> context) {
   // Factor generating the MessagePort JS constructor into its own piece
   // of code, because it is needed early on in the child environment setup.
-  Local<FunctionTemplate> templ;
-  templ = env->message_port_constructor_template();
+  Local<FunctionTemplate> templ = env->message_port_constructor_template();
   if (!templ.IsEmpty())
     return templ->GetFunction(context);
 
