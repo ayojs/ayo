@@ -4,6 +4,7 @@
 #if defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS
 
 #include "util.h"
+#include "node_mutex.h"
 
 namespace node {
 
@@ -30,40 +31,48 @@ class Freelist {
   }
 
   void push(T* item) {
-    if (size_ > kMaximumLength) {
-      FreelistTraits::Free(item);
-    } else {
-      size_++;
-      FreelistTraits::Reset(item);
-      list_item* li = Calloc<list_item>(1);
-      li->item = item;
-      if (head_ == nullptr) {
-        head_ = li;
-        tail_ = li;
-      } else {
-        tail_->next = li;
-        tail_ = li;
+    {
+      Mutex::ScopedLock lock(mutex_);
+      if (size_ <= kMaximumLength) {
+        size_++;
+        FreelistTraits::Reset(item);
+        list_item* li = Calloc<list_item>(1);
+        li->item = item;
+        if (head_ == nullptr) {
+          head_ = li;
+          tail_ = li;
+        } else {
+          tail_->next = li;
+          tail_ = li;
+        }
+        return;
       }
     }
+
+    FreelistTraits::Free(item);
   }
 
   T* pop() {
-    if (head_ != nullptr) {
-      size_--;
-      list_item* cur = head_;
-      T* item = cur->item;
-      head_ = cur->next;
-      free(cur);
-      return item;
-    } else {
-      return FreelistTraits::template Alloc<T>();
+    {
+      Mutex::ScopedLock lock(mutex_);
+      if (head_ != nullptr) {
+        size_--;
+        list_item* cur = head_;
+        T* item = cur->item;
+        head_ = cur->next;
+        free(cur);
+        return item;
+      }
     }
+
+    return FreelistTraits::template Alloc<T>();
   }
 
  private:
   size_t size_ = 0;
   list_item* head_ = nullptr;
   list_item* tail_ = nullptr;
+  Mutex mutex_;
 };
 
 struct DefaultFreelistTraits {
