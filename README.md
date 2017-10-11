@@ -143,7 +143,6 @@ various sub-teams. For more information, see [GOVERNANCE.md](./GOVERNANCE.md).
 | ---| --- | --- | --- | --- |
 | ![addaleax](https://avatars2.githubusercontent.com/u/899444?v=4&s=64) | [addaleax](https://github.com/addaleax) | **Anna Henningsen** | anna@addaleax.net | she/her |
 | ![aqrln](https://avatars0.githubusercontent.com/u/4923335?v=4&s=64) | [aqrln](https://github.com/aqrln) | **Alexey Orlenko** | eaglexrlnk@gmail.com | he/him |
-| ![Harrison-M](https://avatars1.githubusercontent.com/u/1491200?v=4&s=64) | [Harrison-M](https://github.com/Harrison-M) | **Hal Massey** | harrison.massey@gmail.com | he/him |
 | ![pup](https://avatars0.githubusercontent.com/u/6078550?v=4&s=64) | [pup](https://github.com/pup) | **Olivia Hugger** | olivia@fastmail.com | she/her |
 | ![Qard](https://avatars1.githubusercontent.com/u/205482?v=4&s=64) | [Qard](https://github.com/Qard) | **Stephen Belanger** | admin@stephenbelanger.com | he/they |
 | ![sandfox](https://avatars1.githubusercontent.com/u/260919?v=4&s=64) | [sandfox](https://github.com/sandfox) | **James Butler** | james.butler@sandfox.co.u | they/he |
