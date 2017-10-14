@@ -187,6 +187,7 @@ class ModuleWrap;
   V(mac_string, "mac")                                                        \
   V(max_buffer_string, "maxBuffer")                                           \
   V(message_string, "message")                                                \
+  V(message_port_constructor_string, "MessagePort")                           \
   V(minttl_string, "minttl")                                                  \
   V(model_string, "model")                                                    \
   V(modulus_string, "modulus")                                                \
@@ -208,6 +209,7 @@ class ModuleWrap;
   V(onhandshakedone_string, "onhandshakedone")                                \
   V(onhandshakestart_string, "onhandshakestart")                              \
   V(onheaders_string, "onheaders")                                            \
+  V(oninit_string, "oninit")                                                  \
   V(onmessage_string, "onmessage")                                            \
   V(onnewsession_string, "onnewsession")                                      \
   V(onnewsessiondone_string, "onnewsessiondone")                              \
@@ -235,6 +237,8 @@ class ModuleWrap;
   V(pid_string, "pid")                                                        \
   V(pipe_string, "pipe")                                                      \
   V(port_string, "port")                                                      \
+  V(port1_string, "port1")                                                    \
+  V(port2_string, "port2")                                                    \
   V(preference_string, "preference")                                          \
   V(priority_string, "priority")                                              \
   V(produce_cached_data_string, "produceCachedData")                          \
@@ -308,6 +312,7 @@ class ModuleWrap;
   V(domain_array, v8::Array)                                                  \
   V(domains_stack_array, v8::Array)                                           \
   V(inspector_console_api_object, v8::Object)                                 \
+  V(message_port_constructor_template, v8::FunctionTemplate)                  \
   V(module_load_list_array, v8::Array)                                        \
   V(pbkdf2_constructor_template, v8::ObjectTemplate)                          \
   V(pipe_constructor_template, v8::FunctionTemplate)                          \
