@@ -203,6 +203,7 @@ else
 test: all
 	$(MAKE) build-addons
 	$(MAKE) build-addons-napi
+	$(MAKE) doc
 	$(MAKE) cctest
 	$(PYTHON) tools/test.py --mode=release -J \
 		$(CI_ASYNC_HOOKS) \
@@ -382,7 +383,7 @@ test-ci-js: | clear-stalled
 	fi
 
 test-ci: LOGLEVEL := silent
-test-ci: | clear-stalled build-addons build-addons-napi
+test-ci: | clear-stalled build-addons build-addons-napi doc
 	out/Release/cctest --gtest_output=tap:cctest.tap
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p oneline \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
@@ -518,7 +519,7 @@ doc: $(NODE_EXE) doc-only
 $(apidoc_dirs):
 	mkdir -p $@
 
-out/doc/api/assets/%: doc/api_assets/% out/doc/api/assets/
+out/doc/api/assets/%: doc/api_assets/% out/doc/api/assets
 	cp $< $@
 
 out/doc/%: doc/%
