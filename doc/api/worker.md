@@ -5,7 +5,7 @@
 > Stability: 1 - Experimental
 
 The `worker` module provides a way to create multiple environments running
-on independent threads, and to create message channels between those. It
+on independent threads, and to create message channels between them. It
 can be accessed using:
 
 ```js
@@ -16,7 +16,7 @@ Workers are useful for performing CPU-intensive JavaScript operations; do not
 use them for I/O, since Ayo’s built-in mechanisms for performing operations
 asynchronously already treat it more efficiently than Worker threads can.
 
-Workers can also, unlike child processes or when using the `cluster` module,
+Workers, unlike child processes or when using the `cluster` module, can also
 share memory efficiently by transferring `ArrayBuffer` instances or sharing
 `SharedArrayBuffer` instances between them.
 
@@ -128,7 +128,6 @@ to this thread’s `Worker` constructor.
 <!-- YAML
 added: REPLACEME
 -->
-
 
 Instances of the `worker.MessageChannel` class represent an asynchronous,
 two-way communications channel.
