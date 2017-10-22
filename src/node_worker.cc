@@ -300,6 +300,7 @@ void Worker::Run() {
         Isolate::DisallowJavascriptExecutionScope::THROW_ON_FAILURE);
 
     platform->DrainBackgroundTasks(isolate_);
+    platform->CancelPendingDelayedTasks(isolate_);
 
     // Grab the parent-to-child channel and render is unusable.
     MessagePort* child_port;
