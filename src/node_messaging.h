@@ -157,10 +157,15 @@ class MessagePort : public HandleWrap {
   // Stop processing messages on this port as a receiving end.
   void Stop();
 
+  /* constructor */
   static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+  /* prototype methods */
   static void PostMessage(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void StartBinding(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void StopBinding(const v8::FunctionCallbackInfo<v8::Value>& args);
+
+  /* static */
+  static void MoveToContext(const v8::FunctionCallbackInfo<v8::Value>& args);
 
   // Turns `a` and `b` into siblings, i.e. connects the sending side of one
   // to the receiving side of the other. This is not thread-safe.

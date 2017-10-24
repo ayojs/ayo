@@ -1071,6 +1071,18 @@ void InitContextify(Local<Object> target,
 }
 
 }  // anonymous namespace
+
+MaybeLocal<Context> ContextFromContextifiedSandbox(
+    Environment* env,
+    Local<Object> sandbox) {
+  auto contextify_context =
+      ContextifyContext::ContextFromContextifiedSandbox(env, sandbox);
+  if (contextify_context == nullptr)
+    return MaybeLocal<Context>();
+  else
+    return contextify_context->context();
+}
+
 }  // namespace node
 
 NODE_MODULE_CONTEXT_AWARE_BUILTIN(contextify, node::InitContextify)
