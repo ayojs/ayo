@@ -444,6 +444,7 @@ typedef void (*addon_context_register_func)(
 #define NM_F_BUILTIN   0x01
 #define NM_F_LINKED    0x02
 #define NM_F_INTERNAL  0x04
+#define NM_F_WORKER_ENABLED  0x400
 
 struct node_module {
   int nm_version;
@@ -530,6 +531,10 @@ extern "C" NODE_EXTERN void node_module_register(void* mod);
 
 #define NODE_MODULE_CONTEXT_AWARE_BUILTIN(modname, regfunc)           \
   NODE_MODULE_CONTEXT_AWARE_X(modname, regfunc, NULL, NM_F_BUILTIN)   \
+
+#define NODE_MODULE_WORKER_ENABLED(modname, regfunc)                  \
+  NODE_MODULE_CONTEXT_AWARE_X(modname, regfunc, NULL,                 \
+                              NM_F_WORKER_ENABLED)
 
 /*
  * For backward compatibility in add-on modules.

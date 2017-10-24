@@ -95,6 +95,7 @@ class Worker;
   V(contextify_context_private_symbol, "node:contextify:context")             \
   V(contextify_global_private_symbol, "node:contextify:global")               \
   V(decorated_private_symbol, "node:decorated")                               \
+  V(messageport_initialized_private_symbol, "node:messagePortInitialized")    \
   V(npn_buffer_private_symbol, "node:npnBuffer")                              \
   V(processed_private_symbol, "node:processed")                               \
   V(sab_lifetimepartner_symbol, "node:sharedArrayBufferLifetimePartner")      \
