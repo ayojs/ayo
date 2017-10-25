@@ -279,7 +279,7 @@ inline Environment::Environment(IsolateData* isolate_data,
       emit_napi_warning_(true),
       makecallback_cntr_(0),
 #if HAVE_INSPECTOR
-      inspector_agent_(this),
+      inspector_agent_(new inspector::Agent(this)),
 #endif
       http_parser_buffer_(nullptr),
       fs_stats_field_array_(nullptr),
@@ -318,6 +318,11 @@ inline Environment::Environment(IsolateData* isolate_data,
 
 inline Environment::~Environment() {
   v8::HandleScope handle_scope(isolate());
+
+#if HAVE_INSPECTOR
+  // Destroy inspector agent before erasing the context.
+  delete inspector_agent_;
+#endif
 
   context()->SetAlignedPointerInEmbedderData(kContextEmbedderDataIndex,
                                              nullptr);
