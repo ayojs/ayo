@@ -4039,13 +4039,6 @@ SignBase::Error Sign::SignInit(const char* sign_type) {
 void Sign::SignInit(const FunctionCallbackInfo<Value>& args) {
   Sign* sign;
   ASSIGN_OR_RETURN_UNWRAP(&sign, args.Holder());
-  Environment* env = sign->env();
-
-  if (args.Length() == 0) {
-    return env->ThrowError("Sign type argument is mandatory");
-  }
-
-  THROW_AND_RETURN_IF_NOT_STRING(args[0], "Sign type");
 
   const node::Utf8Value sign_type(args.GetIsolate(), args[0]);
   sign->CheckThrow(sign->SignInit(*sign_type));
@@ -4062,25 +4055,13 @@ SignBase::Error Sign::SignUpdate(const char* data, int len) {
 
 
 void Sign::SignUpdate(const FunctionCallbackInfo<Value>& args) {
-  Environment* env = Environment::GetCurrent(args);
-
   Sign* sign;
   ASSIGN_OR_RETURN_UNWRAP(&sign, args.Holder());
 
-  THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0], "Data");
-
-  // Only copy the data if we have to, because it's a string
   Error err;
-  if (args[0]->IsString()) {
-    StringBytes::InlineDecoder decoder;
-    if (!decoder.Decode(env, args[0].As<String>(), args[1], UTF8))
-      return;
-    err = sign->SignUpdate(decoder.out(), decoder.size());
-  } else {
-    char* buf = Buffer::Data(args[0]);
-    size_t buflen = Buffer::Length(args[0]);
-    err = sign->SignUpdate(buf, buflen);
-  }
+  char* buf = Buffer::Data(args[0]);
+  size_t buflen = Buffer::Length(args[0]);
+  err = sign->SignUpdate(buf, buflen);
 
   sign->CheckThrow(err);
 }
@@ -4198,7 +4179,6 @@ void Sign::SignFinal(const FunctionCallbackInfo<Value>& args) {
 
   node::Utf8Value passphrase(env->isolate(), args[1]);
 
-  THROW_AND_RETURN_IF_NOT_BUFFER(args[0], "Data");
   size_t buf_len = Buffer::Length(args[0]);
   char* buf = Buffer::Data(args[0]);
 
@@ -4272,13 +4252,6 @@ SignBase::Error Verify::VerifyInit(const char* verify_type) {
 void Verify::VerifyInit(const FunctionCallbackInfo<Value>& args) {
   Verify* verify;
   ASSIGN_OR_RETURN_UNWRAP(&verify, args.Holder());
-  Environment* env = verify->env();
-
-  if (args.Length() == 0) {
-    return env->ThrowError("Verify type argument is mandatory");
-  }
-
-  THROW_AND_RETURN_IF_NOT_STRING(args[0], "Verify type");
 
   const node::Utf8Value verify_type(args.GetIsolate(), args[0]);
   verify->CheckThrow(verify->VerifyInit(*verify_type));
@@ -4297,25 +4270,13 @@ SignBase::Error Verify::VerifyUpdate(const char* data, int len) {
 
 
 void Verify::VerifyUpdate(const FunctionCallbackInfo<Value>& args) {
-  Environment* env = Environment::GetCurrent(args);
-
   Verify* verify;
   ASSIGN_OR_RETURN_UNWRAP(&verify, args.Holder());
 
-  THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[0], "Data");
-
-  // Only copy the data if we have to, because it's a string
   Error err;
-  if (args[0]->IsString()) {
-    StringBytes::InlineDecoder decoder;
-    if (!decoder.Decode(env, args[0].As<String>(), args[1], UTF8))
-      return;
-    err = verify->VerifyUpdate(decoder.out(), decoder.size());
-  } else {
-    char* buf = Buffer::Data(args[0]);
-    size_t buflen = Buffer::Length(args[0]);
-    err = verify->VerifyUpdate(buf, buflen);
-  }
+  char* buf = Buffer::Data(args[0]);
+  size_t buflen = Buffer::Length(args[0]);
+  err = verify->VerifyUpdate(buf, buflen);
 
   verify->CheckThrow(err);
 }
@@ -4424,11 +4385,8 @@ void Verify::VerifyFinal(const FunctionCallbackInfo<Value>& args) {
   Verify* verify;
   ASSIGN_OR_RETURN_UNWRAP(&verify, args.Holder());
 
-  THROW_AND_RETURN_IF_NOT_BUFFER(args[0], "Key");
   char* kbuf = Buffer::Data(args[0]);
   ssize_t klen = Buffer::Length(args[0]);
-
-  THROW_AND_RETURN_IF_NOT_STRING_OR_BUFFER(args[1], "Hash");
 
   char* hbuf = Buffer::Data(args[1]);
   ssize_t hlen = Buffer::Length(args[1]);
@@ -5338,7 +5296,6 @@ void PBKDF2(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
 
   const EVP_MD* digest = nullptr;
-  const char* type_error = nullptr;
   char* pass = nullptr;
   char* salt = nullptr;
   int passlen = -1;
@@ -5349,54 +5306,19 @@ void PBKDF2(const FunctionCallbackInfo<Value>& args) {
   PBKDF2Request* req = nullptr;
   Local<Object> obj;
 
-  if (args.Length() != 5 && args.Length() != 6) {
-    type_error = "Bad parameter";
-    goto err;
-  }
-
-  THROW_AND_RETURN_IF_NOT_BUFFER(args[0], "Pass phrase");
   passlen = Buffer::Length(args[0]);
-  if (passlen < 0) {
-    type_error = "Bad password";
-    goto err;
-  }
-
-  THROW_AND_RETURN_IF_NOT_BUFFER(args[1], "Salt");
 
   pass = node::Malloc(passlen);
   memcpy(pass, Buffer::Data(args[0]), passlen);
 
   saltlen = Buffer::Length(args[1]);
-  if (saltlen < 0) {
-    type_error = "Bad salt";
-    goto err;
-  }
 
   salt = node::Malloc(saltlen);
   memcpy(salt, Buffer::Data(args[1]), saltlen);
 
-  if (!args[2]->IsNumber()) {
-    type_error = "Iterations not a number";
-    goto err;
-  }
-
   iter = args[2]->Int32Value();
-  if (iter < 0) {
-    type_error = "Bad iterations";
-    goto err;
-  }
-
-  if (!args[3]->IsNumber()) {
-    type_error = "Key length not a number";
-    goto err;
-  }
 
   raw_keylen = args[3]->NumberValue();
-  if (raw_keylen < 0.0 || isnan(raw_keylen) || isinf(raw_keylen) ||
-      raw_keylen > INT_MAX) {
-    type_error = "Bad key length";
-    goto err;
-  }
 
   keylen = static_cast<int>(raw_keylen);
 
@@ -5404,8 +5326,10 @@ void PBKDF2(const FunctionCallbackInfo<Value>& args) {
     node::Utf8Value digest_name(env->isolate(), args[4]);
     digest = EVP_get_digestbyname(*digest_name);
     if (digest == nullptr) {
-      type_error = "Bad digest name";
-      goto err;
+      free(salt);
+      free(pass);
+      args.GetReturnValue().Set(-1);
+      return;
     }
   }
 
@@ -5452,12 +5376,6 @@ void PBKDF2(const FunctionCallbackInfo<Value>& args) {
     else
       args.GetReturnValue().Set(argv[1]);
   }
-  return;
-
- err:
-  free(salt);
-  free(pass);
-  return env->ThrowTypeError(type_error);
 }
 
 
@@ -5622,13 +5540,8 @@ void RandomBytesProcessSync(Environment* env,
 void RandomBytes(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
 
-  if (!args[0]->IsNumber() || args[0].As<v8::Number>()->Value() < 0) {
-    return env->ThrowTypeError("size must be a number >= 0");
-  }
-
   const int64_t size = args[0]->IntegerValue();
-  if (size > Buffer::kMaxLength)
-    return env->ThrowTypeError("size must be a uint32");
+  CHECK(size <= Buffer::kMaxLength);
 
   Local<Object> obj = env->randombytes_constructor_template()->
       NewInstance(env->context()).ToLocalChecked();
@@ -5716,15 +5629,10 @@ void GetSSLCiphers(const FunctionCallbackInfo<Value>& args) {
   Environment* env = Environment::GetCurrent(args);
 
   SSL_CTX* ctx = SSL_CTX_new(TLSv1_server_method());
-  if (ctx == nullptr) {
-    return env->ThrowError("SSL_CTX_new() failed.");
-  }
+  CHECK_NE(ctx, nullptr);
 
   SSL* ssl = SSL_new(ctx);
-  if (ssl == nullptr) {
-    SSL_CTX_free(ctx);
-    return env->ThrowError("SSL_new() failed.");
-  }
+  CHECK_NE(ssl, nullptr);
 
   Local<Array> arr = Array::New(env->isolate());
   STACK_OF(SSL_CIPHER)* ciphers = SSL_get_ciphers(ssl);
@@ -5946,15 +5854,11 @@ void ExportChallenge(const FunctionCallbackInfo<Value>& args) {
 }
 
 void TimingSafeEqual(const FunctionCallbackInfo<Value>& args) {
-  Environment* env = Environment::GetCurrent(args);
-
-  THROW_AND_RETURN_IF_NOT_BUFFER(args[0], "First argument");
-  THROW_AND_RETURN_IF_NOT_BUFFER(args[1], "Second argument");
+  CHECK(Buffer::HasInstance(args[0]));
+  CHECK(Buffer::HasInstance(args[1]));
 
   size_t buf_length = Buffer::Length(args[0]);
-  if (buf_length != Buffer::Length(args[1])) {
-    return env->ThrowTypeError("Input buffers must have the same length");
-  }
+  CHECK_EQ(buf_length, Buffer::Length(args[1]));
 
   const char* buf1 = Buffer::Data(args[0]);
   const char* buf2 = Buffer::Data(args[1]);
@@ -6044,19 +5948,17 @@ void SetEngine(const FunctionCallbackInfo<Value>& args) {
 
   if (engine == nullptr) {
     int err = ERR_get_error();
-    if (err == 0) {
-      char tmp[1024];
-      snprintf(tmp, sizeof(tmp), "Engine \"%s\" was not found", *engine_id);
-      return env->ThrowError(tmp);
-    } else {
-      return ThrowCryptoError(env, err);
-    }
+    if (err == 0)
+      return args.GetReturnValue().Set(false);
+    return ThrowCryptoError(env, err);
   }
 
   int r = ENGINE_set_default(engine, flags);
   ENGINE_free(engine);
   if (r == 0)
     return ThrowCryptoError(env, ERR_get_error());
+
+  args.GetReturnValue().Set(true);
 }
 #endif  // !OPENSSL_NO_ENGINE
 
