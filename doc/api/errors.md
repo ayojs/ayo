@@ -1500,6 +1500,11 @@ unknown file extension.
 Used when an attempt is made to use a `zlib` object after it has already been
 closed.
 
+<a id="ERR_ZLIB_INITIALIZATION_FAILED"></a>
+### ERR_ZLIB_INITIALIZATION_FAILED
+
+Used when creation of a [`zlib`][] object fails due to incorrect configuration.
+
 [`--force-fips`]: cli.html#cli_force_fips
 [`crypto.timingSafeEqual()`]: crypto.html#crypto_crypto_timingsafeequal_a_b
 [`dgram.createSocket()`]: dgram.html#dgram_dgram_createsocket_options_callback
@@ -1541,3 +1546,4 @@ closed.
 [try-catch]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
 [vm]: vm.html
 [WHATWG Supported Encodings]: util.html#util_whatwg_supported_encodings
+[`zlib`]: zlib.html
