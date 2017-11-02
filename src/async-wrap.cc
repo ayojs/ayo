@@ -19,11 +19,8 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "async-wrap.h"
 #include "async-wrap-inl.h"
-#include "env.h"
 #include "env-inl.h"
-#include "util.h"
 #include "util-inl.h"
 
 #include "uv.h"
@@ -530,6 +527,7 @@ void AsyncWrap::Initialize(Local<Object> target,
   SET_HOOKS_CONSTANT(kDestroy);
   SET_HOOKS_CONSTANT(kPromiseResolve);
   SET_HOOKS_CONSTANT(kTotals);
+  SET_HOOKS_CONSTANT(kCheck);
   SET_HOOKS_CONSTANT(kExecutionAsyncId);
   SET_HOOKS_CONSTANT(kTriggerAsyncId);
   SET_HOOKS_CONSTANT(kAsyncIdCounter);

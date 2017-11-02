@@ -20,7 +20,7 @@ An alias of [`assert.ok()`][].
 <!-- YAML
 added: v0.1.21
 changes:
-  - version: REPLACEME
+  - version: v9.0.0
     pr-url: https://github.com/nodejs/node/pull/15001
     description: Error names and messages are now properly compared
   - version: v8.0.0
@@ -108,10 +108,10 @@ parameter is an instance of an `Error` then it will be thrown instead of the
 <!-- YAML
 added: v1.2.0
 changes:
-  - version: REPLACEME
+  - version: v9.0.0
     pr-url: https://github.com/nodejs/node/pull/15169
     description: Enumerable symbol properties are now compared.
-  - version: REPLACEME
+  - version: v9.0.0
     pr-url: https://github.com/nodejs/node/pull/15036
     description: NaN is now compared using the [SameValueZero][] comparison.
   - version: v8.5.0
@@ -134,7 +134,7 @@ changes:
 * `expected` {any}
 * `message` {any}
 
-Similar to `assert.deepEqual()` with the following exceptions:
+Identical to [`assert.deepEqual()`][] with the following exceptions:
 
 1. Primitive values besides `NaN` are compared using the [Strict Equality
    Comparison][] ( `===` ). Set and Map values, Map keys and `NaN` are compared
@@ -389,7 +389,7 @@ assert.ifError(new Error());
 <!-- YAML
 added: v0.1.21
 changes:
-  - version: REPLACEME
+  - version: v9.0.0
     pr-url: https://github.com/nodejs/node/pull/15001
     description: Error names and messages are now properly compared
   - version: v8.0.0
@@ -441,7 +441,7 @@ assert.notDeepEqual(obj1, obj3);
 // AssertionError: { a: { b: 1 } } notDeepEqual { a: { b: 1 } }
 
 assert.notDeepEqual(obj1, obj4);
-// OK, obj1 and obj2 are not deeply equal
+// OK, obj1 and obj4 are not deeply equal
 ```
 
 If the values are deeply equal, an `AssertionError` is thrown with a `message`
@@ -454,13 +454,13 @@ parameter is an instance of an `Error` then it will be thrown instead of the
 <!-- YAML
 added: v1.2.0
 changes:
-  - version: REPLACEME
-    pr-url: https://github.com/nodejs/node/pull/REPLACEME
+  - version: v9.0.0
+    pr-url: https://github.com/nodejs/node/pull/15398
     description: -0 and +0 are not considered equal anymore.
-  - version: REPLACEME
+  - version: v9.0.0
     pr-url: https://github.com/nodejs/node/pull/15036
     description: NaN is now compared using the [SameValueZero][] comparison.
-  - version: REPLACEME
+  - version: v9.0.0
     pr-url: https://github.com/nodejs/node/pull/15001
     description: Error names and messages are now properly compared
   - version: v8.0.0
@@ -716,7 +716,6 @@ assert(Object.is(str1 / 1, str2 / 1));
 For more information, see
 [MDN's guide on equality comparisons and sameness][mdn-equality-guide].
 
-[`Error`]: errors.html#errors_class_error
 [`Error.captureStackTrace`]: errors.html#errors_error_capturestacktrace_targetobject_constructoropt
 [`Map`]: https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map
 [`Object.is()`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is

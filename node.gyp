@@ -124,6 +124,7 @@
       'lib/internal/tls.js',
       'lib/internal/url.js',
       'lib/internal/util.js',
+      'lib/internal/util/comparisons.js',
       'lib/internal/util/types.js',
       'lib/internal/http2/core.js',
       'lib/internal/http2/compat.js',
@@ -135,6 +136,7 @@
       'lib/internal/streams/BufferList.js',
       'lib/internal/streams/legacy.js',
       'lib/internal/streams/destroy.js',
+      'lib/internal/wrap_js_stream.js',
       'deps/v8/tools/splaytree.js',
       'deps/v8/tools/codemap.js',
       'deps/v8/tools/consarray.js',
@@ -182,7 +184,6 @@
       'include_dirs': [
         'src',
         'tools/msvs/genfiles',
-        'deps/uv/src/ares',
         '<(SHARED_INTERMEDIATE_DIR)', # for node_natives.h
         'deps/nghttp2/lib/includes'
       ],
@@ -291,7 +292,7 @@
         'src/tracing/agent.h',
         'src/tracing/node_trace_buffer.h',
         'src/tracing/node_trace_writer.h',
-        'src/tracing/trace_event.h'
+        'src/tracing/trace_event.h',
         'src/util.h',
         'src/util-inl.h',
         'deps/http_parser/http_parser.h',

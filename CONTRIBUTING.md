@@ -56,6 +56,10 @@ Create a branch and start hacking:
 ```text
 $ git checkout -b my-branch -t origin/latest
 ```
+Please make sure this local email is also added to your
+[GitHub email list](https://github.com/settings/emails) so that your commits
+will be properly associated with your account and you will be promoted
+to Contributor once your first commit is landed.
 
 Any text you write should follow the [Style Guide](doc/STYLE_GUIDE.md),
 including comments and API documentation.
@@ -81,8 +85,8 @@ $ git commit
 The commit message should describe what changed and why.
 
 1. The first line should:
-   - contain a short description of the change
-   - be 50 characters or less
+   - contain a short description of the change (preferably 50 characters or less,
+     and no more than 72 characters)
    - be entirely in lowercase with the exception of proper nouns, acronyms, and
    the words that refer to code, like function/variable names
    - be prefixed with the name of the changed subsystem and start with an

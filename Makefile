@@ -13,6 +13,7 @@ OSTYPE := $(shell uname -s | tr '[A-Z]' '[a-z]')
 COVTESTS ?= test-cov
 GTEST_FILTER ?= "*"
 GNUMAKEFLAGS += --no-print-directory
+GCOV ?= gcov
 
 ifdef JOBS
   PARALLEL_ARGS = -j $(JOBS)
@@ -32,6 +33,10 @@ V8_TEST_OPTIONS = $(V8_EXTRA_TEST_OPTIONS)
 ifdef DISABLE_V8_I18N
   V8_TEST_OPTIONS += --noi18n
   V8_BUILD_OPTIONS += i18nsupport=off
+endif
+
+ifeq ($(OSTYPE), darwin)
+  GCOV = xcrun llvm-cov gcov
 endif
 
 BUILDTYPE_LOWER := $(shell echo $(BUILDTYPE) | tr '[A-Z]' '[a-z]')
@@ -100,11 +105,15 @@ uninstall:
 
 clean:
 	$(RM) -r out/Makefile $(NODE_EXE) $(NODE_G_EXE) out/$(BUILDTYPE)/$(BUILD_EXE_NAME) \
-                out/$(BUILDTYPE)/node.exp
+		out/$(BUILDTYPE)/node.exp
 	@if [ -d out ]; then find out/ -name '*.o' -o -name '*.a' -o -name '*.d' | xargs $(RM) -r; fi
 	$(RM) -r node_modules
 	@if [ -d deps/icu ]; then echo deleting deps/icu; $(RM) -r deps/icu; fi
 	$(RM) test.tap
+	# Next one is legacy remove this at some point
+	$(RM) -r test/tmp*
+	$(RM) -r test/.tmp*
+	$(MAKE) test-addons-clean
 
 distclean:
 	$(RM) -r out
@@ -127,10 +136,12 @@ coverage-clean:
 	$(RM) -r gcovr testing
 	$(RM) -r out/$(BUILDTYPE)/.coverage
 	$(RM) -r .cov_tmp coverage
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/*.gcda
+	$(RM) out/$(BUILDTYPE)/obj.target/node/{src,gen}/*.gcda
 	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing/*.gcda
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/*.gcno
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing*.gcno
+	$(RM) out/$(BUILDTYPE)/obj.target/node/{src,gen}/*.gcno
+	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing/*.gcno
+	$(RM) out/$(BUILDTYPE)/obj.target/cctest/src/*.gcno
+	$(RM) out/$(BUILDTYPE)/obj.target/cctest/test/cctest/*.gcno
 
 # Build and test with code coverage reporting.  Leave the lib directory
 # instrumented for any additional runs the user may want to make.
@@ -160,7 +171,7 @@ coverage-build: all
 coverage-test: coverage-build
 	$(RM) -r out/$(BUILDTYPE)/.coverage
 	$(RM) -r .cov_tmp
-	$(RM) out/$(BUILDTYPE)/obj.target/node/src/*.gcda
+	$(RM) out/$(BUILDTYPE)/obj.target/node/{src,gen}/*.gcda
 	$(RM) out/$(BUILDTYPE)/obj.target/node/src/tracing/*.gcda
 	-$(MAKE) $(COVTESTS)
 	mv lib lib__
@@ -173,7 +184,8 @@ coverage-test: coverage-build
 		--report-dir "../coverage")
 	-(cd out && "../gcovr/scripts/gcovr" --gcov-exclude='.*deps' \
 		--gcov-exclude='.*usr' -v -r Release/obj.target/node \
-		--html --html-detail -o ../coverage/cxxcoverage.html)
+		--html --html-detail -o ../coverage/cxxcoverage.html \
+		--gcov-executable="$(GCOV)")
 	mv lib lib_
 	mv lib__ lib
 	@echo -n "Javascript coverage %: "
@@ -203,14 +215,27 @@ else
 test: all
 	$(MAKE) build-addons
 	$(MAKE) build-addons-napi
+	$(MAKE) doc-only
+	$(MAKE) lint
+	$(MAKE) cctest
+	$(PYTHON) tools/test.py --mode=release -J \
+		$(CI_ASYNC_HOOKS) \
+		$(CI_JS_SUITES) \
+		$(CI_NATIVE_SUITES) \
+		$(CI_DOC) \
+		known_issues
+endif
+
+# For a quick test, does not run linter or build doc
+test-only: all
+	$(MAKE) build-addons
+	$(MAKE) build-addons-napi
 	$(MAKE) cctest
 	$(PYTHON) tools/test.py --mode=release -J \
 		$(CI_ASYNC_HOOKS) \
 		$(CI_JS_SUITES) \
 		$(CI_NATIVE_SUITES) \
 		known_issues
-	$(MAKE) lint
-endif
 
 test-cov: all
 	$(MAKE) build-addons
@@ -247,7 +272,6 @@ test/gc/build/Release/binding.node: test/gc/binding.cc test/gc/binding.gyp
 		--directory="$(shell pwd)/test/gc" \
 		--nodedir="$(shell pwd)"
 
-# Implicitly depends on $(NODE_EXE), see the build-addons rule for rationale.
 DOCBUILDSTAMP_PREREQS = tools/doc/addon-verify.js doc/api/addons.md
 
 ifeq ($(OSTYPE),aix)
@@ -256,7 +280,7 @@ endif
 
 test/addons/.docbuildstamp: $(DOCBUILDSTAMP_PREREQS)
 	$(RM) -r test/addons/??_*/
-	$(NODE) $<
+	[ -x $(NODE) ] && $(NODE) $< || node $<
 	touch $@
 
 ADDONS_BINDING_GYPS := \
@@ -278,7 +302,8 @@ test/addons/.buildstamp: config.gypi \
 	test/addons/.docbuildstamp
 #	Cannot use $(wildcard test/addons/*/) here, it's evaluated before
 #	embedded addons have been generated from the documentation.
-#	Ignore folders without binding.gyp (#14843)
+#	Ignore folders without binding.gyp
+#	(https://github.com/nodejs/node/issues/14843)
 	@for dirname in test/addons/*/; do \
 		if [ ! -f "$$PWD/$${dirname}binding.gyp" ]; then \
 			continue; fi ; \
@@ -291,10 +316,10 @@ test/addons/.buildstamp: config.gypi \
 	done
 	touch $@
 
-# .buildstamp and .docbuildstamp need $(NODE_EXE) but cannot depend on it
+# .buildstamp needs $(NODE_EXE) but cannot depend on it
 # directly because it calls make recursively.  The parent make cannot know
 # if the subprocess touched anything so it pessimistically assumes that
-# .buildstamp and .docbuildstamp are out of date and need a rebuild.
+# .buildstamp is out of date and need a rebuild.
 # Just goes to show that recursive make really is harmful...
 # TODO(bnoordhuis) Force rebuild after gyp update.
 build-addons: $(NODE_EXE) test/addons/.buildstamp
@@ -316,7 +341,11 @@ test/addons-napi/.buildstamp: config.gypi \
 	src/node_api.h src/node_api_types.h
 #	Cannot use $(wildcard test/addons-napi/*/) here, it's evaluated before
 #	embedded addons have been generated from the documentation.
+#	Ignore folders without binding.gyp
+#	(https://github.com/nodejs/node/issues/14843)
 	@for dirname in test/addons-napi/*/; do \
+		if [ ! -f "$$PWD/$${dirname}binding.gyp" ]; then \
+			continue; fi ; \
 		printf "\nBuilding addon $$PWD/$$dirname\n" ; \
 		env MAKEFLAGS="-j1" $(NODE) deps/npm/node_modules/node-gyp/bin/node-gyp \
 		        --loglevel=$(LOGLEVEL) rebuild \
@@ -326,10 +355,10 @@ test/addons-napi/.buildstamp: config.gypi \
 	done
 	touch $@
 
-# .buildstamp and .docbuildstamp need $(NODE_EXE) but cannot depend on it
+# .buildstamp needs $(NODE_EXE) but cannot depend on it
 # directly because it calls make recursively.  The parent make cannot know
 # if the subprocess touched anything so it pessimistically assumes that
-# .buildstamp and .docbuildstamp are out of date and need a rebuild.
+# .buildstamp is out of date and need a rebuild.
 # Just goes to show that recursive make really is harmful...
 # TODO(bnoordhuis) Force rebuild after gyp or node-gyp update.
 build-addons-napi: $(NODE_EXE) test/addons-napi/.buildstamp
@@ -361,6 +390,7 @@ test-all-valgrind: test-build
 CI_NATIVE_SUITES ?= addons addons-napi
 CI_ASYNC_HOOKS := async-hooks
 CI_JS_SUITES ?= default
+CI_DOC := doctool
 
 # Build and test addons without building anything else
 test-ci-native: LOGLEVEL := silent
@@ -382,11 +412,12 @@ test-ci-js: | clear-stalled
 	fi
 
 test-ci: LOGLEVEL := silent
-test-ci: | clear-stalled build-addons build-addons-napi
+test-ci: | clear-stalled build-addons build-addons-napi doc-only
 	out/Release/cctest --gtest_output=tap:cctest.tap
 	$(PYTHON) tools/test.py $(PARALLEL_ARGS) -p oneline \
 		--mode=release --flaky-tests=$(FLAKY_TESTS) \
-		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES) $(CI_NATIVE_SUITES) known_issues
+		$(TEST_CI_ARGS) $(CI_ASYNC_HOOKS) $(CI_JS_SUITES) $(CI_NATIVE_SUITES) \
+		$(CI_DOC) known_issues
 	# Clean up any leftover processes, error if found.
 	ps awwx | grep Release/node | grep -v grep | cat
 	@PS_OUT=`ps awwx | grep Release/node | grep -v grep | awk '{print $$1}'`; \
@@ -422,11 +453,15 @@ test-tick-processor: all
 test-hash-seed: all
 	$(NODE) test/pummel/test-hash-seed.js
 
+test-doc: doc-only
+	$(MAKE) lint
+	$(PYTHON) tools/test.py $(CI_DOC)
+
 test-known-issues: all
 	$(PYTHON) tools/test.py known_issues
 
 test-npm: $(NODE_EXE)
-	NODE=$(NODE) tools/test-npm.sh
+	$(NODE) tools/test-npm-package --install --logfile=test-npm.tap deps/npm test-node
 
 test-npm-publish: $(NODE_EXE)
 	npm_package_config_publishtest=true $(NODE) deps/npm/test/run.js
@@ -516,13 +551,13 @@ doc-only: $(apidocs_html) $(apidocs_json)
 doc: $(NODE_EXE) doc-only
 
 $(apidoc_dirs):
-	mkdir -p $@
+	@mkdir -p $@
 
-out/doc/api/assets/%: doc/api_assets/% out/doc/api/assets/
-	cp $< $@
+out/doc/api/assets/%: doc/api_assets/% out/doc/api/assets
+	@cp $< $@
 
 out/doc/%: doc/%
-	cp -r $< $@
+	@cp -r $< $@
 
 # check if ./node is actually set, else use user pre-installed binary
 gen-json = tools/doc/generate.js --format=json $< > $@
@@ -540,11 +575,11 @@ gen-doc =	\
 	[ -x $(NODE) ] && $(NODE) $(1) || node $(1)
 
 out/doc/api/%.json: doc/api/%.md
-	$(call gen-doc, $(gen-json))
+	@$(call gen-doc, $(gen-json))
 
 # check if ./node is actually set, else use user pre-installed binary
 out/doc/api/%.html: doc/api/%.md
-	$(call gen-doc, $(gen-html))
+	@$(call gen-doc, $(gen-html))
 
 docopen: $(apidocs_html)
 	@$(PYTHON) -mwebbrowser file://$(PWD)/out/doc/api/all.html
@@ -798,7 +833,7 @@ $(TARBALL): release-only $(NODE_EXE) doc
 	$(RM) -r $(TARNAME)/deps/openssl/openssl/{doc,demos,test}
 	$(RM) -r $(TARNAME)/deps/zlib/contrib # too big, unused
 	$(RM) -r $(TARNAME)/.{editorconfig,git*,mailmap}
-	$(RM) -r $(TARNAME)/tools/{eslint,eslint-rules,osx-pkg.pmdoc,pkgsrc}
+	$(RM) -r $(TARNAME)/tools/{eslint,eslint-rules,osx-pkg.pmdoc,pkgsrc,remark-cli,remark-preset-lint-node}
 	$(RM) -r $(TARNAME)/tools/{osx-*,license-builder.sh,cpplint.py}
 	$(RM) -r $(TARNAME)/test*.tap
 	find $(TARNAME)/ -name ".eslint*" -maxdepth 2 | xargs $(RM)
@@ -939,27 +974,54 @@ bench: bench-net bench-http bench-fs bench-tls
 
 bench-ci: bench
 
+lint-md-clean:
+	$(RM) -r tools/remark-cli/node_modules
+	$(RM) -r tools/remark-preset-lint-node/node_modules
+
+lint-md-build:
+	if [ ! -d tools/remark-cli/node_modules ]; then \
+		cd tools/remark-cli && ../../$(NODE) ../../$(NPM) install; fi
+	if [ ! -d tools/remark-preset-lint-node/node_modules ]; then \
+		cd tools/remark-preset-lint-node && ../../$(NODE) ../../$(NPM) install; fi
+
+lint-md: lint-md-build
+	@echo "Running Markdown linter..."
+	$(NODE) tools/remark-cli/cli.js -q -f \
+		./*.md doc src lib benchmark tools/doc/ tools/icu/
+
 LINT_JS_TARGETS = benchmark doc lib test tools
+LINT_JS_CMD = tools/eslint/bin/eslint.js --cache \
+	--rulesdir=tools/eslint-rules --ext=.js,.mjs,.md \
+	$(LINT_JS_TARGETS)
 
 lint-js:
 	@echo "Running JS linter..."
-	$(NODE) tools/eslint/bin/eslint.js --cache --rulesdir=tools/eslint-rules --ext=.js,.mjs,.md \
-	  $(LINT_JS_TARGETS)
+	@if [ -x $(NODE) ]; then \
+		$(NODE) $(LINT_JS_CMD); \
+	else \
+		node $(LINT_JS_CMD); \
+	fi
 
 jslint: lint-js
 	@echo "Please use lint-js instead of jslint"
 
 lint-js-ci:
 	@echo "Running JS linter..."
-	$(NODE) tools/lint-js.js $(PARALLEL_ARGS) -f tap -o test-eslint.tap \
-		$(LINT_JS_TARGETS)
+	@if [ -x $(NODE) ]; then \
+		$(NODE) tools/lint-js.js $(PARALLEL_ARGS) -f tap -o test-eslint.tap \
+		$(LINT_JS_TARGETS); \
+	else \
+		node tools/lint-js.js $(PARALLEL_ARGS) -f tap -o test-eslint.tap \
+		$(LINT_JS_TARGETS); \
+	fi
 
 jslint-ci: lint-js-ci
 	@echo "Please use lint-js-ci instead of jslint-ci"
 
+LINT_CPP_ADDON_DOC_FILES = $(wildcard test/addons/??_*/*.cc test/addons/??_*/*.h)
 LINT_CPP_EXCLUDE ?=
 LINT_CPP_EXCLUDE += src/node_root_certs.h
-LINT_CPP_EXCLUDE += $(wildcard test/addons/??_*/*.cc test/addons/??_*/*.h)
+LINT_CPP_EXCLUDE += $(LINT_CPP_ADDON_DOC_FILES)
 LINT_CPP_EXCLUDE += $(wildcard test/addons-napi/??_*/*.cc test/addons-napi/??_*/*.h)
 # These files were copied more or less verbatim from V8.
 LINT_CPP_EXCLUDE += src/tracing/trace_event.h src/tracing/trace_event_common.h
@@ -983,10 +1045,18 @@ LINT_CPP_FILES = $(filter-out $(LINT_CPP_EXCLUDE), $(wildcard \
 	tools/icu/*.h \
 	))
 
+# Code blocks don't have newline at the end,
+# and the actual filename is generated so it won't match header guards
+ADDON_DOC_LINT_FLAGS=-whitespace/ending_newline,-build/header_guard
+
 lint-cpp:
 	@echo "Running C++ linter..."
 	@$(PYTHON) tools/cpplint.py $(LINT_CPP_FILES)
 	@$(PYTHON) tools/check-imports.py
+
+lint-addon-docs: test/addons/.docbuildstamp
+	@echo "Running C++ linter on addon docs..."
+	@$(PYTHON) tools/cpplint.py --filter=$(ADDON_DOC_LINT_FLAGS) $(LINT_CPP_ADDON_DOC_FILES)
 
 cpplint: lint-cpp
 	@echo "Please use lint-cpp instead of cpplint"
@@ -996,9 +1066,11 @@ lint:
 	@EXIT_STATUS=0 ; \
 	$(MAKE) lint-js || EXIT_STATUS=$$? ; \
 	$(MAKE) lint-cpp || EXIT_STATUS=$$? ; \
+	$(MAKE) lint-md || EXIT_STATUS=$$? ; \
+	$(MAKE) lint-addon-docs || EXIT_STATUS=$$? ; \
 	exit $$EXIT_STATUS
 CONFLICT_RE=^>>>>>>> [0-9A-Fa-f]+|^<<<<<<< [A-Za-z]+
-lint-ci: lint-js-ci lint-cpp
+lint-ci: lint-js-ci lint-cpp lint-md lint-addon-docs
 	@if ! ( grep -IEqrs "$(CONFLICT_RE)" benchmark deps doc lib src test tools ) \
 		&& ! ( find . -maxdepth 1 -type f | xargs grep -IEqs "$(CONFLICT_RE)" ); then \
 		exit 0 ; \
@@ -1061,6 +1133,9 @@ endif
   lint-js \
   lint-js-ci \
   list-gtests \
+  lint-md \
+  lint-md-build \
+  lint-md-clean \
   pkg \
   release-only \
   run-ci \
@@ -1075,9 +1150,11 @@ endif
   test-ci \
   test-ci-js \
   test-ci-native \
+  test-doc \
   test-gc \
   test-gc-clean \
   test-hash-seed \
+  test-only \
   test-v8 \
   test-v8-all \
   test-v8-benchmarks \

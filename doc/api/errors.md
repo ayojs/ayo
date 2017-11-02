@@ -637,6 +637,66 @@ Used when the native call from `process.cpuUsage` cannot be processed properly.
 Used when an invalid value for the `format` argument has been passed to the
 `crypto.ECDH()` class `getPublicKey()` method.
 
+<a id="ERR_CRYPTO_ENGINE_UNKNOWN"></a>
+### ERR_CRYPTO_ENGINE_UNKNOWN
+
+Used when an invalid crypto engine identifier is passed to
+[`require('crypto').setEngine()`][].
+
+<a id="ERR_CRYPTO_FIPS_FORCED"></a>
+### ERR_CRYPTO_FIPS_FORCED
+
+Used when trying to enable or disable FIPS mode in the crypto module and
+the [`--force-fips`][] command-line argument is used.
+
+<a id="ERR_CRYPTO_FIPS_UNAVAILABLE"></a>
+### ERR_CRYPTO_FIPS_UNAVAILABLE
+
+Used when trying to enable or disable FIPS mode when FIPS is not available.
+
+<a id="ERR_CRYPTO_HASH_DIGEST_NO_UTF16"></a>
+### ERR_CRYPTO_HASH_DIGEST_NO_UTF16
+
+Used when the UTF-16 encoding is used with [`hash.digest()`][]. While the
+`hash.digest()` method does allow an `encoding` argument to be passed in,
+causing the method to return a string rather than a `Buffer`, the UTF-16
+encoding (e.g. `ucs` or `utf16le`) is not supported.
+
+<a id="ERR_CRYPTO_HASH_FINALIZED"></a>
+### ERR_CRYPTO_HASH_FINALIZED
+
+Used when [`hash.digest()`][] is called multiple times. The `hash.digest()`
+method must be called no more than one time per instance of a `Hash` object.
+
+<a id="ERR_CRYPTO_HASH_UPDATE_FAILED"></a>
+### ERR_CRYPTO_HASH_UPDATE_FAILED
+
+Used when [`hash.update()`][] fails for any reason. This should rarely, if
+ever, happen.
+
+<a id="ERR_CRYPTO_INVALID_DIGEST"></a>
+### ERR_CRYPTO_INVALID_DIGEST
+
+Used when an invalid [crypto digest algorithm][] is specified.
+
+<a id="ERR_CRYPTO_INVALID_STATE"></a>
+### ERR_CRYPTO_INVALID_STATE
+
+Used generically when a crypto method is used on an object that is in an
+invalid state. For instance, calling [`cipher.getAuthTag()`][] before calling
+`cipher.final()`.
+
+<a id="ERR_CRYPTO_SIGN_KEY_REQUIRED"></a>
+### ERR_CRYPTO_SIGN_KEY_REQUIRED
+
+Used when a signing `key` is not provided to the [`sign.sign()`][] method.
+
+<a id="ERR_CRYPTO_TIMING_SAFE_EQUAL_LENGTH"></a>
+### ERR_CRYPTO_TIMING_SAFE_EQUAL_LENGTH
+
+Used when calling [`crypto.timingSafeEqual()`][] with `Buffer`, `TypedArray`,
+or `DataView` arguments of different lengths.
+
 <a id="ERR_DNS_SET_SERVERS_FAILED"></a>
 ### ERR_DNS_SET_SERVERS_FAILED
 
@@ -805,8 +865,8 @@ reached.
 <a id="ERR_HTTP2_NO_SOCKET_MANIPULATION"></a>
 ### ERR_HTTP2_NO_SOCKET_MANIPULATION
 
-Used when attempting to read, write, pause, and/or resume a socket attached to
-an `Http2Session`.
+Used when attempting to directly manipulate (e.g read, write, pause, resume,
+etc.) a socket attached to an `Http2Session`.
 
 <a id="ERR_HTTP2_OUT_OF_STREAMS"></a>
 ### ERR_HTTP2_OUT_OF_STREAMS
@@ -1063,6 +1123,11 @@ API] [`URLSearchParams` constructor][`new URLSearchParams(iterable)`] does not
 represent a `[name, value]` tuple – that is, if an element is not iterable, or
 does not consist of exactly two elements.
 
+<a id="ERR_INVALID_URI"></a>
+### ERR_INVALID_URI
+
+Used when an invalid URI is passed.
+
 <a id="ERR_INVALID_URL"></a>
 ### ERR_INVALID_URL
 
@@ -1120,6 +1185,20 @@ for strict compliance with the API specification (which in some cases may accept
 `func(undefined)` and `func()` are treated identically, and the
 [`ERR_INVALID_ARG_TYPE`][] error code may be used instead.
 
+<a id="ERR_MISSING_MODULE"></a>
+### ERR_MISSING_MODULE
+
+> Stability: 1 - Experimental
+
+Used when an [ES6 module][] cannot be resolved.
+
+<a id="ERR_MODULE_RESOLUTION_LEGACY"></a>
+### ERR_MODULE_RESOLUTION_LEGACY
+
+> Stability: 1 - Experimental
+
+Used when a failure occurs resolving imports in an [ES6 module][].
+
 <a id="ERR_MULTIPLE_CALLBACK"></a>
 ### ERR_MULTIPLE_CALLBACK
 
@@ -1164,15 +1243,41 @@ For example: `Buffer.write(string, encoding, offset[, length])`
 Used generically to identify that an operation caused an out of memory
 condition.
 
+<a id="ERR_OUT_OF_RANGE"></a>
+### ERR_OUT_OF_RANGE
+
+Used generically when an input argument value values outside an acceptable
+range.
+
 <a id="ERR_PARSE_HISTORY_DATA"></a>
 ### ERR_PARSE_HISTORY_DATA
 
 Used by the `REPL` module when it cannot parse data from the REPL history file.
 
+<a id="ERR_REQUIRE_ESM"></a>
+### ERR_REQUIRE_ESM
+
+> Stability: 1 - Experimental
+
+Used when an attempt is made to `require()` an [ES6 module][].
+
+<a id="ERR_SERVER_ALREADY_LISTEN"></a>
+### ERR_SERVER_ALREADY_LISTEN
+
+Used when the [`server.listen()`][] method is called while a `net.Server` is
+already listening. This applies to all instances of `net.Server`, including
+HTTP, HTTPS, and HTTP/2 Server instances.
+
 <a id="ERR_SOCKET_ALREADY_BOUND"></a>
 ### ERR_SOCKET_ALREADY_BOUND
 
 Used when an attempt is made to bind a socket that has already been bound.
+
+<a id="ERR_SOCKET_BAD_BUFFER_SIZE"></a>
+### ERR_SOCKET_BAD_BUFFER_SIZE
+
+Used when an invalid (negative) size is passed for either the `recvBufferSize`
+or `sendBufferSize` options in [`dgram.createSocket()`][].
 
 <a id="ERR_SOCKET_BAD_PORT"></a>
 ### ERR_SOCKET_BAD_PORT
@@ -1185,6 +1290,12 @@ value.
 
 Used when an API function expecting a socket type (`udp4` or `udp6`) receives an
 invalid value.
+
+<a id="ERR_SOCKET_BUFFER_SIZE"></a>
+### ERR_SOCKET_BUFFER_SIZE
+
+Used when using [`dgram.createSocket()`][] and the size of the receive or send
+`Buffer` cannot be determined.
 
 <a id="ERR_SOCKET_CANNOT_SEND"></a>
 ### ERR_SOCKET_CANNOT_SEND
@@ -1213,6 +1324,36 @@ Node.js does not allow `stdout` or `stderr` Streams to be closed by user code.
 Used when an attempt is made to close the `process.stdout` stream. By design,
 Node.js does not allow `stdout` or `stderr` Streams to be closed by user code.
 
+<a id="ERR_STREAM_CANNOT_PIPE"></a>
+### ERR_STREAM_CANNOT_PIPE
+
+Used when an attempt is made to call [`stream.pipe()`][] on a
+[`Writable`][] stream.
+
+<a id="ERR_STREAM_NULL_VALUES"></a>
+### ERR_STREAM_NULL_VALUES
+
+Used when an attempt is made to call [`stream.write()`][] with a `null`
+chunk.
+
+<a id="ERR_STREAM_PUSH_AFTER_EOF"></a>
+### ERR_STREAM_PUSH_AFTER_EOF
+
+Used when an attempt is made to call [`stream.push()`][] after a `null`(EOF)
+has been pushed to the stream.
+
+<a id="ERR_STREAM_READ_NOT_IMPLEMENTED"></a>
+### ERR_STREAM_READ_NOT_IMPLEMENTED
+
+Used when an attempt is made to use a readable stream that has not implemented
+[`readable._read()`][].
+
+<a id="ERR_STREAM_UNSHIFT_AFTER_END_EVENT"></a>
+### ERR_STREAM_UNSHIFT_AFTER_END_EVENT
+
+Used when an attempt is made to call [`stream.unshift()`][] after the
+`end` event has been emitted.
+
 <a id="ERR_STREAM_WRAP"></a>
 ### ERR_STREAM_WRAP
 
@@ -1224,8 +1365,14 @@ Example
 const Socket = require('net').Socket;
 const instance = new Socket();
 
-instance.setEncoding('utf-8');
+instance.setEncoding('utf8');
 ```
+
+<a id="ERR_STREAM_WRITE_AFTER_END"></a>
+### ERR_STREAM_WRITE_AFTER_END
+
+Used when an attempt is made to call [`stream.write()`][] after
+`stream.end()` has been called.
 
 <a id="ERR_TLS_CERT_ALTNAME_INVALID"></a>
 ### ERR_TLS_CERT_ALTNAME_INVALID
@@ -1292,6 +1439,21 @@ is emitted by an `EventEmitter` but an `'error'` handler is not registered).
 
 Used when an invalid or unknown encoding option is passed to an API.
 
+<a id="ERR_UNKNOWN_FILE_EXTENSION"></a>
+### ERR_UNKNOWN_FILE_EXTENSION
+
+> Stability: 1 - Experimental
+
+Used when attempting to load a module with an unknown or unsupported file
+extension.
+
+<a id="ERR_UNKNOWN_MODULE_FORMAT"></a>
+### ERR_UNKNOWN_MODULE_FORMAT
+
+> Stability: 1 - Experimental
+
+Used when attempting to load a module with an unknown or unsupported format.
+
 <a id="ERR_UNKNOWN_SIGNAL"></a>
 ### ERR_UNKNOWN_SIGNAL
 
@@ -1337,7 +1499,25 @@ Used when a given value is out of the accepted range.
 Used when an attempt is made to use a `zlib` object after it has already been
 closed.
 
+<a id="ERR_ZLIB_INITIALIZATION_FAILED"></a>
+### ERR_ZLIB_INITIALIZATION_FAILED
+
+Used when creation of a [`zlib`][] object fails due to incorrect configuration.
+
+[`--force-fips`]: cli.html#cli_force_fips
+[`cipher.getAuthTag()`]: crypto.html#crypto_cipher_getauthtag
+[`crypto.timingSafeEqual()`]: crypto.html#crypto_crypto_timingsafeequal_a_b
+[`dgram.createSocket()`]: dgram.html#dgram_dgram_createsocket_options_callback
 [`ERR_INVALID_ARG_TYPE`]: #ERR_INVALID_ARG_TYPE
+[`hash.digest()`]: crypto.html#crypto_hash_digest_encoding
+[`hash.update()`]: crypto.html#crypto_hash_update_data_inputencoding
+[`readable._read()`]: stream.html#stream_readable_read_size_1
+[`sign.sign()`]: crypto.html#crypto_sign_sign_privatekey_outputformat
+[`stream.pipe()`]: stream.html#stream_readable_pipe_destination_options
+[`stream.push()`]: stream.html#stream_readable_push_chunk_encoding
+[`stream.unshift()`]: stream.html#stream_readable_unshift_chunk
+[`stream.write()`]: stream.html#stream_writable_write_chunk_encoding_callback
+[`Writable`]: stream.html#stream_class_stream_writable
 [`subprocess.kill()`]: child_process.html#child_process_subprocess_kill_signal
 [`subprocess.send()`]: child_process.html#child_process_subprocess_send_message_sendhandle_options_callback
 [`fs.readFileSync`]: fs.html#fs_fs_readfilesync_path_options
@@ -1352,9 +1532,13 @@ closed.
 [`new URLSearchParams(iterable)`]: url.html#url_constructor_new_urlsearchparams_iterable
 [`process.on('uncaughtException')`]: process.html#process_event_uncaughtexception
 [`process.send()`]: process.html#process_process_send_message_sendhandle_options_callback
+[`require('crypto').setEngine()`]: crypto.html#crypto_crypto_setengine_engine_flags
+[`server.listen()`]: net.html#net_server_listen
+[ES6 module]: esm.html
 [Node.js Error Codes]: #nodejs-error-codes
 [V8's stack trace API]: https://github.com/v8/v8/wiki/Stack-Trace-API
 [WHATWG URL API]: url.html#url_the_whatwg_url_api
+[crypto digest algorithm]: crypto.html#crypto_crypto_gethashes
 [domains]: domain.html
 [event emitter-based]: events.html#events_class_eventemitter
 [file descriptors]: https://en.wikipedia.org/wiki/File_descriptor
@@ -1365,3 +1549,4 @@ closed.
 [try-catch]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
 [vm]: vm.html
 [WHATWG Supported Encodings]: util.html#util_whatwg_supported_encodings
+[`zlib`]: zlib.html

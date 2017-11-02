@@ -7,6 +7,7 @@
 </tr>
 <tr>
 <td valign="top">
+<a href="#6.11.5">6.11.5</a><br/>
 <a href="#6.11.4">6.11.4</a><br/>
 <a href="#6.11.3">6.11.3</a><br/>
 <a href="#6.11.2">6.11.2</a><br/>
@@ -42,6 +43,7 @@
 </table>
 
 * Other Versions
+  * [9.x](CHANGELOG_V9.md)
   * [8.x](CHANGELOG_V8.md)
   * [7.x](CHANGELOG_V7.md)
   * [5.x](CHANGELOG_V5.md)
@@ -55,6 +57,20 @@
 [Node.js Long Term Support Plan](https://github.com/nodejs/LTS) and
 will be supported actively until April 2018 and maintained until April 2019.
 
+<a id="6.11.5"></a>
+## 2017-10-24, Version 6.11.5 'Boron' (LTS), @MylesBorins
+
+This is a security release. All Node.js users should consult the security release summary at https://nodejs.org/en/blog/vulnerability/oct-2017-dos/ for details on patched vulnerabilities.
+
+### Notable Changes
+
+* **zlib**:
+  - CVE-2017-14919 - In zlib v1.2.9, a change was made that causes an error to be raised when a raw deflate stream is initialized with windowBits set to 8. On some versions this crashes Node and you cannot recover from it, while on some versions it throws an exception. Node.js will now gracefully set windowBits to 9 replicating the legacy behavior to avoid a DOS vector. [nodejs-private/node-private#95](https://github.com/nodejs-private/node-private/pull/95)
+
+### Commits
+
+* [[`dd764d9cb6`](https://github.com/nodejs/node/commit/b66e44c4d3)] - **zlib**: gracefully set windowBits from 8 to 9 (Myles Borins) [nodejs-private/node-private#95](https://github.com/nodejs-private/node-private/pull/95)
+
 <a id="6.11.4"></a>
 ## 2017-10-03, Version 6.11.4 'Boron' (LTS), @MylesBorins
 
@@ -63,7 +79,7 @@ This LTS release comes with 91 commits. This includes 29 which are test related,
 
 ### Notable Changes
 
-* **net**: 
+* **net**:
   - support passing undefined to listen() to match behavior in v4.x and v8.x (Sam Roberts) [#14234](https://github.com/nodejs/node/pull/14234)
 
 ### Commits
@@ -149,7 +165,7 @@ This LTS release comes with 91 commits. This includes 29 which are test related,
 * [[`c88f99f1f3`](https://github.com/nodejs/node/commit/c88f99f1f3)] - **test**: improvements to various http tests (James M Snell) [#14315](https://github.com/nodejs/node/pull/14315)
 * [[`860c6198c0`](https://github.com/nodejs/node/commit/860c6198c0)] - **test**: use ciphers supported by shared OpenSSL (Jérémy Lal) [#14566](https://github.com/nodejs/node/pull/14566)
 * [[`8b9a05c04b`](https://github.com/nodejs/node/commit/8b9a05c04b)] - **test**: read proper inspector message size (Bartosz Sosnowski) [#14596](https://github.com/nodejs/node/pull/14596)
-* [[`86497f1acc`](https://github.com/nodejs/node/commit/86497f1acc)] - **test**: mark inspector-port-zero-cluster as flaky (Refael Ackermann) 
+* [[`86497f1acc`](https://github.com/nodejs/node/commit/86497f1acc)] - **test**: mark inspector-port-zero-cluster as flaky (Refael Ackermann)
 * [[`8dfc2838c8`](https://github.com/nodejs/node/commit/8dfc2838c8)] - **test**: fix test-readline-interface (Azard) [#14677](https://github.com/nodejs/node/pull/14677)
 * [[`3a6392b283`](https://github.com/nodejs/node/commit/3a6392b283)] - **tls**: fix empty issuer/subject/infoAccess parsing (Ben Noordhuis) [#14473](https://github.com/nodejs/node/pull/14473)
 * [[`37dd2adbac`](https://github.com/nodejs/node/commit/37dd2adbac)] - **tools**: fix linter error in html.js (Michaël Zasso) [#15063](https://github.com/nodejs/node/pull/15063)

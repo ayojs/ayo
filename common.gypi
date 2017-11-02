@@ -25,6 +25,10 @@
     # Default to -O0 for debug builds.
     'v8_optimized_debug%': 0,
 
+    # Reset this number to 0 on major V8 upgrades.
+    # Increment by one for each non-official patch applied to deps/v8.
+    'v8_embedder_string': '-node.8',
+
     # Enable disassembler for `--print-code` v8 options
     'v8_enable_disassembler': 1,
 
@@ -114,6 +118,10 @@
             'MinimalRebuild': 'false',
             'OmitFramePointers': 'false',
             'BasicRuntimeChecks': 3, # /RTC1
+            'AdditionalOptions': [
+              '/bigobj', # prevent error C1128 in VS2015
+              '/MP', # compile across multiple CPUs
+            ],
           },
           'VCLinkerTool': {
             'LinkIncremental': 2, # enable incremental linking
@@ -283,7 +291,7 @@
         'cflags': [ '-pthread', ],
         'ldflags': [ '-pthread' ],
       }],
-      [ 'OS in "linux freebsd openbsd solaris android aix"', {
+      [ 'OS in "linux freebsd openbsd solaris android aix cloudabi"', {
         'cflags': [ '-Wall', '-Wextra', '-Wno-unused-parameter', ],
         'cflags_cc': [ '-fno-rtti', '-fno-exceptions', '-std=gnu++0x' ],
         'ldflags': [ '-rdynamic' ],

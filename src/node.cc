@@ -54,14 +54,11 @@
 #endif
 
 #include "ares.h"
-#include "async-wrap.h"
 #include "async-wrap-inl.h"
-#include "env.h"
 #include "env-inl.h"
 #include "handle_wrap.h"
 #include "http_parser.h"
 #include "nghttp2/nghttp2ver.h"
-#include "req-wrap.h"
 #include "req-wrap-inl.h"
 #include "string_bytes.h"
 #include "tracing/agent.h"
@@ -111,7 +108,7 @@ typedef int mode_t;
 #include <unistd.h>  // setuid, getuid
 #endif
 
-#if defined(__POSIX__) && !defined(__ANDROID__)
+#if defined(__POSIX__) && !defined(__ANDROID__) && !defined(__CloudABI__)
 #include <pwd.h>  // getpwnam()
 #include <grp.h>  // getgrnam()
 #endif
@@ -176,6 +173,7 @@ static bool syntax_check_only = false;
 static bool trace_deprecation = false;
 static bool throw_deprecation = false;
 static bool trace_sync_io = false;
+static bool no_force_async_hooks_checks = false;
 static bool track_heap_objects = false;
 static const char* eval_string = nullptr;
 static std::vector<std::string> preload_modules;
@@ -1020,7 +1018,7 @@ Local<Value> UVException(Isolate* isolate,
 
 // Look up environment variable unless running as setuid root.
 bool SafeGetenv(const char* key, std::string* text) {
-#ifndef _WIN32
+#if !defined(__CloudABI__) && !defined(_WIN32)
   if (linux_at_secure || getuid() != geteuid() || getgid() != getegid())
     goto fail;
 #endif
@@ -1407,6 +1405,12 @@ CallbackScope::~CallbackScope() {
   delete private_;
 }
 
+InternalCallbackScope::InternalCallbackScope(AsyncWrap* async_wrap)
+    : InternalCallbackScope(async_wrap->env(),
+                            async_wrap->object(),
+                            { async_wrap->get_async_id(),
+                              async_wrap->get_trigger_async_id() }) {}
+
 InternalCallbackScope::InternalCallbackScope(Environment* env,
                                              Local<Object> object,
                                              const async_context& asyncContext,
@@ -1478,8 +1482,10 @@ void InternalCallbackScope::Close() {
 
   // Make sure the stack unwound properly. If there are nested MakeCallback's
   // then it should return early and not reach this code.
-  CHECK_EQ(env_->execution_async_id(), 0);
-  CHECK_EQ(env_->trigger_async_id(), 0);
+  if (env_->async_hooks()->fields()[AsyncHooks::kTotals]) {
+    CHECK_EQ(env_->execution_async_id(), 0);
+    CHECK_EQ(env_->trigger_async_id(), 0);
+  }
 
   Local<Object> process = env_->process_object();
 
@@ -1488,8 +1494,10 @@ void InternalCallbackScope::Close() {
     return;
   }
 
-  CHECK_EQ(env_->execution_async_id(), 0);
-  CHECK_EQ(env_->trigger_async_id(), 0);
+  if (env_->async_hooks()->fields()[AsyncHooks::kTotals]) {
+    CHECK_EQ(env_->execution_async_id(), 0);
+    CHECK_EQ(env_->trigger_async_id(), 0);
+  }
 
   if (!env_->can_call_into_js()) return;
 
@@ -2164,7 +2172,7 @@ static void Umask(const FunctionCallbackInfo<Value>& args) {
 }
 
 
-#if defined(__POSIX__) && !defined(__ANDROID__)
+#if defined(__POSIX__) && !defined(__ANDROID__) && !defined(__CloudABI__)
 
 static const uid_t uid_not_found = static_cast<uid_t>(-1);
 static const gid_t gid_not_found = static_cast<gid_t>(-1);
@@ -2487,7 +2495,7 @@ static void InitGroups(const FunctionCallbackInfo<Value>& args) {
   }
 }
 
-#endif  // __POSIX__ && !defined(__ANDROID__)
+#endif  // __POSIX__ && !defined(__ANDROID__) && !defined(__CloudABI__)
 
 
 static void WaitForInspectorDisconnect(Environment* env) {
@@ -3766,7 +3774,7 @@ void SetupProcessObject(Environment* env,
 
   env->SetMethod(process, "umask", Umask);
 
-#if defined(__POSIX__) && !defined(__ANDROID__)
+#if defined(__POSIX__) && !defined(__ANDROID__) && !defined(__CloudABI__)
   env->SetMethod(process, "getuid", GetUid);
   env->SetMethod(process, "geteuid", GetEUid);
   env->SetMethod(process, "getgid", GetGid);
@@ -3783,7 +3791,7 @@ void SetupProcessObject(Environment* env,
     env->SetMethod(process, "setgroups", SetGroups);
     env->SetMethod(process, "initgroups", InitGroups);
   }
-#endif  // __POSIX__ && !defined(__ANDROID__)
+#endif  // __POSIX__ && !defined(__ANDROID__) && !defined(__CloudABI__)
 
   env->SetMethod(process, "_kill", Kill);
   env->SetMethod(process, "dlopen", DLOpen);
@@ -3969,6 +3977,8 @@ static void PrintHelp() {
          "                             stderr\n"
          "  --trace-sync-io            show stack trace when use of sync IO\n"
          "                             is detected after the first tick\n"
+         "  --no-force-async-hooks-checks\n"
+         "                             disable checks for async_hooks\n"
          "  --trace-events-enabled     track trace events\n"
          "  --trace-event-categories   comma separated list of trace event\n"
          "                             categories to record\n"
@@ -4094,6 +4104,7 @@ static void CheckIfAllowedInEnv(const char* exe, bool is_env,
     "--trace-warnings",
     "--redirect-warnings",
     "--trace-sync-io",
+    "--no-force-async-hooks-checks",
     "--trace-events-enabled",
     "--trace-events-categories",
     "--track-heap-objects",
@@ -4232,6 +4243,8 @@ static void ParseArgs(int* argc,
       trace_deprecation = true;
     } else if (strcmp(arg, "--trace-sync-io") == 0) {
       trace_sync_io = true;
+    } else if (strcmp(arg, "--no-force-async-hooks-checks") == 0) {
+      no_force_async_hooks_checks = true;
     } else if (strcmp(arg, "--trace-events-enabled") == 0) {
       trace_enabled = true;
     } else if (strcmp(arg, "--trace-event-categories") == 0) {
@@ -4859,9 +4872,9 @@ Local<Context> NewContext(Isolate* isolate,
   auto intl_key = FIXED_ONE_BYTE_STRING(isolate, "Intl");
   auto break_iter_key = FIXED_ONE_BYTE_STRING(isolate, "v8BreakIterator");
   Local<Value> intl_v;
-  Local<Object> intl;
   if (context->Global()->Get(context, intl_key).ToLocal(&intl_v) &&
-      intl_v->ToObject(context).ToLocal(&intl)) {
+      intl_v->IsObject()) {
+    Local<Object> intl = intl_v.As<Object>();
     intl->Delete(context, break_iter_key).FromJust();
   }
   return context;
@@ -4886,6 +4899,10 @@ inline int Start(Isolate* isolate, IsolateData* isolate_data,
     return 12;  // Signal internal error.
 
   env.set_abort_on_uncaught_exception(abort_on_uncaught_exception);
+
+  if (no_force_async_hooks_checks) {
+    env.async_hooks()->no_force_checks();
+  }
 
   {
     Environment::AsyncCallbackScope callback_scope(&env);

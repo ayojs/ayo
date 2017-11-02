@@ -21,14 +21,10 @@
 
 #define CARES_STATICLIB
 #include "ares.h"
-#include "async-wrap.h"
 #include "async-wrap-inl.h"
-#include "env.h"
 #include "env-inl.h"
 #include "node.h"
-#include "req-wrap.h"
 #include "req-wrap-inl.h"
-#include "util.h"
 #include "util-inl.h"
 #include "uv.h"
 
@@ -37,6 +33,10 @@
 #include <string.h>
 #include <vector>
 #include <unordered_set>
+
+#ifdef __POSIX__
+# include <netdb.h>
+#endif  // __POSIX__
 
 #if defined(__ANDROID__) || \
     defined(__MINGW32__) || \
