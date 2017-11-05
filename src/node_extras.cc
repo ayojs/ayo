@@ -1,4 +1,4 @@
-#include "node.h"
+#include "node_internals.h"
 #include "util.h"
 #include "util-inl.h"
 #include "v8.h"
@@ -27,4 +27,4 @@ static void Init(Local<Object> target,
 
 }  // namespace node
 
-NODE_MODULE_CONTEXT_AWARE_BUILTIN(extras, node::v8_extras::Init)
+NODE_MODULE_CONTEXT_AWARE_INTERNAL(extras, node::v8_extras::Init)

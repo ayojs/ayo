@@ -672,7 +672,7 @@ MaybeLocal<Function> GetMessagePortConstructor(
       Local<Value> make_message_port;
 
       if (!extras->Get(context,
-                      FIXED_ONE_BYTE_STRING(env->isolate(), "makeMessagePort"))
+                       FIXED_ONE_BYTE_STRING(env->isolate(), "makeMessagePort"))
               .ToLocal(&make_message_port)) {
         return MaybeLocal<Function>();
       }
