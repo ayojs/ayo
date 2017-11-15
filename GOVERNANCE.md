@@ -74,5 +74,4 @@ means that in order to find consensus, nobody in the group has to object. If
 no consensus can be reached, the issue can be postponed until the next time
 the team reconverges.
 
-[ayojs]: https://github.com/ayojs
 [Consensus Seeking]: http://en.wikipedia.org/wiki/Consensus-seeking_decision-making

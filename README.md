@@ -16,7 +16,7 @@ Contributions, policies, and releases are managed under an
 
 **This project is bound by a [Code of Conduct][].**
 
-# Table of Contents
+## Table of Contents
 
 * [Resources for Newcomers](#resources-for-newcomers)
 * [Release Types](#release-types)
@@ -165,9 +165,4 @@ various sub-teams. For more information, see [GOVERNANCE.md](./GOVERNANCE.md).
 [Node.js]: https://github.com/nodejs/node
 [`npm` package ecosystem]: https://www.npmjs.com
 [Join the Discord channel]: https://discord.gg/hCgptwH
-[Website]: https://nodejs.org/en/
-[Contributing to the project]: CONTRIBUTING.md
-[Node.js Help]: https://github.com/nodejs/help
-[#node.js on chat.freenode.net]: https://webchat.freenode.net?channels=node.js&uio=d4
-[#node-dev on chat.freenode.net]: https://webchat.freenode.net?channels=node-dev&uio=d4
 [Code of Conduct]: https://github.com/ayojs/ayo/blob/latest/CODE_OF_CONDUCT.md
