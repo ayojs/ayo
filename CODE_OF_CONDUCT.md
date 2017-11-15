@@ -181,10 +181,10 @@ The vast majority of situations work out like this. This interaction is common,
 and generally positive.
 
 > Alex: "Yeah I used X and it was really crazy!"
-
+>
 > Patt (not a moderator!): "Hey, could you not use that word? What about
-'ridiculous' instead?"
-
+> 'ridiculous' instead?"
+>
 > Alex: "oh sorry, sure." -> edits old comment to say "it was really confusing!"
 
 #### The Moderator Case
@@ -194,45 +194,45 @@ best to resolve conflicts, but people who were harmed by something **will take
 priority**.
 
 > Patt: "Honestly, sometimes I just really hate using $library and anyone who
-uses it probably sucks at their job."
-
+> uses it probably sucks at their job."
+>
 > Alex: "Whoa there, could you dial it back a bit? There's a CoC thing about
-attacking folks' tech use like that."
-
+> attacking folks' tech use like that."
+>
 > Patt: "I'm not attacking anyone, what's your problem?"
-
+>
 > Alex: "@ayojs/moderation hey uh. Can someone look at this issue? Patt is getting a bit aggro. I tried to nudge them about it, but nope."
-
+>
 > TheModerator: (on issue) "Hey Patt, moderator here. Could you tone it down?
-This sort of attack is really not okay in this space."
-
+> This sort of attack is really not okay in this space."
+>
 > Patt: "Leave me alone I haven't said anything bad wtf is wrong with you."
-
+>
 > TheModerator: (deletes user's comment), "@patt I mean it. Please refer to the
-CoC over at (URL to this CoC) if you have questions, but you can consider this
-an actual warning. I'd appreciate it if you reworded your messages in this
-thread, since they made folks there uncomfortable. Let's try and be kind, yeah?"
-
+> CoC over at (URL to this CoC) if you have questions, but you can consider this
+> an actual warning. I'd appreciate it if you reworded your messages in this
+> thread, since they made folks there uncomfortable. Let's try and be kind, yeah?"
+>
 > Patt: "@themoderator Okay sorry. I'm just frustrated and I'm kinda burnt out
-and I guess I got carried away. I'll DM Alex a note apologizing and edit my
-messages. Sorry for the trouble."
-
+> and I guess I got carried away. I'll DM Alex a note apologizing and edit my
+> messages. Sorry for the trouble."
+>
 > TheModerator: "@patt Thanks for that. I hear you on the stress. Burnout sucks :/.
-Have a good one!"
+> Have a good one!"
 
 #### The Nope Case
 
 > PepeTheFrog🐸: "Hi, I am a literal actual nazi and I think white supremacists
-are quite fashionable."
-
+> are quite fashionable."
+>
 > Patt: "NOOOOPE. OH NOPE NOPE."
-
+>
 > Alex: "JFC NO. NOPE. @themoderator NOPE NOPE LOOK HERE"
-
+>
 > TheModerator: "👀 Nope. NOPE NOPE NOPE. 🔥"
-
+>
 > PepeTheFrog🐸 has been banned from all organization or user repositories
-belonging to TheModerator.
+> belonging to TheModerator.
 
 ## Attribution
 
