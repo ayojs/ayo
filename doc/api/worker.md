@@ -435,9 +435,7 @@ it is available as [`require('worker').threadId`][].
 [`worker.postMessage()`]: #worker_worker_postmessage_value_transferlist_1
 [`worker.on('message')`]: #worker_event_message_1
 [`worker.threadId`]: #worker_worker_threadid_1
-[`port.postMessage()`]: #worker_port_postmessage_value_transferlist
 [`port.on('message')`]: #worker_event_message
-[`process.exit()`]: process.html#process_process_exit
 [`process.exit()`]: process.html#process_process_exit
 [`process.abort()`]: process.html#process_process_abort
 [`process.chdir()`]: process.html#process_process_chdir_directory
