@@ -114,7 +114,8 @@ class WriteWrap: public ReqWrap<uv_write_t>,
   }
 
   ~WriteWrap() {
-    ClearWrap(object());
+    if (!object().IsEmpty())
+      ClearWrap(object());
   }
 
   void* operator new(size_t size) = delete;
@@ -126,8 +127,11 @@ class WriteWrap: public ReqWrap<uv_write_t>,
 
  private:
   // People should not be using the non-placement new and delete operator on a
-  // WriteWrap. Ensure this never happens.
-  void operator delete(void* ptr) { UNREACHABLE(); }
+  // WriteWrap. This is only okay to be called during environment cleanup,
+  // for WriteWraps that have not yet been passed to libuv and therefore
+  // can't be finished like they normally would.
+  // In that case, BaseObject's DeleteMe function will call this.
+  inline void operator delete(void* ptr);
 
   StreamBase* const wrap_;
   const size_t storage_size_;
