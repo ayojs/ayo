@@ -1331,6 +1331,32 @@ entry types were found.
 
 Used when a given value is out of the accepted range.
 
+<a id="ERR_WORKER_DOMAIN"></a>
+### ERR_WORKER_DOMAIN
+
+Used when trying to access the `domain` module inside of a worker thread.
+
+<a id="ERR_WORKER_NEED_ABSOLUTE_PATH"></a>
+### ERR_WORKER_NEED_ABSOLUTE_PATH
+
+Used when the path for the main script of a worker is not an absolute path.
+
+<a id="ERR_WORKER_OUT_OF_MEMORY"></a>
+### ERR_WORKER_OUT_OF_MEMORY
+
+Used when a worker hits its memory limit.
+
+<a id="ERR_WORKER_UNSERIALIZABLE_ERROR"></a>
+### ERR_WORKER_UNSERIALIZABLE_ERROR
+
+Used when all attempts at serializing an uncaught exception from a worker fail.
+
+<a id="ERR_WORKER_UNSUPPORTED_EXTENSION"></a>
+### ERR_WORKER_UNSUPPORTED_EXTENSION
+
+Used when the pathname used for the main script of a worker has an
+unknown file extension.
+
 <a id="ERR_ZLIB_BINDING_CLOSED"></a>
 ### ERR_ZLIB_BINDING_CLOSED
 
