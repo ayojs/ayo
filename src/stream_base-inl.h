@@ -159,6 +159,10 @@ void WriteWrap::Dispose() {
 }
 
 
+void WriteWrap::operator delete(void* ptr) {
+  static_cast<WriteWrap*>(ptr)->Dispose();
+}
+
 char* WriteWrap::Extra(size_t offset) {
   return reinterpret_cast<char*>(this) +
          ROUND_UP(sizeof(*this), kAlignSize) +
