@@ -1349,7 +1349,7 @@ Used when a worker hits its memory limit.
 <a id="ERR_WORKER_UNSERIALIZABLE_ERROR"></a>
 ### ERR_WORKER_UNSERIALIZABLE_ERROR
 
-Used when all attempts at serializing an uncaught exception from a fail.
+Used when all attempts at serializing an uncaught exception from a worker fail.
 
 <a id="ERR_WORKER_UNSUPPORTED_EXTENSION"></a>
 ### ERR_WORKER_UNSUPPORTED_EXTENSION
