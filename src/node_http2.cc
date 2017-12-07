@@ -107,6 +107,8 @@ Http2Session::~Http2Session() {
 }
 
 void Http2Session::Close() {
+  if (prep_ == nullptr)
+    return;  // Avoid double close.
   if (!object().IsEmpty())
     ClearWrap(object());
   persistent().Reset();
