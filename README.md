@@ -139,7 +139,7 @@ various sub-teams. For more information, see [GOVERNANCE.md](./GOVERNANCE.md).
 
 ### Core Team
 
-| | Github | Name | Email | Pronouns |
+| | GitHub | Name | Email | Pronouns |
 | ---| --- | --- | --- | --- |
 | ![addaleax](https://avatars2.githubusercontent.com/u/899444?v=4&s=64) | [addaleax](https://github.com/addaleax) | **Anna Henningsen** | anna@addaleax.net | she/her |
 | ![aqrln](https://avatars0.githubusercontent.com/u/4923335?v=4&s=64) | [aqrln](https://github.com/aqrln) | **Alexey Orlenko** | eaglexrlnk@gmail.com | he/him |
@@ -151,7 +151,7 @@ various sub-teams. For more information, see [GOVERNANCE.md](./GOVERNANCE.md).
 
 ### Moderation Team
 
-| | Github | Name | Email | Pronouns |
+| | GitHub | Name | Email | Pronouns |
 | ---| --- | --- | --- | --- |
 | ![AgentAntelope](https://avatars1.githubusercontent.com/u/1962412?v=4&s=64) | [AgentAntelope](https://github.com/AgentAntelope) | **Fell Sunderland** | agentantelope+github@gmail.com | he/him |
 | ![janl](https://avatars1.githubusercontent.com/u/11321?v=4&s=64) | [janl](https://github.com/janl) | **Jan Lehnardt** | jan@apache.org | he/him |

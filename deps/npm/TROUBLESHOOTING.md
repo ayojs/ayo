@@ -50,7 +50,7 @@ We have a [detailed guide](https://github.com/npm/npm/wiki/Troubleshooting#upgra
 
 npm might not be able to connect to the registry for various reasons. Perhaps your machine is behind a firewall that needs to be opened, or you require a corporate proxy to access the npm registry. This issue can manifest in a wide number of different ways. Usually, strange network errors are an instance of this specific problem.
 
-Sometimes, users may have install failures due to Git/Github access issues. Git/GitHub access is separate from npm registry access. For users in some locations (India in particular), problems installing packages may be due to connectivity problems reaching GitHub and not the npm registry.
+Sometimes, users may have install failures due to Git/GitHub access issues. Git/GitHub access is separate from npm registry access. For users in some locations (India in particular), problems installing packages may be due to connectivity problems reaching GitHub and not the npm registry.
 
 If you believe your network is configured and working correctly, and you're still having problems installing, please let the [registry team](https://github.com/npm/registry/issues) know you're having trouble.
 
