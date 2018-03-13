@@ -660,7 +660,7 @@ deps, as any good LTS release train should be. 🙆
   ([@reconbot](https://github.com/reconbot))
 * [`3cfe99e`](https://github.com/npm/npm/commit/3cfe99e3a757c5d8cbb1c2789410e9802563abac)
   [#12093](https://github.com/npm/npm/pull/12093)
-  Update `bugs` url in `package.json` to use the `https` URL for Github.
+  Update `bugs` url in `package.json` to use the `https` URL for GitHub.
   ([@watilde](https://github.com/watilde))
 * [`ecf865f`](https://github.com/npm/npm/commit/ecf865f4eed1419c75442e0d52bc34ba1647de15)
   [#12075](https://github.com/npm/npm/pull/12075)
@@ -3655,7 +3655,7 @@ the code that handles Git dependencies.
 
 * [`b747593`](https://github.com/npm/npm/commit/b7475936f473f029e6a027ba1b16277523747d0b)
   [#7630](https://github.com/npm/npm/issues/7630) Don't automatically log all
-  git failures as errors. `maybeGithub` needs to be able to fail without
+  git failures as errors. `maybeGitHub` needs to be able to fail without
   logging to support its fallback logic.
   ([@othiym23](https://github.com/othiym23))
 * [`cd67a0d`](https://github.com/npm/npm/commit/cd67a0db07891d20871822696c26692c8a84866a)

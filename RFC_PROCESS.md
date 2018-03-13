@@ -45,7 +45,7 @@ externally should be recorded in the RFC itself, for record keeping.
 ## How do RFCs get ratified?
 
 RFCs have a minimum 24 hour waiting period before being accepted or rejected.
-Once an RFC has been reviewed on Github and at least one member from each
+Once an RFC has been reviewed on GitHub and at least one member from each
 relevant team has signed off on the changes, the PR will be accepted. Depending
 on the change, having a parallel PR may be requested by reviewers.
 

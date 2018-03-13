@@ -49,11 +49,11 @@ The log will include the following columns:
 * **Date** - date of the *enforcement action* (not the event itself)
 * **Action Taken** - official action taken by the moderation team, in accordance
   with the moderation process.
-* **Venue** - Where the event that triggered moderation happened: Github,
+* **Venue** - Where the event that triggered moderation happened: GitHub,
   Discord, Conference, etc.
 * **Moderator(s)** - Moderation Team member or members who took the action.
 * **URL** - If the event happened on a URL-linkable **PUBLIC** location (such as
-  Github), the URL of the issue or issue comment in question.
+  GitHub), the URL of the issue or issue comment in question.
 * **Details** - Freeform description of the event, with specific parties
   omitted. This should be as dry and neutral as possible. This should use
   placeholders instead of names when referring to any involved parties except

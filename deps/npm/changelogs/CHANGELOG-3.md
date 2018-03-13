@@ -1903,7 +1903,7 @@ like documentation are a huge help. And remember -- you get socks for it, too!
   ([@watilde](https://github.com/watilde))
 * [`60051c2`](https://github.com/npm/npm/commit/60051c25e2ab80c667137dfcd04b242eea25980e)
   [#12093](https://github.com/npm/npm/pull/12093)
-  Update `bugs` url in `package.json` to use the `https` URL for Github.
+  Update `bugs` url in `package.json` to use the `https` URL for GitHub.
   ([@watilde](https://github.com/watilde))
 * [`af30c37`](https://github.com/npm/npm/commit/af30c374ef22ed1a1c71b14fced7c4b8350e4e82)
   [#12075](https://github.com/npm/npm/pull/12075)
